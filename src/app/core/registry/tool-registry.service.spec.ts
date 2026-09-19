@@ -20,8 +20,8 @@ describe('ToolRegistryService', () => {
     expect(grouped['data'].map((t) => t.id)).toContain('json');
   });
 
-  it('declares a nonpersistent policy for the JSON placeholder (no real preferences yet)', () => {
-    expect(service.getById('json')?.persistence?.input).toBe('none');
+  it('declares a session-only input policy for JSON (private JSON should not persist across sessions)', () => {
+    expect(service.getById('json')?.persistence?.input).toBe('session');
   });
 
   it('returns an empty array for categories with no tools', () => {

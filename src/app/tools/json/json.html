@@ -1,0 +1,104 @@
+<app-tool-shell title="JSON Formatter">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'pretty'"
+          [class.text-bg]="mode() === 'pretty'"
+          [class.text-text-muted]="mode() !== 'pretty'"
+          (click)="setMode('pretty')"
+        >
+          Pretty
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'minify'"
+          [class.text-bg]="mode() === 'minify'"
+          [class.text-text-muted]="mode() !== 'minify'"
+          (click)="setMode('minify')"
+        >
+          Minify
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'validate'"
+          [class.text-bg]="mode() === 'validate'"
+          [class.text-text-muted]="mode() !== 'validate'"
+          (click)="setMode('validate')"
+        >
+          Validate
+        </button>
+      </div>
+
+      @if (mode() === 'pretty') {
+        <label class="flex items-center gap-1.5">
+          Indent
+          <select
+            class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="indent()"
+            (change)="onIndentChange($event)"
+          >
+            <option value="2">2 spaces</option>
+            <option value="4">4 spaces</option>
+            <option value="tab">Tab</option>
+          </select>
+        </label>
+      }
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+
+      @if (usesWorker() && job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+    </div>
+
+    <textarea
+      rows="8"
+      class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      placeholder="Paste JSON here…"
+      [value]="input()"
+      (input)="onInputChange($event)"
+    ></textarea>
+
+    @if (usesWorker() && job()?.error(); as workerError) {
+      <app-error-panel [message]="workerError" />
+    } @else if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] text-text-muted">Output</span>
+            <button
+              type="button"
+              class="rounded-sm border border-border px-2 py-0.5 text-[11px] text-text-muted hover:bg-panel-elevated"
+              (click)="copy(current.output)"
+            >
+              Copy
+            </button>
+          </div>
+          <textarea
+            rows="8"
+            readonly
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+            [value]="current.output"
+          ></textarea>
+        </div>
+      } @else {
+        <app-error-panel
+          [message]="current.error.line !== undefined
+            ? current.error.message + ' (line ' + current.error.line + ', column ' + current.error.column + ')'
+            : current.error.message"
+        />
+      }
+    }
+  </div>
+</app-tool-shell>

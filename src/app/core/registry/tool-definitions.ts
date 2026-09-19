@@ -52,9 +52,10 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     category: 'data',
     keywords: ['json', 'format', 'validate', 'pretty', 'minify'],
     route: '/tools/json',
-    load: () => import('../../tools/json/json-placeholder').then((m) => m.JsonPlaceholder),
-    status: 'experimental',
-    persistence: { input: 'none', preferences: 'none' },
+    load: () => import('../../tools/json/json').then((m) => m.Json),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
   },
   {
     id: 'worker-demo',
