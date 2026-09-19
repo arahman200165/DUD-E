@@ -58,6 +58,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'required' },
   },
   {
+    id: 'markdown',
+    title: 'Markdown Preview',
+    description: 'Live side-by-side Markdown editor and sanitized HTML preview.',
+    category: 'documents',
+    keywords: ['markdown', 'md', 'preview', 'render', 'documents'],
+    route: '/tools/markdown',
+    load: () => import('../../tools/markdown/markdown').then((m) => m.Markdown),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',

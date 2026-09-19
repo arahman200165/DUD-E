@@ -1,0 +1,18 @@
+<div #container class="flex h-full w-full min-h-0 overflow-hidden">
+  <div class="min-w-0 overflow-auto" [style.width.%]="ratio() * 100">
+    <ng-content select="[slot=start]" />
+  </div>
+
+  <div
+    class="w-1 shrink-0 cursor-col-resize touch-none bg-border hover:bg-accent"
+    [class.bg-accent]="dragging()"
+    (pointerdown)="onDividerPointerDown($event)"
+    (pointermove)="onDividerPointerMove($event)"
+    (pointerup)="onDividerPointerUp($event)"
+    (pointercancel)="onDividerPointerUp($event)"
+  ></div>
+
+  <div class="min-w-0 flex-1 overflow-auto">
+    <ng-content select="[slot=end]" />
+  </div>
+</div>
