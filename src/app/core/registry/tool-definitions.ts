@@ -35,6 +35,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
   },
   {
+    id: 'jwt',
+    title: 'JWT Debugger',
+    description: 'Decode a JWT header and payload — does not verify signatures.',
+    category: 'security',
+    keywords: ['jwt', 'json web token', 'decode', 'auth', 'token', 'claims'],
+    route: '/tools/jwt',
+    load: () => import('../../tools/jwt/jwt').then((m) => m.Jwt),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',

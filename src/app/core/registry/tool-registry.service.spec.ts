@@ -26,7 +26,7 @@ describe('ToolRegistryService', () => {
 
   it('returns an empty array for categories with no tools', () => {
     const grouped = service.groupedByCategory();
-    expect(grouped['security']).toEqual([]);
+    expect(grouped['web']).toEqual([]);
   });
 
   it('requiresNetwork is false for tools with no declared network policy', () => {
