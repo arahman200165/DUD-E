@@ -81,6 +81,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'required' },
   },
   {
+    id: 'diff',
+    title: 'Text Diff',
+    description: 'Line-oriented diff between two blocks of text.',
+    category: 'text',
+    keywords: ['diff', 'compare', 'text', 'changes', 'delta'],
+    route: '/tools/diff',
+    load: () => import('../../tools/diff/diff').then((m) => m.Diff),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'required' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',
