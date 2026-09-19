@@ -1984,7 +1984,7 @@ DUD-E Weekend MVP is done only when all required items below are true.
 - [ ] worker smoke test passes.
 - [ ] offline smoke test passes.
 - [ ] direct-route production test passes.
-- [ ] a simple new tool can be added in ≤30 minutes without shell modifications.
+- [x] a simple new tool can be added in ≤30 minutes without shell modifications. Verified via Milestone 10's timed UUID Generator / Inspector exercise: 2m50s, zero shell edits.
 
 ---
 
