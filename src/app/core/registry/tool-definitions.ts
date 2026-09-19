@@ -104,16 +104,4 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
-  {
-    id: 'worker-demo',
-    title: 'Worker Demo',
-    description: 'Runs a chunked text-frequency analysis in a background Worker.',
-    category: 'developer',
-    keywords: ['worker', 'background', 'cancel', 'demo', 'frequency'],
-    route: '/tools/worker-demo',
-    load: () => import('../../tools/worker-demo/worker-demo').then((m) => m.WorkerDemo),
-    status: 'experimental',
-    persistence: { input: 'none', preferences: 'none' },
-    execution: { worker: 'required' },
-  },
 ];

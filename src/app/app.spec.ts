@@ -23,10 +23,10 @@ describe('App', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain('Dashboard');
   });
 
-  it('a worker failure on the demo tool does not break shell navigation', async () => {
-    const harness = await RouterTestingHarness.create('/tools/worker-demo');
+  it('a worker failure on a real tool does not break shell navigation', async () => {
+    const harness = await RouterTestingHarness.create('/tools/diff');
     const runButton = Array.from(harness.routeNativeElement!.querySelectorAll('button')).find(
-      (button) => button.textContent?.trim() === 'Run',
+      (button) => button.textContent?.trim() === 'Diff',
     ) as HTMLButtonElement;
 
     // jsdom has no Worker implementation, so this exercises the same

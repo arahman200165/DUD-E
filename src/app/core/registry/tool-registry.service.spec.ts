@@ -31,7 +31,7 @@ describe('ToolRegistryService', () => {
 
   it('requiresNetwork is false for tools with no declared network policy', () => {
     expect(service.requiresNetwork('json')).toBe(false);
-    expect(service.requiresNetwork('worker-demo')).toBe(false);
+    expect(service.requiresNetwork('text-inspector')).toBe(false);
   });
 
   it('requiresNetwork is false for an unknown tool id', () => {
