@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { provideServiceWorker } from '@angular/service-worker';
 import { App } from './app';
 import { routes } from './core/routing/app.routes';
 
 describe('App', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideRouter(routes)],
+      providers: [provideRouter(routes), provideServiceWorker('ngsw-worker.js', { enabled: false })],
     });
   });
 

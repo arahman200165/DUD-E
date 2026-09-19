@@ -28,6 +28,15 @@ describe('ToolRegistryService', () => {
     const grouped = service.groupedByCategory();
     expect(grouped['security']).toEqual([]);
   });
+
+  it('requiresNetwork is false for tools with no declared network policy', () => {
+    expect(service.requiresNetwork('json')).toBe(false);
+    expect(service.requiresNetwork('worker-demo')).toBe(false);
+  });
+
+  it('requiresNetwork is false for an unknown tool id', () => {
+    expect(service.requiresNetwork('does-not-exist')).toBe(false);
+  });
 });
 
 describe('validateDefinitions', () => {

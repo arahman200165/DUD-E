@@ -65,4 +65,8 @@ export class ToolRegistryService {
   search(query: string): ToolDefinition[] {
     return searchTools(this.definitions, query);
   }
+
+  requiresNetwork(id: string): boolean {
+    return this.getById(id)?.network?.required ?? false;
+  }
 }

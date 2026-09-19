@@ -29,6 +29,7 @@
   --color-success: #22c55e;
   --color-info: #3b82f6;
   --color-busy: #a855f7;
+  --color-offline: #64748b;
 
   /* Active/focus accent used by sidebar selection, focus rings, primary buttons */
   --color-accent: #3b82f6;

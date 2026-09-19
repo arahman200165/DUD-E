@@ -1,6 +1,14 @@
 <div class="flex h-screen w-screen overflow-hidden bg-bg text-text">
   <app-sidebar />
   <main class="min-w-0 flex-1 overflow-auto">
+    <div class="pointer-events-none fixed right-3 top-3 z-50 flex flex-col items-end gap-1.5">
+      <div class="pointer-events-auto">
+        <app-offline-badge [show]="offline()" />
+      </div>
+      <div class="pointer-events-auto">
+        <app-update-badge />
+      </div>
+    </div>
     <router-outlet />
   </main>
 </div>
