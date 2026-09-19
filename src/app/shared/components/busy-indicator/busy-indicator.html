@@ -1,0 +1,26 @@
+<span class="inline-flex items-center gap-1.5 font-mono text-[11px]">
+  <span
+    class="h-1.5 w-1.5 rounded-full"
+    [class.bg-busy]="status() === 'running'"
+    [class.bg-success]="status() === 'done'"
+    [class.bg-error]="status() === 'error'"
+    [class.bg-text-muted]="status() === 'idle' || status() === 'cancelled'"
+  ></span>
+  @switch (status()) {
+    @case ('running') {
+      <span class="text-busy">Running{{ progress() !== null ? ' — ' + progress() + '%' : '…' }}</span>
+    }
+    @case ('done') {
+      <span class="text-success">Done</span>
+    }
+    @case ('error') {
+      <span class="text-error">Failed</span>
+    }
+    @case ('cancelled') {
+      <span class="text-text-muted">Cancelled</span>
+    }
+    @default {
+      <span class="text-text-muted">Idle</span>
+    }
+  }
+</span>

@@ -1,0 +1,123 @@
+import { TestBed } from '@angular/core/testing';
+import { WorkerClientService } from './worker-client.service';
+import { WorkerJob } from './worker-job';
+import { WorkerRequestMessage } from './worker-protocol';
+
+class FakeWorker {
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  onerror: ((event: ErrorEvent) => void) | null = null;
+  terminated = false;
+  readonly posted: WorkerRequestMessage<unknown>[] = [];
+
+  postMessage(data: WorkerRequestMessage<unknown>): void {
+    this.posted.push(data);
+  }
+
+  terminate(): void {
+    this.terminated = true;
+  }
+
+  emit(data: unknown): void {
+    this.onmessage?.({ data } as MessageEvent);
+  }
+
+  emitError(message: string): { preventDefault: ReturnType<typeof vi.fn> } {
+    const preventDefault = vi.fn();
+    this.onerror?.({ message, preventDefault } as unknown as ErrorEvent);
+    return { preventDefault };
+  }
+}
+
+describe('WorkerClientService', () => {
+  let service: WorkerClientService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(WorkerClientService);
+  });
+
+  it('resolves the job with the result and terminates the worker', () => {
+    const worker = new FakeWorker();
+    const job: WorkerJob<number> = service.run(() => worker as unknown as Worker, { n: 2 });
+
+    expect(job.status()).toBe('running');
+    const id = worker.posted[0].id;
+    worker.emit({ id, kind: 'result', result: 42 });
+
+    expect(job.status()).toBe('done');
+    expect(job.result()).toBe(42);
+    expect(worker.terminated).toBe(true);
+  });
+
+  it('updates progress without changing status', () => {
+    const worker = new FakeWorker();
+    const job: WorkerJob<number> = service.run(() => worker as unknown as Worker, {});
+    const id = worker.posted[0].id;
+
+    worker.emit({ id, kind: 'progress', progress: 40 });
+
+    expect(job.progress()).toBe(40);
+    expect(job.status()).toBe('running');
+  });
+
+  it('moves to error status and terminates the worker on an error message', () => {
+    const worker = new FakeWorker();
+    const job: WorkerJob<number> = service.run(() => worker as unknown as Worker, {});
+    const id = worker.posted[0].id;
+
+    worker.emit({ id, kind: 'error', error: { message: 'boom' } });
+
+    expect(job.status()).toBe('error');
+    expect(job.error()).toBe('boom');
+    expect(worker.terminated).toBe(true);
+  });
+
+  it("converts worker.onerror into a job error without letting it propagate", () => {
+    const worker = new FakeWorker();
+    const job: WorkerJob<number> = service.run(() => worker as unknown as Worker, {});
+
+    const { preventDefault } = worker.emitError('script crashed');
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(job.status()).toBe('error');
+    expect(job.error()).toBe('script crashed');
+    expect(worker.terminated).toBe(true);
+  });
+
+  it('cancel() terminates the worker immediately and ignores later messages', () => {
+    const worker = new FakeWorker();
+    const job: WorkerJob<number> = service.run(() => worker as unknown as Worker, {});
+    const id = worker.posted[0].id;
+
+    job.cancel();
+    expect(job.status()).toBe('cancelled');
+    expect(worker.terminated).toBe(true);
+
+    worker.emit({ id, kind: 'result', result: 99 });
+    expect(job.status()).toBe('cancelled');
+    expect(job.result()).toBeNull();
+  });
+
+  it('ignores messages carrying a different job id', () => {
+    const worker = new FakeWorker();
+    const job: WorkerJob<number> = service.run(() => worker as unknown as Worker, {});
+
+    worker.emit({ id: 'some-other-job', kind: 'result', result: 1 });
+
+    expect(job.status()).toBe('running');
+    expect(job.result()).toBeNull();
+  });
+
+  it('turns a synchronous worker-construction failure into a job error instead of throwing', () => {
+    let job: WorkerJob<number> | undefined;
+
+    expect(() => {
+      job = service.run<unknown, number>(() => {
+        throw new Error('workers unsupported');
+      }, {});
+    }).not.toThrow();
+
+    expect(job!.status()).toBe('error');
+    expect(job!.error()).toBe('workers unsupported');
+  });
+});
