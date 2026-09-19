@@ -23,7 +23,7 @@
       </button>
     </div>
 
-    @if (result(); as current) {
+    @if (token() !== '' && result(); as current) {
       @if (current.ok) {
         <div
           class="rounded-sm border px-2 py-1.5 text-[11px]"

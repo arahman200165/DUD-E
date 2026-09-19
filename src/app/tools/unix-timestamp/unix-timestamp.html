@@ -46,7 +46,7 @@
           (input)="onTimestampInput($event)"
         />
       </div>
-      @if (timestampResult(); as result) {
+      @if (timestampInput() !== '' && timestampResult(); as result) {
         @if (result.ok) {
           <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
             <span class="font-mono">{{ formattedDate() }} ({{ result.resolvedUnit }})</span>
@@ -73,7 +73,7 @@
         [value]="dateInput()"
         (input)="onDateInput($event)"
       />
-      @if (dateResult(); as result) {
+      @if (dateInput() !== '' && dateResult(); as result) {
         @if (result.ok) {
           <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
             <span class="font-mono">{{ result.value }}</span>
