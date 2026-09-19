@@ -46,6 +46,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'none' },
   },
   {
+    id: 'hash',
+    title: 'Hash Generator',
+    description: 'MD5, SHA-1, SHA-256, SHA-384, and SHA-512 digests for text.',
+    category: 'security',
+    keywords: ['hash', 'checksum', 'md5', 'sha1', 'sha256', 'sha512', 'digest'],
+    route: '/tools/hash',
+    load: () => import('../../tools/hash/hash').then((m) => m.Hash),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'required' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',
