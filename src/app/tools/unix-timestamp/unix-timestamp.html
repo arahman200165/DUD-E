@@ -1,0 +1,94 @@
+<app-tool-shell title="Unix Timestamp Converter">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Unit
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="unit()"
+          (change)="onUnitChange($event)"
+        >
+          <option value="auto">Auto-detect</option>
+          <option value="seconds">Seconds</option>
+          <option value="milliseconds">Milliseconds</option>
+        </select>
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        Display
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="tz()"
+          (change)="onTzChange($event)"
+        >
+          <option value="local">Local time</option>
+          <option value="utc">UTC</option>
+        </select>
+      </label>
+
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
+        (click)="now()"
+      >
+        Now
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-[11px] text-text-muted">Timestamp → Date</span>
+      <div class="flex gap-2">
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="e.g. 1700000000"
+          [value]="timestampInput()"
+          (input)="onTimestampInput($event)"
+        />
+      </div>
+      @if (timestampResult(); as result) {
+        @if (result.ok) {
+          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
+            <span class="font-mono">{{ formattedDate() }} ({{ result.resolvedUnit }})</span>
+            <button
+              type="button"
+              class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated"
+              (click)="copy(formattedDate() ?? '')"
+            >
+              Copy
+            </button>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-[11px] text-text-muted">Date → Timestamp</span>
+      <input
+        type="datetime-local"
+        step="1"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="dateInput()"
+        (input)="onDateInput($event)"
+      />
+      @if (dateResult(); as result) {
+        @if (result.ok) {
+          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
+            <span class="font-mono">{{ result.value }}</span>
+            <button
+              type="button"
+              class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated"
+              (click)="copy(result.value.toString())"
+            >
+              Copy
+            </button>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>

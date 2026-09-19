@@ -24,6 +24,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
   },
   {
+    id: 'unix-timestamp',
+    title: 'Unix Timestamp Converter',
+    description: 'Convert between Unix timestamps and human-readable dates.',
+    category: 'date-time',
+    keywords: ['unix', 'timestamp', 'epoch', 'date', 'time', 'utc', 'convert'],
+    route: '/tools/unix-timestamp',
+    load: () => import('../../tools/unix-timestamp/unix-timestamp').then((m) => m.UnixTimestamp),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',
