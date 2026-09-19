@@ -1,0 +1,49 @@
+/**
+ * DUD-E design tokens — the single source of truth for the dark base scale,
+ * category accent colors, and semantic status colors (PRD Section 8.5).
+ * Every shell component and tool should reuse these rather than inventing
+ * one-off colors.
+ */
+@theme {
+  /* Dark base scale */
+  --color-bg: #0a0e14;
+  --color-panel: #10151d;
+  --color-panel-elevated: #161c26;
+  --color-border: #232b38;
+  --color-text: #e6e9ef;
+  --color-text-muted: #8b93a3;
+
+  /* Category accents — one bold, mutually distinct hue per Section 12.3 category */
+  --color-cat-data: #22d3ee;
+  --color-cat-text: #a3e635;
+  --color-cat-encoding: #fb923c;
+  --color-cat-security: #e879f9;
+  --color-cat-date-time: #a78bfa;
+  --color-cat-web: #60a5fa;
+  --color-cat-developer: #34d399;
+  --color-cat-documents: #f472b6;
+
+  /* Fixed semantic status colors, shared by error/warning/success/info/busy UI */
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #22c55e;
+  --color-info: #3b82f6;
+  --color-busy: #a855f7;
+
+  /* Active/focus accent used by sidebar selection, focus rings, primary buttons */
+  --color-accent: #3b82f6;
+
+  /* Monospace stack for data/code-like values (Section 8.4) */
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+/*
+ * Category color classes are applied dynamically (per-category, driven by
+ * CATEGORY_METADATA) rather than as literal class names in a template, so
+ * Tailwind's content scanner can't discover them on its own. Force their
+ * generation explicitly.
+ */
+@source inline(
+  '{bg,text,border}-cat-{data,text,encoding,security,date-time,web,developer,documents}'
+);
+
