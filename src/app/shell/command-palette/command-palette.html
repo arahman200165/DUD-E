@@ -1,0 +1,47 @@
+<div
+  cdkTrapFocus
+  cdkTrapFocusAutoCapture
+  class="flex max-h-[70vh] w-[560px] max-w-[90vw] flex-col overflow-hidden rounded-sm border border-border bg-panel shadow-lg"
+  (keydown.arrowdown)="onArrowDown($event)"
+  (keydown.arrowup)="onArrowUp($event)"
+  (keydown.enter)="onEnter()"
+  (keydown.escape)="onEscape()"
+>
+  <input
+    #searchInput
+    type="text"
+    placeholder="Search tools…"
+    class="w-full border-b border-border bg-panel px-3 py-2 text-sm text-text placeholder:text-text-muted/60 focus:outline-none"
+    [value]="query()"
+    (input)="onQueryInput($event)"
+  />
+
+  <div class="overflow-y-auto p-2">
+    @if (groupedResults().length) {
+      @for (group of groupedResults(); track group.category) {
+        <div class="mb-1.5 last:mb-0">
+          <div class="flex items-center gap-1.5 px-1.5 py-1">
+            <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[group.category].colorToken"></span>
+            <span class="text-[10.5px] font-semibold uppercase tracking-wider text-text-muted">
+              {{ meta[group.category].label }}
+            </span>
+          </div>
+
+          @for (tool of group.tools; track tool.id) {
+            <button
+              type="button"
+              class="block w-full rounded-sm px-1.5 py-1 text-left text-xs text-text hover:bg-panel-elevated"
+              [class.bg-accent]="isSelected(tool)"
+              [class.text-bg]="isSelected(tool)"
+              (click)="open(tool)"
+            >
+              {{ tool.title }}
+            </button>
+          }
+        </div>
+      }
+    } @else {
+      <p class="px-1.5 py-1 text-[11px] text-text-muted/60">No tools match "{{ query() }}".</p>
+    }
+  </div>
+</div>
