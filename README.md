@@ -1,58 +1,118 @@
-# DudE
+# DUD-E — Developer Utility Dashboard, Extensible
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+[![Deploy](https://github.com/arahman200165/DUD-E/actions/workflows/deploy.yml/badge.svg)](https://github.com/arahman200165/DUD-E/actions/workflows/deploy.yml)
+[![Live Demo](https://img.shields.io/badge/demo-live-22c55e)](https://arahman200165.github.io/DUD-E/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-3b82f6.svg)](LICENSE)
 
-## Development server
+A dense, dark-mode-only, installable Progressive Web App that consolidates the small developer utilities you'd otherwise Google one at a time — JSON formatting, regex testing, JWT decoding, hashing, diffing, and more — into a single fast, offline-capable, keyboard-driven dashboard.
 
-To start a local development server, run:
+**[→ Open the live app](https://arahman200165.github.io/DUD-E/)**
 
-```bash
-ng serve
+---
+
+## What is DUD-E
+
+DUD-E is not a race to ship the most tools. It's a framework built to make adding **tool 11, 20, or 30** routine instead of architectural work — a new simple utility with existing transformation logic can be added in **under 30 minutes**, without touching navigation, routing, search, the command palette, persistence, or the PWA layer. Milestone 10's timed proof (see [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md)) added a full tool, tests included, in **2 minutes 50 seconds**.
+
+Everything runs client-side. There's no backend, no accounts, no telemetry — your data never leaves the browser unless a tool explicitly tells you otherwise.
+
+- **Local-first** — every current tool works fully offline after the first load.
+- **Dense, not decorative** — bold, functional color-coding by category and status, built for daily use, not for demos.
+- **Framework-first** — the registry, shell, persistence, and worker layers were built before the tools, so new tools are cheap and safe to add.
+
+## Screenshots
+
+| Dashboard | JSON Formatter |
+| --- | --- |
+| ![DUD-E dashboard, showing the sidebar and color-coded category grid](docs/screenshots/dashboard.jpg) | ![JSON Formatter tool, pretty-printing a sample JSON object](docs/screenshots/json-formatter.jpg) |
+
+## Tools
+
+10 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+
+| Tool | Category | What it does |
+| --- | --- | --- |
+| [JSON Formatter](https://arahman200165.github.io/DUD-E/tools/json) | Data | Validate, pretty-print, and minify JSON, with worker execution above 50KB. |
+| [Text Inspector](https://arahman200165.github.io/DUD-E/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
+| [Text Diff](https://arahman200165.github.io/DUD-E/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
+| [Base64 Encoder / Decoder](https://arahman200165.github.io/DUD-E/tools/base64) | Encoding | UTF-8-safe text ↔ Base64 conversion. |
+| [JWT Debugger](https://arahman200165.github.io/DUD-E/tools/jwt) | Security | Decodes a JWT's header and payload — never persisted, never verifies signatures. |
+| [Hash Generator](https://arahman200165.github.io/DUD-E/tools/hash) | Security | MD5, SHA-1, SHA-256, SHA-384, and SHA-512 digests, computed in a worker. |
+| [Unix Timestamp Converter](https://arahman200165.github.io/DUD-E/tools/unix-timestamp) | Date & Time | Converts between Unix timestamps and human-readable local/UTC dates. |
+| [Regex Tester](https://arahman200165.github.io/DUD-E/tools/regex) | Developer | Tests a pattern against text with match/capture-group detail, in a worker. |
+| [UUID Generator / Inspector](https://arahman200165.github.io/DUD-E/tools/uuid) | Developer | Generates RFC 4122 v4 UUIDs and inspects an existing UUID's version/variant. |
+| [Markdown Preview](https://arahman200165.github.io/DUD-E/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview. |
+
+## Architecture
+
+The shell is generated entirely from tool metadata — no file under `src/app/shell/` or `src/app/core/` contains a single hard-coded tool ID. Adding a tool means creating a folder under `src/app/tools/` and adding one entry to the registry; the sidebar, dashboard, search, command palette, and routes all update automatically.
+
+```
+src/app/
+  core/
+    registry/      tool metadata, the registry service, search, route generation
+    persistence/    per-tool session/local/none storage policy
+    workers/        the shared Worker request/result/cancel contract
+    connectivity/   online/offline signal, update-available detection
+    routing/        the one root route table (lazy-loads every tool)
+  shell/            sidebar, dashboard, command palette, root layout
+  shared/           tool-shell frame, error panel, split-pane, and other cross-tool primitives
+  tools/            one folder per tool — pure logic + component, isolated from every other tool
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Key design choices:
 
-## Code scaffolding
+- **Per-tool persistence policy** (`none` / `session` / `local`) — sensitive tools like the JWT Debugger persist nothing by default; UI preferences like indent size persist locally.
+- **Shared worker layer** — heavy or unbounded work (hashing, regex, diffing, large JSON) can opt into a Web Worker without each tool reinventing message-passing, cancellation, or error handling.
+- **Failure isolation** — a worker crash or a tool bug stays inside that tool's route; the sidebar and navigation keep working.
+- **Lazy loading** — every tool is a separate `loadComponent` chunk, so visiting one tool never downloads another's code or libraries.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+See [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md) for the full, step-by-step guide to adding a new tool, written against the real `base64` tool as a worked example.
+
+## Tech stack
+
+Angular 22 (standalone components, signals) · Tailwind CSS v4 · Vitest · Playwright · `@angular/service-worker` · TypeScript
+
+Library-forward by design — Markdown rendering, diffing, and sanitization all lean on mature libraries (`markdown-it`, `diff-match-patch`, `dompurify`) rather than reimplementing them.
+
+## Getting started
 
 ```bash
-ng generate component component-name
+git clone https://github.com/arahman200165/DUD-E.git
+cd DUD-E
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
+Open `http://localhost:4200/`. The app reloads automatically as you edit source files.
 
 ## Building
 
-To build the project run:
-
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Production output goes to `dist/dud-e/browser`, optimized and with the service worker enabled.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Testing
 
 ```bash
-ng test
+npm test         # Vitest unit tests — registry, persistence, worker wrapper, tool transforms, keyboard nav
+npm run test:e2e # Playwright, against a real production build: SPA-fallback routing + PWA offline behavior
 ```
 
-## Running end-to-end tests
+Testing follows a "protect the framework, not chase coverage" posture: every tool's pure transform logic is unit-tested, and the two Playwright specs specifically prove the two things a unit test can't — a deep tool link resolving correctly on GitHub Pages, and the cached shell surviving a real offline reload.
 
-For end-to-end (e2e) testing, run:
+## Deployment
 
-```bash
-ng e2e
-```
+Every push to `master` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): install, test, build, then publish `dist/dud-e/browser` to GitHub Pages via `actions/deploy-pages`.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Two details make clean, bookmarkable routes work correctly on GitHub Pages' static hosting:
+
+- **Base path** — the production build is configured with `baseHref: '/DUD-E/'` (see `angular.json`) to match the project-page URL structure.
+- **SPA fallback** — GitHub Pages has no server-side rewrite, so a direct hit or refresh on e.g. `/DUD-E/tools/json` would 404. [`public/404.html`](public/404.html) catches that 404 and redirects into `index.html` with the original path encoded in the query string, which `index.html` then decodes and hands to the Angular router before it boots. This is exercised end-to-end by `e2e/production-direct-route.spec.ts` against the real built output.
+
+Live site: **[arahman200165.github.io/DUD-E](https://arahman200165.github.io/DUD-E/)**
 
 ## PWA & Offline
 
@@ -69,12 +129,16 @@ DUD-E is an installable Progressive Web App with an offline-capable app shell.
 **Testing offline behavior locally:** the service worker is only active in production builds (`ng build`), not `ng serve`. To test:
 
 ```bash
-ng build
+npm run build
 npx http-server dist/dud-e/browser -p 8080
 ```
 
 Then open `http://localhost:8080`, let it load once, and use your browser DevTools' Network tab "Offline" toggle to verify the shell and any already-visited tool still work.
 
-## Additional Resources
+## Adding a new tool
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Read [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md) — it walks through creating a tool folder, defining metadata, choosing a persistence/worker/network policy, and verifying discovery, using the real `base64` tool as the worked example. If following it ever requires editing the shell, routing, or a core service, that's an architecture bug, not something to work around.
+
+## License
+
+[MIT](LICENSE) © arahman200165

@@ -1923,67 +1923,67 @@ DUD-E Weekend MVP is done only when all required items below are true.
 
 ## Product
 
-- [ ] App is called DUD-E.
-- [ ] Dark-only, highly colorful (bold accent palette), dense developer UI is implemented.
-- [ ] Category color-coding and semantic status colors (Section 8.5) are consistent across sidebar, dashboard, and tools.
-- [ ] Dashboard exists.
-- [ ] Sidebar exists.
-- [ ] Global search exists.
-- [ ] Command palette exists.
-- [ ] Every MVP tool has a dedicated route.
+- [x] App is called DUD-E.
+- [x] Dark-only, highly colorful (bold accent palette), dense developer UI is implemented.
+- [x] Category color-coding and semantic status colors (Section 8.5) are consistent across sidebar, dashboard, and tools. Verified: `src/styles/tokens.css` defines the palette once; sidebar/dashboard/command palette all derive category dots from `CATEGORY_METADATA` dynamically (no hard-coded colors per tool); `ErrorPanel`/`OfflineBadge` use the shared semantic tokens.
+- [x] Dashboard exists.
+- [x] Sidebar exists.
+- [x] Global search exists.
+- [x] Command palette exists.
+- [x] Every MVP tool has a dedicated route.
 
 ## Architecture
 
-- [ ] Typed tool registry exists.
-- [ ] Shell is generated from tool metadata where practical.
-- [ ] Per-tool persistence policy exists.
-- [ ] Shared worker execution path exists.
-- [ ] Online/offline state exists.
-- [ ] Tool failures do not disable shell navigation.
-- [ ] Heavy tool routes are lazy-loaded.
+- [x] Typed tool registry exists.
+- [x] Shell is generated from tool metadata where practical. Verified: no shell file contains a hard-coded tool-id conditional (grepped `src/app/shell/`); sidebar, dashboard, command palette, and routes all iterate `TOOL_DEFINITIONS`/`ToolRegistryService`.
+- [x] Per-tool persistence policy exists.
+- [x] Shared worker execution path exists.
+- [x] Online/offline state exists.
+- [x] Tool failures do not disable shell navigation. Verified directly by `src/app/app.spec.ts`'s "a worker failure on a real tool does not break shell navigation" test.
+- [x] Heavy tool routes are lazy-loaded.
 
 ## PWA
 
-- [ ] Manifest exists.
-- [ ] Service worker exists.
-- [ ] App is installable.
-- [ ] Shell works offline after first load.
-- [ ] Local-only tools remain usable offline.
+- [x] Manifest exists.
+- [x] Service worker exists.
+- [x] App is installable. Verified live at `https://arahman200165.github.io/DUD-E/manifest.webmanifest` — valid `standalone` manifest with a full icon set (72–512px) plus an active service worker.
+- [x] Shell works offline after first load.
+- [x] Local-only tools remain usable offline.
 
 ## Deployment
 
-- [ ] Production build succeeds.
-- [ ] CI deployment works.
-- [ ] GitHub Pages site loads.
-- [ ] Nested tool URLs work.
-- [ ] Refresh on nested routes works.
-- [ ] Asset base path works.
+- [x] Production build succeeds.
+- [x] CI deployment works. Verified: latest `Deploy` GitHub Actions run for the Milestone 10 push completed successfully.
+- [x] GitHub Pages site loads. Verified live: `https://arahman200165.github.io/DUD-E/` returns HTTP 200.
+- [x] Nested tool URLs work. Verified live and via `e2e/production-direct-route.spec.ts`.
+- [x] Refresh on nested routes works. Same SPA-fallback mechanism, exercised by `e2e/pwa-offline.spec.ts`'s `page.reload()`.
+- [x] Asset base path works. Verified live: `manifest.webmanifest` and `ngsw.json` both resolve correctly under the `/DUD-E/` prefix.
 
 ## Tools
 
-- [ ] JSON Formatter / Validator
-- [ ] Regex Tester
-- [ ] Unix Timestamp Converter
-- [ ] Base64 Encoder / Decoder
-- [ ] Markdown Preview
-- [ ] JWT Debugger
-- [ ] Text Inspector
-- [ ] Hash Generator
-- [ ] Text Diff
+- [x] JSON Formatter / Validator
+- [x] Regex Tester
+- [x] Unix Timestamp Converter
+- [x] Base64 Encoder / Decoder
+- [x] Markdown Preview
+- [x] JWT Debugger
+- [x] Text Inspector
+- [x] Hash Generator
+- [x] Text Diff
 
 ## Documentation
 
-- [ ] README exists.
-- [ ] `ADDING_A_TOOL.md` exists.
-- [ ] architecture is understandable from repository structure and docs.
+- [x] README exists. Rewritten to cover project purpose, screenshots, the full tools table, architecture summary, tech stack, and GitHub Pages deployment mechanics.
+- [x] `ADDING_A_TOOL.md` exists.
+- [x] architecture is understandable from repository structure and docs. Satisfied via `ADDING_A_TOOL.md`, the rewritten README's architecture section, and the self-descriptive `core/`/`shell/`/`shared/`/`tools/` layout.
 
 ## Validation
 
-- [ ] framework-critical tests pass.
-- [ ] core navigation smoke test passes.
-- [ ] worker smoke test passes.
-- [ ] offline smoke test passes.
-- [ ] direct-route production test passes.
+- [x] framework-critical tests pass. 176/176 via a fresh `npm test` run.
+- [x] core navigation smoke test passes. `src/app/app.spec.ts` ("renders the dashboard at the root route") plus the command palette's navigate-on-Enter spec.
+- [x] worker smoke test passes. `src/app/app.spec.ts`'s worker-failure-resilience test passes, and `WorkerClientService`'s full message contract is unit-tested. Note: no test currently drives a real browser `Worker` to a *successful* completion end-to-end (jsdom has no real `Worker`) — only failure-resilience and mocked-message-contract paths are covered.
+- [x] offline smoke test passes. `e2e/pwa-offline.spec.ts`, fresh run.
+- [x] direct-route production test passes. `e2e/production-direct-route.spec.ts`, fresh run, plus confirmed against the live deployed site.
 - [x] a simple new tool can be added in ≤30 minutes without shell modifications. Verified via Milestone 10's timed UUID Generator / Inspector exercise: 2m50s, zero shell edits.
 
 ---
