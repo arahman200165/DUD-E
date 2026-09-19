@@ -1,0 +1,95 @@
+<app-tool-shell title="Regex Tester">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-text-muted">/</span>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="pattern"
+        [value]="pattern()"
+        (input)="onPatternInput($event)"
+      />
+      <span class="font-mono text-text-muted">/{{ flags() }}</span>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+      @for (flag of flagChars; track flag) {
+        <label class="flex items-center gap-1">
+          <input type="checkbox" class="accent-accent" [checked]="hasFlag(flag)" (change)="toggleFlag(flag, $event)" />
+          {{ flag }}
+        </label>
+      }
+    </div>
+
+    <textarea
+      rows="6"
+      class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      placeholder="Test text…"
+      [value]="testText()"
+      (input)="onTestTextInput($event)"
+    ></textarea>
+
+    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
+        (click)="run()"
+      >
+        Test
+      </button>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated disabled:opacity-40"
+        [disabled]="job()?.status() !== 'running'"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+      @if (job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+
+      @if (summary(); as text) {
+        <span>{{ text }}</span>
+      }
+    </div>
+
+    @if (job(); as currentJob) {
+      @if (currentJob.error(); as message) {
+        <app-error-panel [message]="message" />
+      }
+
+      @if (currentJob.result(); as result) {
+        @if (result.ok) {
+          @if (result.matches.length > 0) {
+            <div class="flex flex-col gap-1.5">
+              @for (entry of result.matches; track $index) {
+                <div class="rounded-sm border border-border bg-panel p-2 text-[11px]">
+                  <div class="flex items-center justify-between">
+                    <span class="font-mono text-text">{{ entry.match || '(empty match)' }}</span>
+                    <span class="text-text-muted">at {{ entry.index }}</span>
+                  </div>
+                  @if (entry.groups.length > 0) {
+                    <div class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-text-muted">
+                      @for (group of entry.groups; track $index) {
+                        <span>
+                          {{ group.name ?? 'group ' + group.index }}: <span class="font-mono text-text">{{ group.value ?? '(undefined)' }}</span>
+                        </span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="text-[11px] text-text-muted">No matches.</p>
+          }
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    }
+  </div>
+</app-tool-shell>

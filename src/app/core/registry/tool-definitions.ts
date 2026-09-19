@@ -69,6 +69,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
   },
   {
+    id: 'regex',
+    title: 'Regex Tester',
+    description: 'Test a regular expression against text with match and capture-group details.',
+    category: 'developer',
+    keywords: ['regex', 'regexp', 'pattern', 'match', 'test', 'capture groups'],
+    route: '/tools/regex',
+    load: () => import('../../tools/regex/regex').then((m) => m.Regex),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'required' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',
