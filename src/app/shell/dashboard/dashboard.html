@@ -1,27 +1,41 @@
 <div class="p-3">
   <h1 class="mb-3 font-mono text-sm font-semibold text-text">Dashboard</h1>
 
-  <div class="grid grid-cols-4 gap-2">
-    @for (category of categories; track category) {
-      <section class="rounded-sm border border-border bg-panel p-2">
-        <div class="mb-1.5 flex items-center gap-1.5 border-b border-border pb-1.5">
-          <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[category].colorToken"></span>
-          <h2 class="text-[10.5px] font-semibold uppercase tracking-wider text-text-muted">
-            {{ meta[category].label }}
-          </h2>
-        </div>
+  <input
+    type="text"
+    placeholder="Search tools…"
+    class="mb-3 w-full rounded-sm border border-border bg-panel px-2 py-1 text-xs text-text placeholder:text-text-muted/60 focus:outline-none focus:ring-1 focus:ring-accent"
+    [value]="query()"
+    (input)="onQueryInput($event)"
+  />
 
-        @if (category === 'data') {
-          <a
-            routerLink="/tools/json"
-            class="block rounded-sm px-1.5 py-1 text-xs text-text hover:bg-panel-elevated"
-          >
-            JSON Formatter
-          </a>
-        } @else {
-          <p class="px-1.5 py-1 text-[11px] text-text-muted/60">No tools yet</p>
-        }
-      </section>
-    }
-  </div>
+  @if (hasResults()) {
+    <div class="grid grid-cols-4 gap-2">
+      @for (category of categories(); track category) {
+        <section class="rounded-sm border border-border bg-panel p-2">
+          <div class="mb-1.5 flex items-center gap-1.5 border-b border-border pb-1.5">
+            <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[category].colorToken"></span>
+            <h2 class="text-[10.5px] font-semibold uppercase tracking-wider text-text-muted">
+              {{ meta[category].label }}
+            </h2>
+          </div>
+
+          @if (grouped().get(category)?.length) {
+            @for (tool of grouped().get(category); track tool.id) {
+              <a
+                [routerLink]="tool.route"
+                class="block rounded-sm px-1.5 py-1 text-xs text-text hover:bg-panel-elevated"
+              >
+                {{ tool.title }}
+              </a>
+            }
+          } @else {
+            <p class="px-1.5 py-1 text-[11px] text-text-muted/60">No tools yet</p>
+          }
+        </section>
+      }
+    </div>
+  } @else {
+    <p class="text-xs text-text-muted">No tools match "{{ query() }}".</p>
+  }
 </div>

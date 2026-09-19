@@ -13,14 +13,16 @@
           }}</span>
         </div>
 
-        @if (category === 'data') {
-          <a
-            routerLink="/tools/json"
-            routerLinkActive="bg-panel-elevated text-text"
-            class="mx-1 block rounded-sm py-1 pl-7 pr-2 text-xs text-text-muted hover:bg-panel-elevated hover:text-text"
-          >
-            JSON Formatter
-          </a>
+        @if (grouped[category].length) {
+          @for (tool of grouped[category]; track tool.id) {
+            <a
+              [routerLink]="tool.route"
+              routerLinkActive="bg-panel-elevated text-text"
+              class="mx-1 block rounded-sm py-1 pl-7 pr-2 text-xs text-text-muted hover:bg-panel-elevated hover:text-text"
+            >
+              {{ tool.shortTitle ?? tool.title }}
+            </a>
+          }
         } @else {
           <p class="pl-7 pr-2 text-[11px] text-text-muted/60">No tools yet</p>
         }
