@@ -38,4 +38,11 @@ describe('computeLineDiff', () => {
 
     expect(result.summary).toEqual({ added: 2, removed: 0, unchanged: 0 });
   });
+
+  it('does not misreport a shared final line as changed when only one side has a trailing newline', () => {
+    const result = computeLineDiff('a\nb\n', 'a\nb');
+
+    expect(result.summary).toEqual({ added: 0, removed: 0, unchanged: 2 });
+    expect(result.lines.every((line) => line.type === 'equal')).toBe(true);
+  });
 });

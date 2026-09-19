@@ -4,7 +4,7 @@ import { errorMessage, resultMessage, WorkerRequestMessage } from '../../core/wo
 import { processJson } from './json-format';
 import { JsonFormatPayload } from './json-format-payload';
 
-addEventListener('message', ({ data }: MessageEvent<WorkerRequestMessage<JsonFormatPayload>>) => {
+export function handleMessage({ data }: MessageEvent<WorkerRequestMessage<JsonFormatPayload>>): void {
   const { id, payload } = data;
 
   try {
@@ -13,4 +13,6 @@ addEventListener('message', ({ data }: MessageEvent<WorkerRequestMessage<JsonFor
   } catch (error) {
     postMessage(errorMessage(id, error));
   }
-});
+}
+
+addEventListener('message', handleMessage);

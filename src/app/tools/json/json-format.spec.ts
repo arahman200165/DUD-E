@@ -36,6 +36,17 @@ describe('processJson', () => {
     expect(!result.ok && result.error.message.length > 0).toBe(true);
   });
 
+  it('formats a top-level JSON array', () => {
+    const result = processJson('[1,2,3]', 'pretty', 2);
+
+    expect(result).toEqual({ ok: true, output: '[\n  1,\n  2,\n  3\n]' });
+  });
+
+  it('formats a top-level JSON primitive', () => {
+    expect(processJson('42', 'minify', 2)).toEqual({ ok: true, output: '42' });
+    expect(processJson('"just a string"', 'minify', 2)).toEqual({ ok: true, output: '"just a string"' });
+  });
+
   it('locates a line/column for a malformed JSON error when the engine reports a position', () => {
     const result = processJson('{\n  "a": ,\n}', 'pretty', 2);
 

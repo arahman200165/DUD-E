@@ -38,6 +38,25 @@ describe('decodeJwt', () => {
     expect(decodeJwt(corrupted).ok).toBe(false);
   });
 
+  it('rejects a token whose header is not valid Base64url/JSON', () => {
+    const token = buildToken({ alg: 'HS256' }, { sub: 'x' });
+    const corrupted = `not-valid-json-base64.${token.split('.')[1]}.${token.split('.')[2]}`;
+
+    const result = decodeJwt(corrupted);
+    expect(result.ok).toBe(false);
+    expect(!result.ok && result.error).toContain('header');
+  });
+
+  it('decodes a token whose payload is a non-object JSON value without throwing', () => {
+    const token = buildToken({ alg: 'HS256' }, 'just-a-string');
+
+    const result = decodeJwt(token);
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.payload).toBe('just-a-string');
+    expect(result.ok && result.expiry).toEqual({ kind: 'no-claim' });
+  });
+
   it('reports "no-claim" expiry when there is no exp claim', () => {
     const token = buildToken({ alg: 'HS256' }, { sub: 'abc' });
 

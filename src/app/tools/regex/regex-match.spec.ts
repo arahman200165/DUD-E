@@ -54,4 +54,11 @@ describe('findMatches', () => {
     const result = findMatches('xyz', '', 'abc');
     expect(result).toEqual({ ok: true, matches: [] });
   });
+
+  it('caps zero-length matches at MAX_MATCHES instead of matching every position', () => {
+    const result = findMatches('a*', '', 'b'.repeat(20_000));
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.matches).toHaveLength(10_000);
+  });
 });

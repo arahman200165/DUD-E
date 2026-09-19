@@ -4,7 +4,7 @@ import { errorMessage, resultMessage, WorkerRequestMessage } from '../../core/wo
 import { findMatches } from './regex-match';
 import { RegexMatchPayload } from './regex-match-payload';
 
-addEventListener('message', ({ data }: MessageEvent<WorkerRequestMessage<RegexMatchPayload>>) => {
+export function handleMessage({ data }: MessageEvent<WorkerRequestMessage<RegexMatchPayload>>): void {
   const { id, payload } = data;
 
   try {
@@ -13,4 +13,6 @@ addEventListener('message', ({ data }: MessageEvent<WorkerRequestMessage<RegexMa
   } catch (error) {
     postMessage(errorMessage(id, error));
   }
-});
+}
+
+addEventListener('message', handleMessage);

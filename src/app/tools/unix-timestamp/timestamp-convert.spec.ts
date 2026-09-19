@@ -16,6 +16,10 @@ describe('resolveUnit', () => {
   it('returns null for an empty value', () => {
     expect(resolveUnit('', 'auto')).toBeNull();
   });
+
+  it('auto-detects seconds for a negative (pre-epoch) 10-digit value', () => {
+    expect(resolveUnit('-1700000000', 'auto')).toBe('seconds');
+  });
 });
 
 describe('parseTimestamp', () => {
@@ -40,6 +44,15 @@ describe('parseTimestamp', () => {
 
   it('rejects empty input', () => {
     expect(parseTimestamp('', 'auto').ok).toBe(false);
+  });
+
+  it('parses a negative (pre-epoch) timestamp', () => {
+    const result = parseTimestamp('-1700000000', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('seconds');
+    expect(result.ok && result.date.getTime()).toBe(-1_700_000_000_000);
+    expect(result.ok && result.date.getTime() < 0).toBe(true);
   });
 });
 

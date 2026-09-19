@@ -79,4 +79,37 @@ describe('CommandPalette', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(document.querySelector('input')).toBeNull();
   });
+
+  it('wraps from the first result to the last on ArrowUp', async () => {
+    service.open();
+    await stable();
+
+    const input = document.querySelector<HTMLInputElement>('input')!;
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('button'));
+    expect(buttons.length).toBeGreaterThan(1);
+
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    await stable();
+
+    const selected = document.querySelectorAll<HTMLButtonElement>('button.bg-accent');
+    expect(selected).toHaveLength(1);
+    expect(selected[0]).toBe(buttons.at(-1));
+  });
+
+  it('wraps from the last result back to the first on ArrowDown', async () => {
+    service.open();
+    await stable();
+
+    const input = document.querySelector<HTMLInputElement>('input')!;
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('button'));
+
+    for (let i = 0; i < buttons.length; i++) {
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    }
+    await stable();
+
+    const selected = document.querySelectorAll<HTMLButtonElement>('button.bg-accent');
+    expect(selected).toHaveLength(1);
+    expect(selected[0]).toBe(buttons[0]);
+  });
 });

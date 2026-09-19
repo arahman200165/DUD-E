@@ -4,7 +4,7 @@ import { errorMessage, resultMessage, WorkerRequestMessage } from '../../core/wo
 import { computeLineDiff } from './text-diff';
 import { TextDiffPayload } from './text-diff-payload';
 
-addEventListener('message', ({ data }: MessageEvent<WorkerRequestMessage<TextDiffPayload>>) => {
+export function handleMessage({ data }: MessageEvent<WorkerRequestMessage<TextDiffPayload>>): void {
   const { id, payload } = data;
 
   try {
@@ -13,4 +13,6 @@ addEventListener('message', ({ data }: MessageEvent<WorkerRequestMessage<TextDif
   } catch (error) {
     postMessage(errorMessage(id, error));
   }
-});
+}
+
+addEventListener('message', handleMessage);
