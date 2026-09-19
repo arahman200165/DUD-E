@@ -1,8 +1,9 @@
 import { ToolCategory } from './tool-category.model';
+import { PersistencePolicy } from './persistence-policy.model';
 
 export interface ToolPersistencePolicy {
-  readonly input?: 'none' | 'session' | 'local' | 'user-choice';
-  readonly preferences?: 'none' | 'session' | 'local' | 'user-choice';
+  readonly input?: PersistencePolicy;
+  readonly preferences?: PersistencePolicy;
 }
 
 export interface ToolExecutionPolicy {

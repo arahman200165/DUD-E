@@ -10,5 +10,6 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     route: '/tools/json',
     load: () => import('../../tools/json/json-placeholder').then((m) => m.JsonPlaceholder),
     status: 'experimental',
+    persistence: { input: 'none', preferences: 'none' },
   },
 ];

@@ -20,6 +20,10 @@ describe('ToolRegistryService', () => {
     expect(grouped['data'].map((t) => t.id)).toContain('json');
   });
 
+  it('declares a nonpersistent policy for the JSON placeholder (no real preferences yet)', () => {
+    expect(service.getById('json')?.persistence?.input).toBe('none');
+  });
+
   it('returns an empty array for categories with no tools', () => {
     const grouped = service.groupedByCategory();
     expect(grouped['security']).toEqual([]);
