@@ -13,6 +13,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
   },
   {
+    id: 'base64',
+    title: 'Base64 Encoder / Decoder',
+    description: 'UTF-8-safe text-to-Base64 and Base64-to-text conversion.',
+    category: 'encoding',
+    keywords: ['base64', 'encode', 'decode', 'encoding', 'utf-8'],
+    route: '/tools/base64',
+    load: () => import('../../tools/base64/base64').then((m) => m.Base64Tool),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
+  {
     id: 'json',
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON.',
