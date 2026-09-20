@@ -1,0 +1,79 @@
+<app-tool-shell title="MIME Type Reference" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <input
+        type="search"
+        class="w-full max-w-xs rounded-sm border border-border bg-panel px-2 py-1 text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Search by type or file extension…"
+        [value]="filterText()"
+        (input)="onFilterInput($event)"
+      />
+
+      <label class="flex items-center gap-1.5 text-ui text-text-muted">
+        Type
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="topLevelFilter()"
+          (change)="onTopLevelFilterChange($event)"
+        >
+          <option value="all">All</option>
+          @for (type of topLevelTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </label>
+
+      @if (filterText() !== '') {
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+      }
+    </div>
+
+    <span class="text-ui text-text-muted">
+      @if (filtered().truncated) {
+        Showing {{ filtered().rows.length }} of {{ filtered().totalMatches }} matches — refine your search.
+      } @else {
+        {{ filtered().totalMatches }} of {{ totalCount }} types
+      }
+    </span>
+
+    @if (filtered().rows.length > 0) {
+      <div class="overflow-auto rounded-sm border border-border">
+        <table class="w-full min-w-full border-collapse text-left text-xs">
+          <thead class="sticky top-0 z-10 bg-panel-elevated text-text-muted">
+            <tr>
+              <th class="whitespace-nowrap border-b border-border px-2 py-1 font-medium">Type</th>
+              <th class="whitespace-nowrap border-b border-border px-2 py-1 font-medium">Category</th>
+              <th class="border-b border-border px-2 py-1 font-medium"></th>
+            </tr>
+          </thead>
+          <tbody class="text-text">
+            @for (row of filtered().rows; track row.type) {
+              <tr class="odd:bg-panel even:bg-panel-elevated/40">
+                <td class="whitespace-nowrap border-b border-border px-2 py-1 font-mono">
+                  {{ row.type }}
+                  @if (row.matchedViaExtension) {
+                    <span class="ml-1 rounded-sm border border-accent/40 px-1 text-[10px] text-accent"
+                      >via .{{ row.matchedViaExtension }}</span
+                    >
+                  }
+                </td>
+                <td class="whitespace-nowrap border-b border-border px-2 py-1">{{ row.topLevelType }}</td>
+                <td class="border-b border-border px-2 py-1">
+                  <app-copy-button [text]="row.type" />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="text-ui text-text-muted">No MIME types match "{{ filterText() }}".</p>
+    }
+  </div>
+</app-tool-shell>

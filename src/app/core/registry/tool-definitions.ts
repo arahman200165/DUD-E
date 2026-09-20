@@ -308,4 +308,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
   },
+  {
+    id: 'mime-types',
+    title: 'MIME Type Reference',
+    description: 'Searchable reference of common IANA-registered MIME types with file-extension lookups.',
+    category: 'web',
+    keywords: ['mime', 'media type', 'content-type', 'file extension', 'reference'],
+    route: '/tools/mime-types',
+    load: () => import('../../tools/mime-types/mime-types').then((m) => m.MimeTypes),
+    status: 'stable',
+    persistence: { input: 'local', preferences: 'local' },
+  },
 ];
