@@ -1,0 +1,85 @@
+<app-tool-shell title="Date / Timezone Converter" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Date</span>
+        <input
+          type="date"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="date()"
+          (input)="onDateChange($event)"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Time</span>
+        <input
+          type="time"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="time()"
+          (input)="onTimeChange($event)"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Source timezone</span>
+        <select
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="sourceZone()"
+          (change)="onSourceZoneChange($event)"
+        >
+          @for (zone of zones; track zone) {
+            <option [value]="zone">{{ zone }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="w-fit rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+      (click)="useNow()"
+    >
+      Use current moment
+    </button>
+
+    <div class="flex flex-wrap items-end gap-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Add a target timezone</span>
+        <select
+          class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="zoneToAdd()"
+          (change)="onZoneToAddChange($event)"
+        >
+          @for (zone of zones; track zone) {
+            <option [value]="zone">{{ zone }}</option>
+          }
+        </select>
+      </div>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+        (click)="addTargetZone()"
+      >
+        Add
+      </button>
+    </div>
+
+    <div class="flex flex-wrap gap-2 text-ui">
+      @for (zone of targetZones(); track zone) {
+        <span class="flex items-center gap-1 rounded-sm border border-border bg-panel px-2 py-0.5">
+          {{ zone }}
+          <button type="button" class="text-text-muted hover:text-text" (click)="removeTargetZone(zone)">✕</button>
+        </span>
+      }
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="min-h-32 flex-1 overflow-auto rounded-sm border border-border">
+          <app-data-table [columns]="['Zone', 'Local Time', 'UTC Offset', 'DST?']" [rows]="tableRows()" />
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

@@ -352,4 +352,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
   },
+  {
+    id: 'timezone-converter',
+    title: 'Date / Timezone Converter',
+    description: 'Convert a moment in time across a chosen set of IANA timezones.',
+    category: 'date-time',
+    keywords: ['timezone', 'time zone', 'date', 'convert', 'world clock', 'iana', 'dst', 'utc offset'],
+    route: '/tools/timezone-converter',
+    load: () => import('../../tools/timezone-converter/timezone-converter').then((m) => m.TimezoneConverter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];
