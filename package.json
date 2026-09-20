@@ -36,6 +36,7 @@
     "fast-xml-parser": "^5.11.1",
     "franc-min": "^6.2.0",
     "humanize-duration": "^3.35.0",
+    "isomorphic-git": "^1.42.2",
     "jmespath": "^0.16.0",
     "jose": "^6.2.12",
     "js-md5": "^0.9.2",

@@ -498,6 +498,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'required' },
   },
   {
+    id: 'git-diff',
+    title: 'Git Repo Browser',
+    shortTitle: 'Git Diff',
+    description: 'Browse a local git repository\'s commit history and diff any two commits, entirely client-side.',
+    category: 'developer',
+    keywords: ['git', 'repo', 'repository', 'commit', 'diff', 'log', 'history', 'version control'],
+    route: '/tools/git-diff',
+    load: () => import('../../tools/git-diff/git-diff').then((m) => m.GitDiff),
+    status: 'experimental',
+    persistence: { input: 'none', preferences: 'none' },
+  },
+  {
     id: 'rich-text-editor',
     title: 'Rich Text Editor',
     shortTitle: 'Rich Text',
