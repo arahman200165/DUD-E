@@ -8,7 +8,12 @@ async function resolveWindowUrl(): Promise<string> {
   if (DEV_SERVER_URL) {
     return DEV_SERVER_URL;
   }
-  const browserDistRoot = join(app.getAppPath(), 'dist/dude/browser');
+  // `__dirname` here is always `dist/electron` (esbuild's outdir), sibling to
+  // `dist/dude/browser` — not `app.getAppPath()`, which resolves to the
+  // entry script's own directory (not the repo root) when Electron is
+  // launched with a direct file path (`electron dist/electron/main.js`)
+  // rather than a project directory.
+  const browserDistRoot = join(__dirname, '../dude/browser');
   const { port } = await startStaticServer(browserDistRoot);
   return `http://127.0.0.1:${port}/`;
 }
