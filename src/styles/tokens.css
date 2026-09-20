@@ -23,6 +23,28 @@
   --color-cat-developer: #34d399;
   --color-cat-documents: #f472b6;
 
+  /* Per-category "wash" (panel surface tinted toward the category hue, for card/group
+     backgrounds) and "tint" (hue lightened toward white, for legible body text),
+     pre-mixed as real colors so applying them does not just replace the whole panel
+     surface with a flat, mostly-transparent color. */
+  --color-cat-data-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-data) 8%);
+  --color-cat-text-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-text) 8%);
+  --color-cat-encoding-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-encoding) 8%);
+  --color-cat-security-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-security) 8%);
+  --color-cat-date-time-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-date-time) 8%);
+  --color-cat-web-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-web) 8%);
+  --color-cat-developer-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-developer) 8%);
+  --color-cat-documents-wash: color-mix(in srgb, var(--color-panel), var(--color-cat-documents) 8%);
+
+  --color-cat-data-tint: color-mix(in srgb, var(--color-cat-data), white 20%);
+  --color-cat-text-tint: color-mix(in srgb, var(--color-cat-text), white 20%);
+  --color-cat-encoding-tint: color-mix(in srgb, var(--color-cat-encoding), white 20%);
+  --color-cat-security-tint: color-mix(in srgb, var(--color-cat-security), white 20%);
+  --color-cat-date-time-tint: color-mix(in srgb, var(--color-cat-date-time), white 20%);
+  --color-cat-web-tint: color-mix(in srgb, var(--color-cat-web), white 20%);
+  --color-cat-developer-tint: color-mix(in srgb, var(--color-cat-developer), white 20%);
+  --color-cat-documents-tint: color-mix(in srgb, var(--color-cat-documents), white 20%);
+
   /* Fixed semantic status colors, shared by error/warning/success/info/busy UI */
   --color-error: #ef4444;
   --color-warning: #f59e0b;
@@ -52,6 +74,24 @@
  * generation explicitly.
  */
 @source inline(
-  '{bg,text,border}-cat-{data,text,encoding,security,date-time,web,developer,documents}'
+  '{bg,text,border,border-t,border-b}-cat-{data,text,encoding,security,date-time,web,developer,documents}'
+);
+@source inline(
+  'hover:bg-cat-{data,text,encoding,security,date-time,web,developer,documents}/10'
+);
+@source inline(
+  'border-cat-{data,text,encoding,security,date-time,web,developer,documents}/60'
+);
+@source inline(
+  'bg-cat-{data,text,encoding,security,date-time,web,developer,documents}/15'
+);
+@source inline(
+  'bg-cat-{data,text,encoding,security,date-time,web,developer,documents}/20'
+);
+@source inline(
+  'bg-cat-{data,text,encoding,security,date-time,web,developer,documents}-wash'
+);
+@source inline(
+  'text-cat-{data,text,encoding,security,date-time,web,developer,documents}-tint'
 );
 

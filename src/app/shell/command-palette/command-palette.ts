@@ -5,10 +5,11 @@ import { CATEGORY_METADATA, ToolCategory, TOOL_CATEGORIES } from '../../shared/m
 import { ToolDefinition } from '../../shared/models/tool-definition.model';
 import { ToolRegistryService } from '../../core/registry/tool-registry.service';
 import { CommandPaletteService } from './command-palette.service';
+import { CategoryIcon } from '../../shared/components/category-icon/category-icon';
 
 @Component({
   selector: 'app-command-palette',
-  imports: [CdkTrapFocus],
+  imports: [CdkTrapFocus, CategoryIcon],
   templateUrl: './command-palette.html',
 })
 export class CommandPalette implements AfterViewInit {

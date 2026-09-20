@@ -1,10 +1,15 @@
 import { WritableSignal, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { ToolShell } from './tool-shell';
 import { ConnectivityService } from '../../../core/connectivity/connectivity.service';
 
 class FakeConnectivityService {
   readonly online: WritableSignal<boolean> = signal(true);
+}
+
+class FakeRouter {
+  readonly url = '/tools/demo';
 }
 
 describe('ToolShell', () => {
@@ -15,7 +20,10 @@ describe('ToolShell', () => {
     online = fakeConnectivity.online;
 
     TestBed.configureTestingModule({
-      providers: [{ provide: ConnectivityService, useValue: fakeConnectivity }],
+      providers: [
+        { provide: ConnectivityService, useValue: fakeConnectivity },
+        { provide: Router, useValue: new FakeRouter() },
+      ],
     });
   });
 

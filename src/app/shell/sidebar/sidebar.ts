@@ -4,10 +4,11 @@ import { CATEGORY_METADATA, TOOL_CATEGORIES } from '../../shared/models/tool-cat
 import { ToolRegistryService } from '../../core/registry/tool-registry.service';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { CommandPaletteService } from '../command-palette/command-palette.service';
+import { CategoryIcon } from '../../shared/components/category-icon/category-icon';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, CategoryIcon],
   templateUrl: './sidebar.html',
 })
 export class Sidebar {

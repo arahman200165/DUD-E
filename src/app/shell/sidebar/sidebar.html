@@ -18,8 +18,8 @@
     @for (category of categories; track category) {
       <div class="mt-1.5 first:mt-0">
         <div class="flex items-center gap-1.5 px-3 py-1">
-          <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[category].colorToken"></span>
-          <span class="text-ui-sm font-semibold uppercase tracking-wider text-text-muted">{{
+          <app-category-icon [category]="category" class="h-3.5 w-3.5" [class]="'text-' + meta[category].colorToken" />
+          <span class="text-ui-sm font-semibold uppercase tracking-wider" [class]="'text-' + meta[category].colorToken">{{
             meta[category].label
           }}</span>
         </div>
@@ -28,9 +28,11 @@
           @for (tool of grouped[category]; track tool.id) {
             <a
               [routerLink]="tool.route"
-              routerLinkActive="bg-panel-elevated text-text"
-              class="mx-1 block rounded-sm py-1 pl-7 pr-2 text-xs text-text-muted hover:bg-panel-elevated hover:text-text"
+              routerLinkActive="bg-panel-elevated border-l-2 border-l-accent"
+              class="mx-1 flex items-center gap-1.5 rounded-sm border-l-2 border-l-transparent py-1 pl-5 pr-2 text-xs hover:bg-panel-elevated hover:text-text"
+              [class]="'text-' + meta[category].colorToken + '-tint hover:bg-' + meta[category].colorToken + '/10'"
             >
+              <span class="h-1 w-1 shrink-0 rounded-full" [class]="'bg-' + meta[category].colorToken"></span>
               {{ tool.shortTitle ?? tool.title }}
             </a>
           }

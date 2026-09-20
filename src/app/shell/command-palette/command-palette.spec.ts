@@ -91,7 +91,7 @@ describe('CommandPalette', () => {
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     await stable();
 
-    const selected = document.querySelectorAll<HTMLButtonElement>('button.bg-accent');
+    const selected = document.querySelectorAll<HTMLButtonElement>('button.border-l-accent');
     expect(selected).toHaveLength(1);
     expect(selected[0]).toBe(buttons.at(-1));
   });
@@ -108,7 +108,7 @@ describe('CommandPalette', () => {
     }
     await stable();
 
-    const selected = document.querySelectorAll<HTMLButtonElement>('button.bg-accent');
+    const selected = document.querySelectorAll<HTMLButtonElement>('button.border-l-accent');
     expect(selected).toHaveLength(1);
     expect(selected[0]).toBe(buttons[0]);
   });

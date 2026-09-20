@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 import { CATEGORY_METADATA, ToolCategory, TOOL_CATEGORIES } from '../../shared/models/tool-category.model';
 import { ToolDefinition } from '../../shared/models/tool-definition.model';
 import { ToolRegistryService } from '../../core/registry/tool-registry.service';
+import { CategoryIcon } from '../../shared/components/category-icon/category-icon';
 
 @Component({
   selector: 'app-deck',
-  imports: [RouterLink],
+  imports: [RouterLink, CategoryIcon],
   templateUrl: './deck.html',
 })
 export class Deck {
