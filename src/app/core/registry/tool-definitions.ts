@@ -463,4 +463,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'none' },
   },
+  {
+    id: 'markdown-workspace',
+    title: 'Advanced Markdown Workspace',
+    shortTitle: 'Markdown Workspace',
+    description: 'Markdown editor with GFM tables/task lists, front matter, table of contents, and synced preview.',
+    category: 'documents',
+    keywords: ['markdown', 'gfm', 'front matter', 'yaml', 'toc', 'table of contents', 'word count', 'tables', 'task list'],
+    route: '/tools/markdown-workspace',
+    load: () => import('../../tools/markdown-workspace/markdown-workspace').then((m) => m.MarkdownWorkspace),
+    status: 'experimental',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+  },
 ];
