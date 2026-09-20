@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, ViewEncapsulation, computed, inject } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { SplitPane } from '../../shared/components/split-pane/split-pane';
 import { PersistenceService } from '../../core/persistence/persistence.service';
@@ -10,6 +10,14 @@ const DEFAULT_SOURCE = '# Markdown Preview\n\nType **Markdown** on the left to s
   selector: 'app-markdown',
   imports: [ToolShell, SplitPane],
   templateUrl: './markdown.html',
+  // Emulated encapsulation (the default) adds a scoping attribute to
+  // elements the Angular template compiler renders, but never to content
+  // injected via [innerHTML] — that's raw HTML parsed directly into the
+  // DOM, so these `.markdown-body` rules never actually matched the
+  // rendered Markdown (verified: the <pre> background was always
+  // transparent). Discovered while building the Advanced Markdown
+  // Workspace tool, which hit the identical issue.
+  encapsulation: ViewEncapsulation.None,
   styles: `
     .markdown-body :first-child {
       margin-top: 0;
