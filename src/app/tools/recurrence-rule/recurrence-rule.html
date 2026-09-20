@@ -1,0 +1,75 @@
+<app-tool-shell title="Recurrence Rule Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <p class="text-ui text-text-muted">
+      Distinct from Cron Parser (cron trigger schedules): this expands an iCal-style RRULE recurrence — the kind used by
+      calendar events — into a list of occurrence dates.
+    </p>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Start date</span>
+        <input
+          type="date"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="startDate()"
+          (input)="onStartDateChange($event)"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Start time</span>
+        <input
+          type="time"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="startTime()"
+          (input)="onStartTimeChange($event)"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">RRULE (e.g. FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10)</span>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="ruleText()"
+        (input)="onRuleTextChange($event)"
+      />
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Timezone</span>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="timezone()"
+          (input)="onTimezoneChange($event)"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Max occurrences (up to 500)</span>
+        <input
+          type="number"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="maxOccurrences()"
+          (input)="onMaxOccurrencesChange($event)"
+        />
+      </div>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        @if (current.humanText) {
+          <div class="rounded-sm border border-border bg-panel p-2 text-ui text-text">{{ current.humanText }}</div>
+        }
+        <ul class="flex max-h-96 flex-col gap-1 overflow-auto">
+          @for (occurrence of current.occurrences; track occurrence) {
+            <li class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ occurrence }}</li>
+          }
+        </ul>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

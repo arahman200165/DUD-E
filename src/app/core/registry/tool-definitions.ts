@@ -375,6 +375,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
   },
   {
+    id: 'recurrence-rule',
+    title: 'Recurrence Rule Calculator',
+    description: 'Expand an iCal-style RRULE recurrence into a list of occurrence dates — event recurrence, distinct from cron trigger schedules.',
+    category: 'date-time',
+    keywords: ['rrule', 'recurrence', 'recurring', 'ical', 'calendar', 'schedule', 'occurrence'],
+    route: '/tools/recurrence-rule',
+    load: () => import('../../tools/recurrence-rule/recurrence-rule').then((m) => m.RecurrenceRule),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
+  {
     id: 'duration-formatter',
     title: 'Duration Parser / Formatter',
     description: 'Parse a human or ISO 8601 duration and see it in every representation at once.',
