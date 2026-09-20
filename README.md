@@ -115,7 +115,7 @@ See [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md) for the full, step-by-step guide to a
 
 ## Tech stack
 
-Angular 22 (standalone components, signals) · Tailwind CSS v4 · Vitest · Playwright · `@angular/service-worker` · TypeScript
+Angular 22 (standalone components, signals) · Tailwind CSS v4 · Vitest · Playwright · `@angular/service-worker` · TypeScript · Electron (experimental Windows desktop build)
 
 Library-forward by design — Markdown rendering, diffing, sanitization, color-space math, slug transliteration, structured-data parsing, cron scheduling, and User-Agent parsing all lean on mature libraries (`markdown-it`, `diff-match-patch`, `dompurify`, `colord`, `@sindresorhus/slugify`, `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, `jmespath`, `cron-parser`, `cronstrue`, `ua-parser-js`) rather than reimplementing them.
 
@@ -178,6 +178,19 @@ npx http-server dist/dude/browser -p 8080
 ```
 
 Then open `http://localhost:8080`, let it load once, and use your browser DevTools' Network tab "Offline" toggle to verify the shell and any already-visited tool still work.
+
+## Desktop app (experimental)
+
+DUDE also ships as a Windows Electron build (`DUDE_PRD.md` §21 Phase 8) — the same Angular codebase, packaged as a standalone desktop app. This is Stage 1 of an 8-stage roadmap: today it's a strict superset of the web PWA with no new tool-level features yet. Later stages add native file access for Directory Diff/Git Repo Browser, OS-level secret storage, an optional local LLM proxy for AI-assisted regex, and real-time collaborative editing — all additive to the web app, never a replacement for it.
+
+```bash
+npm run electron:dev    # hot-reload desktop dev, points Electron at a live `ng serve`
+npm run electron:start  # full build -> compile -> launch, closest to a real install
+```
+
+Electron's `BrowserWindow` loads the built app from a small local static server bound to `127.0.0.1` on an OS-assigned port (never an external interface), not `file://` — so the existing path-based routing works unchanged, with real SPA fallback instead of the GitHub Pages `404.html` trick. The renderer keeps `contextIsolation` on with no direct `nodeIntegration`; all native access is mediated through `electron/preload.ts`'s `contextBridge` bridge — see `electron/AGENTS.md` for that rule and `src/app/core/platform/` for the `PlatformService` tools/shell code can use to detect the desktop runtime.
+
+Packaging and distribution (an installer, auto-update, CI) aren't built yet — that lands with Phase 8's final stage.
 
 ## Adding a new tool
 

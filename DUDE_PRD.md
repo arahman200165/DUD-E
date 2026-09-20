@@ -46,7 +46,7 @@ V1 is complete. The extensible framework, all core infrastructure (registry, per
 
 With V1 delivered, the old weekend scope gate no longer applies. New work — additional tools, enhancements to existing tools, or framework extensions — proceeds directly from the §21 Tool Roadmap. The product principles, architecture, and shared conventions documented below remain the standing contract for any new work; only the temporary "hold the line until Sunday" constraints have been retired.
 
-Phases 0–7 of that roadmap are complete: the original 10 showcase tools plus 47 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is next up** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
+Phases 0–7 of that roadmap are complete: the original 10 showcase tools plus 47 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is in progress** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. Stage 1 (Electron shell + platform detection service) shipped as Milestone 21; Stages 2–8 remain. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
 
 ---
 
@@ -1052,7 +1052,7 @@ Git Repo Browser and Directory Diff both read an entire local folder into browse
 
 ---
 
-## Phase 8 — Downloadable Desktop App with a Bundled Backend (Proposed — Framework: Establishes the Desktop-Packaging Track — Next Up)
+## Phase 8 — Downloadable Desktop App with a Bundled Backend (In Progress — Framework: Establishes the Desktop-Packaging Track — Stage 1 of 8 shipped)
 
 Like Phase 0, this is a framework-first phase: it adds a new deployment target and a bundled backend, not new tools with registry entries. Tool-level enhancements that land as part of this phase (Regex Tester, Advanced Markdown Workspace, Directory Diff, Git Repo Browser) stay documented inside their own §20 sections rather than incrementing the shipped-tool count, the same way Phase 7's enhancements did.
 
@@ -1070,7 +1070,7 @@ Like Phase 0, this is a framework-first phase: it adds a new deployment target a
 
 Each stage is expected to become its own Milestone number when implemented, following the existing convention that framework-layer work gets its own milestone rather than being folded into a tool commit.
 
-1. **Electron shell** — package the existing Angular app in Electron with no new features; prove build/run/package works before anything else is layered on. Establishes a platform/environment detection service (web vs. desktop) as the seam every later stage conditions on.
+1. **Electron shell** — package the existing Angular app in Electron with no new features; prove build/run/package works before anything else is layered on. Establishes a platform/environment detection service (web vs. desktop) as the seam every later stage conditions on. **✅ shipped as Milestone 21.**
 2. **Native file access** — replace `<input webkitdirectory>` in Directory Diff and Git Repo Browser with Electron's native `dialog` + filesystem APIs, via a sandboxed preload/IPC bridge (no direct Node access from the renderer). Upgrades both tools from one-shot snapshots to live, re-scannable folder handles, desktop-only.
 3. **OS-level secret storage** — a new `secure-local` persistence tier backed by Electron `safeStorage` (OS keychain), available only on desktop. Lays the groundwork for storing the LLM proxy's API key safely.
 4. **Local LLM proxy + AI regex features** — the localhost-only backend process holds the user-supplied, provider-agnostic LLM credential; wires up AI-based regex generation (natural-language → regex) and upgrades regex explanation beyond the existing rule-based `regexp-tree` version, on Regex Tester. The rule-based explainer stays as the offline/web fallback when no key is configured.
@@ -1086,6 +1086,14 @@ Each stage is expected to become its own Milestone number when implemented, foll
 - The bundled backend must bind to `127.0.0.1` only (falling back to `127.0.0.2`, `127.0.0.3`, etc. if something else is already listening there, or to another user-provided address) — never an external interface.
 - The Electron renderer keeps `contextIsolation` on and no direct `nodeIntegration`; all native access (files, secrets, tray, IPC to the local backend) is mediated through a preload bridge — consistent with the sandboxing precedent already set by the Advanced Markdown Workspace's plugin `<iframe>`s (§20; §33).
 - A self-hosted BYO relay server is untrusted-by-default from the app's perspective: treat its messages as data, not as anything the app should extend trust or execute based on.
+
+### Notes
+
+Stage 1 chose a local loopback static server (bound `127.0.0.1`, OS-assigned port) to serve the built app to the `BrowserWindow` over `http://`, instead of a `file://` load — this means the existing path-based router needed no hash-routing fork, and the server does real SPA fallback to `index.html` instead of needing the web build's `public/404.html` GitHub Pages workaround. The new `electron/` folder (main process + preload, compiled by `esbuild` to CommonJS) stays entirely outside `tsconfig.app.json`, mirroring the existing `tsconfig.worker.json` precedent for a second narrow build target; see `electron/AGENTS.md` for the contextIsolation/sandbox/preload-bridge rule it documents. A new `angular.json` `electron` build configuration overrides `baseHref` to `/` and disables the service worker (unsupported/redundant outside a real HTTP(S) origin's normal lifecycle, and superseded by Stage 8's `electron-updater`); `PlatformService` (§26.6) also gates the service worker's runtime registration off under Electron as a second layer of defense. `npm run electron:dev` points Electron at a live `ng serve` for hot-reload development; `npm run electron:start` runs the full build → compile → launch path. Packaging (`electron-builder`, installers, CI) stays deferred to Stage 8, per plan.
+
+Two bugs surfaced only through live app testing, not the unit suite or code review — consistent with the Phase 6 sandbox lesson that this class of issue needs real runtime verification:
+1. `app.getAppPath()` resolves to the entry script's own directory (`dist/electron`), not the repo root, when Electron is launched with a direct file path (`electron dist/electron/main.js`) rather than a project directory — every request 404'd until the static server's root was resolved relative to `__dirname` instead.
+2. The Python Playground's opaque-origin sandboxed iframe makes its dynamic `import()` of Pyodide's `.asm.mjs` a CORS-mode fetch even against a same-looking `http://127.0.0.1` origin — the same gotcha already documented for `ng serve` in the Phase 6 code-sandbox notes. The local static server needed its own `Access-Control-Allow-Origin` response header, the same fix GitHub Pages provides for free and `ng serve` needed added explicitly.
 
 ---
 
@@ -2037,6 +2045,14 @@ Do not overbuild search.
 
 A straightforward in-memory search is sufficient.
 
+## 26.6 Platform Service
+
+Added in §21 Phase 8 Stage 1 as the seam every desktop-only stage conditions on. Responsibilities:
+
+- detect the Electron desktop shell via the flag `electron/preload.ts` injects through `contextBridge` — never `navigator.userAgent` sniffing;
+- expose the result as a readonly `isDesktop` signal, same shape as the Connectivity Service's `online` signal;
+- stay tool-agnostic — a boolean primitive the shell or any tool can read, never a place for desktop-feature logic itself.
+
 ---
 
 # 28. Command Palette Requirements
@@ -2151,6 +2167,8 @@ No enterprise secret-management system is in scope.
 - no claims that JWT decoding verifies authenticity.
 
 Phase 6's sandbox design (iframe isolation, network egress blocked via CSP, hard execution timeouts) is documented in `src/app/shared/code-sandbox/code-sandbox-doc.ts` and each Phase 6 tool's own sandbox file — see §21 Phase 6 for what shipped and why.
+
+Phase 8 Stage 1 applies these same standing rules to the Electron renderer (`contextIsolation` on, no `nodeIntegration`, all native access preload-mediated) and extends the "never an external interface" rule to the bundled local static server (`127.0.0.1` only, OS-assigned port) — documented in `electron/AGENTS.md` and `electron/static-server.ts`.
 
 ---
 
