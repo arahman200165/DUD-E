@@ -1,13 +1,16 @@
-import { Component, ElementRef, ViewEncapsulation, computed, effect, inject, signal, viewChild, viewChildren } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewEncapsulation, computed, effect, inject, signal, viewChild, viewChildren } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import DOMPurify from 'dompurify';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { SplitPane } from '../../shared/components/split-pane/split-pane';
 import { BusyIndicator } from '../../shared/components/busy-indicator/busy-indicator';
 import { SandboxedMarkdownPreview } from '../../shared/components/sandboxed-markdown-preview/sandboxed-markdown-preview';
+import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
+import { PlatformService } from '../../core/platform/platform.service';
+import { CollabService } from '../../core/platform/collab.service';
 import { downloadFile } from '../../shared/utils/download-file';
 import { MARKDOWN_BODY_STYLES } from '../../shared/styles/markdown-body.styles';
 import { markdownPresetStyleVars, MARKDOWN_STYLE_PRESETS, type MarkdownStylePreset } from '../../shared/models/markdown-theme.model';
@@ -17,6 +20,7 @@ import { MarkdownInsertAction, applyMarkdownInsertion } from './markdown-toolbar
 import { computeSyncedScrollTop } from './markdown-scroll-sync';
 import { MarkdownPluginKind, MarkdownPluginManifest } from './plugins/plugin-manifest.model';
 import { PluginRuntimeHost } from './plugins/plugin-runtime-host';
+import { CollabConnectionStatus, MarkdownCollabClient } from './collab/markdown-collab-client';
 
 /** Inputs above this size run in a Worker instead of blocking the main thread — higher than csv-viewer/yaml-json's 50k since markdown-it rendering is cheaper per byte. */
 const WORKER_THRESHOLD = 100_000;
@@ -26,7 +30,7 @@ const DEFAULT_SOURCE =
 
 @Component({
   selector: 'app-markdown-workspace',
-  imports: [ToolShell, SplitPane, BusyIndicator, SandboxedMarkdownPreview, PluginRuntimeHost],
+  imports: [ToolShell, SplitPane, BusyIndicator, SandboxedMarkdownPreview, ErrorPanel, PluginRuntimeHost],
   templateUrl: './markdown-workspace.html',
   // Emulated encapsulation adds a scoping attribute to elements the Angular
   // template compiler renders, but never to content injected via
@@ -40,10 +44,12 @@ const DEFAULT_SOURCE =
   encapsulation: ViewEncapsulation.None,
   styles: [MARKDOWN_BODY_STYLES],
 })
-export class MarkdownWorkspace {
+export class MarkdownWorkspace implements OnDestroy {
   private readonly persistence = inject(PersistenceService);
   private readonly workerClient = inject(WorkerClientService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly collabApi = inject(CollabService);
+  protected readonly platform = inject(PlatformService);
 
   protected readonly source = this.persistence.signal('markdown-workspace', 'source', 'session', DEFAULT_SOURCE);
   protected readonly paneRatio = this.persistence.signal('markdown-workspace', 'paneRatio', 'local', 0.5);
@@ -110,6 +116,18 @@ export class MarkdownWorkspace {
 
   private isSyncingScroll = false;
 
+  // Stage 6: local real-time collaboration, desktop-only.
+  private collabClient: MarkdownCollabClient | null = null;
+  protected readonly collabStatus = signal<CollabConnectionStatus | 'idle'>('idle');
+  protected readonly collabRole = signal<'host' | 'joiner' | null>(null);
+  protected readonly collabUrl = signal('');
+  protected readonly collabSessionCode = signal('');
+  protected readonly collabParticipantCount = signal(0);
+  protected readonly collabError = signal('');
+  protected readonly joinUrlInput = signal('');
+  protected readonly joinCodeInput = signal('');
+  protected readonly showCollabPanel = signal(false);
+
   constructor() {
     effect((onCleanup) => {
       const source = this.source();
@@ -129,7 +147,83 @@ export class MarkdownWorkspace {
   }
 
   protected onSourceInput(event: Event): void {
-    this.source.set((event.target as HTMLTextAreaElement).value);
+    const value = (event.target as HTMLTextAreaElement).value;
+    this.source.set(value);
+    this.collabClient?.applyLocalEdit(value);
+  }
+
+  protected async startHostingCollabSession(): Promise<void> {
+    this.collabError.set('');
+    const result = await this.collabApi.startSession();
+    if (!result.ok) {
+      this.collabError.set(result.error === 'not-supported' ? 'Collaboration is only available in the desktop app.' : result.error);
+      return;
+    }
+
+    this.collabRole.set('host');
+    this.collabUrl.set(result.url);
+    this.collabSessionCode.set(result.sessionCode);
+    this.connectCollabClient(result.url, result.sessionCode, this.source());
+  }
+
+  protected onJoinUrlInput(event: Event): void {
+    this.joinUrlInput.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onJoinCodeInput(event: Event): void {
+    this.joinCodeInput.set((event.target as HTMLInputElement).value);
+  }
+
+  protected joinCollabSession(): void {
+    const url = this.joinUrlInput().trim();
+    const code = this.joinCodeInput().trim();
+    if (!url || !code) {
+      this.collabError.set('Enter both the session URL and code shared by the host.');
+      return;
+    }
+
+    this.collabError.set('');
+    this.collabRole.set('joiner');
+    this.collabUrl.set(url);
+    this.collabSessionCode.set(code);
+    // A joiner never seeds content — see MarkdownCollabClientOptions.initialText's doc comment.
+    this.connectCollabClient(url, code, '');
+  }
+
+  private connectCollabClient(url: string, sessionCode: string, initialText: string): void {
+    this.collabClient?.destroy();
+    this.collabClient = new MarkdownCollabClient({
+      url,
+      sessionCode,
+      initialText,
+      onRemoteTextChange: (text) => this.source.set(text),
+      onStatusChange: (status) => this.collabStatus.set(status),
+      onParticipantCountChange: (count) => this.collabParticipantCount.set(count),
+    });
+  }
+
+  protected async stopCollabSession(): Promise<void> {
+    this.collabClient?.destroy();
+    this.collabClient = null;
+    if (this.collabRole() === 'host') {
+      await this.collabApi.stopSession();
+    }
+    this.collabRole.set(null);
+    this.collabStatus.set('idle');
+    this.collabUrl.set('');
+    this.collabSessionCode.set('');
+    this.collabParticipantCount.set(0);
+  }
+
+  protected copyCollabInfo(): void {
+    void navigator.clipboard.writeText(`${this.collabUrl()} ${this.collabSessionCode()}`);
+  }
+
+  ngOnDestroy(): void {
+    this.collabClient?.destroy();
+    if (this.collabRole() === 'host') {
+      void this.collabApi.stopSession();
+    }
   }
 
   protected onRatioChange(ratio: number): void {
@@ -227,6 +321,10 @@ export class MarkdownWorkspace {
 
   protected togglePluginPanel(): void {
     this.showPluginPanel.set(!this.showPluginPanel());
+  }
+
+  protected toggleCollabPanel(): void {
+    this.showCollabPanel.set(!this.showCollabPanel());
   }
 
   protected onNewPluginNameInput(event: Event): void {

@@ -44,6 +44,11 @@ export interface DudeElectronBridge {
     unwatch(watchId: string): Promise<{ readonly ok: true }>;
     onEvent(callback: (event: FileWatchEvent) => void): () => void;
   };
+  readonly collab: {
+    startSession(): Promise<{ readonly ok: true; readonly url: string; readonly sessionCode: string } | { readonly ok: false; readonly error: string }>;
+    stopSession(): Promise<{ readonly ok: true }>;
+    participantCount(): Promise<number>;
+  };
 }
 
 export interface QuickActionInfo {

@@ -39,6 +39,11 @@ const bridge: DudeElectronBridge = {
       return () => ipcRenderer.removeListener('dude:fileWatch:event', listener);
     },
   },
+  collab: {
+    startSession: () => ipcRenderer.invoke('dude:collab:startSession'),
+    stopSession: () => ipcRenderer.invoke('dude:collab:stopSession'),
+    participantCount: () => ipcRenderer.invoke('dude:collab:participantCount'),
+  },
 };
 
 contextBridge.exposeInMainWorld('dude', bridge);

@@ -43,6 +43,11 @@
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showFrontMatterPanel()" (click)="toggleFrontMatterPanel()">Front matter</button>
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="syncScroll()" (click)="toggleSyncScroll()">Sync scroll</button>
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showPluginPanel()" (click)="togglePluginPanel()">Plugins</button>
+      @if (platform.isDesktop()) {
+        <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showCollabPanel()" (click)="toggleCollabPanel()">
+          Collaborate{{ collabRole() ? ' (' + collabParticipantCount() + ')' : '' }}
+        </button>
+      }
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" (click)="copyHtml()">Copy HTML</button>
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" (click)="downloadHtml()">Download HTML</button>
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
@@ -127,6 +132,59 @@
             <button type="button" class="w-fit rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="addPlugin()">Add plugin</button>
           </div>
         </details>
+      </div>
+    }
+
+    @if (showCollabPanel()) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui-xs">
+        @if (!collabRole()) {
+          <div class="flex flex-col gap-2">
+            <button type="button" class="w-fit rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="startHostingCollabSession()">
+              Start hosting a session
+            </button>
+
+            <span class="text-text-muted">— or join one someone else started —</span>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <input
+                type="text"
+                class="w-56 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                placeholder="ws://192.168.1.x:port"
+                [value]="joinUrlInput()"
+                (input)="onJoinUrlInput($event)"
+              />
+              <input
+                type="text"
+                class="w-32 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                placeholder="session code"
+                [value]="joinCodeInput()"
+                (input)="onJoinCodeInput($event)"
+              />
+              <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="joinCollabSession()">Join</button>
+            </div>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1">
+            <span class="text-text-muted">
+              {{ collabRole() === 'host' ? 'Hosting' : 'Joined' }} — {{ collabStatus() }} — {{ collabParticipantCount() }} participant(s)
+            </span>
+            @if (collabRole() === 'host') {
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-mono text-text">{{ collabUrl() }}</span>
+                <span class="font-mono text-text">{{ collabSessionCode() }}</span>
+                <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="copyCollabInfo()">Copy</button>
+              </div>
+              <span class="text-text-muted">Share this URL and code with LAN participants — anyone with both can join.</span>
+            }
+            <button type="button" class="w-fit rounded-sm border border-border px-2 py-0.5 text-error hover:bg-panel-elevated" (click)="stopCollabSession()">
+              {{ collabRole() === 'host' ? 'Stop session' : 'Leave session' }}
+            </button>
+          </div>
+        }
+
+        @if (collabError()) {
+          <app-error-panel [message]="collabError()" />
+        }
       </div>
     }
 

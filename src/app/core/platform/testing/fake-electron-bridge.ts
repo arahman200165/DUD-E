@@ -42,6 +42,11 @@ export function fakeElectronBridge(overrides: Partial<DudeElectronBridge> = {}):
       unwatch: async () => ({ ok: true }),
       onEvent: () => () => {},
     },
+    collab: {
+      startSession: async () => ({ ok: true, url: 'ws://127.0.0.1:1234', sessionCode: 'abcdef' }),
+      stopSession: async () => ({ ok: true }),
+      participantCount: async () => 0,
+    },
     ...overrides,
   };
 }

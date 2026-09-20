@@ -8,6 +8,7 @@ import { createTray, isAppQuitting, registerShellChromeHandlers } from './tray';
 import { registerHotkeyHandlers, unregisterAllHotkeys } from './hotkey-bridge';
 import { registerNotificationHandlers } from './notifications-bridge';
 import { closeAllFileWatches, registerFileWatchHandlers } from './file-watch-bridge';
+import { registerCollabHandlers, stopCollabServerOnQuit } from './collab-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -58,6 +59,7 @@ void app.whenReady().then(async () => {
   registerShellChromeHandlers();
   registerNotificationHandlers();
   registerFileWatchHandlers();
+  registerCollabHandlers();
   await registerHotkeyHandlers();
   return createWindow();
 });
@@ -69,4 +71,5 @@ app.on('window-all-closed', () => {
 app.on('will-quit', () => {
   unregisterAllHotkeys();
   closeAllFileWatches();
+  stopCollabServerOnQuit();
 });
