@@ -1211,14 +1211,16 @@ Local static references are preferred when practical. The HTTP Status Code Refer
 
 ---
 
-## Phase 4 — Developer Workflow Utilities
+## Phase 4 — Developer Workflow Utilities (✅ Complete)
 
-30. Semantic Version Comparator  
-31. Glob Pattern Tester  
-32. URL / URI Inspector  
-33. Date / Timezone Converter  
-34. Duration Parser / Formatter  
-35. Random Data Generator
+30. Semantic Version Comparator — ✅ shipped, with sorting and range-satisfaction checking  
+31. Glob Pattern Tester — ✅ shipped  
+32. URL / URI Inspector — ✅ shipped, with editable round-trip reconstruction  
+33. Date / Timezone Converter — ✅ shipped, as a multi-zone world clock  
+34. Duration Parser / Formatter — ✅ shipped  
+35. Random Data Generator — ✅ shipped, with full `@faker-js/faker` category coverage
+
+**Goal:** Cover common developer-workflow utilities (versioning, glob matching, URL inspection, timezones, durations, and fake test data) entirely offline. **Achieved** — all 6 tools are fully local (no `network` policy set); `semver`, `picomatch`, `luxon`, `parse-duration`, `humanize-duration`, and `@faker-js/faker` were added, continuing the library-forward pattern for fiddly parsing/formatting domains (§17).
 
 ### Notes
 
@@ -1299,8 +1301,8 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 ## Date & Time
 
 - Unix Timestamp ✅
-- Date / Timezone Converter
-- Duration Parser / Formatter
+- Date / Timezone Converter ✅
+- Duration Parser / Formatter ✅
 - Cron Parser ✅
 
 ## Web / API
@@ -1311,15 +1313,15 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - cURL Inspector / Converter ✅
 - User-Agent Parser ✅
 - MIME Type Reference ✅
-- URL / URI Inspector
+- URL / URI Inspector ✅
 
 ## Developer
 
 - Regex Tester ✅
 - UUID Generator / Inspector ✅
-- Semantic Version Comparator
-- Glob Tester
-- Random Data Generator
+- Semantic Version Comparator ✅
+- Glob Tester ✅
+- Random Data Generator ✅
 
 ## Documents
 
