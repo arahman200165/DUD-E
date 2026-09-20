@@ -1,0 +1,42 @@
+<div class="flex flex-col gap-1">
+  @if (pairs().length > 0) {
+    <div class="flex flex-col gap-1">
+      @for (pair of pairs(); track $index) {
+        <div class="flex items-center gap-1">
+          <input
+            type="text"
+            class="w-1/3 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [placeholder]="keyPlaceholder()"
+            [attr.title]="hintFor(pair.key)"
+            [value]="pair.key"
+            (input)="onKeyInput($index, $event)"
+          />
+          <input
+            type="text"
+            class="flex-1 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [placeholder]="valuePlaceholder()"
+            [value]="pair.value"
+            (input)="onValueInput($index, $event)"
+          />
+          <button
+            type="button"
+            class="rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+            (click)="removePair($index)"
+          >
+            Remove
+          </button>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="text-ui text-text-muted">{{ emptyMessage() }}</p>
+  }
+
+  <button
+    type="button"
+    class="self-start rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+    (click)="addPair()"
+  >
+    {{ addLabel() }}
+  </button>
+</div>

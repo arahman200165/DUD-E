@@ -1,0 +1,70 @@
+export interface WellKnownHeader {
+  readonly name: string;
+  readonly description: string;
+}
+
+export const WELL_KNOWN_HEADERS: readonly WellKnownHeader[] = [
+  { name: 'Accept', description: 'Media types the client can process in the response.' },
+  { name: 'Accept-Charset', description: 'Character sets the client can understand.' },
+  { name: 'Accept-Encoding', description: 'Content encodings (e.g. gzip, br) the client can handle.' },
+  { name: 'Accept-Language', description: 'Preferred natural languages for the response.' },
+  { name: 'Accept-Ranges', description: 'Indicates the server supports range requests for a resource.' },
+  { name: 'Access-Control-Allow-Credentials', description: 'CORS: whether the response can be exposed when credentials are included.' },
+  { name: 'Access-Control-Allow-Headers', description: 'CORS: headers allowed in the actual request.' },
+  { name: 'Access-Control-Allow-Methods', description: 'CORS: HTTP methods allowed when accessing the resource.' },
+  { name: 'Access-Control-Allow-Origin', description: 'CORS: origin(s) allowed to access the resource.' },
+  { name: 'Access-Control-Expose-Headers', description: 'CORS: response headers exposed to the requesting script.' },
+  { name: 'Access-Control-Request-Headers', description: 'CORS preflight: headers the actual request will use.' },
+  { name: 'Access-Control-Request-Method', description: 'CORS preflight: HTTP method the actual request will use.' },
+  { name: 'Age', description: 'Time in seconds the response has been cached by a proxy.' },
+  { name: 'Authorization', description: 'Credentials for authenticating the request (e.g. Bearer token, Basic auth).' },
+  { name: 'Cache-Control', description: 'Caching directives for requests and responses.' },
+  { name: 'Connection', description: 'Controls whether the network connection stays open after the transaction.' },
+  { name: 'Content-Disposition', description: 'Suggests how to display the response payload (inline vs. attachment).' },
+  { name: 'Content-Encoding', description: 'Encoding (e.g. gzip) applied to the response body.' },
+  { name: 'Content-Language', description: 'Natural language of the response body.' },
+  { name: 'Content-Length', description: 'Size of the body in bytes.' },
+  { name: 'Content-Security-Policy', description: 'Restricts sources of scripts, styles, and other content to mitigate XSS.' },
+  { name: 'Content-Type', description: 'Media type of the request/response body.' },
+  { name: 'Cookie', description: "Cookies previously sent by the server via Set-Cookie, sent back on the client's request." },
+  { name: 'Date', description: 'Date and time the message was originated.' },
+  { name: 'ETag', description: 'Opaque validator for a specific resource version, used for caching/conditional requests.' },
+  { name: 'Expect', description: "Indicates an expectation the client requires the server to meet, e.g. 100-continue." },
+  { name: 'Expires', description: 'Date/time after which the response is considered stale.' },
+  { name: 'Forwarded', description: 'Standardized info about the client added by proxies (successor to X-Forwarded-*).' },
+  { name: 'Host', description: 'Domain name and port of the server the request is being sent to.' },
+  { name: 'If-Match', description: 'Makes the request conditional on the ETag matching.' },
+  { name: 'If-Modified-Since', description: 'Makes the request conditional on the resource being modified since the given date.' },
+  { name: 'If-None-Match', description: 'Makes the request conditional on the ETag not matching (used for caching).' },
+  { name: 'If-Unmodified-Since', description: 'Makes the request conditional on the resource not being modified since the given date.' },
+  { name: 'Last-Modified', description: 'Date and time the resource was last modified.' },
+  { name: 'Location', description: 'URL to redirect to, or the URL of a newly created resource.' },
+  { name: 'Origin', description: 'Origin (scheme, host, port) that the request originates from.' },
+  { name: 'Pragma', description: 'Legacy header for backwards-compatible caching directives (HTTP/1.0).' },
+  { name: 'Proxy-Authorization', description: 'Credentials for authenticating with a proxy server.' },
+  { name: 'Range', description: 'Requests only part of a resource, in bytes.' },
+  { name: 'Referer', description: 'Address of the page making the request.' },
+  { name: 'Referrer-Policy', description: 'Controls how much referrer information is included with requests.' },
+  { name: 'Retry-After', description: 'How long to wait before making a follow-up request.' },
+  { name: 'Set-Cookie', description: 'Sends a cookie from the server to be stored by the client.' },
+  { name: 'Strict-Transport-Security', description: 'Forces the client to use HTTPS for future requests to the domain (HSTS).' },
+  { name: 'TE', description: 'Transfer encodings the client is willing to accept for the response.' },
+  { name: 'Trailer', description: 'Lists headers present in the trailer of a chunked-encoded message.' },
+  { name: 'Transfer-Encoding', description: 'Form of encoding used to transfer the body (e.g. chunked).' },
+  { name: 'Upgrade', description: 'Requests the server switch to a different protocol (e.g. WebSocket).' },
+  { name: 'User-Agent', description: 'Identifies the client application, OS, and device making the request.' },
+  { name: 'Vary', description: "Lists headers used to decide whether a cached response can be reused." },
+  { name: 'WWW-Authenticate', description: 'Defines the authentication method(s) to access a resource.' },
+  { name: 'X-Content-Type-Options', description: "Prevents MIME-type sniffing away from the declared Content-Type." },
+  { name: 'X-Forwarded-For', description: 'De facto standard for identifying the originating client IP through proxies.' },
+  { name: 'X-Forwarded-Host', description: 'De facto standard for identifying the original Host requested by the client.' },
+  { name: 'X-Forwarded-Proto', description: 'De facto standard for identifying the original protocol (http/https) used by the client.' },
+  { name: 'X-Frame-Options', description: 'Indicates whether the page may be rendered in a frame/iframe, to prevent clickjacking.' },
+  { name: 'X-Request-Id', description: 'De facto standard correlation ID for tracing a request across services.' },
+];
+
+/** Case-insensitive lookup. Returns undefined for unrecognized/custom header names. */
+export function describeHeader(name: string): string | undefined {
+  const normalized = name.trim().toLowerCase();
+  return WELL_KNOWN_HEADERS.find((header) => header.name.toLowerCase() === normalized)?.description;
+}
