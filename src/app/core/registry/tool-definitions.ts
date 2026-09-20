@@ -115,4 +115,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
   },
+  {
+    id: 'url-encode',
+    title: 'URL Encoder / Decoder',
+    description: 'Percent-encode or decode text as a URL component or a full URI.',
+    category: 'encoding',
+    keywords: ['url', 'uri', 'encode', 'decode', 'percent-encoding', 'escape', 'unescape'],
+    route: '/tools/url-encode',
+    load: () => import('../../tools/url-encode/url-encode').then((m) => m.UrlEncode),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];
