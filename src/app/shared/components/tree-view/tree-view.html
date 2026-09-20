@@ -1,0 +1,28 @@
+<ul class="flex flex-col gap-0.5">
+  @for (node of nodes(); track node.path) {
+    <li>
+      <div class="flex items-center gap-1.5 font-mono text-xs">
+        @if (node.children) {
+          <button
+            type="button"
+            class="w-4 shrink-0 text-text-muted hover:text-text"
+            (click)="toggle(node)"
+          >
+            {{ isExpanded(node) ? '▾' : '▸' }}
+          </button>
+        } @else {
+          <span class="w-4 shrink-0"></span>
+        }
+
+        <span class="text-text-muted">{{ node.label }}:</span>
+        <span class="text-text">{{ node.valueLabel }}</span>
+      </div>
+
+      @if (node.children && isExpanded(node)) {
+        <div class="ml-4 border-l border-border pl-2">
+          <app-tree-view [nodes]="node.children!" />
+        </div>
+      }
+    </li>
+  }
+</ul>

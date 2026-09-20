@@ -1,40 +1,67 @@
 <app-tool-shell title="JSON Formatter" status="stable">
   <div class="flex flex-col gap-3">
     <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
-      <div class="flex overflow-hidden rounded-sm border border-border">
-        <button
-          type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="mode() === 'pretty'"
-          [class.text-bg]="mode() === 'pretty'"
-          [class.text-text-muted]="mode() !== 'pretty'"
-          (click)="setMode('pretty')"
-        >
-          Pretty
-        </button>
-        <button
-          type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="mode() === 'minify'"
-          [class.text-bg]="mode() === 'minify'"
-          [class.text-text-muted]="mode() !== 'minify'"
-          (click)="setMode('minify')"
-        >
-          Minify
-        </button>
-        <button
-          type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="mode() === 'validate'"
-          [class.text-bg]="mode() === 'validate'"
-          [class.text-text-muted]="mode() !== 'validate'"
-          (click)="setMode('validate')"
-        >
-          Validate
-        </button>
-      </div>
+      @if (view() !== 'tree') {
+        <div class="flex overflow-hidden rounded-sm border border-border">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="mode() === 'pretty'"
+            [class.text-bg]="mode() === 'pretty'"
+            [class.text-text-muted]="mode() !== 'pretty'"
+            (click)="setMode('pretty')"
+          >
+            Pretty
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="mode() === 'minify'"
+            [class.text-bg]="mode() === 'minify'"
+            [class.text-text-muted]="mode() !== 'minify'"
+            (click)="setMode('minify')"
+          >
+            Minify
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="mode() === 'validate'"
+            [class.text-bg]="mode() === 'validate'"
+            [class.text-text-muted]="mode() !== 'validate'"
+            (click)="setMode('validate')"
+          >
+            Validate
+          </button>
+        </div>
+      }
 
-      @if (mode() === 'pretty') {
+      @if (showTreeToggle()) {
+        <div class="flex overflow-hidden rounded-sm border border-border">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="view() === 'text'"
+            [class.text-bg]="view() === 'text'"
+            [class.text-text-muted]="view() !== 'text'"
+            (click)="setView('text')"
+          >
+            Text
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="view() === 'tree'"
+            [class.text-bg]="view() === 'tree'"
+            [class.text-text-muted]="view() !== 'tree'"
+            (click)="setView('tree')"
+          >
+            Tree
+          </button>
+        </div>
+      }
+
+      @if (view() !== 'tree' && mode() === 'pretty') {
         <label class="flex items-center gap-1.5">
           Indent
           <select
@@ -70,7 +97,17 @@
       (input)="onInputChange($event)"
     ></textarea>
 
-    @if (usesWorker() && job()?.error(); as workerError) {
+    @if (view() === 'tree') {
+      @if (treeResult(); as tree) {
+        @if (tree.ok) {
+          <div class="max-h-[28rem] overflow-auto rounded-sm border border-border bg-panel p-2">
+            <app-tree-view [nodes]="[tree.node]" />
+          </div>
+        } @else {
+          <app-error-panel [message]="tree.error" />
+        }
+      }
+    } @else if (usesWorker() && job()?.error(); as workerError) {
       <app-error-panel [message]="workerError" />
     } @else if (input() !== '' && result(); as current) {
       @if (current.ok) {
