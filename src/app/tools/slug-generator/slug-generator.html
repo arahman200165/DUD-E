@@ -1,0 +1,72 @@
+<app-tool-shell title="Slug Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Separator
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="options().separator"
+          (change)="onSeparatorChange($event)"
+        >
+          <option value="-">Hyphen (-)</option>
+          <option value="_">Underscore (_)</option>
+        </select>
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        Max length
+        <input
+          type="number"
+          min="1"
+          class="w-20 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="None"
+          [value]="options().maxLength ?? ''"
+          (change)="onMaxLengthChange($event)"
+        />
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="options().removeStopwords" (change)="toggleStopwords()" />
+        Remove stopwords (a, the, of, …)
+      </label>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Input</span>
+      <textarea
+        rows="4"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Type or paste a title here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Slug</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="copy()"
+        >
+          Copy
+        </button>
+      </div>
+      <input
+        type="text"
+        readonly
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+        [value]="result()"
+      />
+    </div>
+  </div>
+</app-tool-shell>
