@@ -4,13 +4,14 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'text-inspector',
     title: 'Text Inspector',
-    description: 'Character, word, line, and byte metrics for any text.',
+    description: 'Character, word, line, and byte metrics for any text, plus readability scoring, language detection, and grammar checking.',
     category: 'text',
-    keywords: ['text', 'inspector', 'count', 'characters', 'words', 'lines', 'bytes', 'metrics'],
+    keywords: ['text', 'inspector', 'count', 'characters', 'words', 'lines', 'bytes', 'metrics', 'readability', 'flesch', 'language detection', 'grammar'],
     route: '/tools/text-inspector',
     load: () => import('../../tools/text-inspector/text-inspector').then((m) => m.TextInspector),
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
+    network: { required: true },
   },
   {
     id: 'base64',

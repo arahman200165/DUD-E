@@ -34,11 +34,15 @@ describe('ToolRegistryService', () => {
 
   it('requiresNetwork is false for tools with no declared network policy', () => {
     expect(service.requiresNetwork('json')).toBe(false);
-    expect(service.requiresNetwork('text-inspector')).toBe(false);
+    expect(service.requiresNetwork('base64')).toBe(false);
   });
 
   it('requiresNetwork is false for an unknown tool id', () => {
     expect(service.requiresNetwork('does-not-exist')).toBe(false);
+  });
+
+  it('requiresNetwork is true for Text Inspector (grammar checking calls a public API)', () => {
+    expect(service.requiresNetwork('text-inspector')).toBe(true);
   });
 });
 

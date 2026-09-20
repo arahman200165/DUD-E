@@ -1,4 +1,4 @@
-<app-tool-shell title="Text Inspector" status="stable">
+<app-tool-shell title="Text Inspector" status="stable" [networkRequired]="grammarPanelOpen()">
   <div class="flex flex-col gap-3">
     <p class="text-xs text-text-muted">
       Paste or type text to see live character, word, line, and byte metrics. Select part of the text to
@@ -24,6 +24,30 @@
       >
         Clear
       </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        [class.bg-panel-elevated]="showReadability()"
+        (click)="toggleReadability()"
+      >
+        Readability
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        [class.bg-panel-elevated]="showLanguage()"
+        (click)="toggleLanguage()"
+      >
+        Language
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        [class.bg-panel-elevated]="grammarPanelOpen()"
+        (click)="toggleGrammarPanel()"
+      >
+        Grammar
+      </button>
     </div>
 
     <div
@@ -48,6 +72,75 @@
           <div><span class="text-text-muted">UTF-8 bytes</span><br />{{ selMetrics.byteCount }}</div>
           <div><span class="text-text-muted">Whitespace</span><br />{{ selMetrics.whitespaceCount }}</div>
         </div>
+      </div>
+    }
+
+    @if (showReadability()) {
+      @if (readability(); as score) {
+        <div class="flex flex-wrap gap-4 rounded-sm border border-border bg-panel p-2 text-ui text-text">
+          <div>
+            <span class="text-text-muted">Flesch Reading Ease</span><br />
+            {{ score.fleschReadingEase }} ({{ readingEaseLabel(score.fleschReadingEase) }})
+          </div>
+          <div><span class="text-text-muted">Flesch-Kincaid Grade</span><br />{{ score.fleschKincaidGrade }}</div>
+          <div><span class="text-text-muted">Sentences</span><br />{{ score.sentenceCount }}</div>
+          <div><span class="text-text-muted">Syllables</span><br />{{ score.syllableCount }}</div>
+        </div>
+      } @else {
+        <p class="text-ui text-text-muted">Not enough text (needs at least one sentence) to score readability.</p>
+      }
+    }
+
+    @if (showLanguage()) {
+      @if (languageGuesses().length > 0) {
+        <div class="flex flex-wrap gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text">
+          @for (guess of languageGuesses(); track guess.code) {
+            <span class="rounded-sm border border-border px-2 py-0.5">{{ guess.name }} ({{ (guess.score * 100).toFixed(0) }}%)</span>
+          }
+        </div>
+      } @else {
+        <p class="text-ui text-text-muted">Not enough text to detect a language.</p>
+      }
+    }
+
+    @if (grammarPanelOpen()) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2">
+        <div class="flex items-center gap-2 text-ui text-text-muted">
+          <span>Grammar checking sends this text to the public LanguageTool API.</span>
+          <button
+            type="button"
+            class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+            [disabled]="!connectivity.online() || grammarStatus() === 'checking'"
+            (click)="runGrammarCheck()"
+          >
+            Check
+          </button>
+          @if (!connectivity.online()) {
+            <span class="text-ui-xs text-warning">Offline — grammar checking needs a network connection.</span>
+          }
+        </div>
+
+        @if (grammarResult(); as result) {
+          @if (result.ok) {
+            @if (result.matches.length === 0) {
+              <p class="text-ui text-text-muted">No issues found.</p>
+            } @else {
+              <ul class="flex flex-col gap-1">
+                @for (match of result.matches; track $index) {
+                  <li class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-ui-xs">
+                    <span class="font-mono text-error">{{ text().slice(match.offset, match.offset + match.length) }}</span>
+                    <span class="text-text-muted"> — {{ match.message }}</span>
+                    @if (match.replacements.length > 0) {
+                      <span class="text-success"> (try: {{ match.replacements.slice(0, 3).join(', ') }})</span>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
       </div>
     }
   </div>
