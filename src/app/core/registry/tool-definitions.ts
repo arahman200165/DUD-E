@@ -215,4 +215,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
+  {
+    id: 'xml-formatter',
+    title: 'XML Formatter',
+    description: 'Validate, format, and minify XML.',
+    category: 'data',
+    keywords: ['xml', 'format', 'validate', 'pretty', 'minify'],
+    route: '/tools/xml-formatter',
+    load: () => import('../../tools/xml-formatter/xml-formatter').then((m) => m.XmlFormatter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+  },
 ];
