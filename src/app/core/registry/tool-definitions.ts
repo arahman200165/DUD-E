@@ -398,4 +398,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     execution: { worker: 'required' },
   },
+  {
+    id: 'file-base64',
+    title: 'File Base64 Converter',
+    shortTitle: 'File Base64',
+    description: 'Convert a local file to Base64 text, or a Base64 string back into a downloadable file.',
+    category: 'encoding',
+    keywords: ['base64', 'file', 'encode', 'decode', 'download', 'binary', 'convert', 'attachment'],
+    route: '/tools/file-base64',
+    load: () => import('../../tools/file-base64/file-base64').then((m) => m.FileBase64),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+  },
 ];
