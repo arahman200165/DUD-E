@@ -1,0 +1,177 @@
+<app-tool-shell title="JWT Signature Verifier" status="experimental" [networkRequired]="mode() === 'jwks'">
+  <div class="flex flex-col gap-3">
+    <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+      Nothing typed here is ever saved. The HMAC and Public Key modes verify entirely offline. The JWKS mode
+      sends a GET request to the URL you provide — your token, secret, and payload are never sent anywhere.
+    </div>
+
+    <textarea
+      rows="4"
+      class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      placeholder="Paste a JWT (header.payload.signature)…"
+      [value]="token()"
+      (input)="onTokenInput($event)"
+    ></textarea>
+
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'hmac'"
+        [class.text-bg]="mode() === 'hmac'"
+        [class.text-text-muted]="mode() !== 'hmac'"
+        (click)="setMode('hmac')"
+      >
+        HMAC secret
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'public-key'"
+        [class.text-bg]="mode() === 'public-key'"
+        [class.text-text-muted]="mode() !== 'public-key'"
+        (click)="setMode('public-key')"
+      >
+        Public key
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'jwks'"
+        [class.text-bg]="mode() === 'jwks'"
+        [class.text-text-muted]="mode() !== 'jwks'"
+        (click)="setMode('jwks')"
+      >
+        JWKS URL
+      </button>
+    </div>
+
+    @if (mode() === 'hmac') {
+      <input
+        type="password"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Shared secret…"
+        [value]="secret()"
+        (input)="onSecretInput($event)"
+      />
+    }
+
+    @if (mode() === 'public-key') {
+      <div class="flex flex-col gap-2">
+        <div class="flex overflow-hidden rounded-sm border border-border text-ui-xs w-fit">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="keyFormat() === 'pem'"
+            [class.text-bg]="keyFormat() === 'pem'"
+            [class.text-text-muted]="keyFormat() !== 'pem'"
+            (click)="setKeyFormat('pem')"
+          >
+            PEM
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="keyFormat() === 'jwk'"
+            [class.text-bg]="keyFormat() === 'jwk'"
+            [class.text-text-muted]="keyFormat() !== 'jwk'"
+            (click)="setKeyFormat('jwk')"
+          >
+            JWK
+          </button>
+        </div>
+        <textarea
+          rows="4"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [placeholder]="keyMaterialPlaceholder()"
+          [value]="keyMaterial()"
+          (input)="onKeyMaterialInput($event)"
+        ></textarea>
+      </div>
+    }
+
+    @if (mode() === 'jwks') {
+      <div class="flex flex-col gap-1">
+        <input
+          type="url"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="https://example.com/.well-known/jwks.json"
+          [value]="jwksUrl()"
+          (input)="onJwksUrlInput($event)"
+        />
+        <p class="text-ui-xs text-text-muted">
+          Sends a GET request to this URL to fetch its public keys, then matches by the token's
+          <span class="font-mono">kid</span>.
+        </p>
+      </div>
+    }
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Algorithm
+        <select
+          class="rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="algorithm()"
+          (change)="onAlgorithmChange($event)"
+        >
+          @for (alg of algorithmsForMode(); track alg) {
+            <option [value]="alg">{{ alg }}</option>
+          }
+        </select>
+      </label>
+
+      @if (mode() === 'jwks') {
+        <button
+          type="button"
+          class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+          [disabled]="!connectivity.online() || status() === 'checking'"
+          (click)="verify()"
+        >
+          Fetch JWKS &amp; Verify
+        </button>
+        @if (!connectivity.online()) {
+          <span class="text-ui-xs text-warning">Offline — switch to HMAC or Public Key mode.</span>
+        }
+      } @else {
+        <button
+          type="button"
+          class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+          [disabled]="status() === 'checking'"
+          (click)="verify()"
+        >
+          Verify
+        </button>
+      }
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-2 rounded-sm border border-success/40 bg-success/10 p-2 text-ui text-success">
+          <span>
+            Signature is valid for {{ current.keySource }}, using {{ current.algorithm }}.
+          </span>
+          <span class="text-text-muted">
+            This confirms the token was signed with this key/secret — it does not confirm the key is
+            trustworthy, that the token hasn't been revoked, or that its claims
+            (<span class="font-mono">iss</span>, <span class="font-mono">aud</span>,
+            <span class="font-mono">exp</span>, …) are appropriate for your use case.
+          </span>
+        </div>
+        <pre
+          class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text"
+          >{{ format(current.payload) }}</pre
+        >
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

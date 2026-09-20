@@ -411,4 +411,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
+  {
+    id: 'jwt-verify',
+    title: 'JWT Signature Verifier',
+    shortTitle: 'JWT Verify',
+    description: 'Verify a JWT signature locally against a shared secret or public key, or a fetched JWKS.',
+    category: 'security',
+    keywords: ['jwt', 'verify', 'signature', 'jwk', 'jwks', 'hmac', 'rsa', 'ecdsa', 'ps256', 'auth', 'token'],
+    route: '/tools/jwt-verify',
+    load: () => import('../../tools/jwt-verify/jwt-verify').then((m) => m.JwtVerify),
+    status: 'experimental',
+    persistence: { input: 'none', preferences: 'local' },
+    network: { required: true },
+  },
 ];
