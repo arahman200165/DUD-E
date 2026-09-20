@@ -170,4 +170,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
   },
+  {
+    id: 'html-entities',
+    title: 'HTML Entity Encoder / Decoder',
+    description: 'Encode text as HTML entities, or decode named and numeric entities back to text.',
+    category: 'encoding',
+    keywords: ['html', 'entity', 'entities', 'encode', 'decode', 'escape', 'unescape', 'amp', 'nbsp'],
+    route: '/tools/html-entities',
+    load: () => import('../../tools/html-entities/html-entities').then((m) => m.HtmlEntities),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];
