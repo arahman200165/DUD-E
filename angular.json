@@ -28,6 +28,11 @@
                 "glob": "ejs.min.js",
                 "input": "node_modules/ejs",
                 "output": "assets/vendor/"
+              },
+              {
+                "glob": "{pyodide.js,pyodide.asm.mjs,pyodide.asm.wasm,pyodide-lock.json,python_stdlib.zip}",
+                "input": "node_modules/pyodide",
+                "output": "assets/vendor/pyodide/"
               }
             ],
             "styles": ["src/styles.css"],
@@ -62,6 +67,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "headers": {
+              "Access-Control-Allow-Origin": "*"
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "dude:build:production"
