@@ -341,4 +341,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
   },
+  {
+    id: 'url-inspector',
+    title: 'URL / URI Inspector',
+    description: 'Break a URL down into scheme, host, path, query, and fragment — and edit any part.',
+    category: 'web',
+    keywords: ['url', 'uri', 'inspector', 'parse', 'scheme', 'host', 'query', 'fragment'],
+    route: '/tools/url-inspector',
+    load: () => import('../../tools/url-inspector/url-inspector').then((m) => m.UrlInspector),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+  },
 ];

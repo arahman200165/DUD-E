@@ -1,0 +1,106 @@
+<app-tool-shell title="URL / URI Inspector" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">URL</span>
+        <app-copy-button [text]="raw()" />
+      </div>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="https://user:pass@host:port/path?query#hash"
+        [value]="raw()"
+        (input)="onRawChange($event)"
+      />
+    </div>
+
+    @if (parsed(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-3 overflow-auto">
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Scheme</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="current.parts.protocol"
+                (input)="onFieldChange('protocol', $event)"
+              />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Host</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="current.parts.hostname"
+                (input)="onFieldChange('hostname', $event)"
+              />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Username</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="current.parts.username"
+                (input)="onFieldChange('username', $event)"
+              />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Password</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="current.parts.password"
+                (input)="onFieldChange('password', $event)"
+              />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Port</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                placeholder="(default)"
+                [value]="current.parts.port"
+                (input)="onFieldChange('port', $event)"
+              />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Path</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="current.parts.pathname"
+                (input)="onFieldChange('pathname', $event)"
+              />
+            </div>
+            <div class="flex flex-col gap-1 sm:col-span-2">
+              <span class="text-ui text-text-muted">Fragment</span>
+              <input
+                type="text"
+                class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="current.parts.hash"
+                (input)="onFieldChange('hash', $event)"
+              />
+            </div>
+          </div>
+
+          <div class="text-ui text-text-muted">Origin: <span class="font-mono text-text">{{ current.parts.origin }}</span></div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">Query parameters</span>
+            <app-key-value-editor
+              [pairs]="current.parts.queryParams"
+              (pairsChange)="onQueryParamsChange($event)"
+              keyPlaceholder="param"
+              valuePlaceholder="value"
+              addLabel="Add param"
+              emptyMessage="No query parameters — add one below."
+            />
+          </div>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
