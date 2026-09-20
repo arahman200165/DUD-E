@@ -1228,17 +1228,19 @@ Random data generation should remain developer-oriented and local.
 
 ---
 
-## Phase 5 — Richer Editors and Advanced Tools
+## Phase 5 — Richer Editors and Advanced Tools (✅ Complete)
 
-36. WYSIWYG Rich Text Editor  
-37. Advanced Markdown Workspace  
-38. JWT Signature Verification  
-39. File Hashing  
-40. File Base64 Conversion  
-41. Advanced Diff / Merge  
-42. JSON Schema Validator
+36. WYSIWYG Rich Text Editor — ✅ shipped, via TipTap with sanitized HTML and Markdown export  
+37. Advanced Markdown Workspace — ✅ shipped, with GFM extras, front matter, a table of contents, and synced-scroll preview  
+38. JWT Signature Verification — ✅ shipped, as a separate JWT Signature Verifier tool (HMAC, RSA/EC/RSA-PSS, and JWKS)  
+39. File Hashing — ✅ shipped, as a separate File Hash Generator tool  
+40. File Base64 Conversion — ✅ shipped, as a separate File Base64 Converter tool  
+41. Advanced Diff / Merge — ✅ shipped, with line/word/character diffing, a merge view, and unified-diff export  
+42. JSON Schema Validator — ✅ shipped, supporting both Draft-07 and 2020-12
 
-These are intentionally later because they introduce larger libraries, more complex security boundaries, richer file handling, or significantly broader UX.
+These were intentionally later because they introduce larger libraries, more complex security boundaries, richer file handling, or significantly broader UX.
+
+**Goal:** Validate that larger third-party libraries, new file-handling patterns (drag-and-drop, generated downloads), and the platform's first genuinely network-capable tool could be added without weakening the local-first/offline-first architecture. **Achieved** — `jose`, `ajv`/`ajv-formats`, `@tiptap/core`+`@tiptap/starter-kit`+`tiptap-markdown`, and `markdown-it-task-lists` were added (library-forward per §17), all lazy-loaded per tool; a new shared `FileDrop` component and `downloadFile` utility were introduced for File Hashing, File Base64 Conversion, and Advanced Diff/Merge's file-upload mode. JWT Signature Verification's JWKS-fetch mode is the first tool to call `fetch`, with its `networkRequired` UX scoped to that mode only so the tool's other, fully local verification modes stay usable offline.
 
 ---
 
@@ -1271,7 +1273,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - CSV Viewer / Converter ✅
 - JSONPath / JMESPath ✅
 - JSON Structural Explorer ✅
-- JSON Schema Validator
+- JSON Schema Validator ✅
 
 ## Text
 
@@ -1280,7 +1282,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Case Converter ✅
 - Whitespace Cleaner ✅
 - Slug Generator ✅
-- Advanced Diff / Merge
+- Advanced Diff / Merge ✅
 
 ## Encoding / Conversion
 
@@ -1288,15 +1290,15 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - URL Encode / Decode ✅
 - HTML Entities ✅
 - Number Base Converter ✅
-- File Base64
+- File Base64 ✅
 - Color Converter ✅
 
 ## Security
 
 - JWT Debugger ✅
 - Hash Generator ✅
-- JWT Verification
-- File Hashing
+- JWT Verification ✅
+- File Hashing ✅
 
 ## Date & Time
 
@@ -1326,8 +1328,8 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 ## Documents
 
 - Markdown Preview ✅
-- WYSIWYG Rich Text Editor
-- Advanced Markdown Workspace
+- WYSIWYG Rich Text Editor ✅
+- Advanced Markdown Workspace ✅
 
 ---
 
