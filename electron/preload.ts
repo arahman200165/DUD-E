@@ -10,6 +10,11 @@ const bridge: DudeElectronBridge = {
     readdir: (rootPath, relativePath) => ipcRenderer.invoke('dude:fs:readdir', rootPath, relativePath),
     stat: (rootPath, relativePath, followSymlink) => ipcRenderer.invoke('dude:fs:stat', rootPath, relativePath, followSymlink),
   },
+  secrets: {
+    get: (key) => ipcRenderer.invoke('dude:secrets:get', key),
+    set: (key, value) => ipcRenderer.invoke('dude:secrets:set', key, value),
+    remove: (key) => ipcRenderer.invoke('dude:secrets:remove', key),
+  },
 };
 
 contextBridge.exposeInMainWorld('dude', bridge);

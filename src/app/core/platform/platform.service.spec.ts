@@ -10,6 +10,12 @@ const STUB_FS: DudeElectronBridge['fs'] = {
   stat: async () => ({ ok: true, stat: { isFile: false, isDirectory: true, isSymbolicLink: false, size: 0, mtimeMs: 0 } }),
 };
 
+const STUB_SECRETS: DudeElectronBridge['secrets'] = {
+  get: async () => ({ ok: true, value: null }),
+  set: async () => ({ ok: true }),
+  remove: async () => ({ ok: true }),
+};
+
 describe('isElectronRuntime', () => {
   const originalDude = window.dude;
 
@@ -23,7 +29,7 @@ describe('isElectronRuntime', () => {
   });
 
   it('is true when the preload bridge reports desktop', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
     expect(isElectronRuntime()).toBe(true);
   });
@@ -37,7 +43,7 @@ describe('PlatformService', () => {
   });
 
   it('reports desktop when constructed under the Electron bridge', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
 
     TestBed.configureTestingModule({});

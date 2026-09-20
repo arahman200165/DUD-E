@@ -19,7 +19,15 @@ export interface DudeElectronBridge {
     readdir(rootPath: string, relativePath: string): Promise<NativeFsResult<{ names: readonly string[] }>>;
     stat(rootPath: string, relativePath: string, followSymlink: boolean): Promise<NativeFsResult<{ stat: NativeStat }>>;
   };
+  readonly secrets: {
+    get(key: string): Promise<SecretResult<{ value: string | null }>>;
+    set(key: string, value: string): Promise<SecretVoidResult>;
+    remove(key: string): Promise<SecretVoidResult>;
+  };
 }
+
+export type SecretResult<T> = ({ readonly ok: true } & T) | { readonly ok: false; readonly error: string };
+export type SecretVoidResult = { readonly ok: true } | { readonly ok: false; readonly error: string };
 
 declare global {
   interface Window {

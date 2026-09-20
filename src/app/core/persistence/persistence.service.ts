@@ -27,6 +27,10 @@ export class PersistenceService {
       return signal(initialValue);
     }
 
+    if (policy === 'secure-local') {
+      throw new Error('secure-local is async-only (OS keychain) — use SecureLocalService, not PersistenceService.signal().');
+    }
+
     const storageKey = buildStorageKey(toolId, key);
 
     if (policy === 'user-choice') {

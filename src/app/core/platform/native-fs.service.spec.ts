@@ -10,7 +10,12 @@ describe('NativeFsService', () => {
   });
 
   function withBridge(fs: DudeElectronBridge['fs']): NativeFsService {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs };
+    const secrets: DudeElectronBridge['secrets'] = {
+      get: async () => ({ ok: true, value: null }),
+      set: async () => ({ ok: true }),
+      remove: async () => ({ ok: true }),
+    };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs, secrets };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
     TestBed.configureTestingModule({});
     return TestBed.inject(NativeFsService);

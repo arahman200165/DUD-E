@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
 import { startStaticServer } from './static-server';
 import { registerFsHandlers } from './fs-bridge';
+import { registerSecretsHandlers } from './secrets-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -36,6 +37,7 @@ async function createWindow(): Promise<void> {
 
 void app.whenReady().then(() => {
   registerFsHandlers();
+  registerSecretsHandlers();
   return createWindow();
 });
 
