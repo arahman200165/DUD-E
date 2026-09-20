@@ -1,4 +1,4 @@
-import { findMatches } from './regex-match';
+import { findMatches, replaceMatches } from './regex-match';
 
 describe('findMatches', () => {
   it('rejects an empty pattern', () => {
@@ -60,5 +60,34 @@ describe('findMatches', () => {
 
     expect(result.ok).toBe(true);
     expect(result.ok && result.matches).toHaveLength(10_000);
+  });
+});
+
+describe('replaceMatches', () => {
+  it('rejects an empty pattern', () => {
+    expect(replaceMatches('', '', 'text', '')).toEqual({ ok: false, error: 'Enter a regular expression.' });
+  });
+
+  it('reports a syntax error for an invalid pattern', () => {
+    expect(replaceMatches('(unclosed', '', 'text', '').ok).toBe(false);
+  });
+
+  it('replaces only the first match without the g flag', () => {
+    expect(replaceMatches('cat', '', 'cat sat cat', 'dog')).toEqual({ ok: true, output: 'dog sat cat' });
+  });
+
+  it('replaces all matches with the g flag', () => {
+    expect(replaceMatches('cat', 'g', 'cat sat cat', 'dog')).toEqual({ ok: true, output: 'dog sat dog' });
+  });
+
+  it('substitutes numbered capture groups with $1 syntax', () => {
+    expect(replaceMatches('(\\d+)-(\\d+)', '', '10-20', '$2-$1')).toEqual({ ok: true, output: '20-10' });
+  });
+
+  it('substitutes named capture groups with $<name> syntax', () => {
+    expect(replaceMatches('(?<year>\\d{4})-(?<month>\\d{2})', '', '2024-01', '$<month>/$<year>')).toEqual({
+      ok: true,
+      output: '01/2024',
+    });
   });
 });

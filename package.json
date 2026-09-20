@@ -47,6 +47,7 @@
     "papaparse": "^5.7.0",
     "parse-duration": "^2.1.8",
     "picomatch": "^4.0.7",
+    "regexp-tree": "^0.1.27",
     "rrule": "^2.8.1",
     "rxjs": "~7.8.0",
     "semver": "^7.8.5",

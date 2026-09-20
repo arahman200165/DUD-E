@@ -47,6 +47,28 @@ export function findMatches(pattern: string, flags: string, testText: string): R
   return { ok: true, matches };
 }
 
+export type RegexReplaceResult = { readonly ok: true; readonly output: string } | { readonly ok: false; readonly error: string };
+
+/**
+ * Uses the flags exactly as given — unlike `findMatches`, which force-adds
+ * `g` for enumeration purposes, replace mode must respect the user's actual
+ * flags verbatim, since JS's own single-vs-`g` replace semantics *are* the
+ * "Replace" vs "Replace All" distinction. `$1`/`$<name>` substitution is
+ * native to `String.prototype.replace` — nothing to hand-roll here.
+ */
+export function replaceMatches(pattern: string, flags: string, testText: string, replacement: string): RegexReplaceResult {
+  if (pattern === '') return { ok: false, error: 'Enter a regular expression.' };
+
+  let regex: RegExp;
+  try {
+    regex = new RegExp(pattern, flags);
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+
+  return { ok: true, output: testText.replace(regex, replacement) };
+}
+
 function buildGroups(match: RegExpExecArray): readonly RegexMatchGroup[] {
   const groups: RegexMatchGroup[] = [];
 

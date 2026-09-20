@@ -19,7 +19,59 @@
           {{ flag }}
         </label>
       }
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        [class.bg-panel-elevated]="showExplain()"
+        (click)="toggleExplain()"
+      >
+        Explain
+      </button>
+
+      <label class="flex items-center gap-1.5">
+        Flavor
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="flavor()"
+          (change)="onFlavorChange($event)"
+        >
+          @for (entry of flavors; track entry[0]) {
+            <option [value]="entry[0]">{{ entry[1] }}</option>
+          }
+        </select>
+      </label>
     </div>
+
+    @if (showExplain()) {
+      @if (explainResult(); as explain) {
+        @if (explain.ok) {
+          <div class="flex flex-col gap-0.5 rounded-sm border border-border bg-panel p-2 font-mono text-ui-xs text-text">
+            @for (line of explain.lines; track $index) {
+              <div [style.padding-left.rem]="line.depth * 1">{{ line.text }}</div>
+            }
+          </div>
+        } @else {
+          <app-error-panel [message]="explain.error" />
+        }
+      }
+    }
+
+    @if (flavorNotes().length > 0) {
+      <div class="flex flex-col gap-1">
+        @for (note of flavorNotes(); track note.id) {
+          <div
+            class="rounded-sm border px-2 py-1 text-ui-xs"
+            [class.border-warning]="note.severity === 'warning'"
+            [class.text-warning]="note.severity === 'warning'"
+            [class.border-border]="note.severity === 'info'"
+            [class.text-text-muted]="note.severity === 'info'"
+          >
+            <span class="font-medium">{{ note.title }}:</span> {{ note.detail }}
+          </div>
+        }
+      </div>
+    }
 
     <textarea
       rows="6"
@@ -29,13 +81,48 @@
       (input)="onTestTextInput($event)"
     ></textarea>
 
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui w-fit">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'match'"
+        [class.text-bg]="mode() === 'match'"
+        [class.text-text-muted]="mode() !== 'match'"
+        (click)="setMode('match')"
+      >
+        Match
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'replace'"
+        [class.text-bg]="mode() === 'replace'"
+        [class.text-text-muted]="mode() !== 'replace'"
+        (click)="setMode('replace')"
+      >
+        Replace
+      </button>
+    </div>
+
+    @if (mode() === 'replace') {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Replacement (supports $1, $&lt;name&gt;, $&amp;, $$)</span>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="replacement()"
+          (input)="onReplacementInput($event)"
+        />
+      </div>
+    }
+
     <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
         (click)="run()"
       >
-        Test
+        {{ mode() === 'replace' ? 'Replace' : 'Test' }}
       </button>
 
       <button
@@ -63,28 +150,51 @@
 
       @if (currentJob.result(); as result) {
         @if (result.ok) {
-          @if (result.matches.length > 0) {
-            <div class="flex flex-col gap-1.5">
-              @for (entry of result.matches; track $index) {
-                <div class="rounded-sm border border-border bg-panel p-2 text-ui">
-                  <div class="flex items-center justify-between">
-                    <span class="font-mono text-text">{{ entry.match || '(empty match)' }}</span>
-                    <span class="text-text-muted">at {{ entry.index }}</span>
-                  </div>
-                  @if (entry.groups.length > 0) {
-                    <div class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-text-muted">
-                      @for (group of entry.groups; track $index) {
-                        <span>
-                          {{ group.name ?? 'group ' + group.index }}: <span class="font-mono text-text">{{ group.value ?? '(undefined)' }}</span>
-                        </span>
-                      }
-                    </div>
-                  }
+          @if (mode() === 'replace') {
+            @if ('output' in result) {
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-ui text-text-muted">Output</span>
+                  <button
+                    type="button"
+                    class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+                    (click)="copy(result.output)"
+                  >
+                    Copy
+                  </button>
                 </div>
-              }
-            </div>
-          } @else {
-            <p class="text-ui text-text-muted">No matches.</p>
+                <textarea
+                  rows="6"
+                  readonly
+                  class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+                  [value]="result.output"
+                ></textarea>
+              </div>
+            }
+          } @else if ('matches' in result) {
+            @if (result.matches.length > 0) {
+              <div class="flex flex-col gap-1.5">
+                @for (entry of result.matches; track $index) {
+                  <div class="rounded-sm border border-border bg-panel p-2 text-ui">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono text-text">{{ entry.match || '(empty match)' }}</span>
+                      <span class="text-text-muted">at {{ entry.index }}</span>
+                    </div>
+                    @if (entry.groups.length > 0) {
+                      <div class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-text-muted">
+                        @for (group of entry.groups; track $index) {
+                          <span>
+                            {{ group.name ?? 'group ' + group.index }}: <span class="font-mono text-text">{{ group.value ?? '(undefined)' }}</span>
+                          </span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="text-ui text-text-muted">No matches.</p>
+            }
           }
         } @else {
           <app-error-panel [message]="result.error" />
