@@ -1,0 +1,84 @@
+<app-tool-shell title="JavaScript Playground" status="experimental">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="run()">
+          Run
+        </button>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated disabled:opacity-40"
+          [disabled]="!running()"
+          (click)="stop()"
+        >
+          Stop
+        </button>
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+          Clear
+        </button>
+      </div>
+      <app-busy-indicator [status]="status()" />
+    </div>
+
+    <p class="text-ui-sm text-text-muted">
+      Runs in a network-isolated sandbox (no <code>fetch</code>/cookies/DOM access) with a {{ timeoutMs() / 1000 }}s execution
+      limit. Synchronous only — output from a <code>setTimeout</code>/<code>Promise</code> callback that hasn't fired by the
+      time your code returns won't be captured.
+    </p>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Code</span>
+      <textarea
+        rows="10"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Type JavaScript here…"
+        [value]="code()"
+        (input)="onCodeChange($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Output</span>
+      <div class="max-h-64 overflow-y-auto whitespace-pre-wrap rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs">
+        @for (line of state().logs; track $index) {
+          <div
+            [class.text-error]="line.level === 'error'"
+            [class.text-warning]="line.level === 'warn'"
+            [class.text-text]="line.level !== 'error' && line.level !== 'warn'"
+          >{{ line.text }}</div>
+        }
+        @if (state().logs.length === 0 && !state().outcome) {
+          <span class="text-text-muted">No output yet — click Run.</span>
+        }
+        @if (state().outcome; as outcome) {
+          @if (outcome.kind === 'result') {
+            <div class="mt-1 text-text-muted">⇒ {{ outcome.value ?? 'undefined' }} ({{ outcome.durationMs }}ms)</div>
+          }
+          @if (outcome.kind === 'terminated') {
+            <div class="mt-1 text-warning">
+              @switch (outcome.reason) {
+                @case ('timeout') {
+                  Terminated: exceeded the {{ timeoutMs() / 1000 }}s execution limit.
+                }
+                @case ('cancelled') {
+                  Stopped.
+                }
+                @case ('log-flood') {
+                  Terminated: too much console output.
+                }
+              }
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    @if (state().outcome; as outcome) {
+      @if (outcome.kind === 'error') {
+        <app-error-panel [message]="outcome.message" />
+      }
+    }
+  </div>
+
+  <app-code-sandbox-host />
+</app-tool-shell>

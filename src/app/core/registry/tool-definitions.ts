@@ -535,4 +535,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
+  {
+    id: 'js-playground',
+    title: 'JavaScript Playground',
+    shortTitle: 'JS Playground',
+    description: 'Run JavaScript snippets in a network-isolated sandbox with captured console output, uncaught errors, and a hard execution timeout.',
+    category: 'developer',
+    keywords: ['javascript', 'js', 'playground', 'run', 'execute', 'console', 'sandbox', 'repl', 'code'],
+    route: '/tools/js-playground',
+    load: () => import('../../tools/js-playground/js-playground').then((m) => m.JsPlayground),
+    status: 'experimental',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'required' },
+    network: { required: false },
+  },
 ];
