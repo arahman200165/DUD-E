@@ -447,6 +447,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     network: { required: true },
   },
   {
+    id: 'jwt-signer',
+    title: 'JWT Signer',
+    shortTitle: 'JWT Signer',
+    description: 'Sign a JWT with an HMAC secret or an RSA/EC/RSA-PSS private key, with in-browser key-pair generation.',
+    category: 'security',
+    keywords: ['jwt', 'sign', 'signature', 'hmac', 'rsa', 'ecdsa', 'ps256', 'key pair', 'auth', 'token'],
+    route: '/tools/jwt-signer',
+    load: () => import('../../tools/jwt-signer/jwt-signer').then((m) => m.JwtSigner),
+    status: 'experimental',
+    persistence: { input: 'none', preferences: 'local' },
+  },
+  {
     id: 'json-schema-validator',
     title: 'JSON Schema Validator',
     shortTitle: 'Schema Validator',
