@@ -319,4 +319,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'local', preferences: 'local' },
   },
+  {
+    id: 'semver-comparator',
+    title: 'Semantic Version Comparator',
+    description: 'Compare, sort, and range-check versions against the Semantic Versioning spec.',
+    category: 'developer',
+    keywords: ['semver', 'semantic version', 'compare', 'sort', 'range', 'version'],
+    route: '/tools/semver-comparator',
+    load: () => import('../../tools/semver-comparator/semver-comparator').then((m) => m.SemverComparator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];
