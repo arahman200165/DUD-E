@@ -126,4 +126,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
   },
+  {
+    id: 'query-string',
+    title: 'Query String Parser / Builder',
+    description: 'Parse a query string or URL into key/value pairs, or build one from scratch.',
+    category: 'web',
+    keywords: ['query string', 'query params', 'url', 'parse', 'build', 'search params'],
+    route: '/tools/query-string',
+    load: () => import('../../tools/query-string/query-string').then((m) => m.QueryString),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+  },
 ];

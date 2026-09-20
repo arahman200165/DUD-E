@@ -1,0 +1,76 @@
+<app-tool-shell title="Query String Parser / Builder" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-2">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="addPair()"
+      >
+        Add pair
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="copy()"
+      >
+        Copy query string
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    <div class="min-h-64 flex-1 rounded-sm border border-border">
+      <app-split-pane [initialRatio]="0.45">
+        <div slot="start" class="flex h-full flex-col gap-1 bg-panel p-2">
+          <span class="text-ui text-text-muted">Query string / URL</span>
+          <textarea
+            class="h-full w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="Paste a query string or full URL here…"
+            [value]="raw()"
+            (input)="onRawChange($event)"
+          ></textarea>
+        </div>
+
+        <div slot="end" class="flex h-full flex-col gap-1 bg-panel p-2">
+          <span class="text-ui text-text-muted">Parameters</span>
+          @if (pairs().length > 0) {
+            <div class="flex flex-col gap-1">
+              @for (pair of pairs(); track $index) {
+                <div class="flex items-center gap-1">
+                  <input
+                    type="text"
+                    class="w-1/3 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                    placeholder="key"
+                    [value]="pair.key"
+                    (input)="onKeyInput($index, $event)"
+                  />
+                  <input
+                    type="text"
+                    class="flex-1 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                    placeholder="value"
+                    [value]="pair.value"
+                    (input)="onValueInput($index, $event)"
+                  />
+                  <button
+                    type="button"
+                    class="rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+                    (click)="removePair($index)"
+                  >
+                    Remove
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="text-ui text-text-muted">No parameters yet — paste a query string or add one.</p>
+          }
+        </div>
+      </app-split-pane>
+    </div>
+  </div>
+</app-tool-shell>

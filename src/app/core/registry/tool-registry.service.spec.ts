@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { TOOL_CATEGORIES } from '../../shared/models/tool-category.model';
 import { ToolDefinition } from '../../shared/models/tool-definition.model';
 import { ToolRegistryService, validateDefinitions } from './tool-registry.service';
 
@@ -24,9 +25,11 @@ describe('ToolRegistryService', () => {
     expect(service.getById('json')?.persistence?.input).toBe('session');
   });
 
-  it('returns an empty array for categories with no tools', () => {
+  it('returns an array for every declared category, not just ones with tools', () => {
     const grouped = service.groupedByCategory();
-    expect(grouped['web']).toEqual([]);
+    for (const category of TOOL_CATEGORIES) {
+      expect(Array.isArray(grouped[category])).toBe(true);
+    }
   });
 
   it('requiresNetwork is false for tools with no declared network policy', () => {
