@@ -239,4 +239,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
+  {
+    id: 'json-query',
+    title: 'JSONPath / JMESPath Tester',
+    description: 'Query JSON with a JSONPath or JMESPath expression.',
+    category: 'data',
+    keywords: ['jsonpath', 'jmespath', 'query', 'json', 'filter', 'search'],
+    route: '/tools/json-query',
+    load: () => import('../../tools/json-query/json-query').then((m) => m.JsonQuery),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+  },
 ];

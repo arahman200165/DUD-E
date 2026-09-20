@@ -27,7 +27,7 @@
             ],
             "styles": ["src/styles.css"],
             "webWorkerTsConfig": "tsconfig.worker.json",
-            "allowedCommonJsDependencies": ["diff-match-patch", "papaparse"]
+            "allowedCommonJsDependencies": ["diff-match-patch", "papaparse", "jmespath"]
           },
           "configurations": {
             "production": {
