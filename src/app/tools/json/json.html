@@ -1,7 +1,7 @@
 <app-tool-shell title="JSON Formatter" status="stable">
   <div class="flex flex-col gap-3">
     <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
-      @if (view() !== 'tree') {
+      @if (view() === 'text') {
         <div class="flex overflow-hidden rounded-sm border border-border">
           <button
             type="button"
@@ -36,18 +36,18 @@
         </div>
       }
 
-      @if (showTreeToggle()) {
-        <div class="flex overflow-hidden rounded-sm border border-border">
-          <button
-            type="button"
-            class="px-2 py-0.5"
-            [class.bg-accent]="view() === 'text'"
-            [class.text-bg]="view() === 'text'"
-            [class.text-text-muted]="view() !== 'text'"
-            (click)="setView('text')"
-          >
-            Text
-          </button>
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="view() === 'text'"
+          [class.text-bg]="view() === 'text'"
+          [class.text-text-muted]="view() !== 'text'"
+          (click)="setView('text')"
+        >
+          Text
+        </button>
+        @if (showTreeToggle()) {
           <button
             type="button"
             class="px-2 py-0.5"
@@ -58,10 +58,20 @@
           >
             Tree
           </button>
-        </div>
-      }
+        }
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="view() === 'compare'"
+          [class.text-bg]="view() === 'compare'"
+          [class.text-text-muted]="view() !== 'compare'"
+          (click)="setView('compare')"
+        >
+          Compare
+        </button>
+      </div>
 
-      @if (view() !== 'tree' && mode() === 'pretty') {
+      @if (view() === 'text' && mode() === 'pretty') {
         <label class="flex items-center gap-1.5">
           Indent
           <select
@@ -89,22 +99,73 @@
       }
     </div>
 
-    <textarea
-      rows="8"
-      class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
-      placeholder="Paste JSON here…"
-      [value]="input()"
-      (input)="onInputChange($event)"
-    ></textarea>
+    @if (view() === 'compare') {
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <textarea
+          rows="8"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Left JSON…"
+          [value]="input()"
+          (input)="onInputChange($event)"
+        ></textarea>
+        <textarea
+          rows="8"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Right JSON…"
+          [value]="compareRight()"
+          (input)="onCompareRightChange($event)"
+        ></textarea>
+      </div>
+    } @else {
+      <textarea
+        rows="8"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste JSON here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    }
 
     @if (view() === 'tree') {
-      @if (treeResult(); as tree) {
+      @if (treeEditError()) {
+        <app-error-panel [message]="treeEditError()" />
+      }
+      @if (treeNode(); as tree) {
         @if (tree.ok) {
           <div class="max-h-[28rem] overflow-auto rounded-sm border border-border bg-panel p-2">
-            <app-tree-view [nodes]="[tree.node]" />
+            <app-json-tree-editor [node]="tree.node" (edit)="onTreeEdit($event)" />
           </div>
         } @else {
           <app-error-panel [message]="tree.error" />
+        }
+      }
+    } @else if (view() === 'compare') {
+      @if (usesCompareWorker() && compareJob(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+      @if (compareResult(); as diff) {
+        @if (diff.ok) {
+          @if (diff.entries.length === 0) {
+            <div class="rounded-sm border border-border bg-panel p-2 text-ui text-success">No structural differences.</div>
+          } @else {
+            <ul class="flex max-h-[28rem] flex-col gap-1 overflow-auto">
+              @for (entry of diff.entries; track entry.path) {
+                <li class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-ui-xs">
+                  <span class="text-text-muted">{{ entry.kind }}</span>
+                  <span class="text-text">{{ entry.path }}</span>
+                  @if (entry.kind === 'added') {
+                    <span class="text-success"> + {{ format(entry.after) }}</span>
+                  } @else if (entry.kind === 'removed') {
+                    <span class="text-error"> - {{ format(entry.before) }}</span>
+                  } @else {
+                    <span class="text-error"> {{ format(entry.before) }}</span><span class="text-text-muted"> &rarr; </span><span class="text-success">{{ format(entry.after) }}</span>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        } @else {
+          <app-error-panel [message]="'Could not parse the ' + diff.side + ' side: ' + diff.error" />
         }
       }
     } @else if (usesWorker() && job()?.error(); as workerError) {
@@ -130,11 +191,23 @@
           ></textarea>
         </div>
       } @else {
-        <app-error-panel
-          [message]="current.error.line !== undefined
-            ? current.error.message + ' (line ' + current.error.line + ', column ' + current.error.column + ')'
-            : current.error.message"
-        />
+        <div class="flex flex-col gap-1">
+          <app-error-panel
+            [message]="current.error.line !== undefined
+              ? current.error.message + ' (line ' + current.error.line + ', column ' + current.error.column + ')'
+              : current.error.message"
+          />
+          @if (repairError()) {
+            <app-error-panel [message]="repairError()" />
+          }
+          <button
+            type="button"
+            class="w-fit rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+            (click)="repair()"
+          >
+            Attempt repair
+          </button>
+        </div>
       }
     }
   </div>

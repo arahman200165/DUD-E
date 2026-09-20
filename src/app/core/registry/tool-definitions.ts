@@ -95,9 +95,9 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'json',
     title: 'JSON Formatter',
-    description: 'Validate, format, and minify JSON.',
+    description: 'Validate, format, and minify JSON, with an editable tree view, structural compare, and malformed-JSON repair.',
     category: 'data',
-    keywords: ['json', 'format', 'validate', 'pretty', 'minify'],
+    keywords: ['json', 'format', 'validate', 'pretty', 'minify', 'tree', 'edit', 'compare', 'diff', 'repair'],
     route: '/tools/json',
     load: () => import('../../tools/json/json').then((m) => m.Json),
     status: 'stable',

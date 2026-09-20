@@ -1,0 +1,63 @@
+<div class="flex flex-col gap-0.5">
+  <div class="flex flex-wrap items-center gap-1.5 text-ui">
+    @if (isContainer()) {
+      <button type="button" class="w-4 text-text-muted" (click)="toggle()">{{ expanded() ? '▾' : '▸' }}</button>
+    } @else {
+      <span class="w-4"></span>
+    }
+
+    @if (!isRoot()) {
+      <input
+        type="text"
+        class="w-28 rounded-sm border border-border bg-panel px-1 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="node().key"
+        (change)="onRenameKey($event)"
+      />
+    } @else {
+      <span class="font-mono text-text-muted">$</span>
+    }
+
+    <select
+      class="rounded-sm border border-border bg-panel px-1 py-0.5 text-ui-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      [value]="node().type"
+      (change)="onTypeChange($event)"
+    >
+      @for (t of valueTypes; track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select>
+
+    @if (node().type === 'string' || node().type === 'number') {
+      <input
+        type="text"
+        class="min-w-24 flex-1 rounded-sm border border-border bg-panel px-1 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="node().value"
+        (change)="onValueInput($event)"
+      />
+    } @else if (node().type === 'boolean') {
+      <select
+        class="rounded-sm border border-border bg-panel px-1 py-0.5 text-ui-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="booleanDisplay()"
+        (change)="onBooleanChange($event)"
+      >
+        <option value="true">true</option>
+        <option value="false">false</option>
+      </select>
+    } @else if (isContainer()) {
+      <span class="text-ui-xs text-text-muted">{{ (node().children ?? []).length }} item(s)</span>
+      <button type="button" class="rounded-sm border border-border px-1.5 py-0 text-ui-xs hover:bg-panel-elevated" (click)="addChild()">+ add</button>
+    }
+
+    @if (!isRoot()) {
+      <button type="button" class="rounded-sm border border-border px-1.5 py-0 text-ui-xs text-error hover:bg-error/10" (click)="deleteSelf()">✕</button>
+    }
+  </div>
+
+  @if (isContainer() && expanded()) {
+    <div class="ml-5 flex flex-col gap-0.5 border-l border-border pl-2">
+      @for (child of node().children ?? []; track child.path) {
+        <app-json-tree-editor [node]="child" (edit)="onChildEdit($event)" />
+      }
+    </div>
+  }
+</div>

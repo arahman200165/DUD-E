@@ -10,7 +10,10 @@ export type JsonValueType = 'object' | 'array' | 'string' | 'number' | 'boolean'
 
 export interface JsonTreeNode {
   readonly key: string;
+  /** Display-only JSONPath-style string (`$.a.b[0]`) — lossy for keys containing `.`/`[`/`]`, never parsed back. */
   readonly path: string;
+  /** Structural, edit-safe path from the root — built directly, never derived from `path`. */
+  readonly segments: readonly (string | number)[];
   readonly type: JsonValueType;
   readonly value: unknown;
   readonly children?: readonly JsonTreeNode[];
@@ -22,27 +25,29 @@ function typeOf(value: unknown): JsonValueType {
   return typeof value as JsonValueType;
 }
 
-function buildNode(key: string, path: string, value: unknown): JsonTreeNode {
+function buildNode(key: string, path: string, segments: readonly (string | number)[], value: unknown): JsonTreeNode {
   const type = typeOf(value);
 
   if (type === 'object') {
     const children = Object.entries(value as Record<string, unknown>).map(([childKey, childValue]) =>
-      buildNode(childKey, `${path}.${childKey}`, childValue),
+      buildNode(childKey, `${path}.${childKey}`, [...segments, childKey], childValue),
     );
-    return { key, path, type, value, children };
+    return { key, path, segments, type, value, children };
   }
 
   if (type === 'array') {
-    const children = (value as readonly unknown[]).map((item, index) => buildNode(String(index), `${path}[${index}]`, item));
-    return { key, path, type, value, children };
+    const children = (value as readonly unknown[]).map((item, index) =>
+      buildNode(String(index), `${path}[${index}]`, [...segments, index], item),
+    );
+    return { key, path, segments, type, value, children };
   }
 
-  return { key, path, type, value };
+  return { key, path, segments, type, value };
 }
 
 /** Builds a tree rooted at `$`, the conventional JSONPath root. */
 export function buildJsonTree(parsed: unknown): JsonTreeNode {
-  return buildNode('$', '$', parsed);
+  return buildNode('$', '$', [], parsed);
 }
 
 function jsonTreeNodeLabel(node: JsonTreeNode): string {

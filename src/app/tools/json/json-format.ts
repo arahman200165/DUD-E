@@ -16,7 +16,7 @@ export interface JsonParseError {
 
 export type JsonFormatResult = { readonly ok: true; readonly output: string } | { readonly ok: false; readonly error: JsonParseError };
 
-function indentString(indent: JsonIndent): string {
+export function indentString(indent: JsonIndent): string {
   return indent === 'tab' ? '\t' : ' '.repeat(indent);
 }
 
