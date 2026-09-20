@@ -32,7 +32,7 @@ Everything runs client-side. There's no backend, no accounts, no telemetry — y
 
 ## Tools
 
-46 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+50 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -79,6 +79,10 @@ Everything runs client-side. There's no backend, no accounts, no telemetry — y
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
 | [Git Repo Browser](https://arahman200165.github.io/DUDE/tools/git-diff) | Developer | Browses a local git repository's commit history and diffs any two commits, entirely client-side. |
+| [JavaScript Playground](https://arahman200165.github.io/DUDE/tools/js-playground) | Developer | Runs JavaScript snippets in a network-isolated sandbox with captured console output and a hard execution timeout. |
+| [HTML Preview](https://arahman200165.github.io/DUDE/tools/html-preview) | Developer | Live-renders pasted HTML — including its own inline `<script>`/`<style>` — in a network-isolated sandbox. |
+| [Template Renderer](https://arahman200165.github.io/DUDE/tools/template-renderer) | Developer | Renders an EJS template against a JSON context, in the same sandbox as the JavaScript Playground. |
+| [Python Playground](https://arahman200165.github.io/DUDE/tools/python-playground) | Developer | Runs Python via Pyodide (WebAssembly CPython) — no network calls once the runtime is cached. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |
