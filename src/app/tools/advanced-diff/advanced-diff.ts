@@ -14,9 +14,11 @@ import { DiffHunk, MergeDecision, buildHunks, buildMergedOutput } from './diff-h
 import { formatUnifiedDiff } from './unified-diff';
 import { AdvancedDiffPayload, DiffGranularity } from './advanced-diff-payload';
 import { AdvancedDiffResult } from './advanced-diff-result';
+import { buildThreeWayMergeOutput, ThreeWayDecision, ThreeWayHunk } from './three-way-merge';
 
 export type DiffInputMode = 'paste' | 'file';
 export type DiffViewMode = 'diff' | 'merge';
+export type MergeMode = 'two-way' | 'three-way';
 
 const LINE_CLASSES: Record<DiffLineType, string> = {
   add: 'bg-success/10 text-success',
@@ -52,6 +54,8 @@ export class AdvancedDiff implements OnDestroy {
   );
   protected readonly viewMode = this.persistence.signal<DiffViewMode>('advanced-diff', 'viewMode', 'local', 'diff');
   protected readonly paneRatio = this.persistence.signal('advanced-diff', 'paneRatio', 'local', 0.5);
+  protected readonly mergeMode = this.persistence.signal<MergeMode>('advanced-diff', 'mergeMode', 'local', 'two-way');
+  protected readonly base = this.persistence.signal('advanced-diff', 'base', 'session', '');
 
   protected readonly rejection = signal<string | null>(null);
   protected readonly job = signal<WorkerJob<AdvancedDiffResult> | null>(null);
@@ -59,6 +63,7 @@ export class AdvancedDiff implements OnDestroy {
   // In-memory only — merge decisions are keyed to a specific diff run and
   // shouldn't silently reapply to unrelated content after a reload.
   protected readonly mergeDecisions = signal<ReadonlyMap<number, MergeDecision>>(new Map());
+  protected readonly threeWayDecisions = signal<ReadonlyMap<number, ThreeWayDecision>>(new Map());
   protected readonly activeHunk = signal(0);
 
   protected readonly hunks = computed<readonly DiffHunk[]>(() => {
@@ -72,6 +77,14 @@ export class AdvancedDiff implements OnDestroy {
   });
 
   protected readonly resolvedCount = computed(() => this.mergeDecisions().size);
+
+  protected readonly threeWayHunks = computed<readonly ThreeWayHunk[]>(() => this.job()?.result()?.threeWayMerge?.hunks ?? []);
+  protected readonly threeWayConflictHunks = computed(() =>
+    this.threeWayHunks().filter((h) => !h.context && h.status === 'conflict'),
+  );
+  protected readonly threeWayMergedOutput = computed(() =>
+    buildThreeWayMergeOutput(this.threeWayHunks(), this.threeWayDecisions()),
+  );
 
   protected readonly unifiedDiffText = computed(() => {
     const result = this.job()?.result();
@@ -95,6 +108,11 @@ export class AdvancedDiff implements OnDestroy {
     this.viewMode.set(mode);
   }
 
+  protected setMergeMode(mode: MergeMode): void {
+    this.mergeMode.set(mode);
+    this.threeWayDecisions.set(new Map());
+  }
+
   protected onLeftInput(event: Event): void {
     this.left.set((event.target as HTMLTextAreaElement).value);
   }
@@ -103,12 +121,20 @@ export class AdvancedDiff implements OnDestroy {
     this.right.set((event.target as HTMLTextAreaElement).value);
   }
 
+  protected onBaseInput(event: Event): void {
+    this.base.set((event.target as HTMLTextAreaElement).value);
+  }
+
   protected async onLeftFileSelected(file: File): Promise<void> {
     this.left.set(await file.text());
   }
 
   protected async onRightFileSelected(file: File): Promise<void> {
     this.right.set(await file.text());
+  }
+
+  protected async onBaseFileSelected(file: File): Promise<void> {
+    this.base.set(await file.text());
   }
 
   protected onRejected(message: string): void {
@@ -122,9 +148,15 @@ export class AdvancedDiff implements OnDestroy {
   protected run(): void {
     this.job()?.cancel();
     this.mergeDecisions.set(new Map());
+    this.threeWayDecisions.set(new Map());
     this.activeHunk.set(0);
 
-    const payload: AdvancedDiffPayload = { left: this.left(), right: this.right(), granularity: this.granularity() };
+    const payload: AdvancedDiffPayload = {
+      left: this.left(),
+      right: this.right(),
+      granularity: this.granularity(),
+      base: this.mergeMode() === 'three-way' ? this.base() : undefined,
+    };
     this.job.set(
       this.workerClient.run<AdvancedDiffPayload, AdvancedDiffResult>(
         () => new Worker(new URL('./advanced-diff.worker', import.meta.url), { type: 'module' }),
@@ -141,8 +173,10 @@ export class AdvancedDiff implements OnDestroy {
     this.job()?.cancel();
     this.left.set('');
     this.right.set('');
+    this.base.set('');
     this.job.set(null);
     this.mergeDecisions.set(new Map());
+    this.threeWayDecisions.set(new Map());
     this.rejection.set(null);
   }
 
@@ -150,6 +184,16 @@ export class AdvancedDiff implements OnDestroy {
     const next = new Map(this.mergeDecisions());
     next.set(hunkIndex, decision);
     this.mergeDecisions.set(next);
+  }
+
+  protected acceptThreeWayHunk(hunkIndex: number, decision: ThreeWayDecision): void {
+    const next = new Map(this.threeWayDecisions());
+    next.set(hunkIndex, decision);
+    this.threeWayDecisions.set(next);
+  }
+
+  protected threeWayDecisionFor(hunkIndex: number): ThreeWayDecision | undefined {
+    return this.threeWayDecisions().get(hunkIndex);
   }
 
   protected isResolved(hunkIndex: number): boolean {
