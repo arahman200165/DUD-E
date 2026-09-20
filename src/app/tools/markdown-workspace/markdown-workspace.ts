@@ -128,6 +128,11 @@ export class MarkdownWorkspace implements OnDestroy {
   protected readonly joinCodeInput = signal('');
   protected readonly showCollabPanel = signal(false);
 
+  // Stage 7: BYO relay — read the same 'settings'-tool-owned preference the
+  // Settings tool's UI writes (a plain `local` value both tools' components
+  // read/write through the one shared PersistenceService key).
+  protected readonly relayUrl = this.persistence.signal('settings', 'relayUrl', 'local', '');
+
   constructor() {
     effect((onCleanup) => {
       const source = this.source();
@@ -164,6 +169,31 @@ export class MarkdownWorkspace implements OnDestroy {
     this.collabUrl.set(result.url);
     this.collabSessionCode.set(result.sessionCode);
     this.connectCollabClient(result.url, result.sessionCode, this.source());
+  }
+
+  /**
+   * Hosts via a self-hosted relay (Stage 7) instead of the local LAN
+   * server — no IPC/Electron main process involved at all, since a relay
+   * host is really just a specially-generated "join": this client
+   * connects directly to `<relayUrl>/<roomId>` with a fresh random code,
+   * the same way any joiner connects to any room.
+   */
+  protected startHostingViaRelay(): void {
+    const relayUrl = this.relayUrl().trim().replace(/\/+$/, '');
+    if (!relayUrl) {
+      this.collabError.set('Configure a relay server URL in Settings first.');
+      return;
+    }
+
+    this.collabError.set('');
+    const roomId = crypto.randomUUID();
+    const sessionCode = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+    const url = `${relayUrl}/${roomId}`;
+
+    this.collabRole.set('host');
+    this.collabUrl.set(url);
+    this.collabSessionCode.set(sessionCode);
+    this.connectCollabClient(url, sessionCode, this.source());
   }
 
   protected onJoinUrlInput(event: Event): void {

@@ -9,6 +9,6 @@
     "outDir": "../out-tsc/electron",
     "rootDir": ".."
   },
-  "include": ["./**/*.ts", "../src/shared-logic/**/*.ts"],
-  "exclude": ["../src/shared-logic/**/*.spec.ts"]
+  "include": ["./**/*.ts", "../src/shared-logic/**/*.ts", "../collab-relay/**/*.ts"],
+  "exclude": ["../src/shared-logic/**/*.spec.ts", "../collab-relay/**/*.spec.ts"]
 }

@@ -3,6 +3,7 @@ import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PlatformService } from '../../core/platform/platform.service';
 import { SecureLocalService } from '../../core/persistence/secure-local.service';
+import { PersistenceService } from '../../core/persistence/persistence.service';
 import { ShellChromeService } from '../../core/platform/shell-chrome.service';
 import type { QuickActionInfo } from '../../core/platform/electron-bridge';
 
@@ -36,6 +37,7 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 export class Settings {
   private readonly secureLocal = inject(SecureLocalService);
   private readonly shellChrome = inject(ShellChromeService);
+  private readonly persistence = inject(PersistenceService);
   protected readonly platform = inject(PlatformService);
 
   protected readonly loadStatus = signal<LoadStatus>('loading');
@@ -52,6 +54,11 @@ export class Settings {
   protected readonly quickActions = signal<readonly QuickActionInfo[]>([]);
   protected readonly hotkeyDrafts = signal<Record<string, string>>({});
   protected readonly hotkeyErrors = signal<Record<string, string>>({});
+
+  // Stage 7: BYO relay for cross-network collab — a URL the user configures
+  // to self-host, not a credential, so this is a plain `local` preference
+  // rather than going through SecureLocalService like the LLM fields above.
+  protected readonly relayUrl = this.persistence.signal('settings', 'relayUrl', 'local', '');
 
   constructor() {
     if (this.platform.isDesktop()) {
@@ -101,6 +108,10 @@ export class Settings {
   protected clearHotkey(actionId: string): void {
     this.hotkeyDrafts.update((drafts) => ({ ...drafts, [actionId]: '' }));
     void this.saveHotkey(actionId);
+  }
+
+  protected onRelayUrlInput(event: Event): void {
+    this.relayUrl.set((event.target as HTMLInputElement).value);
   }
 
   private async loadConfig(): Promise<void> {

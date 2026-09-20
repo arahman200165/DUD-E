@@ -139,9 +139,16 @@
       <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui-xs">
         @if (!collabRole()) {
           <div class="flex flex-col gap-2">
-            <button type="button" class="w-fit rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="startHostingCollabSession()">
-              Start hosting a session
-            </button>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" class="w-fit rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="startHostingCollabSession()">
+                Host on LAN
+              </button>
+              @if (relayUrl()) {
+                <button type="button" class="w-fit rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="startHostingViaRelay()">
+                  Host via Relay
+                </button>
+              }
+            </div>
 
             <span class="text-text-muted">— or join one someone else started —</span>
 

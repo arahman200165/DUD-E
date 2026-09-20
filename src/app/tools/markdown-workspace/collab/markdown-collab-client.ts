@@ -109,7 +109,13 @@ export class MarkdownCollabClient {
   private connect(): void {
     this.options.onStatusChange('connecting');
 
-    const ws = new WebSocket(`${this.options.url}/?code=${this.options.sessionCode}`);
+    // `url` may be a bare host:port (Stage 6's local server) or include a
+    // room path (Stage 7's relay, `<relayUrl>/<roomId>`) — append the code
+    // as a query param without forcing an extra `/` that would otherwise
+    // make the relay's room id (a plain path segment) inconsistent between
+    // the host and a joiner pasting the same URL back in.
+    const separator = this.options.url.includes('?') ? '&' : '?';
+    const ws = new WebSocket(`${this.options.url}${separator}code=${this.options.sessionCode}`);
     ws.binaryType = 'arraybuffer';
     this.ws = ws;
 
