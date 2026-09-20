@@ -901,12 +901,12 @@ These tools were selected because together they exercise different framework cap
 
 ### Explicitly deferred
 
-- JSON Schema validation;
-- JSONPath;
-- tree editor;
-- structural diff;
-- repair malformed JSON;
-- remote schema fetching.
+- JSON Schema validation — ✅ shipped, Phase 5, as a separate JSON Schema Validator tool;
+- JSONPath — ✅ shipped, Phase 5, as a separate JSON Query tool (JSONPath + JMESPath);
+- tree editor — ✅ shipped, Phase 7, the Tree view is now editable (add/edit/delete/rename nodes);
+- structural diff — ✅ shipped, Phase 7, as a "Compare" mode within this tool (path-keyed added/removed/changed/type-changed, index-based array comparison);
+- repair malformed JSON — ✅ shipped, Phase 7, a one-click "Attempt repair" action;
+- remote schema fetching — TODO, Phase 7, as a separate JSON Schema Validator tool (AJV-based, with CORS proxy for remote schemas);
 
 ---
 
@@ -929,10 +929,10 @@ These tools were selected because together they exercise different framework cap
 
 ### Explicitly deferred
 
-- regex generation using AI;
-- regex explanation service;
-- cross-language flavor emulation;
-- replace-expression builder beyond a basic replacement mode.
+- regex generation using AI — still deferred; needs an LLM proxy DUDE doesn't have, tracked as part of the future desktop-packaging initiative (§21 Phase 7) TODO;
+- regex explanation service — ✅ shipped, Phase 7, as a rule-based (non-AI) plain-English explainer built on `regexp-tree`'s AST — the offline interim for the AI version above;
+- cross-language flavor emulation — ✅ shipped, Phase 7, a PCRE/JS/Python/Java/.NET/Go RE2 compatibility-notes panel;
+- replace-expression builder beyond a basic replacement mode — ✅ shipped, Phase 7, a Replace/Replace All mode with native `$1`/`$<name>` substitution.
 
 ---
 
@@ -953,9 +953,9 @@ These tools were selected because together they exercise different framework cap
 
 ### Explicitly deferred
 
-- full timezone database browser;
-- recurring scheduling;
-- calendar math suite.
+- full timezone database browser — ✅ shipped, Phase 4, as a separate Date / Timezone Converter tool (a multi-zone world clock);
+- recurring scheduling — ✅ shipped, Phase 7, as a separate Recurrence Rule Calculator tool (iCal-style RRULE expansion);
+- calendar math suite — ✅ shipped, Phase 7, as a separate Date Calculator tool (business-day arithmetic, day counting).
 
 ---
 
@@ -977,9 +977,9 @@ These tools were selected because together they exercise different framework cap
 
 ### Explicitly deferred
 
-- file encoding;
-- Base64 image preview;
-- MIME detection.
+- file encoding — ✅ shipped, Phase 5, as a separate File Base64 Converter tool;
+- Base64 image preview — ✅ shipped, Phase 7, on the File Base64 Converter tool (both encode and decode directions);
+- MIME detection — ✅ shipped, Phase 7, on the File Base64 Converter tool (hand-rolled magic-byte sniffing, shown alongside the browser-reported type).
 
 ---
 
@@ -1001,13 +1001,11 @@ These tools were selected because together they exercise different framework cap
 
 ### Explicitly deferred
 
-- WYSIWYG editing;
-- collaborative editing;
-- document export;
-- custom themes;
-- plugin ecosystem.
-
-The requested WYSIWYG rich editor belongs to a later phase.
+- WYSIWYG editing — ✅ shipped, Phase 5, as a separate Rich Text Editor tool (TipTap-based);
+- collaborative editing — TODO; still deferred; needs a hosted backend (rooms/documents/auth) DUDE doesn't have, tracked together with AI-based regex generation as part of the future desktop-packaging initiative (§21 Phase 7);
+- document export — ✅ shipped, Phase 5, on both the Rich Text Editor (HTML/Markdown) and Advanced Markdown Workspace (HTML);
+- custom themes — ✅ shipped, Phase 7, on both this tool and Advanced Markdown Workspace: fixed style presets plus a custom-CSS mode rendered in a sandboxed `<iframe>`;
+- plugin ecosystem — ✅ shipped, Phase 7, on Advanced Markdown Workspace only (render-hook and toolbar-action plugins, each sandboxed in its own `<iframe>`).
 
 ---
 
@@ -1030,10 +1028,10 @@ The requested WYSIWYG rich editor belongs to a later phase.
 
 ### Explicitly deferred
 
-- signing;
-- signature verification requiring remote keys;
-- JWKS fetching;
-- identity-provider integrations.
+- signing — ✅ shipped, Phase 7, as a separate JWT Signer tool (HMAC and RSA/EC/RSA-PSS, with in-browser key-pair generation);
+- signature verification requiring remote keys — ✅ shipped, Phase 5, as a separate JWT Signature Verifier tool;
+- JWKS fetching — ✅ shipped, Phase 5, on the JWT Signature Verifier tool;
+- identity-provider integrations — ✅ shipped, Phase 7, as named presets (Auth0, Okta, Azure AD, Google) on the JWT Signature Verifier tool's JWKS mode.
 
 ---
 
@@ -1055,10 +1053,10 @@ The requested WYSIWYG rich editor belongs to a later phase.
 
 ### Explicitly deferred
 
-- readability scoring;
-- NLP;
-- language detection;
-- grammar checking.
+- readability scoring — ✅ shipped, Phase 7, hand-rolled Flesch-Kincaid Grade + Flesch Reading Ease;
+- NLP — dropped as a vague catch-all in favor of the two concrete items below, rather than built as originally (undefined) scoped;
+- language detection — ✅ shipped, Phase 7, via `franc-min`;
+- grammar checking — ✅ shipped, Phase 7, button-triggered, via the public LanguageTool API — the platform's first *external* API call (JWT Signature Verifier's JWKS mode only ever fetches URLs the user supplies themselves).
 
 ---
 
@@ -1078,10 +1076,10 @@ The requested WYSIWYG rich editor belongs to a later phase.
 
 ### Explicitly deferred
 
-- password cracking;
-- rainbow tables;
-- remote lookup;
-- file hashing unless trivial.
+- password cracking — TODO; defrerred; tracked as part of the future desktop-packaging initiative (§21 Phase 7);
+- rainbow tables — TODO; defrerred; tracked as part of the future desktop-packaging initiative (§21 Phase 7);
+- remote lookup — TODO; defrerred; tracked as part of the future desktop-packaging initiative (§21 Phase 7);
+- file hashing unless trivial — ✅ shipped, Phase 5, as a separate File Hash Generator tool.
 
 ---
 
@@ -1102,11 +1100,11 @@ The requested WYSIWYG rich editor belongs to a later phase.
 
 ### Explicitly deferred
 
-- directory diff;
-- binary diff;
-- Git integration;
-- merge conflict resolver;
-- three-way merge.
+- directory diff — ✅ shipped, Phase 7, as a separate Directory Diff tool;
+- binary diff — ✅ shipped, Phase 7, on the Directory Diff tool (fixed-width hex byte diff, chosen over a text diff via a NUL-byte heuristic);
+- Git integration — ✅ shipped, Phase 7, as a separate Git Repo Browser tool — scoped to read-only commit-history browsing and commit-vs-commit diffing over a locally-selected folder, not a live working-tree checkout;
+- merge conflict resolver — ✅ shipped, Phase 5, on the Advanced Diff / Merge tool;
+- three-way merge — ✅ shipped, Phase 7, on the Advanced Diff / Merge tool (hand-rolled diff3-style correlation, no dependency).
 
 ---
 
@@ -1125,9 +1123,9 @@ The requested WYSIWYG rich editor belongs to a later phase.
 
 ### Explicitly deferred
 
-- other UUID versions (v1/v5/v7);
-- bulk export;
-- namespace-based generation.
+- other UUID versions (v1/v5/v7) — ✅ shipped, Phase 7, alongside the existing v4;
+- bulk export — ✅ shipped, Phase 7, download the generated list as .txt/.json/.csv;
+- namespace-based generation — ✅ shipped, Phase 7, RFC 4122 predefined namespaces (DNS/URL/OID/X500) plus a custom namespace, for v5 generation.
 
 ---
 
@@ -1261,6 +1259,30 @@ Before adding them, create a separate security/design document.
 
 ---
 
+## Phase 7 — Showcase Backlog Closure (✅ Complete)
+
+Every item explicitly deferred in §20's original showcase-tool write-ups, revisited now that the platform has grown well past that MVP. Most landed as enhancements to the existing tool rather than new tools — see each tool's updated "Explicitly deferred" list in §20 for the full item-by-item disposition. Five items were large/independent enough to become new tools:
+
+43. JWT Signer — ✅ shipped, symmetric (HMAC) and asymmetric (RSA/EC/RSA-PSS) signing with in-browser key-pair generation
+44. Recurrence Rule Calculator — ✅ shipped, expands an iCal-style RRULE recurrence into occurrence dates (distinct from Cron Parser's trigger-schedule focus)
+45. Date Calculator — ✅ shipped, business-day-aware date arithmetic and day-counting
+46. Directory Diff — ✅ shipped, folder-vs-folder added/removed/changed comparison with a text line-diff or binary hex-diff drill-down
+47. Git Repo Browser — ✅ shipped, client-side commit-history browsing and commit-vs-commit diffing over a locally-selected `.git` folder
+
+**Goal:** Close out the showcase backlog without compromising the offline-first, dependency-minimal architecture. **Achieved** — `uuid`, `rrule`, `isomorphic-git`, `jsonrepair`, `regexp-tree`, and `franc-min` were added (library-forward per §17); Text Inspector's grammar-check mode is the second tool (after JWT Signature Verifier) to call `fetch`, scoped the same way via a conditional `networkRequired` binding; Markdown Preview/Workspace gained CSS-custom-property style presets plus a sandboxed-iframe path for custom CSS and third-party plugins, with no changes to the shell/registry/persistence/worker infrastructure.
+
+**Explicitly out of scope, by design:**
+
+- **AI-based regex generation/explanation** and **collaborative real-time editing** (Markdown) — both need infrastructure DUDE has never had (an LLM proxy; hosted rooms/documents/auth). Tracked together as a future "downloadable desktop app with a bundled backend" initiative, deliberately scoped separately from this phase.
+
+### Notes
+
+Grammar checking's LanguageTool dependency is the platform's first *external* API call (JWT Signature Verifier's JWKS mode fetches only URLs the user supplies themselves); its free-tier rate/size limits are the reason it's a manual "Check" button rather than a live-as-you-type feature.
+
+Git Repo Browser and Directory Diff both read an entire local folder into browser memory via `<input webkitdirectory>` rather than the File System Access API's `showDirectoryPicker()` — broader browser support (Chromium/Firefox/Safari) for what is, in both cases, a one-shot snapshot rather than a live, re-scannable handle.
+
+---
+
 # 22. Roadmap Categorized by Domain
 
 For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–3).
@@ -1283,6 +1305,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Whitespace Cleaner ✅
 - Slug Generator ✅
 - Advanced Diff / Merge ✅
+- Directory Diff ✅
 
 ## Encoding / Conversion
 
@@ -1299,6 +1322,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Hash Generator ✅
 - JWT Verification ✅
 - File Hashing ✅
+- JWT Signer ✅
 
 ## Date & Time
 
@@ -1306,6 +1330,8 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Date / Timezone Converter ✅
 - Duration Parser / Formatter ✅
 - Cron Parser ✅
+- Recurrence Rule Calculator ✅
+- Date Calculator ✅
 
 ## Web / API
 
@@ -1324,6 +1350,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Semantic Version Comparator ✅
 - Glob Tester ✅
 - Random Data Generator ✅
+- Git Repo Browser ✅
 
 ## Documents
 
