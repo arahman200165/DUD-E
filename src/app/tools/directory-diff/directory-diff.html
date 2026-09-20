@@ -2,32 +2,63 @@
   <div class="flex flex-col gap-3">
     <p class="text-ui text-text-muted">
       Compares two folders (added/removed/changed files), with a line diff for changed text files or a hex
-      byte diff for changed binary files. Uses a plain folder-upload input for broad browser support
+      byte diff for changed binary files. In the desktop app, folders are picked natively and can be
+      rescanned; in the browser, a plain folder-upload input is used for broad support
       (Chromium/Firefox/Safari) rather than the Chromium-only File System Access API.
     </p>
 
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <div class="flex flex-col gap-1">
         <span class="text-ui text-text-muted">Left folder {{ leftFolderName() ? '(' + leftFolderName() + ', ' + leftFiles().length + ' files)' : '' }}</span>
-        <input
-          type="file"
-          webkitdirectory
-          multiple
-          class="text-ui text-text-muted"
-          (change)="onLeftFolderSelected($event)"
-        />
+        @if (platform.isDesktop()) {
+          <div class="flex gap-2">
+            <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated" (click)="pickFolderNative('left')">
+              Choose Folder
+            </button>
+            @if (leftRootPath()) {
+              <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated" (click)="rescan('left')">
+                Rescan
+              </button>
+            }
+          </div>
+        } @else {
+          <input
+            type="file"
+            webkitdirectory
+            multiple
+            class="text-ui text-text-muted"
+            (change)="onLeftFolderSelected($event)"
+          />
+        }
       </div>
       <div class="flex flex-col gap-1">
         <span class="text-ui text-text-muted">Right folder {{ rightFolderName() ? '(' + rightFolderName() + ', ' + rightFiles().length + ' files)' : '' }}</span>
-        <input
-          type="file"
-          webkitdirectory
-          multiple
-          class="text-ui text-text-muted"
-          (change)="onRightFolderSelected($event)"
-        />
+        @if (platform.isDesktop()) {
+          <div class="flex gap-2">
+            <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated" (click)="pickFolderNative('right')">
+              Choose Folder
+            </button>
+            @if (rightRootPath()) {
+              <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated" (click)="rescan('right')">
+                Rescan
+              </button>
+            }
+          </div>
+        } @else {
+          <input
+            type="file"
+            webkitdirectory
+            multiple
+            class="text-ui text-text-muted"
+            (change)="onRightFolderSelected($event)"
+          />
+        }
       </div>
     </div>
+
+    @if (scanError(); as message) {
+      <app-error-panel [message]="message" />
+    }
 
     <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button

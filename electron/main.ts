@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
 import { startStaticServer } from './static-server';
+import { registerFsHandlers } from './fs-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -33,7 +34,10 @@ async function createWindow(): Promise<void> {
   await window.loadURL(await resolveWindowUrl());
 }
 
-void app.whenReady().then(createWindow);
+void app.whenReady().then(() => {
+  registerFsHandlers();
+  return createWindow();
+});
 
 app.on('window-all-closed', () => {
   app.quit();

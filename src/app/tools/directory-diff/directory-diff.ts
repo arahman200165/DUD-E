@@ -4,10 +4,14 @@ import { BusyIndicator } from '../../shared/components/busy-indicator/busy-indic
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
+import { PlatformService } from '../../core/platform/platform.service';
+import { NativeFsService } from '../../core/platform/native-fs.service';
 import { computeLineDiff, DiffLineType, DiffResult } from '../diff/text-diff';
-import { scanFileList, ScannedFile } from './directory-tree-scan';
+import { scanFileList, scanNativeEntries, ScannedFile } from './directory-tree-scan';
 import { DirectoryDiffFileEntry, DirectoryDiffPayload, EntryStatus, TreeDiffEntry } from './directory-tree-diff';
 import { bytesToHex, ByteDiffChunk, computeByteDiff, looksLikeText } from './byte-diff';
+
+type Side = 'left' | 'right';
 
 type DrillDown =
   | { readonly kind: 'text'; readonly diff: DiffResult }
@@ -31,6 +35,8 @@ const LINE_PREFIX: Record<DiffLineType, string> = { add: '+ ', remove: '- ', equ
 })
 export class DirectoryDiff implements OnDestroy {
   private readonly workerClient = inject(WorkerClientService);
+  private readonly nativeFs = inject(NativeFsService);
+  protected readonly platform = inject(PlatformService);
 
   protected readonly statusOrder = STATUS_ORDER;
 
@@ -40,6 +46,9 @@ export class DirectoryDiff implements OnDestroy {
   protected readonly rightFiles = signal<readonly ScannedFile[]>([]);
   protected readonly leftFolderName = signal('');
   protected readonly rightFolderName = signal('');
+  protected readonly leftRootPath = signal<string | null>(null);
+  protected readonly rightRootPath = signal<string | null>(null);
+  protected readonly scanError = signal<string | null>(null);
 
   protected readonly job = signal<WorkerJob<readonly TreeDiffEntry[]> | null>(null);
   protected readonly selectedPath = signal<string | null>(null);
@@ -68,6 +77,42 @@ export class DirectoryDiff implements OnDestroy {
     this.rightFolderName.set(input.files[0].webkitRelativePath.split('/')[0] || 'right folder');
   }
 
+  protected async pickFolderNative(side: Side): Promise<void> {
+    this.scanError.set(null);
+    try {
+      const picked = await this.nativeFs.pickDirectory();
+      if (picked.canceled) return;
+      await this.loadNativeFolder(side, picked.rootPath, picked.rootName);
+    } catch (error) {
+      this.scanError.set(error instanceof Error ? error.message : 'Could not read this folder.');
+    }
+  }
+
+  protected async rescan(side: Side): Promise<void> {
+    const rootPath = side === 'left' ? this.leftRootPath() : this.rightRootPath();
+    if (!rootPath) return;
+    this.scanError.set(null);
+    try {
+      await this.loadNativeFolder(side, rootPath, (side === 'left' ? this.leftFolderName() : this.rightFolderName()) || rootPath);
+    } catch (error) {
+      this.scanError.set(error instanceof Error ? error.message : 'Could not rescan this folder.');
+    }
+  }
+
+  private async loadNativeFolder(side: Side, rootPath: string, rootName: string): Promise<void> {
+    const entries = await this.nativeFs.walk(rootPath);
+    const scanned = scanNativeEntries(entries, (relativePath) => this.nativeFs.readFile(rootPath, relativePath));
+    if (side === 'left') {
+      this.leftFiles.set(scanned);
+      this.leftFolderName.set(rootName);
+      this.leftRootPath.set(rootPath);
+    } else {
+      this.rightFiles.set(scanned);
+      this.rightFolderName.set(rootName);
+      this.rightRootPath.set(rootPath);
+    }
+  }
+
   protected async compare(): Promise<void> {
     this.job()?.cancel();
     this.selectedPath.set(null);
@@ -89,7 +134,7 @@ export class DirectoryDiff implements OnDestroy {
   private async buildPayloadEntries(files: readonly ScannedFile[]): Promise<DirectoryDiffFileEntry[]> {
     return Promise.all(
       files.map(async (scanned) => {
-        const buffer = await scanned.file.arrayBuffer();
+        const buffer = await scanned.read();
         return { path: scanned.path, size: buffer.byteLength, buffer };
       }),
     );
@@ -110,17 +155,21 @@ export class DirectoryDiff implements OnDestroy {
     }
 
     this.drillDownStatus.set('loading');
-    const [leftBytes, rightBytes] = await Promise.all([
-      left.file.arrayBuffer().then((b) => new Uint8Array(b)),
-      right.file.arrayBuffer().then((b) => new Uint8Array(b)),
-    ]);
+    try {
+      const [leftBytes, rightBytes] = await Promise.all([
+        left.read().then((b) => new Uint8Array(b)),
+        right.read().then((b) => new Uint8Array(b)),
+      ]);
 
-    if (looksLikeText(leftBytes) && looksLikeText(rightBytes)) {
-      const leftText = new TextDecoder().decode(leftBytes);
-      const rightText = new TextDecoder().decode(rightBytes);
-      this.drillDown.set({ kind: 'text', diff: computeLineDiff(leftText, rightText) });
-    } else {
-      this.drillDown.set({ kind: 'binary', chunks: computeByteDiff(leftBytes, rightBytes) });
+      if (looksLikeText(leftBytes) && looksLikeText(rightBytes)) {
+        const leftText = new TextDecoder().decode(leftBytes);
+        const rightText = new TextDecoder().decode(rightBytes);
+        this.drillDown.set({ kind: 'text', diff: computeLineDiff(leftText, rightText) });
+      } else {
+        this.drillDown.set({ kind: 'binary', chunks: computeByteDiff(leftBytes, rightBytes) });
+      }
+    } catch {
+      this.drillDown.set({ kind: 'error', message: 'This file is no longer available — re-run Compare/Rescan.' });
     }
     this.drillDownStatus.set('idle');
   }
@@ -148,6 +197,9 @@ export class DirectoryDiff implements OnDestroy {
     this.rightFiles.set([]);
     this.leftFolderName.set('');
     this.rightFolderName.set('');
+    this.leftRootPath.set(null);
+    this.rightRootPath.set(null);
+    this.scanError.set(null);
     this.selectedPath.set(null);
     this.drillDown.set(null);
   }

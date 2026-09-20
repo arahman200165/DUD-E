@@ -24,9 +24,10 @@ const CONTENT_TYPES: Readonly<Record<string, string>> = {
 /**
  * Resolves a request path against `root`, guarding against path traversal
  * (`..` segments escaping `root` after normalization). Returns `null` if the
- * resolved path would fall outside `root`.
+ * resolved path would fall outside `root`. Also reused by `fs-bridge.ts` to
+ * guard native file-access IPC requests against the same kind of escape.
  */
-function resolveWithinRoot(root: string, requestPath: string): string | null {
+export function resolveWithinRoot(root: string, requestPath: string): string | null {
   const decoded = decodeURIComponent(requestPath.split('?')[0] ?? '/');
   const resolved = normalize(join(root, decoded));
   if (resolved !== root && !resolved.startsWith(root + sep)) {

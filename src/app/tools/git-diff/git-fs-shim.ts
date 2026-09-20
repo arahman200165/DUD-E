@@ -1,13 +1,15 @@
 import type { PromiseFsClient } from 'isomorphic-git';
+import { ReadOnlyFsError } from './git-fs-errors';
 
 /**
- * Minimal, read-only in-memory `fs` shim for `isomorphic-git`. There is no
- * mainstream, well-maintained `fs` adapter that backs `isomorphic-git`
- * directly onto a live `FileSystemDirectoryHandle` — this sidesteps that by
- * reading every file's bytes up front (via `webkitdirectory` folder
- * upload) into a plain `Map`, which also naturally gets Firefox/Safari
+ * Minimal, read-only in-memory `fs` shim for `isomorphic-git`, used by the
+ * web build. There is no mainstream, well-maintained `fs` adapter that backs
+ * `isomorphic-git` directly onto a live `FileSystemDirectoryHandle` — this
+ * sidesteps that by reading every file's bytes up front (via `webkitdirectory`
+ * folder upload) into a plain `Map`, which also naturally gets Firefox/Safari
  * support "for free" instead of requiring the Chromium-only File System
- * Access API.
+ * Access API. The desktop build instead uses `git-native-fs-client.ts`, a
+ * lazy IPC-backed client with no upfront buffering.
  *
  * Only `readFile`/`readdir`/`stat`/`lstat` do real work — `isomorphic-git`
  * requires the mutating methods to exist on the `FsClient` type, but a
@@ -19,14 +21,6 @@ export interface InMemoryFile {
   /** Normalized path starting with `/`, with the uploaded folder's own name stripped (e.g. `/.git/HEAD`, `/src/foo.ts`). */
   readonly path: string;
   readonly data: Uint8Array;
-}
-
-class ReadOnlyFsError extends Error {
-  readonly code: string;
-  constructor(code: string, message: string) {
-    super(message);
-    this.code = code;
-  }
 }
 
 function normalize(path: string): string {

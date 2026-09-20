@@ -2,6 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { PlatformService, isElectronRuntime } from './platform.service';
 import type { DudeElectronBridge } from './electron-bridge';
 
+const STUB_FS: DudeElectronBridge['fs'] = {
+  pickDirectory: async () => ({ canceled: true }),
+  walk: async () => ({ ok: true, entries: [] }),
+  readFile: async () => ({ ok: true, data: new ArrayBuffer(0) }),
+  readdir: async () => ({ ok: true, names: [] }),
+  stat: async () => ({ ok: true, stat: { isFile: false, isDirectory: true, isSymbolicLink: false, size: 0, mtimeMs: 0 } }),
+};
+
 describe('isElectronRuntime', () => {
   const originalDude = window.dude;
 
@@ -15,7 +23,7 @@ describe('isElectronRuntime', () => {
   });
 
   it('is true when the preload bridge reports desktop', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true } };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
     expect(isElectronRuntime()).toBe(true);
   });
@@ -29,7 +37,7 @@ describe('PlatformService', () => {
   });
 
   it('reports desktop when constructed under the Electron bridge', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true } };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
 
     TestBed.configureTestingModule({});

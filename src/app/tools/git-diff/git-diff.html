@@ -1,14 +1,28 @@
 <app-tool-shell title="Git Repo Browser" status="experimental">
   <div class="flex flex-col gap-3">
     <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
-      Reads an entire local folder (including its <span class="font-mono">.git</span> directory) into browser
-      memory — nothing is ever uploaded or persisted. Uses a plain folder-upload input for broad browser
-      support (Chromium/Firefox/Safari); this reads the repository read-only and cannot write to it.
+      Reads a local repository (including its <span class="font-mono">.git</span> directory) — nothing is ever
+      uploaded or persisted. In the desktop app, the repository is picked natively and read live, with a
+      Refresh action; in the browser, a plain folder-upload input is used for broad support
+      (Chromium/Firefox/Safari). Either way, this reads the repository read-only and cannot write to it.
     </div>
 
     <div class="flex flex-col gap-1">
       <span class="text-ui text-text-muted">Repository folder {{ repoName() ? '(' + repoName() + ')' : '' }}</span>
-      <input type="file" webkitdirectory multiple class="text-ui text-text-muted" (change)="onFolderSelected($event)" />
+      @if (platform.isDesktop()) {
+        <div class="flex gap-2">
+          <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated" (click)="pickRepositoryNative()">
+            Choose Repository Folder
+          </button>
+          @if (repoName()) {
+            <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated" (click)="refreshCommits()">
+              Refresh
+            </button>
+          }
+        </div>
+      } @else {
+        <input type="file" webkitdirectory multiple class="text-ui text-text-muted" (change)="onFolderSelected($event)" />
+      }
     </div>
 
     @if (loadStatus() === 'loading') {
