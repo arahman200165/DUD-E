@@ -20,7 +20,7 @@ describe('App', () => {
   it('renders the deck at the root route', async () => {
     const harness = await RouterTestingHarness.create('/');
     const compiled = harness.routeNativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Deck');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Dashboard');
   });
 
   it('a worker failure on a real tool does not break shell navigation', async () => {
@@ -39,6 +39,6 @@ describe('App', () => {
     await harness.navigateByUrl('/');
     harness.detectChanges();
 
-    expect(harness.routeNativeElement?.textContent).toContain('Deck');
+    expect(harness.routeNativeElement?.textContent).toContain('Dashboard');
   });
 });

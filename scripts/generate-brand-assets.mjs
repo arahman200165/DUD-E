@@ -100,7 +100,7 @@ function buildOgSvg() {
     </g>
     <text x="342" y="196" fill="#F4F7FB" class="wordmark">DUDE</text>
     <rect x="349" y="228" width="868" height="2" rx="1" fill="#26384C"/>
-    <text x="349" y="286" fill="#91A4BA" class="tagline">DEVELOPMENT UTILITY DECK ENGINE</text>
+    <text x="349" y="286" fill="#91A4BA" class="tagline">DEVELOPER UTILITY DASHBOARD ENGINE</text>
     <rect x="1247" y="74" width="70" height="8" rx="4" fill="#38D8FF"/>
     <rect x="1247" y="96" width="46" height="8" rx="4" fill="#8B5CF6"/>
   </g>

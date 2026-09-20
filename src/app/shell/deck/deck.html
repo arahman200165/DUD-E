@@ -1,5 +1,5 @@
 <div class="p-3">
-  <h1 class="mb-3 font-mono text-sm font-semibold text-text">Deck</h1>
+  <h1 class="mb-3 font-mono text-sm font-semibold text-text">Dashboard</h1>
 
   <input
     type="text"
@@ -15,7 +15,7 @@
         <section class="rounded-sm border border-border bg-panel p-2">
           <div class="mb-1.5 flex items-center gap-1.5 border-b border-border pb-1.5">
             <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[category].colorToken"></span>
-            <h2 class="text-[10.5px] font-semibold uppercase tracking-wider text-text-muted">
+            <h2 class="text-ui-sm font-semibold uppercase tracking-wider text-text-muted">
               {{ meta[category].label }}
             </h2>
           </div>
@@ -30,7 +30,7 @@
               </a>
             }
           } @else {
-            <p class="px-1.5 py-1 text-[11px] text-text-muted/60">No tools yet</p>
+            <p class="px-1.5 py-1 text-ui text-text-muted/60">No tools yet</p>
           }
         </section>
       }

@@ -6,17 +6,17 @@ import { expect, test } from '@playwright/test';
 // online.
 test('the cached app shell still renders after going offline', async ({ page, context }) => {
   await page.goto('/DUDE/');
-  await expect(page.getByRole('heading', { name: 'Deck' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
   await page.waitForFunction(() => navigator.serviceWorker.controller !== null, null, { timeout: 35_000 });
 
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Deck' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
   await context.setOffline(true);
   try {
     await page.reload();
-    await expect(page.getByRole('heading', { name: 'Deck' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
     await expect(page.locator('app-sidebar')).toBeVisible();
   } finally {
     await context.setOffline(false);

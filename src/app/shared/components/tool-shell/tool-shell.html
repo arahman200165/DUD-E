@@ -4,7 +4,7 @@
     <div class="flex items-center gap-2">
       <app-offline-badge [show]="showOfflineBadge()" />
       <span
-        class="rounded px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide"
+        class="rounded px-1.5 py-0.5 font-mono text-ui-xs uppercase tracking-wide"
         [class.text-warning]="status() === 'experimental'"
         [class.text-success]="status() === 'stable'"
         >{{ status() }}</span

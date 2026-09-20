@@ -1,7 +1,7 @@
 <div
   cdkTrapFocus
   cdkTrapFocusAutoCapture
-  class="flex max-h-[70vh] w-[560px] max-w-[90vw] flex-col overflow-hidden rounded-sm border border-border bg-panel shadow-lg"
+  class="flex max-h-[70vh] w-[43.08rem] max-w-[90vw] flex-col overflow-hidden rounded-sm border border-border bg-panel shadow-lg"
   (keydown.arrowdown)="onArrowDown($event)"
   (keydown.arrowup)="onArrowUp($event)"
   (keydown.enter)="onEnter()"
@@ -22,7 +22,7 @@
         <div class="mb-1.5 last:mb-0">
           <div class="flex items-center gap-1.5 px-1.5 py-1">
             <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[group.category].colorToken"></span>
-            <span class="text-[10.5px] font-semibold uppercase tracking-wider text-text-muted">
+            <span class="text-ui-sm font-semibold uppercase tracking-wider text-text-muted">
               {{ meta[group.category].label }}
             </span>
           </div>
@@ -41,7 +41,7 @@
         </div>
       }
     } @else {
-      <p class="px-1.5 py-1 text-[11px] text-text-muted/60">No tools match "{{ query() }}".</p>
+      <p class="px-1.5 py-1 text-ui text-text-muted/60">No tools match "{{ query() }}".</p>
     }
   </div>
 </div>

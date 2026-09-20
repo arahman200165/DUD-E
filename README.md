@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="DUDE_logo_primary.svg" alt="DUDE — Development Utility Deck Engine" width="480" />
+  <img src="DUDE_logo_primary.svg" alt="DUDE — Developer Utility Dashboard Engine" width="480" />
 </p>
 
-# DUDE — Development Utility Deck Engine
+# DUDE — Developer Utility Dashboard Engine
 
 [![Deploy](https://github.com/arahman200165/DUDE/actions/workflows/deploy.yml/badge.svg)](https://github.com/arahman200165/DUDE/actions/workflows/deploy.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-22c55e)](https://arahman200165.github.io/DUDE/)

@@ -1,6 +1,6 @@
 <app-tool-shell title="JWT Debugger" status="stable">
   <div class="flex flex-col gap-3">
-    <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-[11px] text-warning">
+    <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
       This decodes the token's header and payload only. It does <strong>not</strong> verify the signature —
       a decoded token is not proof that it is authentic or untampered. Nothing typed here is ever saved.
     </div>
@@ -13,7 +13,7 @@
       (input)="onTokenInput($event)"
     ></textarea>
 
-    <div class="flex items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
@@ -26,7 +26,7 @@
     @if (token() !== '' && result(); as current) {
       @if (current.ok) {
         <div
-          class="rounded-sm border px-2 py-1.5 text-[11px]"
+          class="rounded-sm border px-2 py-1.5 text-ui"
           [class]="expiryBadgeClasses(current.expiry.kind)"
         >
           @switch (current.expiry.kind) {
@@ -44,22 +44,22 @@
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div class="flex flex-col gap-1">
-            <span class="text-[11px] text-text-muted">Header</span>
+            <span class="text-ui text-text-muted">Header</span>
             <pre
-              class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-[11px] text-text"
+              class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text"
               >{{ format(current.header) }}</pre
             >
           </div>
           <div class="flex flex-col gap-1">
-            <span class="text-[11px] text-text-muted">Payload</span>
+            <span class="text-ui text-text-muted">Payload</span>
             <pre
-              class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-[11px] text-text"
+              class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text"
               >{{ format(current.payload) }}</pre
             >
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-4 text-[11px] text-text-muted">
+        <div class="flex flex-wrap gap-4 text-ui text-text-muted">
           @if (issuedAt(); as iat) {
             <span>Issued at: <span class="font-mono text-text">{{ iat.toISOString() }}</span></span>
           }
@@ -69,8 +69,8 @@
         </div>
 
         <div class="flex flex-col gap-1">
-          <span class="text-[11px] text-text-muted">Signature (raw, undecoded)</span>
-          <div class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-[11px] text-text-muted">
+          <span class="text-ui text-text-muted">Signature (raw, undecoded)</span>
+          <div class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text-muted">
             {{ current.signature }}
           </div>
         </div>

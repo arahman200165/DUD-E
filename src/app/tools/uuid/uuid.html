@@ -2,10 +2,10 @@
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-2">
       <div class="flex items-center gap-3">
-        <span class="text-[11px] text-text-muted">Generate</span>
+        <span class="text-ui text-text-muted">Generate</span>
         <button
           type="button"
-          class="rounded-sm border border-border px-2 py-0.5 text-[11px] text-text hover:bg-panel-elevated"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated"
           (click)="generate()"
         >
           Generate v4 UUID
@@ -13,7 +13,7 @@
         @if (generated().length > 0) {
           <button
             type="button"
-            class="rounded-sm border border-border px-2 py-0.5 text-[11px] text-text-muted hover:bg-panel-elevated"
+            class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
             (click)="clearGenerated()"
           >
             Clear
@@ -28,7 +28,7 @@
               <span class="font-mono text-xs text-text">{{ uuid }}</span>
               <button
                 type="button"
-                class="rounded-sm border border-border px-2 py-0.5 text-[11px] text-text-muted hover:bg-panel-elevated"
+                class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
                 (click)="copy(uuid)"
               >
                 Copy
@@ -40,7 +40,7 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <span class="text-[11px] text-text-muted">Inspect</span>
+      <span class="text-ui text-text-muted">Inspect</span>
       <input
         type="text"
         class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
@@ -51,7 +51,7 @@
 
       @if (inspection(); as result) {
         @if (result.valid) {
-          <div class="flex flex-wrap gap-3 rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
+          <div class="flex flex-wrap gap-3 rounded-sm border border-border bg-panel p-2 text-ui text-text">
             <div><span class="text-text-muted">Version</span><br />{{ result.version }}</div>
             <div><span class="text-text-muted">Variant</span><br />{{ result.variant }}</div>
           </div>

@@ -1,6 +1,6 @@
 <app-tool-shell title="JSON Formatter" status="stable">
   <div class="flex flex-col gap-3">
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <div class="flex overflow-hidden rounded-sm border border-border">
         <button
           type="button"
@@ -76,10 +76,10 @@
       @if (current.ok) {
         <div class="flex flex-col gap-1">
           <div class="flex items-center justify-between">
-            <span class="text-[11px] text-text-muted">Output</span>
+            <span class="text-ui text-text-muted">Output</span>
             <button
               type="button"
-              class="rounded-sm border border-border px-2 py-0.5 text-[11px] text-text-muted hover:bg-panel-elevated"
+              class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
               (click)="copy(current.output)"
             >
               Copy

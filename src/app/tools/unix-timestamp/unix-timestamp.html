@@ -1,6 +1,6 @@
 <app-tool-shell title="Unix Timestamp Converter" status="stable">
   <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <label class="flex items-center gap-1.5">
         Unit
         <select
@@ -36,7 +36,7 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <span class="text-[11px] text-text-muted">Timestamp → Date</span>
+      <span class="text-ui text-text-muted">Timestamp → Date</span>
       <div class="flex gap-2">
         <input
           type="text"
@@ -48,7 +48,7 @@
       </div>
       @if (timestampInput() !== '' && timestampResult(); as result) {
         @if (result.ok) {
-          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
+          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-ui text-text">
             <span class="font-mono">{{ formattedDate() }} ({{ result.resolvedUnit }})</span>
             <button
               type="button"
@@ -65,7 +65,7 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <span class="text-[11px] text-text-muted">Date → Timestamp</span>
+      <span class="text-ui text-text-muted">Date → Timestamp</span>
       <input
         type="datetime-local"
         step="1"
@@ -75,7 +75,7 @@
       />
       @if (dateInput() !== '' && dateResult(); as result) {
         @if (result.ok) {
-          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-[11px] text-text">
+          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-ui text-text">
             <span class="font-mono">{{ result.value }}</span>
             <button
               type="button"

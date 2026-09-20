@@ -1,17 +1,17 @@
-<aside class="flex h-full w-80 flex-col border-r border-border bg-panel">
+<aside class="flex h-full w-50 flex-col border-r border-border bg-panel">
   <div class="border-b border-border px-3 py-3">
     <a routerLink="/" aria-label="DUDE home" class="block w-fit opacity-100 transition-opacity hover:opacity-80">
-      <img src="brand/dude-logo-lockup.svg" alt="DUDE — Development Utility Deck Engine" width="1100" height="360" class="h-auto w-[280px]" />
+      <img src="brand/dude-logo-lockup.svg" alt="DUDE — Developer Utility Dashboard Engine" width="550" height="180"  />
     </a>
   </div>
 
   <button
     type="button"
-    class="mx-2 mt-2 flex items-center justify-between rounded-sm border border-border bg-panel-elevated px-2 py-1 text-left text-[11px] text-text-muted hover:text-text"
+    class="mx-2 mt-2 flex items-center justify-between rounded-sm border border-border bg-panel-elevated px-2 py-1 text-left text-ui text-text-muted hover:text-text"
     (click)="paletteService.open()"
   >
     <span>Search…</span>
-    <span class="font-mono text-[10px]">Ctrl+K</span>
+    <span class="font-mono text-ui-xs">Ctrl+K</span>
   </button>
 
   <nav class="flex-1 overflow-y-auto py-1">
@@ -19,7 +19,7 @@
       <div class="mt-1.5 first:mt-0">
         <div class="flex items-center gap-1.5 px-3 py-1">
           <span class="h-1.5 w-1.5 rounded-full" [class]="'bg-' + meta[category].colorToken"></span>
-          <span class="text-[10.5px] font-semibold uppercase tracking-wider text-text-muted">{{
+          <span class="text-ui-sm font-semibold uppercase tracking-wider text-text-muted">{{
             meta[category].label
           }}</span>
         </div>
@@ -35,7 +35,7 @@
             </a>
           }
         } @else {
-          <p class="pl-7 pr-2 text-[11px] text-text-muted/60">No tools yet</p>
+          <p class="pl-7 pr-2 text-ui text-text-muted/60">No tools yet</p>
         }
       </div>
     }
@@ -44,7 +44,7 @@
   <div class="border-t border-border p-2">
     <button
       type="button"
-      class="w-full rounded-sm px-2 py-1 text-left text-[10.5px] text-text-muted hover:bg-panel-elevated hover:text-error"
+      class="w-full rounded-sm px-2 py-1 text-left text-ui-sm text-text-muted hover:bg-panel-elevated hover:text-error"
       (click)="onClearAll()"
     >
       Clear all DUDE data

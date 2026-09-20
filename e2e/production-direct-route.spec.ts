@@ -9,6 +9,6 @@ test('direct-navigating to a nested tool URL resolves the correct tool', async (
 
   await expect(page).toHaveURL(/\/DUDE\/tools\/json$/);
   await expect(page.getByRole('heading', { name: 'JSON Formatter' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Deck' })).not.toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).not.toBeVisible();
   await expect(page.locator('app-sidebar')).toBeVisible();
 });

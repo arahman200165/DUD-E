@@ -1,9 +1,9 @@
-# DUDE — Development Utility Deck Engine
+# DUDE — Developer Utility Dashboard Engine
 
 ## Product Requirements Document
 
 **Project name:** DUDE  
-**Expanded name:** Development Utility Deck Engine  
+**Expanded name:** Developer Utility Dashboard Engine  
 **Product type:** Static, single-page developer utility deck  
 **Primary deployment target:** GitHub Pages free tier  
 **Primary frontend framework:** Angular  

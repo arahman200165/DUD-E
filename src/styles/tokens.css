@@ -34,6 +34,13 @@
   /* Active/focus accent used by sidebar selection, focus rings, primary buttons */
   --color-accent: #38d8ff;
 
+  /* Chrome type sizes for labels, meta rows, badges and keycaps. Kept in rem
+     (relative to the 13px design base) so they scale with the root UI scale in
+     styles.css instead of staying pinned at their authored pixel size. */
+  --text-ui: 0.8462rem; /* 11px at the 13px design base */
+  --text-ui-sm: 0.8077rem; /* 10.5px */
+  --text-ui-xs: 0.7692rem; /* 10px */
+
   /* Monospace stack for data/code-like values (Section 8.4) */
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }

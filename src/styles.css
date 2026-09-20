@@ -1,6 +1,18 @@
 @import 'tailwindcss';
 @import './styles/tokens.css';
 
+/*
+ * UI scale. The deck's type and spacing were authored against a 13px base, but
+ * at that size the shell reads cramped on a desktop display — it only looks
+ * right around 150% browser zoom. Bake that zoom into the root font size so the
+ * app ships at its intended density without the user reaching for Ctrl++.
+ * Every rem-based Tailwind utility (spacing, widths, type) tracks this.
+ */
+:root {
+  --dude-base-font-size: 13px;
+  --dude-ui-scale: 1.5;
+}
+
 html,
 body {
   height: 100%;
@@ -13,7 +25,7 @@ body {
     -apple-system,
     'Segoe UI',
     sans-serif;
-  font-size: 13px;
+  font-size: calc(var(--dude-base-font-size) * var(--dude-ui-scale));
 }
 
 * {

@@ -1,26 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="360" viewBox="0 0 1100 360" role="img" aria-labelledby="title">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360" role="img" aria-labelledby="title">
   <title id="title">DUDE</title>
   <defs>
     <style>
       .wordmark {
-        font-family: Inter, Geist, "SF Pro Display", "Segoe UI", Arial, sans-serif;
-        font-size: 138px;
-        font-weight: 800;
+        font-family: Inter, Geist, &quot;SF Pro Display&quot;, &quot;Segoe UI&quot;, Arial, sans-serif;
+        font-size: 108px;
+        font-weight: 600;
         letter-spacing: 16px;
       }
       .tagline {
-        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-        font-size: 28px;
+        font-family: &quot;JetBrains Mono&quot;, &quot;SFMono-Regular&quot;, Consolas, &quot;Liberation Mono&quot;, monospace;
+        font-size: 34px;
         font-weight: 600;
-        letter-spacing: 7px;
+        letter-spacing: 4px;
       }
     </style>
   </defs>
-
-  <!-- Icon -->
+<!--Icon-->
   <g transform="translate(44 52)">
-    <path d="M20 8H102C172 8 218 50 218 128S172 248 102 248H20Z"
-          fill="none" stroke="#F4F7FB" stroke-width="18" stroke-linejoin="round"/>
+    <path d="M20 8H102C172 8 218 50 218 128S172 248 102 248H20Z" fill="none" stroke="#F4F7FB" stroke-width="18" stroke-linejoin="round"/>
     <path d="M58 66H132" stroke="#38D8FF" stroke-width="16" stroke-linecap="round"/>
     <path d="M58 128H158" stroke="#38D8FF" stroke-width="16" stroke-linecap="round"/>
     <path d="M58 190H132" stroke="#38D8FF" stroke-width="16" stroke-linecap="round"/>
@@ -29,13 +27,13 @@
     <rect x="46" y="117" width="22" height="22" rx="5" fill="#38D8FF"/>
     <rect x="46" y="179" width="22" height="22" rx="5" fill="#38D8FF"/>
   </g>
-
-  <!-- Wordmark -->
-  <text x="342" y="196" fill="#F4F7FB" class="wordmark">DUDE</text>
-
-  <!-- Thin technical divider -->
-  <rect x="349" y="228" width="695" height="2" rx="1" fill="#26384C"/>
-
-  <!-- Expanded name -->
-  <text x="349" y="286" fill="#91A4BA" class="tagline">DEVELOPMENT UTILITY DECK ENGINE</text>
+  <g transform="translate(-30 10)">
+<!--Wordmark-->
+    <text x="342" y="166" fill="#F4F7FB" class="wordmark">DUDE</text>
+<!--Thin technical divider-->
+    <rect x="349" y="188" width="445" height="2" rx="1" fill="#26384C"/>
+<!--Expanded name-->
+    <text x="349" y="246" fill="#91A4BA" class="tagline">DEVELOPER UTILITY</text>
+    <text x="349" y="286" fill="#91A4BA" class="tagline">DASHBOARD ENGINE</text>
+  </g>
 </svg>

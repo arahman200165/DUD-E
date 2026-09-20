@@ -19,7 +19,7 @@
       </app-split-pane>
     </div>
 
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
@@ -60,7 +60,7 @@
       }
 
       @if (currentJob.result(); as result) {
-        <div class="max-h-64 overflow-auto rounded-sm border border-border bg-panel font-mono text-[11px]">
+        <div class="max-h-64 overflow-auto rounded-sm border border-border bg-panel font-mono text-ui">
           @for (line of result.lines; track $index) {
             <div class="whitespace-pre-wrap px-2 py-0.5" [class]="lineClasses(line.type)">{{ linePrefix(line.type) }}{{ line.text }}</div>
           }

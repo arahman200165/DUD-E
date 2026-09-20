@@ -8,7 +8,7 @@
       (input)="onTextInput($event)"
     ></textarea>
 
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       @for (algorithm of algorithms; track algorithm) {
         <label class="flex items-center gap-1.5">
           <input
@@ -22,7 +22,7 @@
       }
     </div>
 
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
@@ -53,7 +53,7 @@
       @if (currentJob.result(); as results) {
         <div class="flex flex-col gap-1.5">
           @for (result of results; track result.algorithm) {
-            <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel p-2 text-[11px]">
+            <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel p-2 text-ui">
               <div class="flex flex-col overflow-hidden">
                 <span class="text-text-muted">{{ result.algorithm }}</span>
                 <span class="truncate font-mono text-text">{{ result.hex }}</span>

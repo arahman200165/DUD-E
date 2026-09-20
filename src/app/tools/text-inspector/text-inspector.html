@@ -16,7 +16,7 @@
       (mouseup)="onSelectionChange($event)"
     ></textarea>
 
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated"
@@ -27,7 +27,7 @@
     </div>
 
     <div
-      class="grid grid-cols-2 gap-2 rounded-sm border border-border bg-panel p-2 text-[11px] text-text sm:grid-cols-3"
+      class="grid grid-cols-2 gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text sm:grid-cols-3"
     >
       <div><span class="text-text-muted">Characters</span><br />{{ metrics().characterCount }}</div>
       <div><span class="text-text-muted">Code points</span><br />{{ metrics().codePointCount }}</div>
@@ -38,7 +38,7 @@
     </div>
 
     @if (selectionMetrics(); as selMetrics) {
-      <div class="rounded-sm border border-accent/40 bg-accent/10 p-2 text-[11px] text-text">
+      <div class="rounded-sm border border-accent/40 bg-accent/10 p-2 text-ui text-text">
         <p class="mb-1 text-text-muted">Selection</p>
         <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
           <div><span class="text-text-muted">Characters</span><br />{{ selMetrics.characterCount }}</div>

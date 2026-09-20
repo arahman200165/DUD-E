@@ -12,7 +12,7 @@
       <span class="font-mono text-text-muted">/{{ flags() }}</span>
     </div>
 
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       @for (flag of flagChars; track flag) {
         <label class="flex items-center gap-1">
           <input type="checkbox" class="accent-accent" [checked]="hasFlag(flag)" (change)="toggleFlag(flag, $event)" />
@@ -29,7 +29,7 @@
       (input)="onTestTextInput($event)"
     ></textarea>
 
-    <div class="flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
@@ -66,7 +66,7 @@
           @if (result.matches.length > 0) {
             <div class="flex flex-col gap-1.5">
               @for (entry of result.matches; track $index) {
-                <div class="rounded-sm border border-border bg-panel p-2 text-[11px]">
+                <div class="rounded-sm border border-border bg-panel p-2 text-ui">
                   <div class="flex items-center justify-between">
                     <span class="font-mono text-text">{{ entry.match || '(empty match)' }}</span>
                     <span class="text-text-muted">at {{ entry.index }}</span>
@@ -84,7 +84,7 @@
               }
             </div>
           } @else {
-            <p class="text-[11px] text-text-muted">No matches.</p>
+            <p class="text-ui text-text-muted">No matches.</p>
           }
         } @else {
           <app-error-panel [message]="result.error" />
