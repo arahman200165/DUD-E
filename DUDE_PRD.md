@@ -1176,17 +1176,19 @@ These should mostly be simple tools and are ideal for measuring the “new tool 
 
 ---
 
-## Phase 2 — Structured Data Utilities
+## Phase 2 — Structured Data Utilities (✅ Complete)
 
-19. YAML ↔ JSON Converter  
-20. XML Formatter / Validator-lite  
-21. CSV Viewer / Converter  
-22. JSONPath / JMESPath Tester  
-23. JSON Structural Explorer
+19. YAML ↔ JSON Converter — ✅ shipped  
+20. XML Formatter / Validator-lite — ✅ shipped  
+21. CSV Viewer / Converter — ✅ shipped  
+22. JSONPath / JMESPath Tester — ✅ shipped  
+23. JSON Structural Explorer — ✅ shipped as a "Tree" view on the JSON Formatter tool, see §20.1
+
+**Goal:** Exercise more complex third-party libraries and richer structured outputs. **Achieved** — `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, and `jmespath` are each wrapped behind a pure, worker-compatible transform, and two new shared UI primitives (`app-tree-view`, `app-data-table`) were introduced for structural/tabular display.
 
 ### Notes
 
-These begin exercising more complex third-party libraries and richer structured outputs.
+These began exercising more complex third-party libraries and richer structured outputs.
 
 ---
 
