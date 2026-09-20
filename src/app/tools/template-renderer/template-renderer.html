@@ -1,0 +1,73 @@
+<app-tool-shell title="Template Renderer" status="experimental">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="render()">
+          Render
+        </button>
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+          Clear
+        </button>
+      </div>
+      <app-busy-indicator [status]="status()" />
+    </div>
+
+    <p class="text-ui-sm text-text-muted">
+      Renders an <a href="https://ejs.co/" target="_blank" rel="noopener noreferrer" class="underline">EJS</a> template
+      against a JSON data context in a network-isolated sandbox — the same execution engine as the JavaScript Playground,
+      since EJS templates compile to real JS.
+    </p>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Template</span>
+        <textarea
+          rows="8"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Hello <%= name %>!"
+          [value]="template()"
+          (input)="onTemplateChange($event)"
+        ></textarea>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Context (JSON)</span>
+        <textarea
+          rows="8"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="{ &quot;name&quot;: &quot;World&quot; }"
+          [value]="context()"
+          (input)="onContextChange($event)"
+        ></textarea>
+      </div>
+    </div>
+
+    @if (outcome(); as outcome) {
+      @if (outcome.kind === 'result') {
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Output</span>
+          <pre class="max-h-64 overflow-auto whitespace-pre-wrap rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ outcome.value }}</pre>
+        </div>
+      }
+      @if (outcome.kind === 'error') {
+        <app-error-panel [message]="outcome.message" />
+      }
+      @if (outcome.kind === 'terminated') {
+        <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+          @switch (outcome.reason) {
+            @case ('timeout') {
+              Terminated: exceeded the execution limit.
+            }
+            @case ('log-flood') {
+              Terminated: too much console output.
+            }
+            @default {
+              Stopped.
+            }
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <app-code-sandbox-host />
+</app-tool-shell>

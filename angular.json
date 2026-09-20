@@ -23,6 +23,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "ejs.min.js",
+                "input": "node_modules/ejs",
+                "output": "assets/vendor/"
               }
             ],
             "styles": ["src/styles.css"],

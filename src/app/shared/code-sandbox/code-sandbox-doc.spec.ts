@@ -7,6 +7,11 @@ describe('buildCodeSandboxDoc', () => {
     expect(doc).toContain('worker-src blob:');
   });
 
+  it('allows eval/new Function inside the worker — needed by consumers like the Template Renderer whose library (EJS) compiles via new Function at runtime', () => {
+    const doc = buildCodeSandboxDoc();
+    expect(doc).toContain("'unsafe-eval'");
+  });
+
   it('never embeds user code — the srcdoc is a fixed bootstrap script', () => {
     const doc = buildCodeSandboxDoc();
     expect(doc).not.toContain('{{');

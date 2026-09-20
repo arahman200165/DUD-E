@@ -1,7 +1,18 @@
 /**
  * Sandbox for running arbitrary, untrusted JavaScript (used directly by the
- * JS Playground, and by the Template Renderer for EJS's compiled-function
- * output — both are equally arbitrary JS from the sandbox's point of view).
+ * JS Playground, and by the Template Renderer, which bundles the real `ejs`
+ * client runtime into the worker source and calls `ejs.render(...)` there —
+ * an EJS template compiles to a real JS function internally, so it's
+ * exactly as arbitrary as a JS Playground snippet and needs the same
+ * sandbox, not a lighter one).
+ *
+ * CSP allows `'unsafe-eval'`: EJS's own `render()` calls `new Function(...)`
+ * internally to compile a template, which needs it. This does not weaken
+ * the sandbox — the entire worker source is already attacker-controlled by
+ * construction (that's the whole point), so whether that already-untrusted
+ * code can *also* reach `eval`/`new Function` changes nothing about the
+ * properties CSP is actually relied on for here (`connect-src 'none'`) or
+ * about the opaque-origin/`Worker.terminate()` isolation below.
  *
  * Two layers, for two different jobs:
  *
@@ -154,7 +165,7 @@ export function buildCodeSandboxDoc(): string {
 <html>
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; worker-src blob:; connect-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval'; worker-src blob:; connect-src 'none';">
 </head>
 <body>
 <script>${BRIDGE_SOURCE}</script>
