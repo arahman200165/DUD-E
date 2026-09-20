@@ -1257,16 +1257,16 @@ Before adding them, create a separate security/design document.
 
 # 22. Roadmap Categorized by Domain
 
-For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–1).
+For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–2).
 
 ## Data
 
 - JSON Formatter / Validator ✅
-- YAML ↔ JSON
-- XML Formatter
-- CSV Viewer / Converter
-- JSONPath / JMESPath
-- JSON Structural Explorer
+- YAML ↔ JSON ✅
+- XML Formatter ✅
+- CSV Viewer / Converter ✅
+- JSONPath / JMESPath ✅
+- JSON Structural Explorer ✅
 - JSON Schema Validator
 
 ## Text

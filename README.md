@@ -16,7 +16,7 @@ A dense, dark-mode-only, installable Progressive Web App that consolidates the s
 
 ## What is DUDE
 
-DUDE is not a race to ship the most tools. It's a framework built to make adding **tool 19, 20, or 30** routine instead of architectural work — a new simple utility with existing transformation logic can be added in **under 30 minutes**, without touching navigation, routing, search, the command palette, persistence, or the PWA layer. Milestone 10's timed proof (see [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md)) added a full tool, tests included, in **2 minutes 50 seconds** — a claim then validated at scale across Milestone 11's 8-tool batch.
+DUDE is not a race to ship the most tools. It's a framework built to make adding **tool 24, 25, or 30** routine instead of architectural work — a new simple utility with existing transformation logic can be added in **under 30 minutes**, without touching navigation, routing, search, the command palette, persistence, or the PWA layer. Milestone 10's timed proof (see [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md)) added a full tool, tests included, in **2 minutes 50 seconds** — a claim then validated at scale across Milestone 11's 8-tool batch and Milestone 12's structured-data batch, which introduced real third-party parsing libraries without touching the shell.
 
 Everything runs client-side. There's no backend, no accounts, no telemetry — your data never leaves the browser unless a tool explicitly tells you otherwise.
 
@@ -32,11 +32,15 @@ Everything runs client-side. There's no backend, no accounts, no telemetry — y
 
 ## Tools
 
-18 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+23 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
-| [JSON Formatter](https://arahman200165.github.io/DUDE/tools/json) | Data | Validate, pretty-print, and minify JSON, with worker execution above 50KB. |
+| [JSON Formatter](https://arahman200165.github.io/DUDE/tools/json) | Data | Validate, pretty-print, and minify JSON, with worker execution above 50KB and a collapsible structural Tree view. |
+| [YAML ↔ JSON Converter](https://arahman200165.github.io/DUDE/tools/yaml-json) | Data | Converts between YAML and JSON in either direction. |
+| [XML Formatter](https://arahman200165.github.io/DUDE/tools/xml-formatter) | Data | Validates, formats, and minifies XML. |
+| [CSV Viewer / Converter](https://arahman200165.github.io/DUDE/tools/csv-viewer) | Data | Views CSV as a dense table, and converts between CSV and JSON. |
+| [JSONPath / JMESPath Tester](https://arahman200165.github.io/DUDE/tools/json-query) | Data | Queries JSON with a JSONPath or JMESPath expression. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |
@@ -68,7 +72,7 @@ src/app/
     connectivity/   online/offline signal, update-available detection
     routing/        the one root route table (lazy-loads every tool)
   shell/            sidebar, deck, command palette, root layout
-  shared/           tool-shell frame, error panel, split-pane, and other cross-tool primitives
+  shared/           tool-shell frame, error panel, split-pane, tree-view, data-table, and other cross-tool primitives
   tools/            one folder per tool — pure logic + component, isolated from every other tool
 ```
 
@@ -85,7 +89,7 @@ See [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md) for the full, step-by-step guide to a
 
 Angular 22 (standalone components, signals) · Tailwind CSS v4 · Vitest · Playwright · `@angular/service-worker` · TypeScript
 
-Library-forward by design — Markdown rendering, diffing, sanitization, color-space math, and slug transliteration all lean on mature libraries (`markdown-it`, `diff-match-patch`, `dompurify`, `colord`, `@sindresorhus/slugify`) rather than reimplementing them.
+Library-forward by design — Markdown rendering, diffing, sanitization, color-space math, slug transliteration, and structured-data parsing all lean on mature libraries (`markdown-it`, `diff-match-patch`, `dompurify`, `colord`, `@sindresorhus/slugify`, `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, `jmespath`) rather than reimplementing them.
 
 ## Getting started
 
