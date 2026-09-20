@@ -285,4 +285,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
   },
+  {
+    id: 'cron',
+    title: 'Cron Expression Parser',
+    shortTitle: 'Cron Parser',
+    description: 'Parse a cron expression into a human-readable schedule and preview its next run times.',
+    category: 'date-time',
+    keywords: ['cron', 'crontab', 'schedule', 'next run', 'expression'],
+    route: '/tools/cron',
+    load: () => import('../../tools/cron/cron').then((m) => m.Cron),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];
