@@ -148,4 +148,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
   },
+  {
+    id: 'whitespace-cleaner',
+    title: 'Whitespace Cleaner / Normalizer',
+    description: 'Trim, collapse, and normalize whitespace, line endings, and invisible characters.',
+    category: 'text',
+    keywords: ['whitespace', 'trim', 'clean', 'normalize', 'line endings', 'tabs', 'spaces', 'invisible'],
+    route: '/tools/whitespace-cleaner',
+    load: () => import('../../tools/whitespace-cleaner/whitespace-cleaner').then((m) => m.WhitespaceCleaner),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];

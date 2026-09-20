@@ -1,0 +1,107 @@
+<app-tool-shell title="Whitespace Cleaner / Normalizer" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="options().trim" (change)="toggle('trim')" />
+        Trim
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="options().collapseSpaces" (change)="toggle('collapseSpaces')" />
+        Collapse repeated spaces/tabs
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input
+          type="checkbox"
+          [checked]="options().normalizeLineEndings"
+          (change)="toggle('normalizeLineEndings')"
+        />
+        Normalize line endings
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input
+          type="checkbox"
+          [checked]="options().stripTrailingWhitespace"
+          (change)="toggle('stripTrailingWhitespace')"
+        />
+        Strip trailing whitespace
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="options().removeBlankLines" (change)="toggle('removeBlankLines')" />
+        Remove blank lines
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input
+          type="checkbox"
+          [checked]="options().stripInvisibleChars"
+          (change)="toggle('stripInvisibleChars')"
+        />
+        Strip invisible characters
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        Tabs
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="options().tabConversion"
+          (change)="onTabConversionChange($event)"
+        >
+          <option value="none">Unchanged</option>
+          <option value="tabs-to-spaces">Tabs → spaces</option>
+          <option value="spaces-to-tabs">Spaces → tabs</option>
+        </select>
+      </label>
+
+      @if (options().tabConversion !== 'none') {
+        <label class="flex items-center gap-1.5">
+          Width
+          <input
+            type="number"
+            min="1"
+            max="16"
+            class="w-14 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="options().tabWidth"
+            (change)="onTabWidthChange($event)"
+          />
+        </label>
+      }
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Input</span>
+      <textarea
+        rows="8"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Type or paste text here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Output</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="copy()"
+        >
+          Copy
+        </button>
+      </div>
+      <textarea
+        rows="8"
+        readonly
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+        [value]="result()"
+      ></textarea>
+    </div>
+  </div>
+</app-tool-shell>
