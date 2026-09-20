@@ -20,7 +20,7 @@ describe('Sidebar', () => {
 
   function clearAllButton(fixture: ReturnType<typeof TestBed.createComponent>): HTMLButtonElement {
     return Array.from(fixture.nativeElement.querySelectorAll('button')).find((button) =>
-      (button as HTMLButtonElement).textContent?.includes('Clear all DUD-E data'),
+      (button as HTMLButtonElement).textContent?.includes('Clear all DUDE data'),
     ) as HTMLButtonElement;
   }
 

@@ -49,10 +49,10 @@ describe('createStorageBackend', () => {
 
   it('keys(prefix) only returns keys matching the prefix', () => {
     const backend = createStorageBackend('local');
-    localStorage.setItem('dud-e:v1:a:x', '1');
-    localStorage.setItem('dud-e:v1:b:x', '2');
+    localStorage.setItem('dude:v1:a:x', '1');
+    localStorage.setItem('dude:v1:b:x', '2');
     localStorage.setItem('unrelated', '3');
 
-    expect(backend.keys('dud-e:v1:a:').sort()).toEqual(['dud-e:v1:a:x']);
+    expect(backend.keys('dude:v1:a:').sort()).toEqual(['dude:v1:a:x']);
   });
 });

@@ -21,7 +21,7 @@ describe('PersistenceService', () => {
     preference.set(4);
     await stable();
 
-    expect(localStorage.getItem('dud-e:v1:demoTool:indentSize')).toBe(JSON.stringify(4));
+    expect(localStorage.getItem('dude:v1:demoTool:indentSize')).toBe(JSON.stringify(4));
 
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
@@ -45,8 +45,8 @@ describe('PersistenceService', () => {
     value.set('hello');
     await stable();
 
-    expect(sessionStorage.getItem('dud-e:v1:sessionTool:draft')).toBe(JSON.stringify('hello'));
-    expect(localStorage.getItem('dud-e:v1:sessionTool:draft')).toBeNull();
+    expect(sessionStorage.getItem('dude:v1:sessionTool:draft')).toBe(JSON.stringify('hello'));
+    expect(localStorage.getItem('dude:v1:sessionTool:draft')).toBeNull();
   });
 
   it('policy "user-choice" defaults to session-only when consent has not been granted', async () => {
@@ -54,8 +54,8 @@ describe('PersistenceService', () => {
     value.set('list');
     await stable();
 
-    expect(sessionStorage.getItem('dud-e:v1:choiceTool:layout')).toBe(JSON.stringify('list'));
-    expect(localStorage.getItem('dud-e:v1:choiceTool:layout')).toBeNull();
+    expect(sessionStorage.getItem('dude:v1:choiceTool:layout')).toBe(JSON.stringify('list'));
+    expect(localStorage.getItem('dude:v1:choiceTool:layout')).toBeNull();
   });
 
   it('policy "user-choice" moves future writes to localStorage once consent is granted, without migrating the current value', async () => {
@@ -64,12 +64,12 @@ describe('PersistenceService', () => {
     await stable();
 
     service.setConsent('choiceTool', 'layout', true);
-    expect(localStorage.getItem('dud-e:v1:choiceTool:layout')).toBeNull();
+    expect(localStorage.getItem('dude:v1:choiceTool:layout')).toBeNull();
 
     value.set('columns');
     await stable();
 
-    expect(localStorage.getItem('dud-e:v1:choiceTool:layout')).toBe(JSON.stringify('columns'));
+    expect(localStorage.getItem('dude:v1:choiceTool:layout')).toBe(JSON.stringify('columns'));
   });
 
   it('revoking consent deletes any existing local value immediately', async () => {
@@ -77,10 +77,10 @@ describe('PersistenceService', () => {
     service.setConsent('choiceTool', 'layout', true);
     value.set('columns');
     await stable();
-    expect(localStorage.getItem('dud-e:v1:choiceTool:layout')).toBe(JSON.stringify('columns'));
+    expect(localStorage.getItem('dude:v1:choiceTool:layout')).toBe(JSON.stringify('columns'));
 
     service.setConsent('choiceTool', 'layout', false);
-    expect(localStorage.getItem('dud-e:v1:choiceTool:layout')).toBeNull();
+    expect(localStorage.getItem('dude:v1:choiceTool:layout')).toBeNull();
   });
 
   it('clearTool removes only that tool\'s keys, leaving a similarly-named tool untouched', async () => {
@@ -90,11 +90,11 @@ describe('PersistenceService', () => {
 
     service.clearTool('a');
 
-    expect(localStorage.getItem('dud-e:v1:a:x')).toBeNull();
-    expect(localStorage.getItem('dud-e:v1:a2:x')).toBe(JSON.stringify(20));
+    expect(localStorage.getItem('dude:v1:a:x')).toBeNull();
+    expect(localStorage.getItem('dude:v1:a2:x')).toBe(JSON.stringify(20));
   });
 
-  it('clearAll empties every dud-e-prefixed key but leaves unrelated keys alone', async () => {
+  it('clearAll empties every dude-prefixed key but leaves unrelated keys alone', async () => {
     service.signal('a', 'x', 'local', 1).set(10);
     service.signal('b', 'y', 'session', 1).set(20);
     localStorage.setItem('some-other-app:setting', 'keep-me');
@@ -102,8 +102,8 @@ describe('PersistenceService', () => {
 
     service.clearAll();
 
-    expect(localStorage.getItem('dud-e:v1:a:x')).toBeNull();
-    expect(sessionStorage.getItem('dud-e:v1:b:y')).toBeNull();
+    expect(localStorage.getItem('dude:v1:a:x')).toBeNull();
+    expect(sessionStorage.getItem('dude:v1:b:y')).toBeNull();
     expect(localStorage.getItem('some-other-app:setting')).toBe('keep-me');
   });
 

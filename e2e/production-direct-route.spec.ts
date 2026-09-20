@@ -5,10 +5,10 @@ import { expect, test } from '@playwright/test';
 // actually resolves a direct/bookmarked/refreshed deep tool URL, not just
 // in-app client-side navigation.
 test('direct-navigating to a nested tool URL resolves the correct tool', async ({ page }) => {
-  await page.goto('/DUD-E/tools/json');
+  await page.goto('/DUDE/tools/json');
 
-  await expect(page).toHaveURL(/\/DUD-E\/tools\/json$/);
+  await expect(page).toHaveURL(/\/DUDE\/tools\/json$/);
   await expect(page.getByRole('heading', { name: 'JSON Formatter' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).not.toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Deck' })).not.toBeVisible();
   await expect(page.locator('app-sidebar')).toBeVisible();
 });

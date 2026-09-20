@@ -27,7 +27,7 @@ describe('ShellLayout — global Ctrl+K listener', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', init));
   }
 
-  // The dashboard has its own always-present "Search tools…" input, so
+  // The deck has its own always-present "Search tools…" input, so
   // presence of the CDK overlay backdrop (only rendered while the palette
   // overlay is attached) is the reliable signal that the palette is open.
   function isPaletteOpen(): boolean {

@@ -5,11 +5,11 @@ import { ToolDefinition } from '../../shared/models/tool-definition.model';
 import { ToolRegistryService } from '../../core/registry/tool-registry.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-deck',
   imports: [RouterLink],
-  templateUrl: './dashboard.html',
+  templateUrl: './deck.html',
 })
-export class Dashboard {
+export class Deck {
   private readonly registry = inject(ToolRegistryService);
 
   protected readonly meta = CATEGORY_METADATA;

@@ -1,7 +1,7 @@
 {
-  "name": "DUD-E — Developer Utility Dashboard",
-  "short_name": "DUD-E",
-  "description": "An offline-capable dashboard of local developer utilities.",
+  "name": "DUDE — Development Utility Deck Engine",
+  "short_name": "DUDE",
+  "description": "An offline-capable deck of local developer utilities.",
   "theme_color": "#0a0e14",
   "background_color": "#0a0e14",
   "display": "standalone",

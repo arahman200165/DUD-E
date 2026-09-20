@@ -1,4 +1,4 @@
-export const NAMESPACE_PREFIX = 'dud-e:v1';
+export const NAMESPACE_PREFIX = 'dude:v1';
 
 export function buildToolPrefix(toolId: string): string {
   return `${NAMESPACE_PREFIX}:${toolId}:`;

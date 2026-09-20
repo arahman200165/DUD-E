@@ -17,10 +17,10 @@ describe('App', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('renders the dashboard at the root route', async () => {
+  it('renders the deck at the root route', async () => {
     const harness = await RouterTestingHarness.create('/');
     const compiled = harness.routeNativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Dashboard');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Deck');
   });
 
   it('a worker failure on a real tool does not break shell navigation', async () => {
@@ -39,6 +39,6 @@ describe('App', () => {
     await harness.navigateByUrl('/');
     harness.detectChanges();
 
-    expect(harness.routeNativeElement?.textContent).toContain('Dashboard');
+    expect(harness.routeNativeElement?.textContent).toContain('Deck');
   });
 });

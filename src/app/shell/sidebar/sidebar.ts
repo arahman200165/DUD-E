@@ -20,7 +20,7 @@ export class Sidebar {
   protected readonly grouped = this.registry.groupedByCategory();
 
   protected onClearAll(): void {
-    if (confirm('Clear all saved DUD-E data from this browser? This cannot be undone.')) {
+    if (confirm('Clear all saved DUDE data from this browser? This cannot be undone.')) {
       this.persistence.clearAll();
     }
   }

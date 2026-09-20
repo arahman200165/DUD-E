@@ -41,7 +41,7 @@ jobs:
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/dud-e/browser
+          path: dist/dude/browser
 
   deploy:
     needs: build

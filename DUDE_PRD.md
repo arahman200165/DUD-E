@@ -1,30 +1,29 @@
-# DUD-E — Developer Utility Dashboard — Extensible
+# DUDE — Development Utility Deck Engine
 
-## Product Requirements Document / Weekend Implementation Plan
+## Product Requirements Document
 
-**Project name:** DUD-E  
-**Expanded name:** Developer Utility Dashboard — Extensible  
-**Product type:** Static, single-page developer utility dashboard  
+**Project name:** DUDE  
+**Expanded name:** Development Utility Deck Engine  
+**Product type:** Static, single-page developer utility deck  
 **Primary deployment target:** GitHub Pages free tier  
 **Primary frontend framework:** Angular  
 **Primary audience:** The developer building and using it first; later, other developers  
-**Delivery horizon:** One weekend for the foundation and first showcase tools  
-**Status:** Weekend MVP / framework-first foundation  
-**Scope posture:** Strict. Anything not required to validate the extensible framework or ship the first usable version is deferred.
+**Delivery horizon:** Framework and first 10 tools delivered in one weekend; ongoing roadmap-driven development from here  
+**Status:** V1 (framework + 10 tools) shipped and deployed — ongoing roadmap-driven development
 
 ---
 
 # 1. Executive Summary
 
-DUD-E is a dense, dark-mode-only, desktop-first Angular single-page application that consolidates frequently Googled developer micro-tools into one fast, self-contained dashboard.
+DUDE is a dense, dark-mode-only, desktop-first Angular single-page application that consolidates frequently Googled developer micro-tools into one fast, self-contained deck.
 
-Visually, DUD-E is dark but not monochrome or subdued. The UI is built on a dark base and uses a bright, bold, highly saturated accent-color system functionally — for categories, status, and structure — rather than decoratively. See Section 8 for the full visual direction.
+Visually, DUDE is dark but not monochrome or subdued. The UI is built on a dark base and uses a bright, bold, highly saturated accent-color system functionally — for categories, status, and structure — rather than decoratively. See Section 8 for the full visual direction.
 
-The weekend project is **not** to build 20–30 tools immediately.
+The weekend project was **not** to build 20–30 tools immediately.
 
-The weekend project is to build the **framework that makes tools 10 through 30 cheap and safe to add later**, while shipping enough varied tools to prove that the framework is sound.
+The weekend project was to build the **framework that makes tools 10 through 30 cheap and safe to add later**, while shipping enough varied tools to prove that the framework is sound. That framework is now built, deployed, and proven — see §1.1.
 
-The product should be:
+The product is:
 
 - static-hostable on GitHub Pages free tier;
 - installable as a PWA;
@@ -37,7 +36,15 @@ The product should be:
 - extremely dense and utility-first;
 - easy to extend without changing the application shell.
 
-The weekend MVP should ship with approximately **9 showcase tools** chosen to exercise different UI, state, persistence, worker, parsing, formatting, and rendering patterns.
+The weekend MVP shipped with **9 showcase tools** chosen to exercise different UI, state, persistence, worker, parsing, formatting, and rendering patterns, plus a 10th tool (UUID Generator / Inspector) added as a timed extension-speed proof.
+
+---
+
+## 1.1 Current Status
+
+V1 is complete. The extensible framework, all core infrastructure (registry, persistence, workers, PWA, GitHub Pages routing/CI), and 10 tools (the original 9 showcase tools plus the UUID Generator / Inspector) are built, tested, deployed, and verified live at `https://arahman200165.github.io/DUDE/`. Every item in the §36 Definition of Done is checked and verified against the live deployment.
+
+With V1 delivered, the old weekend scope gate no longer applies. New work — additional tools, enhancements to existing tools, or framework extensions — proceeds directly from the §21 Tool Roadmap. The product principles, architecture, and shared conventions documented below remain the standing contract for any new work; only the temporary "hold the line until Sunday" constraints have been retired.
 
 ---
 
@@ -51,19 +58,21 @@ The most important outcome is this:
 
 > After the framework exists, a new simple utility whose core logic already exists should be addable in 30 minutes or less without modifying the application shell.
 
-This makes DUD-E a long-lived personal utility platform rather than a one-weekend collection of unrelated components.
+This makes DUDE a long-lived personal utility platform rather than a one-weekend collection of unrelated components.
 
 ---
 
-# 3. Weekend Success Definition
+# 3. V1 Success Criteria
 
-The weekend project is successful if all of the following are true.
+The weekend project was judged successful once all of the following were true. These bars remain the standing quality contract for any future roadmap work.
 
 ## 3.1 Hard pass/fail criteria
 
 ### A. Extension speed
 
 A new simple tool with existing transformation logic can be added in **30 minutes or less**.
+
+**Achieved:** the UUID Generator / Inspector (§21 Phase 1 #12) was added, registered, and verified end-to-end in 2 minutes 50 seconds with zero shell/core edits — well inside the target.
 
 Adding that tool should require only:
 
@@ -110,9 +119,9 @@ If a user opens a saved tool route directly from a bookmark, the app must recove
 - Heavy or potentially blocking tasks can opt into a reusable worker execution layer.
 - Worker-backed tasks must support cancellation where practical.
 - Heavy tools should be lazy-loaded.
-- A broken or computationally expensive tool should not take down navigation for the whole dashboard.
+- A broken or computationally expensive tool should not take down navigation for the whole deck.
 
-No strict weekend bundle-size target is required.
+No strict bundle-size target is required.
 
 The project deliberately prioritizes shipping and library reuse over extreme bundle minimization.
 
@@ -136,9 +145,9 @@ A developer unfamiliar with the codebase should be able to understand, from the 
 
 ## 4.1 Framework first
 
-The first weekend optimizes for extensibility.
+The first weekend optimized for extensibility before tool count.
 
-Tool count is deliberately constrained.
+This ordering was validated by the actual delivery sequence: shell → tool registry → command palette → persistence policies → worker execution layer → PWA/connectivity → GitHub Pages routing/CI → showcase tools → critical tests → extension-speed proof. Each layer was built before the tools that depend on it, which is why the 10th tool (§3.1.A) could be added in under three minutes with no shell changes.
 
 ## 4.2 Local first
 
@@ -148,7 +157,7 @@ Network access should not be introduced merely because it is convenient.
 
 ## 4.3 Dense over decorative
 
-DUD-E is a working developer surface, not a marketing site.
+DUDE is a working developer surface, not a marketing site.
 
 Screen real estate should be spent on inputs, outputs, useful controls, status, and metadata.
 
@@ -178,23 +187,23 @@ A failing tool should fail inside its own workspace.
 
 The application shell should survive.
 
-## 4.7 Expansion comes later
+## 4.7 Expansion is roadmap-driven
 
-The roadmap can be broad.
+The roadmap can be broad (§21).
 
-The weekend implementation cannot.
+Any single unit of work — a new tool, an enhancement, a framework change — should still be scoped and finished on its own terms rather than growing to cover multiple roadmap items at once.
 
 ---
 
-# 5. Strict Weekend Scope
+# 5. Product Scope Boundaries
 
-## 5.1 In scope
+## 5.1 In Scope (V1 — Delivered)
 
-The weekend implementation includes:
+The weekend implementation delivered:
 
 - Angular application foundation;
 - dense dark-only UI shell;
-- dashboard home;
+- deck home;
 - persistent sidebar;
 - global search;
 - command palette;
@@ -215,15 +224,15 @@ The weekend implementation includes:
 - error isolation at route/tool boundary where practical;
 - basic keyboard usability;
 - documentation for adding a tool;
-- approximately 9 showcase tools;
+- 9 showcase tools, plus a 10th (UUID Generator / Inspector) added as the extension-speed proof;
 - a small number of framework-critical tests;
 - a small number of deployment/navigation smoke tests.
 
 ---
 
-## 5.2 Explicitly out of scope for the weekend
+## 5.2 Permanent Non-Goals
 
-These are deferred even if they appear attractive during implementation:
+These are durable product and architecture decisions, not temporary weekend cuts. They stay out of scope regardless of roadmap progress unless a future decision explicitly revisits them:
 
 - user accounts;
 - cloud synchronization;
@@ -243,11 +252,6 @@ These are deferred even if they appear attractive during implementation:
 - browser extension packaging;
 - Electron/Tauri/native desktop packaging;
 - VS Code extension;
-- executable JavaScript playground;
-- arbitrary HTML execution;
-- arbitrary template execution;
-- sandboxed code runner;
-- WYSIWYG rich-text editor;
 - Monaco-style full IDE workspace;
 - multi-tool tabs;
 - draggable/resizable IDE panels;
@@ -271,9 +275,19 @@ These are deferred even if they appear attractive during implementation:
 - theme customization;
 - light mode.
 
-These are not “stretch goals” for Sunday.
+---
 
-They are later-project work.
+## 5.3 Deferred to Roadmap
+
+These items are not permanent non-goals — they are later phases already tracked in §21, gated behind their own design work rather than picked up opportunistically:
+
+- executable JavaScript playground (§21 Phase 6);
+- arbitrary HTML execution (§21 Phase 6);
+- arbitrary template execution (§21 Phase 6);
+- sandboxed code runner (§21 Phase 6);
+- WYSIWYG rich-text editor (§21 Phase 5, #36).
+
+Phase 6 items specifically require a separate security/design document before implementation (§21 Phase 6, §32).
 
 ---
 
@@ -299,7 +313,7 @@ Examples:
 
 The expected use pattern is short and frequent:
 
-1. open DUD-E;
+1. open DUDE;
 2. reach the desired tool quickly;
 3. paste/type data;
 4. get the result immediately;
@@ -318,7 +332,7 @@ The application should optimize for repeated daily use rather than onboarding fi
 - GitHub Pages free-tier static hosting.
 - Online and offline operation where applicable.
 
-## 7.2 Not required for the weekend
+## 7.2 Not Currently Required
 
 - Firefox parity.
 - Safari parity.
@@ -326,7 +340,7 @@ The application should optimize for repeated daily use rather than onboarding fi
 - touch-first interactions.
 - narrow-screen layout quality.
 
-The application should not intentionally break elsewhere, but weekend acceptance is based on desktop Chromium.
+The application should not intentionally break elsewhere, but acceptance is based on desktop Chromium.
 
 ---
 
@@ -338,7 +352,7 @@ Dark mode only.
 
 No light theme toggle.
 
-The dark theme is not muted or monochrome. DUD-E uses a single, fixed, highly colorful theme: a dark base (background/panel surfaces) paired with a bright, bold, highly saturated accent-color palette used throughout the shell and every tool. Color is a primary structural and functional device, not an afterthought layered on top of a gray UI.
+The dark theme is not muted or monochrome. DUDE uses a single, fixed, highly colorful theme: a dark base (background/panel surfaces) paired with a bright, bold, highly saturated accent-color palette used throughout the shell and every tool. Color is a primary structural and functional device, not an afterthought layered on top of a gray UI.
 
 This is one fixed theme, not a customizable one. See Section 5.2 (theme customization and light mode remain out of scope) and Section 8.5.
 
@@ -414,7 +428,7 @@ Constraints:
 
 - exactly one theme is defined; it is not user-configurable (Section 5.2);
 - every color combination used for text or status meaning must still meet the contrast baseline in Section 19 — "bright and bold" must not come at the cost of legibility;
-- new tools reuse the shared palette/tokens rather than inventing tool-specific colors, so the dashboard and sidebar stay visually coherent as tools are added.
+- new tools reuse the shared palette/tokens rather than inventing tool-specific colors, so the deck and sidebar stay visually coherent as tools are added.
 
 ---
 
@@ -422,7 +436,7 @@ Constraints:
 
 The selected model is a hybrid.
 
-## 9.1 Dashboard home
+## 9.1 Deck home
 
 The home route should show:
 
@@ -432,7 +446,7 @@ The home route should show:
 - recent tools if trivial to implement;
 - pinned/favorite tools only if trivial to implement.
 
-Favorites and recents are optional for the weekend.
+Favorites and recents remain optional.
 
 They must not delay core work.
 
@@ -440,7 +454,7 @@ They must not delay core work.
 
 Persistent desktop sidebar containing:
 
-- DUD-E identity;
+- DUDE identity;
 - global search/command launcher;
 - category groups;
 - tool links;
@@ -456,7 +470,7 @@ Recommended shortcut:
 
 - `Ctrl+K` on the primary target platform.
 
-Capabilities for weekend MVP:
+Capabilities for V1:
 
 - search by tool title;
 - search by keyword;
@@ -507,9 +521,9 @@ Hash routing is explicitly not the chosen approach.
 
 # 11. PWA and Offline Model
 
-DUD-E should be installable.
+DUDE should be installable.
 
-## 11.1 Required weekend PWA behavior
+## 11.1 Required PWA Behavior
 
 - web app manifest;
 - service worker;
@@ -537,7 +551,7 @@ User-supplied API keys are allowed.
 
 Rules:
 
-- no private API key may be compiled into DUD-E;
+- no private API key may be compiled into DUDE;
 - session-only storage is the default;
 - persistent local storage requires explicit user opt-in;
 - API-key storage is handled through the shared persistence abstraction;
@@ -583,7 +597,7 @@ The implementation can adjust names and exact typing.
 The registry should drive:
 
 - sidebar navigation;
-- dashboard discovery;
+- deck discovery;
 - global search;
 - command palette;
 - route metadata where practical;
@@ -611,7 +625,7 @@ Avoid creating too many categories in the MVP.
 
 Taxonomy can evolve later.
 
-Each category is assigned one fixed bold accent color from the shared palette (Section 8.5), used consistently for that category's sidebar group, dashboard section, and tool badges. Category color is metadata-driven from the registry, not hard-coded per tool.
+Each category is assigned one fixed bold accent color from the shared palette (Section 8.5), used consistently for that category's sidebar group, deck section, and tool badges. Category color is metadata-driven from the registry, not hard-coded per tool.
 
 ---
 
@@ -723,7 +737,7 @@ Where practical:
 - future compression/decompression;
 - future CSV transformation.
 
-## 15.3 Weekend scope limit
+## 15.3 Scope Limit
 
 Build one reusable abstraction and use it in enough showcase tools to prove it.
 
@@ -757,7 +771,7 @@ Tools should offer simple recovery where useful:
 - reset;
 - retry;
 - cancel;
-- return to dashboard.
+- return to deck.
 
 No elaborate crash-reporting platform is required.
 
@@ -791,9 +805,9 @@ A dependency is acceptable when:
 - it is reasonably maintained;
 - it does not introduce a fundamentally conflicting architecture.
 
-## 17.2 Not a weekend priority
+## 17.2 Not a Priority
 
-Do not spend weekend time rewriting mature libraries to reduce dependency count.
+Do not spend time rewriting mature libraries to reduce dependency count.
 
 ---
 
@@ -822,7 +836,7 @@ Focus on:
 At minimum verify:
 
 - application loads;
-- dashboard renders;
+- deck renders;
 - tool can be opened from navigation;
 - command/search can find a tool;
 - direct tool route resolves;
@@ -843,7 +857,7 @@ At minimum verify:
 
 # 19. Accessibility Baseline
 
-Accessibility is important but not the weekend's primary optimization target.
+Accessibility is important but not the primary optimization target.
 
 Minimum expectations:
 
@@ -861,16 +875,16 @@ Formal accessibility certification is out of scope.
 
 # 20. Initial Showcase Tool Set
 
-The weekend should ship with **9 tools**.
+The weekend MVP shipped **9 tools**.
 
-These tools are selected because together they exercise different framework capabilities.
+These tools were selected because together they exercise different framework capabilities. A 10th tool, UUID Generator / Inspector (§20.10), was added ahead of schedule as the extension-speed proof (§3.1.A, §21 Phase 0).
 
 ---
 
 ## 20.1 JSON Formatter / Validator
 
 **Category:** Data  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Core daily utility and a strong test for parsing, errors, formatting, large text input, copy actions, and worker execution.
 
 ### Features
@@ -899,7 +913,7 @@ These tools are selected because together they exercise different framework capa
 ## 20.2 Regex Tester
 
 **Category:** Developer  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Tests dynamic state, flags, match highlighting, potentially dangerous computation, and worker cancellation.
 
 ### Features
@@ -925,7 +939,7 @@ These tools are selected because together they exercise different framework capa
 ## 20.3 Unix Timestamp Converter
 
 **Category:** Date & Time  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Small, fast tool that validates the low-friction end of the architecture.
 
 ### Features
@@ -948,7 +962,7 @@ These tools are selected because together they exercise different framework capa
 ## 20.4 Base64 Encoder / Decoder
 
 **Category:** Encoding  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Simple bidirectional transform and a good shared-layout test.
 
 ### Features
@@ -972,7 +986,7 @@ These tools are selected because together they exercise different framework capa
 ## 20.5 Markdown Preview
 
 **Category:** Documents  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Tests split-pane layouts, third-party rendering, sanitization considerations, and live preview.
 
 ### Features
@@ -1000,7 +1014,7 @@ The requested WYSIWYG rich editor belongs to a later phase.
 ## 20.6 JWT Debugger
 
 **Category:** Security  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Tests sensitive data handling, structured decode, nonpersistent default state, and warning UX.
 
 ### Features
@@ -1026,7 +1040,7 @@ The requested WYSIWYG rich editor belongs to a later phase.
 ## 20.7 Text Inspector
 
 **Category:** Text  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Covers live computation and common text metrics with minimal complexity.
 
 ### Features
@@ -1051,7 +1065,7 @@ The requested WYSIWYG rich editor belongs to a later phase.
 ## 20.8 Hash Generator
 
 **Category:** Security / Encoding  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Tests async browser APIs, binary/text conversion, and worker-friendly computation.
 
 ### Features
@@ -1074,7 +1088,7 @@ The requested WYSIWYG rich editor belongs to a later phase.
 ## 20.9 Text Diff
 
 **Category:** Text  
-**Priority:** Weekend MVP  
+**Priority:** V1 — Delivered  
 **Why it is included:** Tests third-party libraries, larger inputs, two-pane layouts, rendering, and worker isolation.
 
 ### Features
@@ -1096,17 +1110,36 @@ The requested WYSIWYG rich editor belongs to a later phase.
 
 ---
 
-# 21. Tool Roadmap
+## 20.10 UUID Generator / Inspector
 
-The roadmap deliberately exceeds the weekend scope.
+**Category:** Developer  
+**Priority:** V1 — Delivered  
+**Why it is included:** Originally a Phase 1 utility (§21, item 12); shipped early and timed as the extension-speed proof (§3.1.A) — added, registered, and verified in 2 minutes 50 seconds with zero shell/core edits.
 
-Only the tools in Phase 0 are part of the weekend commitment.
+### Features
 
-Everything else is later.
+- generate one or more v4 UUIDs;
+- inspect a pasted UUID (version, variant);
+- copy result;
+- session-only persistence for generated list and inspect input.
+
+### Explicitly deferred
+
+- other UUID versions (v1/v5/v7);
+- bulk export;
+- namespace-based generation.
 
 ---
 
-## Phase 0 — Weekend Framework Showcase
+# 21. Tool Roadmap
+
+The roadmap deliberately extends beyond what any single delivery phase covers.
+
+Phase 0 was the weekend commitment; it is complete. Everything else follows as ongoing roadmap-driven work, taken up as decided rather than on any fixed schedule.
+
+---
+
+## Phase 0 — Weekend Framework Showcase (✅ Complete)
 
 1. JSON Formatter / Validator
 2. Regex Tester
@@ -1117,10 +1150,9 @@ Everything else is later.
 7. Text Inspector
 8. Hash Generator
 9. Text Diff
+10. UUID Generator / Inspector — shipped early as the timed extension-speed proof (§3.1.A); originally planned as Phase 1 item #12 below.
 
-**Goal:** Validate architecture breadth.
-
-**Do not add a 10th tool unless every hard weekend acceptance criterion is already complete.**
+**Goal:** Validate architecture breadth. **Achieved** — all 10 tools shipped, deployed, and verified live.
 
 ---
 
@@ -1128,7 +1160,7 @@ Everything else is later.
 
 10. URL Encoder / Decoder  
 11. Query String Parser / Builder  
-12. UUID Generator / Inspector  
+12. UUID Generator / Inspector — ✅ shipped early, see Phase 0  
 13. Case Converter  
 14. Whitespace Cleaner / Normalizer  
 15. Slug Generator  
@@ -1213,7 +1245,7 @@ Examples:
 
 These require an explicit sandbox design.
 
-They are not approved by the weekend scope.
+They are not currently approved for implementation.
 
 Before adding them, create a separate security/design document.
 
@@ -1221,11 +1253,11 @@ Before adding them, create a separate security/design document.
 
 # 22. Roadmap Categorized by Domain
 
-For long-term discoverability, tools should ultimately be grouped roughly as follows.
+For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0).
 
 ## Data
 
-- JSON Formatter / Validator
+- JSON Formatter / Validator ✅
 - YAML ↔ JSON
 - XML Formatter
 - CSV Viewer / Converter
@@ -1235,8 +1267,8 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 
 ## Text
 
-- Text Inspector
-- Text Diff
+- Text Inspector ✅
+- Text Diff ✅
 - Case Converter
 - Whitespace Cleaner
 - Slug Generator
@@ -1244,7 +1276,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 
 ## Encoding / Conversion
 
-- Base64
+- Base64 ✅
 - URL Encode / Decode
 - HTML Entities
 - Number Base Converter
@@ -1253,14 +1285,14 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 
 ## Security
 
-- JWT Debugger
-- Hash Generator
+- JWT Debugger ✅
+- Hash Generator ✅
 - JWT Verification
 - File Hashing
 
 ## Date & Time
 
-- Unix Timestamp
+- Unix Timestamp ✅
 - Date / Timezone Converter
 - Duration Parser / Formatter
 - Cron Parser
@@ -1277,15 +1309,15 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 
 ## Developer
 
-- Regex Tester
-- UUID Generator / Inspector
+- Regex Tester ✅
+- UUID Generator / Inspector ✅
 - Semantic Version Comparator
 - Glob Tester
 - Random Data Generator
 
 ## Documents
 
-- Markdown Preview
+- Markdown Preview ✅
 - WYSIWYG Rich Text Editor
 - Advanced Markdown Workspace
 
@@ -1301,7 +1333,7 @@ User-supplied API keys are the chosen credential model.
 
 No static private secrets in source control.
 
-No server proxy is part of the weekend.
+No server proxy is part of the current architecture.
 
 Each API-backed tool should declare:
 
@@ -1346,7 +1378,7 @@ src/
     shell/
       layout/
       sidebar/
-      dashboard/
+      deck/
       command-palette/
       search/
     shared/
@@ -1440,7 +1472,7 @@ Responsibilities:
 - explicit handling of sensitive values;
 - serialize preferences;
 - clear tool state;
-- clear all DUD-E state.
+- clear all DUDE state.
 
 ## 26.3 Worker Service
 
@@ -1477,7 +1509,7 @@ A straightforward in-memory search is sufficient.
 
 # 27. Command Palette Requirements
 
-Weekend command palette supports navigation only.
+The command palette currently supports navigation only.
 
 ## Required
 
@@ -1498,15 +1530,15 @@ Weekend command palette supports navigation only.
 
 ---
 
-# 28. Dashboard Requirements
+# 28. Deck Requirements
 
-The dashboard should be useful but compact.
+The deck should be useful but compact.
 
 Required:
 
 - tool search;
 - category grouping;
-- all MVP tools visible;
+- all registered tools visible;
 - keyboard-compatible links;
 - quick route access.
 
@@ -1516,7 +1548,7 @@ Optional only if trivial:
 - favorites;
 - pinned tools.
 
-Do not build personalization infrastructure for these during the weekend.
+Do not build personalization infrastructure for these without a specific roadmap decision to do so.
 
 ---
 
@@ -1544,7 +1576,7 @@ Large inputs are allowed.
 
 The app should not impose arbitrary small text limits.
 
-However, the weekend does not require extreme-scale optimization.
+However, extreme-scale optimization is not currently required.
 
 Expected behavior:
 
@@ -1577,7 +1609,7 @@ No enterprise secret-management system is in scope.
 
 # 32. Security Boundaries
 
-## Weekend rules
+## Standing rules
 
 - no arbitrary code execution;
 - no remote plugin execution;
@@ -1644,7 +1676,7 @@ Verify:
 
 # 35. Documentation Deliverables
 
-Weekend repository documentation should include:
+Both deliverables below exist in the repository today (`README.md`, `ADDING_A_TOOL.md`). Repository documentation includes:
 
 ## README
 
@@ -1653,7 +1685,7 @@ Weekend repository documentation should include:
 - production build;
 - GitHub Pages deployment;
 - architecture summary;
-- list of MVP tools.
+- list of tools.
 
 ## `ADDING_A_TOOL.md`
 
@@ -1678,255 +1710,16 @@ A simple new tool should be addable without studying the full shell implementati
 
 ---
 
-# 36. Weekend Execution Plan
+# 36. Definition of Done
 
-The sequence below is intentionally strict.
-
-Do not reorder work to chase exciting tools before the framework is stable.
-
----
-
-## Milestone 1 — Repository and shell
-
-Deliver:
-
-- Angular app;
-- dark-only global styling;
-- root layout;
-- dense sidebar;
-- dashboard route;
-- placeholder tool route;
-- initial category model.
-
-Acceptance:
-
-- navigation works;
-- app looks intentionally dense;
-- tool workspace exists.
-
----
-
-## Milestone 2 — Tool registry
-
-Deliver:
-
-- typed tool metadata;
-- central registry;
-- sidebar generated from registry;
-- dashboard generated from registry;
-- route integration;
-- keyword search.
-
-Acceptance:
-
-- adding a placeholder definition makes it discoverable without editing multiple shell components.
-
----
-
-## Milestone 3 — Command palette
-
-Deliver:
-
-- `Ctrl+K`;
-- search;
-- keyboard selection;
-- navigation.
-
-Acceptance:
-
-- any registered tool can be found and opened.
-
-Stop there.
-
-Do not turn it into a general command system.
-
----
-
-## Milestone 4 — Persistence policies
-
-Deliver:
-
-- `none`;
-- `session`;
-- `local`;
-- user-choice support where needed;
-- tool namespace.
-
-Acceptance:
-
-- safe preferences can persist;
-- a JWT-like sensitive payload can remain nonpersistent.
-
----
-
-## Milestone 5 — Worker execution layer
-
-Deliver:
-
-- reusable worker request/result/error contract;
-- cancellation or termination path;
-- one demo transform.
-
-Acceptance:
-
-- worker failure does not break shell navigation.
-
----
-
-## Milestone 6 — PWA and connectivity
-
-Deliver:
-
-- manifest;
-- service worker;
-- cached shell;
-- online/offline signal;
-- offline state primitive.
-
-Acceptance:
-
-- after first successful load, app shell and local tools can launch offline.
-
----
-
-## Milestone 7 — GitHub Pages routing and CI
-
-Deliver:
-
-- repository base-path configuration;
-- clean routes;
-- `404.html` fallback;
-- CI workflow;
-- deploy.
-
-Acceptance:
-
-- direct refresh on a nested tool route works in production.
-
-This is a hard pass/fail milestone.
-
----
-
-## Milestone 8 — Build showcase tools
-
-Implement the 9 selected tools.
-
-Recommended order:
-
-1. Text Inspector
-2. Base64
-3. Unix Timestamp
-4. JWT Debugger
-5. JSON Formatter
-6. Hash Generator
-7. Markdown Preview
-8. Regex Tester
-9. Text Diff
-
-Reasoning:
-
-The first tools validate the lightweight path.
-
-Later tools progressively validate:
-
-- async APIs;
-- rendering;
-- third-party libraries;
-- worker isolation;
-- split-pane UI.
-
----
-
-## Milestone 9 — Critical tests
-
-Add only tests that protect the weekend architecture.
-
-Verify:
-
-- registry;
-- persistence;
-- worker wrapper;
-- routing;
-- command search;
-- production direct route;
-- PWA/offline smoke;
-- a few critical tool transforms.
-
----
-
-## Milestone 10 — Extension-speed proof
-
-Before declaring the weekend complete:
-
-Add one trivial disposable test utility or use one Phase 1 utility as a timed exercise.
-
-Target:
-
-**≤30 minutes** from start to working registered tool.
-
-If adding it requires shell edits, the architecture is not done.
-
-If successful, either:
-
-- keep the tool if it is genuinely useful; or
-- remove it after documenting the result.
-
-Do not let this exercise expand the final weekend scope.
-
----
-
-# 37. Scope Gate
-
-Before starting any unplanned task, ask:
-
-1. Does this directly support the hard success criteria?
-2. Does this unblock one of the 9 showcase tools?
-3. Does this prevent a known architectural dead end?
-4. Is this required for GitHub Pages deployment?
-5. Is this required for PWA/offline behavior?
-6. Is this required for failure isolation?
-
-If all answers are **no**, defer it.
-
----
-
-# 38. Scope-Creep Traps
-
-The following are likely to consume the weekend and should be actively resisted:
-
-- tweaking the visual design repeatedly;
-- building a full component library;
-- switching frameworks mid-project;
-- adding Monaco Editor everywhere;
-- implementing WYSIWYG editing;
-- building file drag-and-drop infrastructure before needed;
-- adding accounts;
-- setting up a backend;
-- building remote snippet sharing;
-- implementing user-customizable themes;
-- building a plugin marketplace;
-- chasing Lighthouse perfection;
-- testing every browser;
-- adding every “easy” utility before deployment is stable;
-- building an elaborate worker pool;
-- adding code execution;
-- creating a generic workflow engine;
-- rewriting third-party libraries;
-- premature bundle-size tuning;
-- adding analytics.
-
----
-
-# 39. Definition of Done
-
-DUD-E Weekend MVP is done only when all required items below are true.
+DUDE V1 was declared done once all required items below were verified true, on 2026-09-19.
 
 ## Product
 
-- [x] App is called DUD-E.
+- [x] App is called DUDE.
 - [x] Dark-only, highly colorful (bold accent palette), dense developer UI is implemented.
-- [x] Category color-coding and semantic status colors (Section 8.5) are consistent across sidebar, dashboard, and tools. Verified: `src/styles/tokens.css` defines the palette once; sidebar/dashboard/command palette all derive category dots from `CATEGORY_METADATA` dynamically (no hard-coded colors per tool); `ErrorPanel`/`OfflineBadge` use the shared semantic tokens.
-- [x] Dashboard exists.
+- [x] Category color-coding and semantic status colors (Section 8.5) are consistent across sidebar, deck, and tools. Verified: `src/styles/tokens.css` defines the palette once; sidebar/deck/command palette all derive category dots from `CATEGORY_METADATA` dynamically (no hard-coded colors per tool); `ErrorPanel`/`OfflineBadge` use the shared semantic tokens.
+- [x] Deck exists.
 - [x] Sidebar exists.
 - [x] Global search exists.
 - [x] Command palette exists.
@@ -1935,7 +1728,7 @@ DUD-E Weekend MVP is done only when all required items below are true.
 ## Architecture
 
 - [x] Typed tool registry exists.
-- [x] Shell is generated from tool metadata where practical. Verified: no shell file contains a hard-coded tool-id conditional (grepped `src/app/shell/`); sidebar, dashboard, command palette, and routes all iterate `TOOL_DEFINITIONS`/`ToolRegistryService`.
+- [x] Shell is generated from tool metadata where practical. Verified: no shell file contains a hard-coded tool-id conditional (grepped `src/app/shell/`); sidebar, deck, command palette, and routes all iterate `TOOL_DEFINITIONS`/`ToolRegistryService`.
 - [x] Per-tool persistence policy exists.
 - [x] Shared worker execution path exists.
 - [x] Online/offline state exists.
@@ -1946,7 +1739,7 @@ DUD-E Weekend MVP is done only when all required items below are true.
 
 - [x] Manifest exists.
 - [x] Service worker exists.
-- [x] App is installable. Verified live at `https://arahman200165.github.io/DUD-E/manifest.webmanifest` — valid `standalone` manifest with a full icon set (72–512px) plus an active service worker.
+- [x] App is installable. Verified live at `https://arahman200165.github.io/DUDE/manifest.webmanifest` — valid `standalone` manifest with a full icon set (72–512px) plus an active service worker.
 - [x] Shell works offline after first load.
 - [x] Local-only tools remain usable offline.
 
@@ -1954,10 +1747,10 @@ DUD-E Weekend MVP is done only when all required items below are true.
 
 - [x] Production build succeeds.
 - [x] CI deployment works. Verified: latest `Deploy` GitHub Actions run for the Milestone 10 push completed successfully.
-- [x] GitHub Pages site loads. Verified live: `https://arahman200165.github.io/DUD-E/` returns HTTP 200.
+- [x] GitHub Pages site loads. Verified live: `https://arahman200165.github.io/DUDE/` returns HTTP 200.
 - [x] Nested tool URLs work. Verified live and via `e2e/production-direct-route.spec.ts`.
 - [x] Refresh on nested routes works. Same SPA-fallback mechanism, exercised by `e2e/pwa-offline.spec.ts`'s `page.reload()`.
-- [x] Asset base path works. Verified live: `manifest.webmanifest` and `ngsw.json` both resolve correctly under the `/DUD-E/` prefix.
+- [x] Asset base path works. Verified live: `manifest.webmanifest` and `ngsw.json` both resolve correctly under the `/DUDE/` prefix.
 
 ## Tools
 
@@ -1970,6 +1763,7 @@ DUD-E Weekend MVP is done only when all required items below are true.
 - [x] Text Inspector
 - [x] Hash Generator
 - [x] Text Diff
+- [x] UUID Generator / Inspector — shipped early as the extension-speed proof (§3.1.A, §20.10).
 
 ## Documentation
 
@@ -1980,7 +1774,7 @@ DUD-E Weekend MVP is done only when all required items below are true.
 ## Validation
 
 - [x] framework-critical tests pass. 176/176 via a fresh `npm test` run.
-- [x] core navigation smoke test passes. `src/app/app.spec.ts` ("renders the dashboard at the root route") plus the command palette's navigate-on-Enter spec.
+- [x] core navigation smoke test passes. `src/app/app.spec.ts` ("renders the deck at the root route") plus the command palette's navigate-on-Enter spec.
 - [x] worker smoke test passes. `src/app/app.spec.ts`'s worker-failure-resilience test passes, and `WorkerClientService`'s full message contract is unit-tested. Note: no test currently drives a real browser `Worker` to a *successful* completion end-to-end (jsdom has no real `Worker`) — only failure-resilience and mocked-message-contract paths are covered.
 - [x] offline smoke test passes. `e2e/pwa-offline.spec.ts`, fresh run.
 - [x] direct-route production test passes. `e2e/production-direct-route.spec.ts`, fresh run, plus confirmed against the live deployed site.
@@ -1988,13 +1782,13 @@ DUD-E Weekend MVP is done only when all required items below are true.
 
 ---
 
-# 40. Deferred Definition
+# 37. Deferred Definition
 
-Anything not checked in the Definition of Done is not required to declare the weekend project successful.
+Anything not checked in the Definition of Done was not required to declare V1 successful.
 
 A roadmap item remaining unbuilt is not a failure.
 
-Stopping after a stable, deployed, extensible foundation is the intended outcome.
+Stopping after a stable, deployed, extensible foundation was the intended outcome for V1. Further work now follows the §21 roadmap rather than a scope gate.
 
 ---
 
@@ -2209,7 +2003,7 @@ Options:
 
 **Answer:** E — Hybrid.
 
-**Interpretation:** Dashboard + sidebar + global search/command palette + dedicated routes. No IDE-style persistent tabs for the weekend.
+**Interpretation:** Deck + sidebar + global search/command palette + dedicated routes. No IDE-style persistent tabs for the weekend.
 
 ---
 
@@ -2399,16 +2193,8 @@ Strong targets:
 
 ---
 
-# Appendix B — Final Weekend Scope in One Sentence
+# Appendix B — V1 Scope in One Sentence (Delivered)
 
 > Ship a dark-only but highly colorful, dense, desktop-Chromium Angular PWA on GitHub Pages with a reusable tool registry, clean routes, command/search navigation, per-tool persistence, worker-based failure isolation, offline support, documentation, and exactly enough varied utilities to prove the framework—then stop.
 
----
-
-# Appendix C — Anti-Scope-Creep Rule
-
-If the framework, deployment, and 9 showcase tools are not complete, **no roadmap-only feature may be started**.
-
-If all of them are complete early, the preferred next task is **documentation, cleanup, and verifying extension speed**, not adding more tools.
-
-The first post-weekend expansion should begin with Phase 1 utilities.
+This was the goal for V1 specifically, not a permanent stopping point — the "then stop" reflected the original weekend scope gate. With V1 delivered, work continues per the §21 roadmap (see §1.1).

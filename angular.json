@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "dud-e": {
+    "dude": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -44,7 +44,7 @@
               ],
               "outputHashing": "all",
               "serviceWorker": "ngsw-config.json",
-              "baseHref": "/DUD-E/"
+              "baseHref": "/DUDE/"
             },
             "development": {
               "optimization": false,
@@ -58,10 +58,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dud-e:build:production"
+              "buildTarget": "dude:build:production"
             },
             "development": {
-              "buildTarget": "dud-e:build:development"
+              "buildTarget": "dude:build:development"
             }
           },
           "defaultConfiguration": "development"

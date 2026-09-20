@@ -1,6 +1,6 @@
 // A minimal static file server that reproduces GitHub Pages' project-page
 // 404 behavior: any request that doesn't match a real file gets HTTP 404
-// with the body of DUD-E/404.html. That's the exact contract the SPA
+// with the body of DUDE/404.html. That's the exact contract the SPA
 // fallback script in public/404.html depends on to recover a deep tool URL.
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = resolve(here, '..', '.tmp', 'site');
-const notFoundFile = join(siteRoot, 'DUD-E', '404.html');
+const notFoundFile = join(siteRoot, 'DUDE', '404.html');
 const port = Number(process.env.PORT) || 4310;
 
 const CONTENT_TYPES = {

@@ -1,6 +1,6 @@
 # Adding a Tool
 
-DUD-E's framework goal (PRD §2) is that a new simple tool with existing transformation logic can be added in **30 minutes or less**, without touching the application shell, navigation, command palette, search, routing, PWA, or persistence/worker infrastructure. This doc walks through exactly how, using the real `base64` tool (`src/app/tools/base64/`) as the worked example throughout.
+DUDE's framework goal (PRD §2) is that a new simple tool with existing transformation logic can be added in **30 minutes or less**, without touching the application shell, navigation, command palette, search, routing, PWA, or persistence/worker infrastructure. This doc walks through exactly how, using the real `base64` tool (`src/app/tools/base64/`) as the worked example throughout.
 
 If following these steps ever requires editing `ShellLayout`, `app.routes.ts`, or a shared service in `src/app/core/`, that's an architecture gap — file it, don't route around it.
 
@@ -37,7 +37,7 @@ Add one entry to `TOOL_DEFINITIONS` in `src/app/core/registry/tool-definitions.t
 ```
 
 - `category` must be one of the existing `ToolCategory` values (`tool-category.model.ts`) — `data`, `text`, `encoding`, `security`, `date-time`, `web`, `developer`, `documents`. Adding a new category is a bigger decision than adding a tool; don't do it casually.
-- `keywords` drives `ToolRegistryService.search` — used by both the dashboard's inline search and the command palette.
+- `keywords` drives `ToolRegistryService.search` — used by both the deck's inline search and the command palette.
 - `load` is a dynamic `import()` returning the component class — this is what makes the route lazy (step 7 is then automatic).
 - `persistence` / `execution` / `network` here are declarative documentation of the choices you make in steps 4–6 — they aren't read at runtime by the shell, but keep them accurate for future maintainers.
 
@@ -119,10 +119,10 @@ A framework-free `.spec.ts` for the pure transform is the highest-value test (fa
 
 Run the app (`ng serve`) and confirm:
 - the tool appears in the sidebar under its category;
-- typing part of its title/keywords into the dashboard search or the command palette (`Ctrl+K`) surfaces it.
+- typing part of its title/keywords into the deck search or the command palette (`Ctrl+K`) surfaces it.
 
 Then run `npm test` — `tool-search.spec.ts` and `tool-registry.service.spec.ts` iterate the real `TOOL_DEFINITIONS` array, so a malformed new entry (duplicate id, duplicate route, etc.) will usually fail one of them immediately.
 
 ## 10. Verify the direct URL
 
-After `ng build`, confirm the lazy chunk loads and the route resolves correctly when hit directly (not just via in-app navigation) — this is what Milestone 9's `e2e/production-direct-route.spec.ts` automates for the `json` tool as a template if you want to extend it. At minimum, serve the production build locally and hard-navigate to `/DUD-E/tools/<id>` to confirm it isn't relying on client-side router state that a fresh page load wouldn't have.
+After `ng build`, confirm the lazy chunk loads and the route resolves correctly when hit directly (not just via in-app navigation) — this is what Milestone 9's `e2e/production-direct-route.spec.ts` automates for the `json` tool as a template if you want to extend it. At minimum, serve the production build locally and hard-navigate to `/DUDE/tools/<id>` to confirm it isn't relying on client-side router state that a fresh page load wouldn't have.
