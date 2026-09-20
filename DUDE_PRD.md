@@ -42,9 +42,11 @@ The weekend MVP shipped with **9 showcase tools** chosen to exercise different U
 
 ## 1.1 Current Status
 
-V1 is complete. The extensible framework, all core infrastructure (registry, persistence, workers, PWA, GitHub Pages routing/CI), and 10 tools (the original 9 showcase tools plus the UUID Generator / Inspector) are built, tested, deployed, and verified live at `https://arahman200165.github.io/DUDE/`. Every item in the §36 Definition of Done is checked and verified against the live deployment.
+V1 is complete. The extensible framework, all core infrastructure (registry, persistence, workers, PWA, GitHub Pages routing/CI), and 10 tools (the original 9 showcase tools plus the UUID Generator / Inspector) are built, tested, deployed, and verified live at `https://arahman200165.github.io/DUDE/`. Every item in the §37 Definition of Done is checked and verified against the live deployment.
 
 With V1 delivered, the old weekend scope gate no longer applies. New work — additional tools, enhancements to existing tools, or framework extensions — proceeds directly from the §21 Tool Roadmap. The product principles, architecture, and shared conventions documented below remain the standing contract for any new work; only the temporary "hold the line until Sunday" constraints have been retired.
+
+Phases 0–7 of that roadmap are complete: the original 10 showcase tools plus 47 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is next up** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
 
 ---
 
@@ -155,6 +157,8 @@ If a tool can run entirely in the browser, it should.
 
 Network access should not be introduced merely because it is convenient.
 
+This is also a product feature, not just an architecture choice: DUDE should make it visible, in the UI, when a tool is processing entirely on-device — "processed locally, your data never leaves your machine" — since this matters most for exactly the inputs users are most guarded about (JWTs, API responses, logs, configs, company data). See §14 and §31 for how this is enforced technically.
+
 ## 4.3 Dense over decorative
 
 DUDE is a working developer surface, not a marketing site.
@@ -192,6 +196,18 @@ The application shell should survive.
 The roadmap can be broad (§21).
 
 Any single unit of work — a new tool, an enhancement, a framework change — should still be scoped and finished on its own terms rather than growing to cover multiple roadmap items at once.
+
+## 4.8 Depth and interconnection over raw tool count
+
+DUDE's moat is not the number of tools it has.
+
+As the roadmap grows into the hundreds of tools (§21), the differentiator is meant to stay excellent UX, privacy, interoperability between tools, and depth on the tools that already exist — not simply adding more of them. Concretely: prefer enriching an existing tool (tree views, search, exports, validation, related-tool hand-offs) over shipping a shallow new one when both are on the table, and treat DUDE as a single cohesive workbench that tools connect within (see §22, Future Architecture Directions), not an unrelated pile of pages that happen to share a shell.
+
+## 4.9 Desktop extends, doesn't replace, the web app
+
+The GitHub Pages web app (§1, §10) remains the permanent, zero-install way to use DUDE, and stays the recommended default even after the desktop packaging track (§23) exists. The desktop app's job is to add genuinely native capability — OS/network/filesystem access, drag-and-drop, system tray, global shortcuts, local servers (Track B, §21) — not to re-wrap the same web experience for its own sake.
+
+This implies a shared-core architecture: tool logic lives in a platform-independent core, with the browser, desktop, and any future backend each sitting behind their own thin adapter (see §25). It also implies a hard constraint on future monetization (§23): the basic utilities that work today in the browser must never be paywalled behind the desktop app or any paid tier — they are the on-ramp into the rest of the product, not an upsell surface.
 
 ---
 
@@ -236,8 +252,8 @@ These are durable product and architecture decisions, not temporary weekend cuts
 
 - user accounts;
 - cloud synchronization;
-- custom backend;
-- database;
+- custom backend (a **cloud-hosted** backend — see the note below for the desktop track's local backend, which is a distinct, now-permitted thing);
+- database (a DUDE-operated, always-on datastore for the product itself — this does not block Track B tools that connect to a user's own local/live databases, since those are the tool's job, not DUDE's infrastructure);
 - telemetry platform;
 - analytics dashboard;
 - collaborative editing;
@@ -250,7 +266,6 @@ These are durable product and architecture decisions, not temporary weekend cuts
 - Firefox-specific optimization;
 - Safari-specific optimization;
 - browser extension packaging;
-- Electron/Tauri/native desktop packaging;
 - VS Code extension;
 - Monaco-style full IDE workspace;
 - multi-tool tabs;
@@ -275,6 +290,12 @@ These are durable product and architecture decisions, not temporary weekend cuts
 - theme customization;
 - light mode.
 
+**Amendment (2026-09-20):** Electron/Tauri/native desktop packaging is **no longer a permanent non-goal**. §23 (Long-Term Product Horizon) adopts desktop packaging as a real future direction, since a large class of genuinely useful tools (§21, Track B) needs native OS/network/filesystem access a browser tab cannot get. This is a narrow, deliberate carve-out, not a general reopening of the list above:
+
+- a desktop build's **local, bundled backend** — used only to give Track B tools OS/network/filesystem access on the user's own machine — is now in scope;
+- a **cloud-hosted** backend, a DUDE-operated database, user accounts, and cloud sync remain permanent non-goals for the product as a whole, desktop included, unless a future decision explicitly revisits them (§23's monetization sketch flags this exact tension and does not resolve it);
+- the web/GitHub Pages build remains the permanent zero-install default (§4.9) — desktop is additive, not a replacement.
+
 ---
 
 ## 5.3 Deferred to Roadmap
@@ -283,7 +304,9 @@ These items are not permanent non-goals — they are later phases already tracke
 
 - WYSIWYG rich-text editor (§21 Phase 5, #36) — ✅ shipped.
 
-Phase 6 (executable JavaScript playground, arbitrary HTML execution, arbitrary template execution, sandboxed code runner) has since shipped too — see §21 Phase 6 and the amended standing rule at §32.
+Phase 6 (executable JavaScript playground, arbitrary HTML execution, arbitrary template execution, sandboxed code runner) has since shipped too — see §21 Phase 6 and the amended standing rule at §33.
+
+The full future roadmap — everything not yet built, spanning both what's buildable in the browser today (Track A) and what waits on the desktop packaging track (Track B) — is organized in §21 from Phase 8 onward, with the cross-cutting architectural ideas it depends on (pipelines, a shared input/output contract, smart paste-detection, a persistent workspace, local history) covered separately in §22.
 
 ---
 
@@ -410,7 +433,7 @@ Navigation and labels may use a compact UI font.
 
 ## 8.5 Color System
 
-A single fixed dark-and-colorful palette is defined once and shared by the shell and every tool through the design-token/theming layer (Section 24, `shared/`).
+A single fixed dark-and-colorful palette is defined once and shared by the shell and every tool through the design-token/theming layer (Section 25, `shared/`).
 
 Required elements:
 
@@ -871,257 +894,24 @@ Formal accessibility certification is out of scope.
 
 # 20. Initial Showcase Tool Set
 
-The weekend MVP shipped **9 tools**.
-
-These tools were selected because together they exercise different framework capabilities. A 10th tool, UUID Generator / Inspector (§20.10), was added ahead of schedule as the extension-speed proof (§3.1.A, §21 Phase 0).
-
----
-
-## 20.1 JSON Formatter / Validator
-
-**Category:** Data  
-**Priority:** V1 — Delivered  
-**Why it is included:** Core daily utility and a strong test for parsing, errors, formatting, large text input, copy actions, and worker execution.
-
-### Features
-
-- paste JSON;
-- validate;
-- pretty-print;
-- minify;
-- indentation selector;
-- parse error display;
-- copy output;
-- clear/reset;
-- optional worker execution for large payloads.
-
-### Explicitly deferred
-
-- JSON Schema validation — ✅ shipped, Phase 5, as a separate JSON Schema Validator tool;
-- JSONPath — ✅ shipped, Phase 5, as a separate JSON Query tool (JSONPath + JMESPath);
-- tree editor — ✅ shipped, Phase 7, the Tree view is now editable (add/edit/delete/rename nodes);
-- structural diff — ✅ shipped, Phase 7, as a "Compare" mode within this tool (path-keyed added/removed/changed/type-changed, index-based array comparison);
-- repair malformed JSON — ✅ shipped, Phase 7, a one-click "Attempt repair" action;
-- remote schema fetching — TODO, Phase 7, as a separate JSON Schema Validator tool (AJV-based, with CORS proxy for remote schemas);
-
----
-
-## 20.2 Regex Tester
-
-**Category:** Developer  
-**Priority:** V1 — Delivered  
-**Why it is included:** Tests dynamic state, flags, match highlighting, potentially dangerous computation, and worker cancellation.
-
-### Features
-
-- pattern input;
-- test text;
-- common flags;
-- match list;
-- capture groups;
-- visible regex error;
-- execution timeout/cancellation strategy where practical;
-- compact match summary.
-
-### Explicitly deferred
-
-- regex generation using AI — still deferred; needs an LLM proxy DUDE doesn't have, tracked as part of the future desktop-packaging initiative (§21 Phase 7) TODO;
-- regex explanation service — ✅ shipped, Phase 7, as a rule-based (non-AI) plain-English explainer built on `regexp-tree`'s AST — the offline interim for the AI version above;
-- cross-language flavor emulation — ✅ shipped, Phase 7, a PCRE/JS/Python/Java/.NET/Go RE2 compatibility-notes panel;
-- replace-expression builder beyond a basic replacement mode — ✅ shipped, Phase 7, a Replace/Replace All mode with native `$1`/`$<name>` substitution.
-
----
-
-## 20.3 Unix Timestamp Converter
-
-**Category:** Date & Time  
-**Priority:** V1 — Delivered  
-**Why it is included:** Small, fast tool that validates the low-friction end of the architecture.
-
-### Features
-
-- timestamp to date;
-- date to timestamp;
-- seconds/milliseconds detection or explicit selector;
-- local/UTC display;
-- current time shortcut;
-- copy result.
-
-### Explicitly deferred
-
-- full timezone database browser — ✅ shipped, Phase 4, as a separate Date / Timezone Converter tool (a multi-zone world clock);
-- recurring scheduling — ✅ shipped, Phase 7, as a separate Recurrence Rule Calculator tool (iCal-style RRULE expansion);
-- calendar math suite — ✅ shipped, Phase 7, as a separate Date Calculator tool (business-day arithmetic, day counting).
-
----
-
-## 20.4 Base64 Encoder / Decoder
-
-**Category:** Encoding  
-**Priority:** V1 — Delivered  
-**Why it is included:** Simple bidirectional transform and a good shared-layout test.
-
-### Features
-
-- text to Base64;
-- Base64 to text;
-- UTF-8 handling;
-- swap input/output;
-- copy;
-- clear;
-- invalid input feedback.
-
-### Explicitly deferred
-
-- file encoding — ✅ shipped, Phase 5, as a separate File Base64 Converter tool;
-- Base64 image preview — ✅ shipped, Phase 7, on the File Base64 Converter tool (both encode and decode directions);
-- MIME detection — ✅ shipped, Phase 7, on the File Base64 Converter tool (hand-rolled magic-byte sniffing, shown alongside the browser-reported type).
-
----
-
-## 20.5 Markdown Preview
-
-**Category:** Documents  
-**Priority:** V1 — Delivered  
-**Why it is included:** Tests split-pane layouts, third-party rendering, sanitization considerations, and live preview.
-
-### Features
-
-- Markdown editor;
-- rendered preview;
-- side-by-side view;
-- copy source;
-- clear;
-- common Markdown support;
-- safe HTML handling policy.
-
-### Explicitly deferred
-
-- WYSIWYG editing — ✅ shipped, Phase 5, as a separate Rich Text Editor tool (TipTap-based);
-- collaborative editing — TODO; still deferred; needs a hosted backend (rooms/documents/auth) DUDE doesn't have, tracked together with AI-based regex generation as part of the future desktop-packaging initiative (§21 Phase 7);
-- document export — ✅ shipped, Phase 5, on both the Rich Text Editor (HTML/Markdown) and Advanced Markdown Workspace (HTML);
-- custom themes — ✅ shipped, Phase 7, on both this tool and Advanced Markdown Workspace: fixed style presets plus a custom-CSS mode rendered in a sandboxed `<iframe>`;
-- plugin ecosystem — ✅ shipped, Phase 7, on Advanced Markdown Workspace only (render-hook and toolbar-action plugins, each sandboxed in its own `<iframe>`).
-
----
-
-## 20.6 JWT Debugger
-
-**Category:** Security  
-**Priority:** V1 — Delivered  
-**Why it is included:** Tests sensitive data handling, structured decode, nonpersistent default state, and warning UX.
-
-### Features
-
-- paste JWT;
-- decode header;
-- decode payload;
-- show signature segment separately;
-- decode common temporal claims;
-- show token expiry status;
-- explain clearly that decoding is not signature verification;
-- no automatic persistence.
-
-### Explicitly deferred
-
-- signing — ✅ shipped, Phase 7, as a separate JWT Signer tool (HMAC and RSA/EC/RSA-PSS, with in-browser key-pair generation);
-- signature verification requiring remote keys — ✅ shipped, Phase 5, as a separate JWT Signature Verifier tool;
-- JWKS fetching — ✅ shipped, Phase 5, on the JWT Signature Verifier tool;
-- identity-provider integrations — ✅ shipped, Phase 7, as named presets (Auth0, Okta, Azure AD, Google) on the JWT Signature Verifier tool's JWKS mode.
-
----
-
-## 20.7 Text Inspector
-
-**Category:** Text  
-**Priority:** V1 — Delivered  
-**Why it is included:** Covers live computation and common text metrics with minimal complexity.
-
-### Features
-
-- character count;
-- code point count if practical;
-- word count;
-- line count;
-- byte count for UTF-8;
-- whitespace count;
-- selected-text metrics if easy.
-
-### Explicitly deferred
-
-- readability scoring — ✅ shipped, Phase 7, hand-rolled Flesch-Kincaid Grade + Flesch Reading Ease;
-- NLP — dropped as a vague catch-all in favor of the two concrete items below, rather than built as originally (undefined) scoped;
-- language detection — ✅ shipped, Phase 7, via `franc-min`;
-- grammar checking — ✅ shipped, Phase 7, button-triggered, via the public LanguageTool API — the platform's first *external* API call (JWT Signature Verifier's JWKS mode only ever fetches URLs the user supplies themselves).
-
----
-
-## 20.8 Hash Generator
-
-**Category:** Security / Encoding  
-**Priority:** V1 — Delivered  
-**Why it is included:** Tests async browser APIs, binary/text conversion, and worker-friendly computation.
-
-### Features
-
-- input text;
-- common cryptographic hash algorithms available safely in-browser;
-- hex output;
-- copy result;
-- encoding selector only if easy.
-
-### Explicitly deferred
-
-- password cracking — TODO; defrerred; tracked as part of the future desktop-packaging initiative (§21 Phase 7);
-- rainbow tables — TODO; defrerred; tracked as part of the future desktop-packaging initiative (§21 Phase 7);
-- remote lookup — TODO; defrerred; tracked as part of the future desktop-packaging initiative (§21 Phase 7);
-- file hashing unless trivial — ✅ shipped, Phase 5, as a separate File Hash Generator tool.
-
----
-
-## 20.9 Text Diff
-
-**Category:** Text  
-**Priority:** V1 — Delivered  
-**Why it is included:** Tests third-party libraries, larger inputs, two-pane layouts, rendering, and worker isolation.
-
-### Features
-
-- left input;
-- right input;
-- line-oriented diff;
-- added/removed/changed indication;
-- compact summary;
-- clear/reset.
-
-### Explicitly deferred
-
-- directory diff — ✅ shipped, Phase 7, as a separate Directory Diff tool;
-- binary diff — ✅ shipped, Phase 7, on the Directory Diff tool (fixed-width hex byte diff, chosen over a text diff via a NUL-byte heuristic);
-- Git integration — ✅ shipped, Phase 7, as a separate Git Repo Browser tool — scoped to read-only commit-history browsing and commit-vs-commit diffing over a locally-selected folder, not a live working-tree checkout;
-- merge conflict resolver — ✅ shipped, Phase 5, on the Advanced Diff / Merge tool;
-- three-way merge — ✅ shipped, Phase 7, on the Advanced Diff / Merge tool (hand-rolled diff3-style correlation, no dependency).
-
----
-
-## 20.10 UUID Generator / Inspector
-
-**Category:** Developer  
-**Priority:** V1 — Delivered  
-**Why it is included:** Originally a Phase 1 utility (§21, item 12); shipped early and timed as the extension-speed proof (§3.1.A) — added, registered, and verified in 2 minutes 50 seconds with zero shell/core edits.
-
-### Features
-
-- generate one or more v4 UUIDs;
-- inspect a pasted UUID (version, variant);
-- copy result;
-- session-only persistence for generated list and inspect input.
-
-### Explicitly deferred
-
-- other UUID versions (v1/v5/v7) — ✅ shipped, Phase 7, alongside the existing v4;
-- bulk export — ✅ shipped, Phase 7, download the generated list as .txt/.json/.csv;
-- namespace-based generation — ✅ shipped, Phase 7, RFC 4122 predefined namespaces (DNS/URL/OID/X500) plus a custom namespace, for v5 generation.
+The weekend MVP shipped **9 tools**, chosen because together they exercise different framework capabilities (parsing, worker execution, persistence policy, sensitive-data handling, third-party rendering, split-pane layouts, live computation). A 10th tool, UUID Generator / Inspector, was added ahead of schedule as the extension-speed proof (§3.1.A).
+
+Each tool originally shipped with its own detailed feature list and a per-item "explicitly deferred" list; those lists are no longer reproduced here since every item on them was resolved during Phases 1–7 (see §21 Phase 7 in particular, which closed out this exact backlog). What still matters from V1 is *why* each tool was chosen — that framework-breadth rationale is preserved below.
+
+| Tool | Category | Why it was included |
+|---|---|---|
+| JSON Formatter / Validator | Data | Core daily utility; strong test of parsing, errors, formatting, large text input, copy actions, and worker execution. |
+| Regex Tester | Developer | Tests dynamic state, flags, match highlighting, potentially dangerous computation, and worker cancellation. |
+| Unix Timestamp Converter | Date & Time | Small, fast tool validating the low-friction end of the architecture. |
+| Base64 Encoder / Decoder | Encoding | Simple bidirectional transform and a good shared-layout test. |
+| Markdown Preview | Documents | Tests split-pane layouts, third-party rendering, sanitization considerations, and live preview. |
+| JWT Debugger | Security | Tests sensitive data handling, structured decode, nonpersistent default state, and warning UX. |
+| Text Inspector | Text | Covers live computation and common text metrics with minimal complexity. |
+| Hash Generator | Security / Encoding | Tests async browser APIs, binary/text conversion, and worker-friendly computation. |
+| Text Diff | Text | Tests third-party libraries, larger inputs, two-pane layouts, rendering, and worker isolation. |
+| UUID Generator / Inspector | Developer | Originally planned as Phase 1 item #12; shipped early as the timed extension-speed proof (§3.1.A) — added, registered, and verified in 2 minutes 50 seconds with zero shell/core edits. |
+
+Every feature and every originally-deferred capability across these 10 tools was eventually shipped — see each tool's entry in the live app, and §21 Phases 1–7 for when and how.
 
 ---
 
@@ -1129,7 +919,7 @@ These tools were selected because together they exercise different framework cap
 
 The roadmap deliberately extends beyond what any single delivery phase covers.
 
-Phase 0 was the weekend commitment; it is complete. Everything else follows as ongoing roadmap-driven work, taken up as decided rather than on any fixed schedule.
+Phase 0 was the weekend commitment; it is complete. Phases 1–7 are also complete. Everything from Phase 8 onward is future work, taken up as decided rather than on any fixed schedule — see below for how that future work is organized.
 
 ---
 
@@ -1152,89 +942,73 @@ Phase 0 was the weekend commitment; it is complete. Everything else follows as o
 
 ## Phase 1 — High-Frequency Core Utilities (✅ Complete)
 
-10. URL Encoder / Decoder — ✅ shipped  
-11. Query String Parser / Builder — ✅ shipped  
-12. UUID Generator / Inspector — ✅ shipped early, see Phase 0  
-13. Case Converter — ✅ shipped  
-14. Whitespace Cleaner / Normalizer — ✅ shipped  
-15. Slug Generator — ✅ shipped  
-16. HTML Entity Encoder / Decoder — ✅ shipped  
-17. Color Converter — ✅ shipped  
+10. URL Encoder / Decoder — ✅ shipped
+11. Query String Parser / Builder — ✅ shipped
+12. UUID Generator / Inspector — ✅ shipped early, see Phase 0
+13. Case Converter — ✅ shipped
+14. Whitespace Cleaner / Normalizer — ✅ shipped
+15. Slug Generator — ✅ shipped
+16. HTML Entity Encoder / Decoder — ✅ shipped
+17. Color Converter — ✅ shipped
 18. Number Base Converter — ✅ shipped
 
-**Goal:** Validate the “new tool in ≤30 minutes” success criterion across a batch of simple tools. **Achieved** — all remaining Phase 1 tools shipped, tested, and verified against direct-route resolution.
-
-### Notes
-
-These should mostly be simple tools and are ideal for measuring the “new tool in ≤30 minutes” success criterion.
+**Goal:** Validate the "new tool in ≤30 minutes" success criterion across a batch of simple tools. **Achieved** — all remaining Phase 1 tools shipped, tested, and verified against direct-route resolution.
 
 ---
 
 ## Phase 2 — Structured Data Utilities (✅ Complete)
 
-19. YAML ↔ JSON Converter — ✅ shipped  
-20. XML Formatter / Validator-lite — ✅ shipped  
-21. CSV Viewer / Converter — ✅ shipped  
-22. JSONPath / JMESPath Tester — ✅ shipped  
-23. JSON Structural Explorer — ✅ shipped as a "Tree" view on the JSON Formatter tool, see §20.1
+19. YAML ↔ JSON Converter — ✅ shipped
+20. XML Formatter / Validator-lite — ✅ shipped
+21. CSV Viewer / Converter — ✅ shipped
+22. JSONPath / JMESPath Tester — ✅ shipped
+23. JSON Structural Explorer — ✅ shipped as a "Tree" view on the JSON Formatter tool, see §20
 
-**Goal:** Exercise more complex third-party libraries and richer structured outputs. **Achieved** — `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, and `jmespath` are each wrapped behind a pure, worker-compatible transform, and two new shared UI primitives (`app-tree-view`, `app-data-table`) were introduced for structural/tabular display.
-
-### Notes
-
-These began exercising more complex third-party libraries and richer structured outputs.
+**Goal:** Exercise more complex third-party libraries and richer structured outputs. **Achieved** — `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, and `jmespath` are each wrapped behind a pure, worker-compatible transform; two new shared UI primitives (`app-tree-view`, `app-data-table`) were introduced for structural/tabular display.
 
 ---
 
 ## Phase 3 — Web / API Utilities (✅ Complete)
 
-24. HTTP Status Code Reference — ✅ shipped  
-25. HTTP Header Inspector / Builder — ✅ shipped  
-26. cURL Command Inspector / Converter — ✅ shipped, with code export to 8 languages  
-27. Cron Expression Parser / Next-Run Preview — ✅ shipped  
-28. User-Agent Parser — ✅ shipped  
+24. HTTP Status Code Reference — ✅ shipped
+25. HTTP Header Inspector / Builder — ✅ shipped
+26. cURL Command Inspector / Converter — ✅ shipped, with code export to 8 languages
+27. Cron Expression Parser / Next-Run Preview — ✅ shipped
+28. User-Agent Parser — ✅ shipped
 29. MIME Type Reference / Lookup — ✅ shipped
 
-**Goal:** Cover common web/API-adjacent lookups and parsers entirely offline, per the "local static references preferred" note below. **Achieved** — all 6 tools are fully local (no `network` policy set); `cron-parser`/`cronstrue` and `ua-parser-js` were added for cron math and UA parsing respectively (the "fiddly, easy to get subtly wrong" library-forward case per §17), and two new shared primitives (`app-copy-button`, `app-key-value-editor`) were extracted since their patterns were about to repeat a 3rd/4th time across these tools.
+**Goal:** Cover common web/API-adjacent lookups and parsers entirely offline. **Achieved** — all 6 tools are fully local; `cron-parser`/`cronstrue` and `ua-parser-js` were added, and two new shared primitives (`app-copy-button`, `app-key-value-editor`) were extracted once their patterns started repeating.
 
 ### Notes
 
-Tools that depend on public APIs or remote data should be evaluated individually.
-
-Local static references are preferred when practical. The HTTP Status Code Reference and MIME Type Reference ship as curated, verified-accurate subsets of their IANA registries rather than exhaustive transcriptions — see each tool's data file for details.
+Local static references are preferred when practical. The HTTP Status Code Reference and MIME Type Reference ship as curated, verified-accurate subsets of their IANA registries rather than exhaustive transcriptions.
 
 ---
 
 ## Phase 4 — Developer Workflow Utilities (✅ Complete)
 
-30. Semantic Version Comparator — ✅ shipped, with sorting and range-satisfaction checking  
-31. Glob Pattern Tester — ✅ shipped  
-32. URL / URI Inspector — ✅ shipped, with editable round-trip reconstruction  
-33. Date / Timezone Converter — ✅ shipped, as a multi-zone world clock  
-34. Duration Parser / Formatter — ✅ shipped  
+30. Semantic Version Comparator — ✅ shipped, with sorting and range-satisfaction checking
+31. Glob Pattern Tester — ✅ shipped
+32. URL / URI Inspector — ✅ shipped, with editable round-trip reconstruction
+33. Date / Timezone Converter — ✅ shipped, as a multi-zone world clock
+34. Duration Parser / Formatter — ✅ shipped
 35. Random Data Generator — ✅ shipped, with full `@faker-js/faker` category coverage
 
-**Goal:** Cover common developer-workflow utilities (versioning, glob matching, URL inspection, timezones, durations, and fake test data) entirely offline. **Achieved** — all 6 tools are fully local (no `network` policy set); `semver`, `picomatch`, `luxon`, `parse-duration`, `humanize-duration`, and `@faker-js/faker` were added, continuing the library-forward pattern for fiddly parsing/formatting domains (§17).
-
-### Notes
-
-Random data generation should remain developer-oriented and local.
+**Goal:** Cover common developer-workflow utilities (versioning, glob matching, URL inspection, timezones, durations, fake test data) entirely offline. **Achieved** — all 6 tools are fully local; `semver`, `picomatch`, `luxon`, `parse-duration`, `humanize-duration`, and `@faker-js/faker` were added, continuing the library-forward pattern (§17) for fiddly parsing/formatting domains.
 
 ---
 
 ## Phase 5 — Richer Editors and Advanced Tools (✅ Complete)
 
-36. WYSIWYG Rich Text Editor — ✅ shipped, via TipTap with sanitized HTML and Markdown export  
-37. Advanced Markdown Workspace — ✅ shipped, with GFM extras, front matter, a table of contents, and synced-scroll preview  
-38. JWT Signature Verification — ✅ shipped, as a separate JWT Signature Verifier tool (HMAC, RSA/EC/RSA-PSS, and JWKS)  
-39. File Hashing — ✅ shipped, as a separate File Hash Generator tool  
-40. File Base64 Conversion — ✅ shipped, as a separate File Base64 Converter tool  
-41. Advanced Diff / Merge — ✅ shipped, with line/word/character diffing, a merge view, and unified-diff export  
+36. WYSIWYG Rich Text Editor — ✅ shipped, via TipTap with sanitized HTML and Markdown export
+37. Advanced Markdown Workspace — ✅ shipped, with GFM extras, front matter, a table of contents, and synced-scroll preview
+38. JWT Signature Verification — ✅ shipped, as a separate JWT Signature Verifier tool (HMAC, RSA/EC/RSA-PSS, and JWKS)
+39. File Hashing — ✅ shipped, as a separate File Hash Generator tool
+40. File Base64 Conversion — ✅ shipped, as a separate File Base64 Converter tool
+41. Advanced Diff / Merge — ✅ shipped, with line/word/character diffing, a merge view, and unified-diff export
 42. JSON Schema Validator — ✅ shipped, supporting both Draft-07 and 2020-12
 
-These were intentionally later because they introduce larger libraries, more complex security boundaries, richer file handling, or significantly broader UX.
-
-**Goal:** Validate that larger third-party libraries, new file-handling patterns (drag-and-drop, generated downloads), and the platform's first genuinely network-capable tool could be added without weakening the local-first/offline-first architecture. **Achieved** — `jose`, `ajv`/`ajv-formats`, `@tiptap/core`+`@tiptap/starter-kit`+`tiptap-markdown`, and `markdown-it-task-lists` were added (library-forward per §17), all lazy-loaded per tool; a new shared `FileDrop` component and `downloadFile` utility were introduced for File Hashing, File Base64 Conversion, and Advanced Diff/Merge's file-upload mode. JWT Signature Verification's JWKS-fetch mode is the first tool to call `fetch`, with its `networkRequired` UX scoped to that mode only so the tool's other, fully local verification modes stay usable offline.
+**Goal:** Validate that larger third-party libraries, new file-handling patterns, and the platform's first genuinely network-capable tool could ship without weakening the local-first/offline-first architecture. **Achieved** — `jose`, `ajv`/`ajv-formats`, the TipTap stack, and `markdown-it-task-lists` were added, all lazy-loaded per tool; a shared `FileDrop` component and `downloadFile` utility were introduced. JWT Signature Verification's JWKS-fetch mode is the first tool to call `fetch`, scoped so the tool's other, fully local modes stay usable offline.
 
 ---
 
@@ -1245,124 +1019,841 @@ These were intentionally later because they introduce larger libraries, more com
 50. Template Renderer — ✅ shipped, renders EJS templates against a JSON context, reusing the JS Playground's execution engine
 51. Python Playground — ✅ shipped, runs Python via Pyodide (WebAssembly CPython, standard library only)
 
-**Goal:** ship the platform's first arbitrary-code-execution tools without weakening the security posture the rest of DUDE relies on. **Achieved** — a new shared `src/app/shared/code-sandbox/` module (a sandboxed `<iframe sandbox="allow-scripts">` with no `allow-same-origin`, giving an opaque origin with no cookie/storage/host-DOM access, plus a nested `Worker` terminated via `Worker.terminate()` for a spec-reliable hard stop on a runaway `while(true){}`) backs both the JS Playground and, unchanged, the Template Renderer — EJS templates compile to a real JS function internally, so they run through the identical sandbox rather than a lighter one. HTML Preview needed its own tool-local variant, since a live DOM ruled out running inside a Worker; its timeout is consequently best-effort (destroying/recreating the iframe) rather than spec-guaranteed. Python Playground bundles Pyodide's real client runtime, self-hosted via a build-time asset copy (never a CDN, keeping the offline-first promise) with its own CSP and a dedicated lazy service-worker asset group so the ~14MB runtime is never prefetched for users who don't open the tool.
-
-Ships as Milestones 17–20. §32's former standing "no arbitrary code execution" rule is amended accordingly — see §32.
+**Goal:** ship the platform's first arbitrary-code-execution tools without weakening DUDE's security posture. **Achieved** — a shared `src/app/shared/code-sandbox/` module (an opaque-origin sandboxed iframe plus a nested, force-terminable Worker) backs the JS Playground and Template Renderer; HTML Preview uses a tool-local variant since it needs a live DOM; Python Playground self-hosts the Pyodide runtime behind its own lazy service-worker asset group. Ships as Milestones 17–20; §33's former standing "no arbitrary code execution" rule is amended accordingly — see §33.
 
 ### Notes
 
-Three real bugs surfaced only through live browser testing, not code review, underscoring why this phase needed its own verification pass rather than shipping on unit tests alone: a CSP that allowed `connect-src` but not `script-src` for the Python sandbox's own origin (blocking `pyodide.js`'s `<script src>` load); GitHub Pages' default-permissive CORS headers being required (and, for local dev, replicated via `angular.json`'s `serve` target) because an opaque-origin document's dynamic `import()` is a CORS-mode fetch even for a same-looking URL; and mutating an `<iframe>`'s `srcdoc` property in place not reliably freeing a hung document's resources, silently degrading every subsequent same-tab run — fixed by destroying and recreating the iframe element itself.
-
-EJS's `client: true` compile option, despite older documentation, does not produce a standalone function in the installed version — its output closes over internal helpers. The shipped design instead bundles EJS's own self-contained client bundle (`ejs.min.js`) into the sandbox, the same self-hosted-asset approach Python Playground uses for Pyodide.
+Implementation details (the sandbox's CSP/CORS/iframe-recreation gotchas, and the EJS client-bundle packaging decision) are documented at `src/app/shared/code-sandbox/code-sandbox-doc.ts` rather than repeated here.
 
 ---
 
 ## Phase 7 — Showcase Backlog Closure (✅ Complete)
 
-Every item explicitly deferred in §20's original showcase-tool write-ups, revisited now that the platform has grown well past that MVP. Most landed as enhancements to the existing tool rather than new tools — see each tool's updated "Explicitly deferred" list in §20 for the full item-by-item disposition. Five items were large/independent enough to become new tools:
+Every item explicitly deferred in the original showcase tools' write-ups (§20), revisited once the platform had grown well past that MVP. Most landed as enhancements to the existing tool rather than new tools. Five items were large/independent enough to become new tools:
 
 43. JWT Signer — ✅ shipped, symmetric (HMAC) and asymmetric (RSA/EC/RSA-PSS) signing with in-browser key-pair generation
-44. Recurrence Rule Calculator — ✅ shipped, expands an iCal-style RRULE recurrence into occurrence dates (distinct from Cron Parser's trigger-schedule focus)
+44. Recurrence Rule Calculator — ✅ shipped, expands an iCal-style RRULE recurrence into occurrence dates
 45. Date Calculator — ✅ shipped, business-day-aware date arithmetic and day-counting
 46. Directory Diff — ✅ shipped, folder-vs-folder added/removed/changed comparison with a text line-diff or binary hex-diff drill-down
 47. Git Repo Browser — ✅ shipped, client-side commit-history browsing and commit-vs-commit diffing over a locally-selected `.git` folder
 
-**Goal:** Close out the showcase backlog without compromising the offline-first, dependency-minimal architecture. **Achieved** — `uuid`, `rrule`, `isomorphic-git`, `jsonrepair`, `regexp-tree`, and `franc-min` were added (library-forward per §17); Text Inspector's grammar-check mode is the second tool (after JWT Signature Verifier) to call `fetch`, scoped the same way via a conditional `networkRequired` binding; Markdown Preview/Workspace gained CSS-custom-property style presets plus a sandboxed-iframe path for custom CSS and third-party plugins, with no changes to the shell/registry/persistence/worker infrastructure.
+**Goal:** close out the showcase backlog without compromising the offline-first, dependency-minimal architecture. **Achieved** — `uuid`, `rrule`, `isomorphic-git`, `jsonrepair`, `regexp-tree`, and `franc-min` were added; Text Inspector's grammar-check mode became the second tool (after JWT Signature Verifier) to call `fetch`; Markdown Preview/Workspace gained style presets plus a sandboxed-iframe path for custom CSS/plugins — all with no changes to the shell/registry/persistence/worker infrastructure.
 
-**Explicitly out of scope, by design:**
+**Explicitly out of scope at the time, now revisited:**
 
-- **AI-based regex generation/explanation** and **collaborative real-time editing** (Markdown) — both need infrastructure DUDE has never had (an LLM proxy; hosted rooms/documents/auth). Tracked together as a future "downloadable desktop app with a bundled backend" initiative, deliberately scoped separately from this phase.
+- **AI-based regex generation/explanation** still needs either a hosted LLM proxy or local-model support DUDE doesn't have; it now belongs under the Local AI Utilities carve-out in §21's Track A roadmap rather than under desktop packaging specifically.
+- **Collaborative real-time editing** (Markdown) needs hosted rooms/documents/auth — this remains a permanent non-goal (§5.2) independent of the desktop track, since it requires multi-user cloud infrastructure DUDE does not take on.
 
 ### Notes
 
-Grammar checking's LanguageTool dependency is the platform's first *external* API call (JWT Signature Verifier's JWKS mode fetches only URLs the user supplies themselves); its free-tier rate/size limits are the reason it's a manual "Check" button rather than a live-as-you-type feature.
+Grammar checking's LanguageTool dependency is the platform's first *external* API call (JWT Signature Verifier's JWKS mode fetches only URLs the user supplies themselves); its free-tier limits are why it's a manual "Check" button rather than live-as-you-type.
 
-Git Repo Browser and Directory Diff both read an entire local folder into browser memory via `<input webkitdirectory>` rather than the File System Access API's `showDirectoryPicker()` — broader browser support (Chromium/Firefox/Safari) for what is, in both cases, a one-shot snapshot rather than a live, re-scannable handle.
-
----
-
-# 22. Roadmap Categorized by Domain
-
-For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–3).
-
-## Data
-
-- JSON Formatter / Validator ✅
-- YAML ↔ JSON ✅
-- XML Formatter ✅
-- CSV Viewer / Converter ✅
-- JSONPath / JMESPath ✅
-- JSON Structural Explorer ✅
-- JSON Schema Validator ✅
-
-## Text
-
-- Text Inspector ✅
-- Text Diff ✅
-- Case Converter ✅
-- Whitespace Cleaner ✅
-- Slug Generator ✅
-- Advanced Diff / Merge ✅
-- Directory Diff ✅
-
-## Encoding / Conversion
-
-- Base64 ✅
-- URL Encode / Decode ✅
-- HTML Entities ✅
-- Number Base Converter ✅
-- File Base64 ✅
-- Color Converter ✅
-
-## Security
-
-- JWT Debugger ✅
-- Hash Generator ✅
-- JWT Verification ✅
-- File Hashing ✅
-- JWT Signer ✅
-
-## Date & Time
-
-- Unix Timestamp ✅
-- Date / Timezone Converter ✅
-- Duration Parser / Formatter ✅
-- Cron Parser ✅
-- Recurrence Rule Calculator ✅
-- Date Calculator ✅
-
-## Web / API
-
-- Query String Builder ✅
-- HTTP Status Reference ✅
-- HTTP Header Inspector ✅
-- cURL Inspector / Converter ✅
-- User-Agent Parser ✅
-- MIME Type Reference ✅
-- URL / URI Inspector ✅
-
-## Developer
-
-- Regex Tester ✅
-- UUID Generator / Inspector ✅
-- Semantic Version Comparator ✅
-- Glob Tester ✅
-- Random Data Generator ✅
-- Git Repo Browser ✅
-- JavaScript Playground ✅
-- HTML Preview ✅
-- Template Renderer ✅
-- Python Playground ✅
-
-## Documents
-
-- Markdown Preview ✅
-- WYSIWYG Rich Text Editor ✅
-- Advanced Markdown Workspace ✅
+Git Repo Browser and Directory Diff both read an entire local folder into browser memory via `<input webkitdirectory>` rather than the File System Access API's `showDirectoryPicker()`, for broader browser support.
 
 ---
 
-# 23. API Integration Architecture
+## Phase 8 — Downloadable Desktop App with a Bundled Backend (Proposed — Framework: Establishes the Desktop-Packaging Track — Next Up)
+
+Like Phase 0, this is a framework-first phase: it adds a new deployment target and a bundled backend, not new tools with registry entries. Tool-level enhancements that land as part of this phase (Regex Tester, Advanced Markdown Workspace, Directory Diff, Git Repo Browser) stay documented inside their own §20 sections rather than incrementing the shipped-tool count, the same way Phase 7's enhancements did.
+
+**Goal:** ship a Windows Electron build of DUDE that is a strict superset of the web PWA — every existing tool works identically — while unlocking backend-dependent features that are impossible on static GitHub Pages hosting: an AI-assisted regex workflow and real-time collaborative Markdown editing.
+
+**Approved direction**, decided directly with the user:
+
+- **Packaging:** Electron.
+- **Backend:** a localhost-only LLM proxy process, provider-agnostic (a configured OpenAI-compatible base URL + API key, so it works with OpenAI, Anthropic-compatible gateways, local Ollama, OpenRouter, etc.) — plus a local collab server for same-machine/LAN sessions, extended by a **BYO relay server** for cross-network collaboration.
+- **BYO relay, not a DUDE-run service:** DUDE ships the relay server's code (e.g. as a Dockerfile/small deployable unit in this repo); each user self-hosts their own instance and points their desktop app at it. DUDE itself never operates shared infrastructure — see the amended §5.2 non-goals note.
+- **Tool surface:** superset — same Angular codebase, all existing tools unchanged; desktop-only features are additive and feature-detected.
+- **Distribution:** Windows only for now, via the Microsoft Store (free Microsoft-signed) and/or an unsigned installer on the GitHub Releases page.
+
+### Staged roadmap
+
+Each stage is expected to become its own Milestone number when implemented, following the existing convention that framework-layer work gets its own milestone rather than being folded into a tool commit.
+
+1. **Electron shell** — package the existing Angular app in Electron with no new features; prove build/run/package works before anything else is layered on. Establishes a platform/environment detection service (web vs. desktop) as the seam every later stage conditions on.
+2. **Native file access** — replace `<input webkitdirectory>` in Directory Diff and Git Repo Browser with Electron's native `dialog` + filesystem APIs, via a sandboxed preload/IPC bridge (no direct Node access from the renderer). Upgrades both tools from one-shot snapshots to live, re-scannable folder handles, desktop-only.
+3. **OS-level secret storage** — a new `secure-local` persistence tier backed by Electron `safeStorage` (OS keychain), available only on desktop. Lays the groundwork for storing the LLM proxy's API key safely.
+4. **Local LLM proxy + AI regex features** — the localhost-only backend process holds the user-supplied, provider-agnostic LLM credential; wires up AI-based regex generation (natural-language → regex) and upgrades regex explanation beyond the existing rule-based `regexp-tree` version, on Regex Tester. The rule-based explainer stays as the offline/web fallback when no key is configured.
+5. **Desktop shell chrome** — system tray, launch-on-login, native OS notifications (e.g. a long-running worker/LLM task completing in the background), a global hotkey for clipboard quick-actions (Base64/UUID/hash the clipboard without opening the window), and local file watching (auto-reload a tool's input when its source file changes on disk).
+6. **Local collab server** — a same-machine/LAN real-time collaboration backend for Advanced Markdown Workspace (CRDT-based, e.g. Yjs), bundled into the desktop app.
+7. **BYO relay server for cross-network collab** — a standalone relay server, shipped from this repo as its own deployable unit (e.g. a small Node/Yjs-websocket server with a Dockerfile), that users self-host and point their desktop app at via a configured URL — extending Stage 6's collab session across networks. The room/session identity model (anonymous room codes vs. named-but-accountless participants) is an explicit open design question, deferred to when this stage is actually designed.
+8. **Auto-update + distribution** — `electron-updater` against GitHub Releases; a new CI workflow builds a Windows installer via `electron-builder` (NSIS for the unsigned GitHub Releases path, MSIX/appx for Microsoft Store submission), separate from the existing GitHub Pages `deploy.yml`. Store submission itself (Partner Center) is a manual process, not automated in CI.
+
+**Explicitly deferred within Phase 8:** macOS/Linux builds, code-signed non-Store distribution, the collab room/session identity model (Stage 7), any provider-specific (non-OpenAI-compatible) LLM integration.
+
+### Security notes (extending §33)
+
+- The bundled backend must bind to `127.0.0.1` only (falling back to `127.0.0.2`, `127.0.0.3`, etc. if something else is already listening there, or to another user-provided address) — never an external interface.
+- The Electron renderer keeps `contextIsolation` on and no direct `nodeIntegration`; all native access (files, secrets, tray, IPC to the local backend) is mediated through a preload bridge — consistent with the sandboxing precedent already set by the Advanced Markdown Workspace's plugin `<iframe>`s (§20; §33).
+- A self-hosted BYO relay server is untrusted-by-default from the app's perspective: treat its messages as data, not as anything the app should extend trust or execute based on.
+
+---
+
+Everything below is organized into two tracks. **Track A — Browser-Extensible** covers tool ideas that are fully implementable client-side today — parsing, formatting, computation, encoding, generation, and "upload a file and inspect it" tools — with no dependency on the desktop-packaging track established in Phase 8 (§23). **Track B** (below, after Track A) covers ideas that genuinely need live OS/network/filesystem/socket access a browser sandbox cannot provide, and are explicitly gated on that desktop track (§21 Phase 8). The split is deliberate: it lets the large majority of the roadmap doc's ideas stay on the current architecture's committed near-term path, while keeping the smaller, genuinely native-only subset clearly separate and non-committed until Phase 8 is picked up.
+
+## Phase 9 — Structured Data Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: extend the Data category with power-tools and additional format support beyond the core JSON/YAML/XML/CSV converters already shipped.
+
+1. Universal Structured Data Converter — single workbench converting between JSON, YAML, XML, TOML, and CSV
+2. TOML Formatter / Validator
+3. INI Formatter / Parser
+4. Properties File Parser
+5. JSON Flatten / Unflatten
+6. JSON Merge
+7. JSON Patch Generator
+8. JSON Patch Tester
+9. JSON Pointer Tester
+10. JSON Sort Keys
+11. JSON Lines / NDJSON Viewer
+12. CSV ↔ SQL Converter (INSERT statement generation both directions)
+13. CSV Delimiter Detector
+14. CSV Column Statistics
+15. CSV Cleaner
+16. CSV Deduplicator
+17. CSV Join / Merge
+18. CSV Pivot
+19. CSV Filter / Sort
+20. XML XPath Tester
+21. XML Schema / XSD Validator
+22. XML ↔ CSV Converter
+23. YAML Linter
+24. YAML Merge
+25. YAML Anchor / Alias Visualizer
+26. YAML Path Tester
+27. Protobuf Decoder (upload a `.proto` + payload)
+28. MessagePack Decoder
+29. BSON Viewer
+30. CBOR Viewer
+31. Avro Viewer
+32. Parquet Viewer
+33. SQLite File Viewer (read-only, uploaded `.sqlite` file — distinct from a *live* database connection, which is Track B)
+
+### Notes
+
+Large JSON Streaming Viewer and JSON Table Viewer extend the existing JSON Formatter's Tree view (§20) rather than becoming separate tools. `sql.js` (SQLite compiled to WASM) is the natural library for #33, consistent with the library-forward dependency philosophy (§17).
+
+---
+
+## Phase 10 — Text Processing Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: extend the Text category with a full Unicode/line-manipulation toolkit and deeper text analysis than Text Inspector currently covers.
+
+1. Unicode Character Inspector
+2. Unicode Code Point Converter
+3. Invisible Character Viewer
+4. Control Character Viewer
+5. Zero-Width Character Detector
+6. ASCII Table
+7. Unicode Table
+8. Unicode Normalization (NFC / NFD / NFKC / NFKD)
+9. Smart Quotes Normalizer
+10. Line Ending Converter (CRLF / LF / CR)
+11. Tabs ↔ Spaces
+12. Indentation Converter
+13. Duplicate Line Remover
+14. Duplicate Word Detector
+15. Sort Lines
+16. Shuffle Lines
+17. Reverse Lines
+18. Unique Lines
+19. Prefix / Suffix Lines
+20. Add Line Numbers
+21. Remove Line Numbers
+22. Extract Columns
+23. Find / Replace
+24. Regex Find / Replace
+25. Multi-Cursor Text Transformer
+26. Lorem Ipsum Generator
+27. Placeholder Text Generator
+28. ASCII Art Generator
+29. ASCII Banner Generator
+30. Keyword Frequency Analyzer
+31. String Similarity Calculator (Levenshtein, Jaro-Winkler)
+32. Soundex / Metaphone
+33. Text Tokenizer
+34. N-Gram Generator
+35. Advanced Diff: semantic JSON diff mode
+36. Advanced Diff: semantic YAML diff mode
+37. Advanced Diff: semantic XML diff mode
+38. Advanced Diff: image diff mode
+39. Advanced Diff: ignore-whitespace / ignore-line-endings / ignore-case options
+40. Advanced Diff: moved-block detection
+
+### Notes
+
+Items 35-40 are enhancements to the existing Advanced Diff / Merge tool (§20) rather than new tools. Language Detector and Readability Analyzer already shipped (§21 Phase 7); Text Statistics already ships on Text Inspector.
+
+---
+
+## Phase 11 — Encoding & Numeric Representation Lab (Proposed — Track A: Browser-Extensible)
+
+Goal: turn Encoding into a full representation/conversion laboratory and give Developer a programmer-calculator suite.
+
+1. Hex Encoder / Decoder
+2. Binary Encoder / Decoder
+3. ASCII ↔ Hex
+4. UTF-8 ↔ Hex
+5. UTF-16 ↔ Hex
+6. Base16
+7. Base32
+8. Base36
+9. Base58
+10. Base62
+11. Base85 / ASCII85
+12. Base91
+13. ROT13
+14. ROT47
+15. Punycode Converter
+16. JavaScript Escape / Unescape
+17. CSS Escape / Unescape
+18. SQL Escape Helper
+19. Shell Escape Helper
+20. PowerShell Escape Helper
+21. Quoted-Printable Encoder
+22. URL Percent-Encoding Inspector
+23. Data URI Generator
+24. Data URI Decoder
+25. File → Hex Dump
+26. Hex Dump → File
+27. Endianness Converter
+28. IEEE-754 Floating Point Inspector
+29. Integer Representation Inspector
+30. Two's Complement Calculator
+31. Bitwise Calculator
+32. Programmer Calculator (binary/octal/decimal/hex with bit-width visualization)
+33. Arbitrary Precision / BigInt Calculator
+34. Scientific Notation Converter
+35. Percentage Calculator
+36. Ratio Calculator
+37. Modular Arithmetic
+38. GCD / LCM
+39. Prime Checker / Factorization
+40. Range Generator
+41. Statistics Calculator
+42. Matrix Calculator
+43. Expression Evaluator
+
+### Notes
+
+Base64/Base64URL, JSON Escape/Unescape, and Unicode Escape/Unescape already ship. This phase absorbs the source doc's separate "Numbers & Mathematics" section rather than opening a new category — everything here fits Encoding or Developer without a taxonomy change.
+
+---
+
+## Phase 12 — Security, Cryptography & Certificate Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: extend Security with the hashing/encryption/key-generation/certificate-inspection tools that don't require a live network fetch.
+
+1. Additional hash algorithms on Hash Generator: SHA-3, BLAKE2, BLAKE3, xxHash, CRC32 / CRC64
+2. HMAC Generator (HMAC-SHA256, HMAC-SHA512, custom key)
+3. Password Generator
+4. Passphrase Generator
+5. Password Entropy Calculator
+6. Password Strength Analyzer
+7. AES Encrypt / Decrypt (GCM, CBC)
+8. ChaCha20 / ChaCha20-Poly1305 Encrypt / Decrypt
+9. RSA Key Generator
+10. EC Key Generator
+11. Ed25519 Key Generator
+12. PEM Inspector
+13. DER Inspector
+14. CSR Generator
+15. CSR Inspector
+16. SSH Key Generator
+17. SSH Public Key Inspector
+18. SSH Fingerprint Calculator
+19. X.509 Certificate Inspector (uploaded cert)
+20. Certificate Chain Viewer (uploaded chain)
+21. Certificate Expiration Checker (uploaded cert, one-shot — an ongoing *monitor* is Track B)
+22. Certificate SAN Viewer
+23. Certificate Fingerprint Calculator
+24. PKCS#12 / PFX Inspector
+25. PEM ↔ DER Converter
+26. Certificate Chain Builder
+
+### Notes
+
+Web Crypto API covers most of items 7-11 natively; `node-forge` or similar is the fallback for PKCS#12/CSR handling per the library-forward philosophy (§17). Live TLS handshake fetching (`TLS Certificate Fetcher`, cipher/ALPN/SNI inspection, expiration *monitoring* over time) needs a live socket and is Track B.
+
+---
+
+## Phase 13 — Auth & JWT Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: go beyond decode/sign/verify into the surrounding OAuth/OIDC tooling developers need, all operating on user-pasted tokens/URLs rather than live flows.
+
+1. JWKS Viewer (paste a JWKS document)
+2. JWKS → Public Keys
+3. JWT Claims Analyzer
+4. JWT Expiration Visualizer
+5. OAuth Token Inspector
+6. OAuth 2.0 Playground (construct/inspect requests and responses manually, not a live redirect flow)
+7. OpenID Connect Discovery Document Inspector (paste a discovery document)
+8. PKCE Generator
+9. PKCE Verifier
+10. OAuth Scope Parser
+11. Basic Auth Header Generator
+12. Bearer Token Builder
+13. AWS Signature V4 Inspector
+14. HTTP Digest Auth Helper
+
+### Notes
+
+JWKS fetching-by-URL already ships on the JWT Signature Verifier (§20); these operate on pasted/uploaded material instead, so no new network policy is introduced.
+
+---
+
+## Phase 14 — Date & Time Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: round out Date & Time with additional parsers and time-math utilities beyond timestamp conversion, timezones, duration, and cron.
+
+1. ISO 8601 Parser
+2. RFC 3339 Parser
+3. RFC 2822 Parser
+4. Unix Microseconds / Nanoseconds support on the Unix Timestamp Converter
+5. Timezone Offset Comparator
+6. DST Transition Explorer
+7. Week Number Calculator
+8. Calendar Week Converter
+9. Relative Time Parser ("3 days ago" ↔ timestamp)
+10. Duration → ISO 8601
+11. Stopwatch
+12. Countdown
+13. Epoch Timeline Visualizer
+14. Cron Previous-Runs Preview (Cron Parser currently shows next-run only)
+15. Cron Humanizer depth (richer plain-English breakdown, e.g. "every six hours, Monday through Friday" plus the next 25 executions)
+
+### Notes
+
+`luxon` already covers most of the parsing/timezone math per Phase 4; items 1-3 and 14-15 extend the existing Cron Parser / Unix Timestamp Converter rather than becoming new tools.
+
+---
+
+## Phase 15 — Web & HTTP Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: deepen the Web category's URL/header/request tooling and broaden cURL's language coverage, all construct-and-display rather than send-a-real-request.
+
+1. URL Parser
+2. URL Builder
+3. URI Component Visualizer
+4. URL Normalizer
+5. Relative URL Resolver
+6. URL Comparison Tool
+7. URL Safety Inspector (heuristic checks: punycode homograph risk, suspicious TLD, etc.)
+8. Punycode Domain Inspector
+9. HTTP Request Builder (construct and display a request, no send)
+10. HTTP Response Viewer (paste/paste-and-format a response)
+11. Cookie Parser
+12. Set-Cookie Builder
+13. Accept Header Builder
+14. Cache-Control Builder
+15. CSP Builder
+16. CORS Header Builder
+17. Content-Disposition Builder
+18. Authorization Header Builder
+19. Range Header Builder
+20. HTTP Date Converter
+21. cURL → additional language targets: C#, Python requests, Python httpx, Java HttpClient, Kotlin, Go, Rust, PowerShell, PHP, Ruby, Dart, Swift
+22. HTTP Request → cURL (reverse of the existing cURL Inspector)
+23. Multipart Form Data Builder
+24. Form URL Encoded Builder
+
+### Notes
+
+Items 21-22 extend the existing cURL Command Inspector / Converter (§20), which already covers 8 languages; Header Parser and HTTP Status Reference already ship.
+
+---
+
+## Phase 16 — Regex Depth (Proposed — Track A: Browser-Extensible)
+
+Goal: extend Regex Tester with visualization and benchmarking beyond the existing explainer/flavor-notes/replace features (§21 Phase 7).
+
+1. Regex Visualizer (railroad diagram of the pattern)
+2. Regex Benchmark (catastrophic-backtracking risk / timing across sample inputs)
+3. Regex Flavor Converter (translate a pattern between JS/.NET/Java/Python/PCRE/Go flavors, distinct from the existing compatibility-notes panel)
+4. Regex Generator (non-AI, heuristic: build a pattern from example strings) — the AI-based version stays deferred per §21 Phase 7
+
+### Notes
+
+A visual regex railroad diagram is one of the higher-value additions here; `regexp-tree`'s existing AST (already a dependency, §21 Phase 7) is the natural base for both the visualizer and the flavor converter.
+
+---
+
+## Phase 17 — Design, Markup & Media Tools (Proposed — Track A: Browser-Extensible)
+
+Goal: grow Color Converter into a full design toolkit and add CSS/HTML/image/QR tools, all File-API/canvas-based with no OS access required.
+
+1. Color Converter: add LAB, LCH, OKLAB, OKLCH, HWB spaces
+2. Contrast Checker / WCAG Compliance Checker
+3. Palette Generator
+4. Gradient Generator
+5. Color Blindness Simulator
+6. Tailwind Color Matcher
+7. CSS Formatter / Minifier
+8. CSS Specificity Calculator
+9. CSS Selector Tester
+10. Flexbox Playground
+11. CSS Grid Playground
+12. Box Shadow Generator
+13. Border Radius Generator
+14. CSS Transform Builder
+15. CSS Animation Builder
+16. Cubic-Bezier Editor
+17. HTML Formatter / Minifier
+18. DOM Tree Viewer
+19. HTML ↔ JSX Converter
+20. HTML Entity Explorer
+21. Meta Tag Generator
+22. OpenGraph Preview
+23. Structured Data / JSON-LD Tester
+24. Markdown Table Formatter
+25. Markdown Linter
+26. Markdown Link Checker
+27. Image Metadata Inspector
+28. EXIF Viewer / Cleaner
+29. Image Format Converter (PNG ↔ JPEG ↔ WebP ↔ AVIF)
+30. Image Compressor
+31. Image Resizer
+32. Image Cropper
+33. Base64 Image Viewer
+34. SVG Viewer / Formatter / Optimizer
+35. SVG ↔ Data URI
+36. Pixel Color Picker (on an uploaded image, not the live screen — that variant is Track B)
+37. QR Code Generator (URL, Wi-Fi, contact, TOTP presets)
+38. QR Code Scanner (from an uploaded image or webcam frame)
+39. Barcode Generator
+40. Barcode Reader
+
+### Notes
+
+Items 24-26 extend Markdown Preview / Advanced Markdown Workspace (§20) rather than becoming new tools. Image tools use the Canvas/File APIs already available in-browser; `sharp`-equivalent WASM builds (e.g. `@squoosh/lib`) fit the library-forward philosophy (§17) for format conversion/compression.
+
+---
+
+## Phase 18 — Code Generators & Developer References (Proposed — Track A: Browser-Extensible)
+
+Goal: ship the model-from-JSON generators (one of the highest-value additions per the source roadmap) and round out static developer references.
+
+1. TypeScript Interface from JSON
+2. C# Model from JSON
+3. Java Class from JSON
+4. Kotlin Data Class from JSON
+5. Swift Codable Model from JSON
+6. Python Dataclass from JSON
+7. Rust Struct from JSON
+8. Go Struct from JSON
+9. SQL Schema (CREATE TABLE) from JSON
+10. Dev Snippets Reference (searchable: HTTP headers, regex syntax, git/docker commands, PowerShell/Bash, SQL, CSS, HTML, Unicode, MIME types, cron syntax, chmod)
+11. chmod / Unix Permissions Converter (`rwxr-xr--` ⇄ `754` with a visual owner/group/other checkbox grid)
+12. Stack Trace Formatter / Parser (auto-detect framework)
+13. Java Exception Formatter
+14. .NET Exception Formatter
+15. JavaScript Stack Trace Formatter
+16. Python Traceback Formatter
+17. Error Code Reference: Windows error codes / Win32 errors / HRESULT (with a universal search, e.g. `0x80070005` → `E_ACCESSDENIED`)
+18. Error Code Reference: POSIX errno
+19. Error Code Reference: Linux signals
+20. Error Code Reference: SQL Server / PostgreSQL SQLSTATE / MySQL error codes
+21. Error Code Reference: TLS alerts
+22. Error Code Reference: DNS response codes
+23. Compression Lab: gzip / deflate / Brotli / zstd (compress, decompress, ratio comparison)
+24. ZIP / TAR / TAR.GZ archive create / extract
+25. Dependency Version Comparator
+26. Semantic Range Evaluator (`^1.2.3`, `~1.2.3`, `>=1.2 <2` against a version)
+27. SemVer Range Visualizer
+28. package-lock.json / pnpm-lock.yaml / yarn.lock Inspector
+29. npm / NuGet / Maven / PyPI / Cargo Package Metadata Inspector — requires `fetch` to the relevant public registry; flag `networkRequired` scoped to that lookup only, same pattern as the existing JWKS-fetch and grammar-check tools (§20, §21 Phase 5/7)
+
+### Notes
+
+Items 1-9 are flagged as one of the highest-value additions in the source material. `pako`/`fflate` (gzip/deflate/zip) and `zstd-wasm` fit items 23-24 under the library-forward philosophy (§17). Semantic Version Comparator already ships (§21 Phase 4); items 25-28 extend it.
+
+---
+
+## Phase 19 — IDs, Mock Data & Git/SQL/Container Config Tooling (Proposed — Track A: Browser-Extensible)
+
+Goal: broaden ID generation, turn Random Data Generator into a schema-driven mock-data studio, and add text/config-level Git, SQL, Docker/Kubernetes, and `.env` tooling that doesn't touch a live daemon, cluster, or database connection.
+
+1. UUID v1, v3, v6, v7 (v4 and v5 already ship) — inspect the embedded timestamp on time-based versions
+2. ULID Generator / Inspector
+3. NanoID Generator
+4. Snowflake ID Generator / Inspector
+5. CUID Generator
+6. KSUID Generator / Inspector
+7. Mock Data Studio: schema-driven generation (field → `@faker-js/faker` category mapping, e.g. `{"name": "person.fullName", "email": "internet.email"}`) with JSON / CSV / SQL / XML / YAML / NDJSON export
+8. Git Command Builder
+9. Git Command Explainer (break an arbitrary command like `git rebase --onto develop feature-old feature-new` into what each argument means)
+10. Gitignore Generator
+11. Gitignore Tester
+12. Branch Name Generator
+13. Conventional Commit Builder
+14. Commit Message Validator
+15. Git URL Parser
+16. Git Remote Inspector
+17. SQL Formatter / Minifier / Beautifier
+18. SQL Syntax Checker
+19. SQL Parameterizer
+20. SQL Dialect Converter (PostgreSQL / SQL Server / MySQL / MariaDB / SQLite / Oracle)
+21. SQL Query Explainer (static, pattern-based — not a live `EXPLAIN` against a running database)
+22. CREATE TABLE Generator
+23. SQL → CSV, CSV → INSERT statements, JSON → INSERT statements
+24. Schema Diff (comparing two schema definitions as text)
+25. Dockerfile Linter / Formatter
+26. Docker Compose Validator / Viewer
+27. Docker Run ↔ Compose Converter
+28. Kubernetes Manifest YAML Validator / Formatter
+29. Kubernetes Manifest Diff
+30. kubeconfig Inspector
+31. Kubernetes Quantity Converter
+32. Kubernetes CronJob Schedule Tester
+33. Kubernetes Resource Requests Calculator
+34. Kubernetes Base64 Secret Encoder / Decoder
+35. `.env` Editor
+36. `.env` Validator
+37. `.env` Diff
+38. `.env` ↔ JSON
+39. Config File Comparator
+40. Secret Detector (flag likely credentials/keys in pasted text or config)
+41. Missing Environment Variable Detector
+42. Configuration Merge Tool
+43. IP Address Inspector (pure computation)
+44. CIDR Calculator
+45. Subnet Calculator
+46. IPv4 ↔ Integer Converter
+47. IPv6 Explorer
+48. MAC Address Inspector
+
+### Notes
+
+Items 8-16 are distinct from the existing Git Repo Browser (§20), which already does commit-history browsing/diffing over a locally-selected `.git` folder via `isomorphic-git` — these are text/URL-level tools with no repository needed. Items 43-48 look like "Networking" but are pure math/string manipulation, so they stay Track A rather than joining the live Networking Toolkit in Track B. Live database connections (SQL Server/PostgreSQL/MySQL/Redis/MongoDB explorers) and live Docker/Kubernetes daemon/cluster access are Track B, not here.
+
+---
+
+## Phase 20 — File & Binary Format Inspection (Proposed — Track A: Browser-Extensible)
+
+Goal: add file-upload-based binary/executable/format inspection — parsing whatever bytes the user provides, no OS access needed.
+
+1. File Inspector (metadata, detected type, magic bytes, entropy — a "File Forensics" summary view)
+2. File Signature Inspector / Magic Byte Detector
+3. File Type Detector (deeper than the existing MIME-sniffing on File Base64 Converter, §21 Phase 7)
+4. File Entropy Analyzer
+5. Binary Strings Extractor
+6. Hex Editor / Viewer
+7. Hex Diff (extends the existing Directory Diff's binary hex-diff mode, §21 Phase 7, to a standalone single-file tool)
+8. Byte Frequency Analyzer
+9. Endianness Viewer
+10. Binary Structure Inspector
+11. PE (Windows executable) Header Viewer
+12. ELF Header Viewer
+13. Mach-O Header Viewer
+14. Encoding Detector
+15. BOM Detector / Remover
+16. DPI Calculator
+17. Aspect Ratio Calculator
+18. Resolution Calculator
+
+### Notes
+
+Items 11-13 only need the uploaded binary's header bytes, not a running executable, so they stay Track A despite reading like "system" tools. Items 16-18 are pure math and were pulled out of the source doc's "Screen / Pixel Tools" section — the live-screen items in that section (screen ruler, live pixel picker) are Track B.
+
+---
+
+## Phase 21 — Cross-Tool Workflow Foundations (Track A, Speculative — Needs a Design Pass)
+
+Unlike every other phase in this roadmap, this one is not "pick an item, build it in the existing pattern." It's the reserved landing spot for the cross-cutting architecture ideas in §22, each of which changes the tool registry contract itself rather than adding a new tool that consumes it. Nothing here is ready to schedule; each item stays a placeholder until it gets the design pass §22 calls for.
+
+1. Universal Input/Output Contract — the foundational primitive; see §22.
+2. Transformation Pipelines — depends on #1; see §22.
+3. Smart Paste-Detection — depends on #1; see §22.
+4. Persistent Workspace / Scratchpad — extends §14's persistence model across tools; see §22.
+5. Persistent Local History — extends §14's persistence model across tools; see §22.
+
+### Notes
+
+This phase intentionally breaks from §4.7's "any single unit of work should be scoped and finished on its own terms" — these five items are listed together because they're interdependent (§22 explains the dependency order), not because they're meant to ship as one unit.
+
+---
+
+## Explicitly out of scope for now: Local AI Utilities
+
+The source roadmap's "Local AI Utilities" section (AI-based regex generator/explainer, stack-trace/SQL/git-command/cron/JSON-schema/mock-data-schema explainers, log analyzer, error diagnosis assistant, code conversion assistant) is not drafted as a buildable phase here. Every item needs either a hosted LLM proxy or local-model (on-device inference) support DUDE doesn't have today — the same reason "AI-based regex generation/explanation" was deferred in §21 Phase 7. These stay deferred until/unless local-model support becomes its own initiative; the non-AI heuristic alternatives that don't need this infrastructure are covered instead where they exist (e.g. Phase 16's heuristic Regex Generator, Phase 18's static Stack Trace Formatters).
+
+---
+
+## Phase 22 — Networking Toolkit (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+Give DUDE a native network-diagnostics surface that a browser tab cannot provide on its own.
+
+1. Ping — ICMP echo against a host, with round-trip timing
+2. Traceroute — hop-by-hop path to a host
+3. DNS Lookup — live resolution against system or custom resolvers
+4. Reverse DNS Lookup
+5. MX / TXT / SRV / NS / CNAME Lookup
+6. DNS Propagation Tester — compare a record across multiple public resolvers
+7. TCP Port Tester
+8. UDP Port Tester
+9. Port Scanner — a range of ports against a host
+10. Local Port Viewer — ports currently bound on this machine
+11. Active Connections Viewer
+12. Listening Process Viewer
+13. ARP Table Viewer
+14. Route Table Viewer
+15. Network Interface Viewer
+16. Public IP Detector
+17. Local IP Detector
+18. Hostname Resolver
+19. WHOIS Lookup
+20. TCP/HTTP Connectivity Tester
+
+### Notes
+
+IP/CIDR/subnet math, MAC-address inspection, and IPv4↔integer conversion are pure computation and were placed in the browser-extensible track instead, despite reading as "networking" — see Track A.
+
+---
+
+## Phase 23 — DNS & Live TLS / Certificate Tools (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+Extend the existing (file-upload-based) certificate inspection tools with live, socket-level checks against a running service.
+
+1. DNS Record Explorer (live)
+2. DNSSEC Inspector
+3. CAA Inspector
+4. DKIM Inspector
+5. SPF Inspector
+6. DMARC Inspector
+7. DNS-over-HTTPS Tester
+8. DNS-over-TLS Tester
+9. Multiple Resolver Comparator (Cloudflare / Google / Quad9 / system / custom)
+10. TLS Connection Inspector
+11. Cipher Suite Inspector
+12. TLS Version Tester
+13. ALPN Inspector
+14. SNI Tester
+15. HTTPS Configuration Analyzer
+16. Live Certificate Chain Fetcher (host:port → full chain)
+17. Certificate Expiration Monitor — background-checked, not just one-shot
+
+### Notes
+
+The existing/Track-A certificate tools (§21 Phase 12) work entirely from a user-supplied PEM/DER/PFX file; this phase is specifically the live-socket variants that need a real TCP connection to a remote host, which a browser sandbox cannot open.
+
+---
+
+## Phase 24 — Filesystem & Binary Forensics at Scale (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+Cover the filesystem operations that need arbitrary or background access beyond a single user-picked file or folder.
+
+1. Folder Size Analyzer — recursive, across an arbitrary directory tree
+2. Duplicate File Finder — across a drive or arbitrary tree
+3. Batch Rename — pattern-based, across a selected tree
+4. Directory Tree Generator — for an arbitrary path, not just a one-shot picked folder
+5. File Splitter
+6. File Joiner
+7. Line-Ending Batch Converter — across a folder of files
+8. File Encoding Converter — batch, across a folder
+9. Directory Hash — a whole-folder content hash for tree comparison
+
+### Notes
+
+Single-file inspection (hex viewer, signature/entropy analysis, MIME/magic-byte detection, BOM handling, PE/ELF/Mach-O header viewers) is upload-based and already covered in Track A. Directory Diff and Git Repo Browser already ship today using `<input webkitdirectory>` for a one-shot folder snapshot — this phase is for operations that need to write back to, or watch, an arbitrary part of the filesystem, which that API doesn't support.
+
+---
+
+## Phase 25 — Windows & Process Tools (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+Make DUDE genuinely useful for day-to-day Windows systems work, once it has a native process.
+
+1. Environment Variable Viewer
+2. PATH Editor
+3. Registry Viewer
+4. Registry Diff
+5. Services Viewer
+6. Process Viewer — CPU, memory, threads, command line, environment, loaded modules, open ports, open files, parent/child relationships
+7. Process Tree
+8. Kill Process
+9. Restart Process
+10. Port → Process Lookup
+11. Windows Event Log Viewer
+12. Scheduled Tasks Viewer
+13. Startup Programs Viewer
+14. Installed Software Viewer
+15. Windows Feature Viewer
+16. DLL Inspector
+17. Executable Dependency Viewer
+18. Windows SID Inspector / Account Resolver
+19. PowerShell Command Builder — building *and executing* a constructed command
+
+### Notes
+
+HRESULT decoding against a static lookup table is pure reference data and lives in Track A; a *live* HRESULT-from-running-process lookup, if ever built, would belong here instead. Per §33 Security Boundaries, any tool in this phase that can modify system state (kill/restart process, registry writes, services) must default to read-only with an explicit, unambiguous confirmation step before a destructive action — this is a hard requirement carried over from the existing security posture, not optional polish.
+
+---
+
+## Phase 26 — Local API & Server Toolkit (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+The single biggest "why would I install the desktop app" argument: a lightweight, local Postman/webhook.site/websocket-client alternative that never leaves the machine.
+
+1. REST Client — request builder, collections, environment variables, request variables, secret variables, request history, authentication helpers, pre-request scripts, post-request tests, request timing
+2. Local Mock HTTP Server — static and dynamic responses, configurable delay, error simulation (500 / timeout / rate limit / malformed response), route variables, request logging
+3. Local Webhook Listener — inspector, request history, replay, modify-and-replay, generate test webhook, signature verification
+4. WebSocket Client — message history, JSON formatting, binary message inspector, auto-reconnect, ping/pong inspector
+5. Local Static HTTP Server — serve a folder over HTTP with one click
+6. Local HTTPS Static Server
+7. CORS Proxy
+8. OpenAPI Live Introspection / Mock-Server-from-Spec — spin up a mock server directly from an OpenAPI document
+9. GraphQL Playground — live query execution against a running endpoint
+
+### Notes
+
+Static OpenAPI/Swagger viewing, validation, diffing, and doc/client-code generation from an already-downloaded spec file is pure parsing and lives in Track A; only *live* introspection and *running* a mock server need this phase's local listening-socket capability.
+
+---
+
+## Phase 27 — Database Toolkit (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+Lightweight, read-leaning database browsing for local development — not a DBeaver replacement.
+
+1. PostgreSQL Explorer
+2. SQL Server Explorer
+3. MySQL / MariaDB Explorer
+4. Oracle Explorer
+5. Redis Explorer
+6. MongoDB Explorer
+7. Live SQLite Explorer — connecting to a running/locked database file, as distinct from the static file viewer below
+
+Each: connect → browse schemas/tables → preview rows → execute query → export results.
+
+### Notes
+
+A *static* SQLite file viewer (open a `.sqlite` file and browse it read-only, no live connection) needs no raw socket and belongs in Track A instead; this phase is specifically for live connections to a running database process, which requires a TCP client a browser can't open. SQL text tooling (formatting, dialect conversion, explain-plan narration, CREATE TABLE generation) is also Track A — it never touches a live connection.
+
+---
+
+## Phase 28 — Containers (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+Stay lightweight — a diagnostics companion, not a Docker Desktop replacement.
+
+1. Live Docker Image/Container Inspector — size, ports, environment variables, of a running daemon
+2. Docker Command Builder that executes against the local daemon
+3. Live Kubernetes Resource Viewer — against a real, connected cluster
+4. kubectl Command Builder that executes
+
+### Notes
+
+Dockerfile/Compose linting, formatting, validation, and `docker run`↔Compose conversion, plus Kubernetes manifest validation/formatting/diffing and kubeconfig inspection, are all static-file parsing and already live in Track A — this phase only covers the pieces that need a live daemon or cluster socket.
+
+---
+
+## Phase 29 — System Diagnostics, Clipboard & OS Integration (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+
+The "why doesn't this work on my machine" page, plus the native conveniences that make a desktop app feel like part of the OS instead of a website in a window.
+
+1. System Information Dashboard — OS, architecture, CPU, RAM, GPU, disk, network adapters, monitors, installed runtimes, hostname, logged-in user, uptime, virtualization status
+2. Export Diagnostic Bundle — one click, packages the above for a bug report
+3. Clipboard History
+4. Clipboard Monitor — continuous, e.g. auto-formatting copied JSON
+5. Screen Ruler
+6. Live Pixel Color Picker — screen-coordinate based, distinct from the File-API-based picker in Track A
+7. Context-Menu Actions — "Hash file," "Format JSON," "Open with DUDE," from the OS shell
+8. Global Keyboard Shortcuts — system-wide, not just in-app
+9. System Tray Presence and Actions
+10. Drag-and-Drop File Handling / "Open With" File Association
+11. Batch Processing Across Dropped Files
+12. Saved Sessions — restore open tools/inputs on relaunch
+
+### Notes
+
+One-shot clipboard read/write (e.g. a tool's own Copy button) already works fine in-browser today and needed nothing new; only *history* and *continuous monitoring* require a native background process, which is why they're here. A Developer-Environment-Inspector idea from the source doc (detecting installed Git/Node/Python/Java/.NET/Docker/PowerShell/Go/Rust versions, PATH conflicts, multiple-runtime detection) is a natural addition to the System Information Dashboard above rather than its own phase.
+
+---
+
+# 22. Future Architecture Directions
+
+The roadmap phases above (Track A and Track B) are individually addable tools, each fitting the existing "new simple tool in ≤30 minutes" model from §3.1.A. The ideas in this section are different in kind: they are cross-cutting changes to the framework itself — the tool registry contract, the shell, or the persistence model — proposed by the source roadmap material as ways to turn DUDE from "a large collection of developer tools" into a genuinely interconnected workbench. None of them are scheduled. Each is flagged below with what it would take to schedule it.
+
+## Transformation Pipelines
+
+Today, using DUDE for a multi-step job (say, Base64-decode a value, gunzip it, parse the result as JSON, and pull one field with JMESPath) means visiting four separate tools and manually copying output to input each time. A pipeline feature would let a user chain existing tools together — visually or as a saved list of steps — into a single reusable workflow, e.g. `Base64 Decode → Gunzip → JSON Parse → JMESPath Query → CSV Convert`, and re-run it against new input without re-navigating the deck each time.
+
+This matters because it's the single change most likely to make DUDE feel like one cohesive tool rather than forty independent ones — it's the "workbench, not tool collection" positioning made concrete, and it's a natural fit for §4's density-and-speed principles once it exists. Architecturally, though, it cannot be built the way an ordinary tool is: every participating tool would need to expose its transformation logic as a composable step with a declared input/output shape, which is a change to what a `ToolDefinition` means, not just a new `ToolDefinition`. That is explicitly outside the "no shell/core edits" contract that every other roadmap item in this document honors.
+
+This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
+
+## A Universal Input/Output Contract
+
+Pipelines are only "almost automatic," per the source material, if tools already agree on what they consume and produce. A universal I/O contract would have every tool declare its inputs and outputs in terms of a small shared vocabulary — `Text`, `Bytes`, `File`, `JSON`, `Table`, `HTTPResponse` — instead of each tool inventing its own ad hoc shape. JSON Formatter, Base64 Decoder, Regex Extractor, a future HTTP Request tool, and Hash Generator would all speak the same handful of types.
+
+This matters because it is the enabling primitive underneath pipelines, smart paste-detection, and a shared workspace/scratchpad alike — build this once, and three other items on this list get meaningfully easier. It is also the most architecturally invasive item here: it means extending (not just using) the `ToolDefinition` contract described in §12.1/§26, and every existing tool would eventually need to declare itself in these terms to fully participate, which is a migration, not a 30-minute addition.
+
+This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
+
+## Smart Paste-Detection
+
+Rather than requiring a user to already know which tool they want, a shared "paste anything" surface could inspect pasted content, recognize common shapes (JSON, a JWT, a UUID, a URL, Base64, a Unix timestamp, and so on), and suggest the relevant tool or action directly.
+
+This matters for discoverability in exactly the way the command palette (§9.3/§28) already helps when a user knows what they want but not where it lives — this helps when they don't yet know what they want to do with what they're holding. Architecturally it needs a lightweight, registry-driven content-sniffing layer that tools opt into (each tool would declare a "detector" alongside its existing metadata), plus new shell surface area to present suggestions — a real but comparatively contained addition next to the two items above.
+
+This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
+
+## Persistent Workspace / Scratchpad
+
+Every DUDE tool today is an isolated page: navigate away, and unsaved input/output is gone unless that specific tool opted into persistence (§14). A workspace/scratchpad would let a user keep several inputs, outputs, and notes side by side across tools during a session, closer to a notebook than a set of independent forms.
+
+This matters for the "short and frequent" usage pattern in §6.2 when a task actually spans several tools in one sitting — right now switching tools means losing context unless the user manually copies values out first. Architecturally this is more contained than the two items above: it mostly extends the existing per-tool persistence model (§14) into a cross-tool session-scoped store, rather than changing the tool contract itself, though it does need new shell UI to display and manage it.
+
+This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
+
+## Persistent Local History
+
+A local, cross-tool history of past conversions, hashes, diffs, and regex tests would let a user revisit recent work without any cloud storage — consistent with §14's existing "local persistence is fine, sensitive payloads default to non-persistent" policy, just applied across tools instead of within one.
+
+This matters as a smaller, standalone convenience that doesn't require the other four items to be useful on its own, though it becomes considerably more useful once paired with the workspace/scratchpad above. Architecturally it is the lightest-weight item here: a shared history service sitting next to the existing Persistence Service (§27.2), with each tool opting in the same way it already opts into a persistence policy — no change to the tool contract itself.
+
+This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
+
+---
+
+# 23. Long-Term Product Horizon
+
+## Desktop Packaging Track
+
+DUDE's browser-only architecture has a hard ceiling: a large and genuinely useful category of developer tools — live networking, live DNS/TLS, arbitrary filesystem operations, Windows-native system tools, local listening servers, and live database connections (all of Track B above) — is simply unreachable from a sandboxed browser tab, no matter how the web app evolves. Adopting native desktop packaging is what unlocks all of it — **Electron**, per the approved direction decided in §21 Phase 8, which also covers the staged rollout (Electron shell → native file access → OS-level secrets → local LLM proxy → desktop shell chrome → local/BYO-relay collaboration → auto-update and distribution) that Track B below is gated on.
+
+This is why the desktop track is worth the departure from the original weekend scope: it is not "the website wrapped in an EXE," it is the thing that makes a whole tier of tools possible at all. The source roadmap material's own pitch for this list of "desktop-only killer features" is the rationale:
+
+1. REST/API client
+2. Local webhook listener
+3. Mock HTTP server
+4. Network/DNS/TLS toolkit
+5. SQLite/database viewer (live)
+6. File and folder diff at scale
+7. Hex/binary viewer and forensics
+8. Log viewer with live tail
+9. Process/port inspector
+10. Git repository inspector (already partly shipped today via the browser-based Git Repo Browser; a desktop version could work against a live working tree instead of a folder snapshot)
+11. Local static server
+12. Environment/runtime inspector
+13. OpenAPI workbench (live introspection)
+14. WebSocket client
+15. Clipboard utilities (history/monitor)
+16. Code model generators
+17. Developer diagnostic bundle export
+18. Visual transformation pipelines (see §22)
+
+Adopting this track changes one of this PRD's permanent decisions: the former non-goal barring "Electron/Tauri/native desktop packaging" (§5.2) is removed. This comes with a careful boundary, not a blanket reversal: a desktop app's *local, bundled* backend — used only to reach OS/network/filesystem capability that Track B tools need on the machine DUDE is running on — is now in scope. A *cloud-hosted* backend, a database service, user accounts, and cloud synchronization remain permanent non-goals for the product as a whole; nothing about the desktop track implies DUDE talks to a server anywhere, only that it can talk to *this* machine more directly than a browser sandbox allows.
+
+The web app deployed to GitHub Pages remains the permanent, zero-install entry point to DUDE — the desktop track is additive, not a replacement, and every Track A tool must keep working there exactly as it does today. See §4 for the corresponding product principle ("Desktop extends, doesn't replace, the web app").
+
+## Monetization (Speculative)
+
+The roadmap material raises a free/pro/team tier structure as one way DUDE could eventually be positioned if shared more broadly. This subsection is included for completeness, but it is explicitly **not a committed roadmap item** — nothing here is scheduled, and nothing else in this PRD depends on it happening.
+
+A rough sketch, if it were ever pursued: a free tier covering every local-first utility (all of Track A, plus the basic desktop conveniences in Phase 29 like drag-and-drop and context-menu actions); a pro tier covering advanced workspace features once they exist (transformation pipelines, persistent history, saved sessions, batch automation — see §22); and a team tier covering anything that requires genuinely shared or cloud-backed state (sync, collaboration).
+
+Pursuing this seriously would require revisiting the user-accounts and cloud-synchronization permanent non-goals (§5.2), which this PRD is explicitly **not** doing here — those remain non-goals until a separate, deliberate decision changes them. The one constraint that is not speculative: basic developer utilities must never be paywalled. That is a hard requirement on any future tier design, not a preference to be traded off — it is the entry point that makes the rest of the product worth using in the first place.
+
+---
+
+# 24. API Integration Architecture
 
 Network integrations are allowed later.
 
@@ -1400,7 +1891,7 @@ Never:
 
 ---
 
-# 24. Suggested Repository Architecture
+# 25. Suggested Repository Architecture
 
 Exact naming may evolve, but keep the separation of responsibilities.
 
@@ -1455,9 +1946,11 @@ Not every tool needs every file.
 
 Avoid ceremony for small utilities.
 
+A future desktop build (§23) would sit alongside this structure behind a platform adapter — e.g. a sibling `platform/` layer exposing the same interface over browser APIs (today) and native/OS APIs (once the desktop track starts) — rather than forking `src/app` into separate web and desktop copies (§4.9). This is a direction, not a design to implement now.
+
 ---
 
-# 25. Suggested Tool Definition Pattern
+# 26. Suggested Tool Definition Pattern
 
 A tool should be close to self-registering.
 
@@ -1489,7 +1982,7 @@ The shell should consume tool metadata rather than importing tool-specific behav
 
 ---
 
-# 26. Shared Services
+# 27. Shared Services
 
 ## 26.1 Tool Registry Service
 
@@ -1546,7 +2039,7 @@ A straightforward in-memory search is sufficient.
 
 ---
 
-# 27. Command Palette Requirements
+# 28. Command Palette Requirements
 
 The command palette currently supports navigation only.
 
@@ -1569,7 +2062,7 @@ The command palette currently supports navigation only.
 
 ---
 
-# 28. Deck Requirements
+# 29. Deck Requirements
 
 The deck should be useful but compact.
 
@@ -1591,7 +2084,7 @@ Do not build personalization infrastructure for these without a specific roadmap
 
 ---
 
-# 29. Tool UX Conventions
+# 30. Tool UX Conventions
 
 Common keyboard and action patterns should be reused where helpful.
 
@@ -1609,7 +2102,7 @@ Keyboard shortcuts should never block core browser shortcuts unnecessarily.
 
 ---
 
-# 30. Large Inputs
+# 31. Large Inputs
 
 Large inputs are allowed.
 
@@ -1629,7 +2122,7 @@ No guarantee is made for arbitrarily huge payloads.
 
 ---
 
-# 31. Sensitive Inputs
+# 32. Sensitive Inputs
 
 Sensitive inputs are allowed.
 
@@ -1646,7 +2139,7 @@ No enterprise secret-management system is in scope.
 
 ---
 
-# 32. Security Boundaries
+# 33. Security Boundaries
 
 ## Standing rules
 
@@ -1661,7 +2154,7 @@ Phase 6's sandbox design (iframe isolation, network egress blocked via CSP, hard
 
 ---
 
-# 33. Performance Strategy
+# 34. Performance Strategy
 
 Performance work should be pragmatic.
 
@@ -1683,7 +2176,7 @@ Performance work should be pragmatic.
 
 ---
 
-# 34. Build and Deployment
+# 35. Build and Deployment
 
 ## Production build
 
@@ -1713,7 +2206,7 @@ Verify:
 
 ---
 
-# 35. Documentation Deliverables
+# 36. Documentation Deliverables
 
 Both deliverables below exist in the repository today (`README.md`, `ADDING_A_TOOL.md`). Repository documentation includes:
 
@@ -1749,7 +2242,7 @@ A simple new tool should be addable without studying the full shell implementati
 
 ---
 
-# 36. Definition of Done
+# 37. Definition of Done
 
 DUDE V1 was declared done once all required items below were verified true, on 2026-09-19.
 
@@ -1802,7 +2295,7 @@ DUDE V1 was declared done once all required items below were verified true, on 2
 - [x] Text Inspector
 - [x] Hash Generator
 - [x] Text Diff
-- [x] UUID Generator / Inspector — shipped early as the extension-speed proof (§3.1.A, §20.10).
+- [x] UUID Generator / Inspector — shipped early as the extension-speed proof (§3.1.A, §20).
 
 ## Documentation
 
@@ -1821,7 +2314,7 @@ DUDE V1 was declared done once all required items below were verified true, on 2
 
 ---
 
-# 37. Deferred Definition
+# 38. Deferred Definition
 
 Anything not checked in the Definition of Done was not required to declare V1 successful.
 
@@ -1833,402 +2326,31 @@ Stopping after a stable, deployed, extensible foundation was the intended outcom
 
 # Appendix A — Interview Questions and Answers
 
-This appendix captures the requirements interview that determined the PRD.
-
----
-
-## Q1 — Primary goal
-
-**Question:** What is the primary goal of this weekend build?
-
-Options included:
-
-- personal daily-driver;
-- portfolio/showcase;
-- public utility site;
-- foundation for larger open-source project;
-- hybrid.
-
-**Answer:** E — Hybrid.
-
-**Interpretation:** It should be genuinely useful personally while being structured and polished enough to share.
-
----
-
-## Q2 — Hard scope constraint
-
-**Question:** What is the hard scope constraint for this weekend?
-
-Options included:
-
-- complete by Sunday with aggressive cuts;
-- hit 20–30 tools;
-- build the framework first;
-- balanced target.
-
-**Answer:** C — Build the framework first.
-
-**Interpretation:** Tool count is secondary. Extensibility is the product of the weekend.
-
----
-
-## Q3 — Frontend stack
-
-**Question:** What frontend stack should the foundation use?
-
-Initial options included React, Preact, Vanilla TypeScript, Svelte, or something else.
-
-**Answer:** E — Something else.
-
-A follow-up asked about alternatives.
-
-**User asked:** “What about angular?”
-
-**Decision:** Angular.
-
-**Interpretation:** Angular is the selected framework because the project benefits from strong conventions, TypeScript, dependency injection, routing, and structured organization.
-
----
-
-## Q4 — Architecture strictness
-
-**Question:** How opinionated should the app architecture be?
-
-Options:
-
-- very structured;
-- moderately structured;
-- loose.
-
-**Answer:** B — Moderately structured.
-
-**Interpretation:** Tools should follow shared conventions and metadata contracts, but individual tools may diverge where their UX requires it.
-
----
-
-## Q5 — Privacy/runtime model
-
-**Question:** What should the privacy/runtime model be?
-
-Options:
-
-- 100% client-side;
-- client-side by default with optional integrations later;
-- allow public APIs.
-
-**Answer:** B and C.
-
-**Interpretation:** Local-first, while allowing public APIs where useful. Network features should degrade gracefully.
-
----
-
-## Q6 — Definition of done
-
-**Question:** What should “done” mean for this weekend?
-
-Options:
-
-- framework complete;
-- framework + breadth;
-- framework + polish;
-- deployable MVP.
-
-**Answer:** C and D.
-
-**Interpretation:** A polished, deployable foundation with a limited number of good tools.
-
----
-
-## Q7 — Primary UX success metric
-
-**Question:** What should be the main success metric for UX?
-
-Options:
-
-- speed to utility;
-- discoverability;
-- keyboard-first;
-- consistency;
-- balanced.
-
-**Answer:** E — Balanced.
-
-**Interpretation:** Prioritize speed and consistency, then add keyboard acceleration where valuable.
-
----
-
-## Q8 — Persistence
-
-**Question:** How should the app handle state and persistence?
-
-Options:
-
-- ephemeral;
-- persist everything;
-- selective persistence;
-- per-tool choice.
-
-**Answer:** D, implemented with C as the default policy.
-
-**Interpretation:** Each tool declares its own policy. Safe preferences may persist; sensitive payloads should not persist automatically.
-
----
-
-## Q9 — Mandatory edge cases
-
-**Question:** Which edge cases should the architecture protect against?
-
-Options:
-
-- large inputs;
-- sensitive inputs;
-- failure isolation;
-- offline behavior;
-- GitHub Pages quirks;
-- all.
-
-**Answer:** C, D, and E are mandatory. A and B should be allowed.
-
-**Interpretation:**
-
-Mandatory:
-
-- failure isolation;
-- offline behavior;
-- GitHub Pages routing/deployment reliability.
-
-Allowed:
-
-- large inputs;
-- sensitive inputs.
-
-Large or sensitive inputs should not simply be rejected by policy.
-
----
-
-## Q10 — Initial tool-set strategy
-
-**Question:** What should the initial tool set optimize for?
-
-Options:
-
-- core primitives;
-- frontend;
-- backend/API;
-- broad “things I Google” set;
-- framework showcase set.
-
-**Answer:** E.
-
-Additional request:
-
-> “List out all tools in a roadmap organizing them and then choose some on your own.”
-
-**Interpretation:** The initial tools should deliberately exercise different framework patterns. The broader set belongs in an organized roadmap.
-
----
-
-## Q11 — Navigation
-
-**Question:** How should navigation work?
-
-Options:
-
-- sidebar + search;
-- cards + search;
-- command-palette first;
-- IDE-style workspace;
-- hybrid.
-
-**Answer:** E — Hybrid.
-
-**Interpretation:** Deck + sidebar + global search/command palette + dedicated routes. No IDE-style persistent tabs for the weekend.
-
----
-
-## Q12 — Visual style
-
-**Question:** What visual/product style should this feel like?
-
-Options included:
-
-- minimal developer console;
-- modern SaaS;
-- IDE-inspired;
-- dual mode;
-- system-native.
-
-**Answer:** A, with the explicit requirement:
-
-> “super dense and in dark mode only”
-
-**Interpretation:** Dark-only, compact, utilitarian, minimal ornamentation.
-
-**Amendment (2026-09-18):** Direction updated — dark mode only remains fixed, but the theme is now explicitly bright and colorful rather than muted/monochrome: bold, highly saturated accent colors used functionally (categories, status, active state) against a dark base. Density and minimal ornamentation are unchanged; "minimal ornamentation" applies to shapes/effects (gradients-as-polish, glow, illustration), not to color intensity. See Section 8 for the current, authoritative visual spec.
-
----
-
-## Q13 — Dependency strategy
-
-**Question:** How aggressive should third-party library usage be?
-
-Options:
-
-- minimal dependencies;
-- pragmatic;
-- library-forward;
-- strict bundle budget.
-
-**Answer:** C — Library-forward.
-
-**Interpretation:** Prefer mature libraries where they accelerate reliable delivery.
-
----
-
-## Q14 — Offline/PWA depth
-
-**Question:** How far should offline capability go?
-
-Options:
-
-- no PWA;
-- basic PWA;
-- full installable PWA;
-- selective offline behavior.
-
-**Answer:** C and D.
-
-**Interpretation:** Installable PWA with offline shell and local tools, while network-dependent tools explicitly expose connectivity requirements.
-
----
-
-## Q15 — Testing/accessibility quality bar
-
-**Question:** What quality bar should testing/accessibility use?
-
-Options:
-
-- lightweight;
-- practical;
-- strict;
-- ship-first.
-
-**Answer:** D — Ship first.
-
-**Interpretation:** Test the architecture-critical pieces and obvious regressions. Do not pursue exhaustive coverage during the weekend.
-
----
-
-## Q16 — API-backed tool credential policy
-
-**Question:** What restriction should apply to API-backed tools on GitHub Pages?
-
-Options:
-
-- anonymous/public APIs only;
-- user-supplied API keys;
-- public client-side keys;
-- all.
-
-**Answer:** B — User-supplied API keys.
-
-**Interpretation:** Never bundle private keys. Keys are session-only by default with explicit opt-in persistence.
-
----
-
-## Q17 — GitHub Pages routing
-
-**Question:** How should routing behave on GitHub Pages?
-
-Options:
-
-- hash routing;
-- clean routes with `404.html` SPA fallback;
-- query-based;
-- single URL only.
-
-**Answer:** B.
-
-**Interpretation:** Use clean bookmarkable routes and implement a GitHub Pages fallback.
-
----
-
-## Q18 — Browser/device target
-
-**Question:** What device/browser support defines “works”?
-
-Options:
-
-- desktop-first Chromium-only;
-- desktop-first modern browsers;
-- fully responsive;
-- desktop-only by design.
-
-**Answer:** A — Desktop-first, Chromium-only.
-
-**Interpretation:** Weekend testing and optimization target desktop Chromium.
-
----
-
-## Q19 — Computational isolation
-
-**Question:** How should computationally risky tools be isolated?
-
-Options:
-
-- main thread by default;
-- workers for heavy tools;
-- shared worker execution layer;
-- maximum isolation.
-
-**Answer:** C — Shared worker execution layer.
-
-**Interpretation:** Tools can opt into reusable worker-backed execution with cancellation/termination support.
-
----
-
-## Q20 — Executable tools
-
-**Question:** How should potentially executable tools behave?
-
-Options:
-
-- no execution;
-- sandbox only;
-- trusted local execution;
-- defer executable tools.
-
-**Answer:** D — Defer.
-
-**Interpretation:** Architecture may allow sandboxing later, but executable tools are outside the weekend MVP.
-
----
-
-## Q21 — Measurable framework success criteria
-
-**Question:** What measurable success criteria should the framework hit by Sunday?
-
-Options:
-
-- extension speed;
-- performance;
-- deployment reliability;
-- architecture clarity;
-- all, with extension speed + deployment as hard pass/fail.
-
-**Answer:** E.
-
-**Interpretation:**
-
-Hard pass/fail:
-
-- new simple tool can be added in ≤30 minutes;
-- deployment and clean routing are reliable.
-
-Strong targets:
-
-- responsive performance and isolation;
-- clear architecture and documentation.
+This appendix captures the requirements interview that determined the original weekend PRD, condensed to a decision log.
+
+| # | Topic | Decision |
+|---|---|---|
+| Q1 | Primary goal | Hybrid — genuinely useful personally, structured and polished enough to share. |
+| Q2 | Hard scope constraint | Build the framework first; tool count is secondary. |
+| Q3 | Frontend stack | Angular — strong conventions, TypeScript, DI, routing, structured organization. |
+| Q4 | Architecture strictness | Moderately structured — shared conventions/metadata contracts, but tools may diverge where UX requires it. |
+| Q5 | Privacy/runtime model | Local-first by default, with optional public API integrations later that degrade gracefully offline. |
+| Q6 | Definition of done | A polished, deployable foundation with a limited number of good tools. |
+| Q7 | Primary UX success metric | Balanced — prioritize speed and consistency, add keyboard acceleration where valuable. |
+| Q8 | Persistence | Per-tool choice, with selective persistence as the default (safe preferences persist, sensitive payloads don't). |
+| Q9 | Mandatory edge cases | Failure isolation, offline behavior, and GitHub Pages routing/deployment reliability are mandatory; large and sensitive inputs must be allowed, not rejected by policy. |
+| Q10 | Initial tool-set strategy | A framework-showcase set exercising different patterns, with the broader set organized into a roadmap. |
+| Q11 | Navigation | Hybrid — deck + sidebar + global search/command palette + dedicated routes, no IDE-style persistent tabs. |
+| Q12 | Visual style | Minimal developer console, dark-only, super dense. **Amended 2026-09-18**: dark-only stays fixed, but the theme became explicitly bright and colorful rather than muted/monochrome — bold, saturated accent colors used functionally (categories, status, active state) against a dark base. "Minimal ornamentation" applies to shapes/effects, not color intensity. See §8 for the current, authoritative visual spec. |
+| Q13 | Dependency strategy | Library-forward — prefer mature libraries where they accelerate reliable delivery. |
+| Q14 | Offline/PWA depth | Installable PWA with offline shell and local tools; network-dependent tools explicitly expose connectivity requirements. |
+| Q15 | Testing/accessibility quality bar | Ship first — test architecture-critical pieces and obvious regressions, not exhaustive coverage. |
+| Q16 | API-backed tool credential policy | User-supplied API keys only; never bundle private keys; session-only by default with explicit opt-in persistence. |
+| Q17 | GitHub Pages routing | Clean bookmarkable routes with a `404.html` SPA fallback, not hash routing. |
+| Q18 | Browser/device target | Desktop-first, Chromium-only. |
+| Q19 | Computational isolation | A shared worker execution layer tools can opt into, with cancellation/termination support. |
+| Q20 | Executable tools | Deferred for the weekend; sandboxing allowed later. (Later shipped — see §21 Phase 6.) |
+| Q21 | Measurable framework success criteria | Extension speed and deployment reliability as hard pass/fail; performance/isolation and architecture clarity as strong targets. |
 
 ---
 
