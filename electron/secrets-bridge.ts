@@ -44,6 +44,25 @@ function enqueue<T>(fn: () => Promise<T>): Promise<T> {
 type SecretResult<T> = ({ readonly ok: true } & T) | { readonly ok: false; readonly error: string };
 type SecretVoidResult = { readonly ok: true } | { readonly ok: false; readonly error: string };
 
+/**
+ * In-process (no IPC) read of a stored secret, for other main-process
+ * modules that need one directly — e.g. `llm-bridge.ts` reading the LLM
+ * config the Settings tool wrote via `SecureLocalService`, without a
+ * second "push config to main" IPC round trip or a second on-disk store.
+ */
+export async function getSecretValue(key: string): Promise<string | null> {
+  return enqueue(async () => {
+    const store = await readStore();
+    const encoded = store[key];
+    if (encoded === undefined) return null;
+    try {
+      return safeStorage.decryptString(Buffer.from(encoded, 'base64'));
+    } catch {
+      return null;
+    }
+  });
+}
+
 export function registerSecretsHandlers(): void {
   ipcMain.handle('dude:secrets:get', async (_event, key: string): Promise<SecretResult<{ value: string | null }>> => {
     return enqueue(async () => {

@@ -17,8 +17,13 @@ describe('SecureLocalService', () => {
     Object.defineProperty(window, 'dude', { value: originalDude, configurable: true });
   });
 
+  const STUB_LLM: DudeElectronBridge['llm'] = {
+    isConfigured: async () => false,
+    getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
+  };
+
   function withBridge(secrets: DudeElectronBridge['secrets']): SecureLocalService {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets, llm: STUB_LLM };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
     TestBed.configureTestingModule({});
     return TestBed.inject(SecureLocalService);

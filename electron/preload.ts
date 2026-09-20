@@ -15,6 +15,10 @@ const bridge: DudeElectronBridge = {
     set: (key, value) => ipcRenderer.invoke('dude:secrets:set', key, value),
     remove: (key) => ipcRenderer.invoke('dude:secrets:remove', key),
   },
+  llm: {
+    isConfigured: () => ipcRenderer.invoke('dude:llm:isConfigured'),
+    getEndpoint: () => ipcRenderer.invoke('dude:llm:getEndpoint'),
+  },
 };
 
 contextBridge.exposeInMainWorld('dude', bridge);

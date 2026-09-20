@@ -589,4 +589,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     network: { required: false },
   },
+  {
+    id: 'settings',
+    title: 'Settings',
+    description: 'Desktop-only settings: configure the local LLM proxy (base URL, model, API key) that powers Regex Tester\'s AI features.',
+    category: 'developer',
+    keywords: ['settings', 'preferences', 'llm', 'api key', 'openai', 'provider', 'desktop', 'electron'],
+    route: '/tools/settings',
+    load: () => import('../../tools/settings/settings').then((m) => m.Settings),
+    status: 'experimental',
+    persistence: { input: 'secure-local', preferences: 'secure-local' },
+    execution: { worker: 'none' },
+  },
 ];

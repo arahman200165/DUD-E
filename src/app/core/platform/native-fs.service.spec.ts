@@ -15,7 +15,11 @@ describe('NativeFsService', () => {
       set: async () => ({ ok: true }),
       remove: async () => ({ ok: true }),
     };
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs, secrets };
+    const llm: DudeElectronBridge['llm'] = {
+      isConfigured: async () => false,
+      getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
+    };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs, secrets, llm };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
     TestBed.configureTestingModule({});
     return TestBed.inject(NativeFsService);

@@ -1,5 +1,31 @@
 <app-tool-shell title="Regex Tester" status="stable">
   <div class="flex flex-col gap-3">
+    @if (aiAvailable()) {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Describe a pattern in plain English (AI-generated)</span>
+        <div class="flex items-center gap-2">
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="e.g. a US phone number with optional area code"
+            [value]="generatePrompt()"
+            (input)="onGeneratePromptInput($event)"
+          />
+          <button
+            type="button"
+            class="shrink-0 rounded-sm border border-accent px-2 py-0.5 text-ui text-accent hover:bg-accent/10 disabled:opacity-40"
+            [disabled]="generateStatus() === 'loading' || generatePrompt().trim() === ''"
+            (click)="generateFromPrompt()"
+          >
+            {{ generateStatus() === 'loading' ? 'Generating…' : 'Generate' }}
+          </button>
+        </div>
+        @if (generateStatus() === 'error') {
+          <app-error-panel [message]="generateError()" />
+        }
+      </div>
+    }
+
     <div class="flex items-center gap-2">
       <span class="font-mono text-text-muted">/</span>
       <input
@@ -29,6 +55,17 @@
         Explain
       </button>
 
+      @if (aiAvailable()) {
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated disabled:opacity-40"
+          [disabled]="aiExplainStatus() === 'loading' || pattern() === ''"
+          (click)="explainWithAi()"
+        >
+          {{ aiExplainStatus() === 'loading' ? 'Asking AI…' : 'AI Explain' }}
+        </button>
+      }
+
       <label class="flex items-center gap-1.5">
         Flavor
         <select
@@ -55,6 +92,12 @@
           <app-error-panel [message]="explain.error" />
         }
       }
+    }
+
+    @if (aiExplainText(); as text) {
+      <div class="whitespace-pre-wrap rounded-sm border border-border bg-panel p-2 text-ui text-text">{{ text }}</div>
+    } @else if (aiExplainStatus() === 'error') {
+      <app-error-panel [message]="aiExplainError()" />
     }
 
     @if (flavorNotes().length > 0) {

@@ -5,10 +5,13 @@ import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
+import { PlatformService } from '../../core/platform/platform.service';
+import { LlmProxyService } from '../../core/platform/llm-proxy.service';
 import { RegexMatchResult, RegexReplaceResult } from './regex-match';
 import { RegexWorkerPayload } from './regex-match-payload';
 import { explainRegex, RegexExplainResult } from './regex-explain';
 import { flavorNotesFor, REGEX_FLAVORS, type RegexFlavor } from './regex-flavor-notes';
+import { buildExplainMessages, buildGenerateMessages, parseGeneratedPattern } from './regex-ai';
 
 const FLAG_CHARS = ['g', 'i', 'm', 's', 'u', 'y'] as const;
 
@@ -25,6 +28,8 @@ const AUTO_TIMEOUT_MS = 3000;
 export class Regex implements OnDestroy {
   private readonly persistence = inject(PersistenceService);
   private readonly workerClient = inject(WorkerClientService);
+  private readonly llmProxy = inject(LlmProxyService);
+  protected readonly platform = inject(PlatformService);
   private timeoutHandle: ReturnType<typeof setTimeout> | undefined;
 
   protected readonly flagChars = FLAG_CHARS;
@@ -38,6 +43,15 @@ export class Regex implements OnDestroy {
   protected readonly flavor = this.persistence.signal<RegexFlavor>('regex', 'flavor', 'local', 'js');
 
   protected readonly showExplain = signal(false);
+
+  // Stage 4 AI features — desktop-only, additive to the rule-based explainer above.
+  protected readonly aiAvailable = signal(false);
+  protected readonly generatePrompt = this.persistence.signal('regex', 'generatePrompt', 'session', '');
+  protected readonly generateStatus = signal<'idle' | 'loading' | 'error'>('idle');
+  protected readonly generateError = signal('');
+  protected readonly aiExplainStatus = signal<'idle' | 'loading' | 'error'>('idle');
+  protected readonly aiExplainText = signal<string | null>(null);
+  protected readonly aiExplainError = signal('');
 
   protected readonly job = signal<WorkerJob<RegexMatchResult | RegexReplaceResult> | null>(null);
 
@@ -54,6 +68,12 @@ export class Regex implements OnDestroy {
   });
 
   protected readonly flavorNotes = computed(() => flavorNotesFor(this.pattern(), this.flags(), this.flavor()));
+
+  constructor() {
+    if (this.platform.isDesktop()) {
+      void this.llmProxy.isConfigured().then((configured) => this.aiAvailable.set(configured));
+    }
+  }
 
   protected hasFlag(flag: string): boolean {
     return this.flags().includes(flag);
@@ -87,6 +107,49 @@ export class Regex implements OnDestroy {
 
   protected toggleExplain(): void {
     this.showExplain.set(!this.showExplain());
+  }
+
+  protected onGeneratePromptInput(event: Event): void {
+    this.generatePrompt.set((event.target as HTMLInputElement).value);
+  }
+
+  protected async generateFromPrompt(): Promise<void> {
+    if (this.generatePrompt().trim() === '') return;
+
+    this.generateStatus.set('loading');
+    this.generateError.set('');
+
+    try {
+      const raw = await this.llmProxy.chat(buildGenerateMessages(this.generatePrompt()));
+      const parsed = parseGeneratedPattern(raw);
+      if (!parsed.ok) {
+        this.generateError.set(parsed.error);
+        this.generateStatus.set('error');
+        return;
+      }
+      this.pattern.set(parsed.pattern);
+      if (parsed.flags) this.flags.set(parsed.flags);
+      this.generateStatus.set('idle');
+    } catch (error) {
+      this.generateError.set(error instanceof Error ? error.message : 'Could not generate a pattern.');
+      this.generateStatus.set('error');
+    }
+  }
+
+  protected async explainWithAi(): Promise<void> {
+    if (this.pattern() === '') return;
+
+    this.aiExplainStatus.set('loading');
+    this.aiExplainError.set('');
+    this.aiExplainText.set(null);
+
+    try {
+      this.aiExplainText.set(await this.llmProxy.chat(buildExplainMessages(this.pattern(), this.flags())));
+      this.aiExplainStatus.set('idle');
+    } catch (error) {
+      this.aiExplainError.set(error instanceof Error ? error.message : 'Could not explain this pattern.');
+      this.aiExplainStatus.set('error');
+    }
   }
 
   protected run(): void {

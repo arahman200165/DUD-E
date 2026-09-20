@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { startStaticServer } from './static-server';
 import { registerFsHandlers } from './fs-bridge';
 import { registerSecretsHandlers } from './secrets-bridge';
+import { registerLlmHandlers } from './llm-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -38,6 +39,7 @@ async function createWindow(): Promise<void> {
 void app.whenReady().then(() => {
   registerFsHandlers();
   registerSecretsHandlers();
+  registerLlmHandlers();
   return createWindow();
 });
 

@@ -16,6 +16,11 @@ const STUB_SECRETS: DudeElectronBridge['secrets'] = {
   remove: async () => ({ ok: true }),
 };
 
+const STUB_LLM: DudeElectronBridge['llm'] = {
+  isConfigured: async () => false,
+  getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
+};
+
 describe('isElectronRuntime', () => {
   const originalDude = window.dude;
 
@@ -29,7 +34,7 @@ describe('isElectronRuntime', () => {
   });
 
   it('is true when the preload bridge reports desktop', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS, llm: STUB_LLM };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
     expect(isElectronRuntime()).toBe(true);
   });
@@ -43,7 +48,7 @@ describe('PlatformService', () => {
   });
 
   it('reports desktop when constructed under the Electron bridge', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS };
+    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS, llm: STUB_LLM };
     Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
 
     TestBed.configureTestingModule({});

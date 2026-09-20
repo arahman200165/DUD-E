@@ -24,6 +24,10 @@ export interface DudeElectronBridge {
     set(key: string, value: string): Promise<SecretVoidResult>;
     remove(key: string): Promise<SecretVoidResult>;
   };
+  readonly llm: {
+    isConfigured(): Promise<boolean>;
+    getEndpoint(): Promise<{ readonly ok: true; readonly port: number } | { readonly ok: false; readonly error: string }>;
+  };
 }
 
 export type SecretResult<T> = ({ readonly ok: true } & T) | { readonly ok: false; readonly error: string };
