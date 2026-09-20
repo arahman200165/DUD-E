@@ -62,6 +62,13 @@ export function startStaticServer(root: string): Promise<{ server: Server; port:
         const filePath = info.isDirectory() ? join(target, 'index.html') : target;
         const body = await readFile(filePath);
         const contentType = CONTENT_TYPES[extname(filePath)] ?? 'application/octet-stream';
+        // Matches angular.json's `serve.options.headers` for `ng serve`: the
+        // Python Playground's sandboxed iframe has an opaque origin, so its
+        // dynamic `import()` of Pyodide's own .mjs/.wasm is always CORS-mode,
+        // even against this same-looking http://127.0.0.1 origin — GitHub
+        // Pages sends this by default, this local server must too (see
+        // electron/AGENTS.md and the Phase 6 code-sandbox gotchas).
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.writeHead(200, { 'Content-Type': contentType }).end(body);
       } catch {
         res.writeHead(404).end('Not found');
