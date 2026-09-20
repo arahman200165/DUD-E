@@ -279,15 +279,11 @@ These are durable product and architecture decisions, not temporary weekend cuts
 
 ## 5.3 Deferred to Roadmap
 
-These items are not permanent non-goals — they are later phases already tracked in §21, gated behind their own design work rather than picked up opportunistically:
+These items are not permanent non-goals — they are later phases already tracked in §21:
 
-- executable JavaScript playground (§21 Phase 6);
-- arbitrary HTML execution (§21 Phase 6);
-- arbitrary template execution (§21 Phase 6);
-- sandboxed code runner (§21 Phase 6);
-- WYSIWYG rich-text editor (§21 Phase 5, #36).
+- WYSIWYG rich-text editor (§21 Phase 5, #36) — ✅ shipped.
 
-Phase 6 items specifically require a separate security/design document before implementation (§21 Phase 6, §32).
+Phase 6 (executable JavaScript playground, arbitrary HTML execution, arbitrary template execution, sandboxed code runner) has since shipped too — see §21 Phase 6 and the amended standing rule at §32.
 
 ---
 
@@ -1242,20 +1238,22 @@ These were intentionally later because they introduce larger libraries, more com
 
 ---
 
-## Phase 6 — Executable / Sandboxed Tools
+## Phase 6 — Executable / Sandboxed Tools (✅ Complete)
 
-Examples:
+48. JavaScript Playground — ✅ shipped, runs JS snippets with captured console output and a hard execution timeout
+49. HTML Preview — ✅ shipped, live-renders pasted HTML including its own inline `<script>`/`<style>`
+50. Template Renderer — ✅ shipped, renders EJS templates against a JSON context, reusing the JS Playground's execution engine
+51. Python Playground — ✅ shipped, runs Python via Pyodide (WebAssembly CPython, standard library only)
 
-- JavaScript playground;
-- HTML preview;
-- template renderer;
-- code execution experiments.
+**Goal:** ship the platform's first arbitrary-code-execution tools without weakening the security posture the rest of DUDE relies on. **Achieved** — a new shared `src/app/shared/code-sandbox/` module (a sandboxed `<iframe sandbox="allow-scripts">` with no `allow-same-origin`, giving an opaque origin with no cookie/storage/host-DOM access, plus a nested `Worker` terminated via `Worker.terminate()` for a spec-reliable hard stop on a runaway `while(true){}`) backs both the JS Playground and, unchanged, the Template Renderer — EJS templates compile to a real JS function internally, so they run through the identical sandbox rather than a lighter one. HTML Preview needed its own tool-local variant, since a live DOM ruled out running inside a Worker; its timeout is consequently best-effort (destroying/recreating the iframe) rather than spec-guaranteed. Python Playground bundles Pyodide's real client runtime, self-hosted via a build-time asset copy (never a CDN, keeping the offline-first promise) with its own CSP and a dedicated lazy service-worker asset group so the ~14MB runtime is never prefetched for users who don't open the tool.
 
-These require an explicit sandbox design.
+Ships as Milestones 17–20. §32's former standing "no arbitrary code execution" rule is amended accordingly — see §32.
 
-They are not currently approved for implementation.
+### Notes
 
-Before adding them, create a separate security/design document.
+Three real bugs surfaced only through live browser testing, not code review, underscoring why this phase needed its own verification pass rather than shipping on unit tests alone: a CSP that allowed `connect-src` but not `script-src` for the Python sandbox's own origin (blocking `pyodide.js`'s `<script src>` load); GitHub Pages' default-permissive CORS headers being required (and, for local dev, replicated via `angular.json`'s `serve` target) because an opaque-origin document's dynamic `import()` is a CORS-mode fetch even for a same-looking URL; and mutating an `<iframe>`'s `srcdoc` property in place not reliably freeing a hung document's resources, silently degrading every subsequent same-tab run — fixed by destroying and recreating the iframe element itself.
+
+EJS's `client: true` compile option, despite older documentation, does not produce a standalone function in the installed version — its output closes over internal helpers. The shipped design instead bundles EJS's own self-contained client bundle (`ejs.min.js`) into the sandbox, the same self-hosted-asset approach Python Playground uses for Pyodide.
 
 ---
 
@@ -1351,6 +1349,10 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Glob Tester ✅
 - Random Data Generator ✅
 - Git Repo Browser ✅
+- JavaScript Playground ✅
+- HTML Preview ✅
+- Template Renderer ✅
+- Python Playground ✅
 
 ## Documents
 
@@ -1648,14 +1650,14 @@ No enterprise secret-management system is in scope.
 
 ## Standing rules
 
-- no arbitrary code execution;
+- no arbitrary code execution **in DUDE's own realm/origin** — arbitrary execution is permitted only inside the opaque-origin sandboxed iframe/worker in `src/app/shared/code-sandbox/` (§21 Phase 6: JS Playground, HTML Preview, Template Renderer, Python Playground), which has no cookie/storage/host-DOM access into the app itself;
 - no remote plugin execution;
-- no untrusted HTML execution without sanitization;
+- no untrusted HTML execution without sanitization, **outside that same sandbox**;
 - no embedded private service credentials;
 - no server-side secret assumptions;
 - no claims that JWT decoding verifies authenticity.
 
-Executable tools are deferred.
+Phase 6's sandbox design (iframe isolation, network egress blocked via CSP, hard execution timeouts) is documented in `src/app/shared/code-sandbox/code-sandbox-doc.ts` and each Phase 6 tool's own sandbox file — see §21 Phase 6 for what shipped and why.
 
 ---
 
