@@ -5,6 +5,7 @@ import { PersistenceService } from '../../core/persistence/persistence.service';
 import { ConnectivityService } from '../../core/connectivity/connectivity.service';
 import { decodeJwt } from '../jwt/jwt-decode';
 import { JwtVerifyMode, JwtVerifyResult, PublicKeyFormat, verifyJwt } from './jwt-verify-logic';
+import { fetchJwksUriFromDiscovery, OIDC_PRESETS, type OidcPreset } from './jwt-oidc-presets';
 
 const ALGORITHMS_BY_MODE: Record<JwtVerifyMode, readonly string[]> = {
   hmac: ['HS256', 'HS384', 'HS512'],
@@ -45,6 +46,13 @@ export class JwtVerify {
   protected readonly status = signal<'idle' | 'checking' | 'done'>('idle');
   protected readonly result = signal<JwtVerifyResult | null>(null);
 
+  protected readonly presetOptions = Object.entries(OIDC_PRESETS) as [OidcPreset, (typeof OIDC_PRESETS)[OidcPreset]][];
+  protected readonly preset = this.persistence.signal<OidcPreset | 'none'>('jwt-verify', 'preset', 'local', 'none');
+  protected readonly presetInput = this.persistence.signal('jwt-verify', 'presetInput', 'local', '');
+  protected readonly presetConfig = computed(() => (this.preset() === 'none' ? null : OIDC_PRESETS[this.preset() as OidcPreset]));
+  protected readonly presetStatus = signal<'idle' | 'loading'>('idle');
+  protected readonly presetError = signal('');
+
   constructor() {
     // Re-seeds the algorithm field from the token's decoded header whenever it changes — still user-editable.
     effect(() => {
@@ -80,6 +88,31 @@ export class JwtVerify {
 
   protected onJwksUrlInput(event: Event): void {
     this.jwksUrl.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onPresetChange(event: Event): void {
+    this.preset.set((event.target as HTMLSelectElement).value as OidcPreset | 'none');
+    this.presetError.set('');
+  }
+
+  protected onPresetInputChange(event: Event): void {
+    this.presetInput.set((event.target as HTMLInputElement).value);
+  }
+
+  protected async applyPreset(): Promise<void> {
+    const config = this.presetConfig();
+    if (!config) return;
+
+    this.presetStatus.set('loading');
+    this.presetError.set('');
+    const result = await fetchJwksUriFromDiscovery(config.discoveryUrl(this.presetInput()));
+    this.presetStatus.set('idle');
+
+    if (!result.ok) {
+      this.presetError.set(result.error);
+      return;
+    }
+    this.jwksUrl.set(result.jwksUri);
   }
 
   protected onAlgorithmChange(event: Event): void {
