@@ -1192,20 +1192,22 @@ These began exercising more complex third-party libraries and richer structured 
 
 ---
 
-## Phase 3 — Web / API Utilities
+## Phase 3 — Web / API Utilities (✅ Complete)
 
-24. HTTP Status Code Reference  
-25. HTTP Header Inspector / Builder  
-26. cURL Command Inspector / Converter  
-27. Cron Expression Parser / Next-Run Preview  
-28. User-Agent Parser  
-29. MIME Type Reference / Lookup
+24. HTTP Status Code Reference — ✅ shipped  
+25. HTTP Header Inspector / Builder — ✅ shipped  
+26. cURL Command Inspector / Converter — ✅ shipped, with code export to 8 languages  
+27. Cron Expression Parser / Next-Run Preview — ✅ shipped  
+28. User-Agent Parser — ✅ shipped  
+29. MIME Type Reference / Lookup — ✅ shipped
+
+**Goal:** Cover common web/API-adjacent lookups and parsers entirely offline, per the "local static references preferred" note below. **Achieved** — all 6 tools are fully local (no `network` policy set); `cron-parser`/`cronstrue` and `ua-parser-js` were added for cron math and UA parsing respectively (the "fiddly, easy to get subtly wrong" library-forward case per §17), and two new shared primitives (`app-copy-button`, `app-key-value-editor`) were extracted since their patterns were about to repeat a 3rd/4th time across these tools.
 
 ### Notes
 
 Tools that depend on public APIs or remote data should be evaluated individually.
 
-Local static references are preferred when practical.
+Local static references are preferred when practical. The HTTP Status Code Reference and MIME Type Reference ship as curated, verified-accurate subsets of their IANA registries rather than exhaustive transcriptions — see each tool's data file for details.
 
 ---
 
@@ -1257,7 +1259,7 @@ Before adding them, create a separate security/design document.
 
 # 22. Roadmap Categorized by Domain
 
-For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–2).
+For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–3).
 
 ## Data
 
@@ -1299,16 +1301,16 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 - Unix Timestamp ✅
 - Date / Timezone Converter
 - Duration Parser / Formatter
-- Cron Parser
+- Cron Parser ✅
 
 ## Web / API
 
 - Query String Builder ✅
-- HTTP Status Reference
-- HTTP Header Inspector
-- cURL Inspector / Converter
-- User-Agent Parser
-- MIME Type Reference
+- HTTP Status Reference ✅
+- HTTP Header Inspector ✅
+- cURL Inspector / Converter ✅
+- User-Agent Parser ✅
+- MIME Type Reference ✅
 - URL / URI Inspector
 
 ## Developer
