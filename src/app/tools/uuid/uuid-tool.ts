@@ -1,5 +1,38 @@
+import { v1 as uuidV1, v5 as uuidV5, v7 as uuidV7, validate as uuidValidate } from 'uuid';
+
 export function generateUuidV4(): string {
   return crypto.randomUUID();
+}
+
+export type UuidVersion = 'v1' | 'v4' | 'v5' | 'v7';
+
+/** RFC 4122 Appendix C predefined namespaces — not exported by the `uuid` package. */
+export const PREDEFINED_NAMESPACES: Record<'DNS' | 'URL' | 'OID' | 'X500', string> = {
+  DNS: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+  URL: '6ba7b811-9dad-11d1-80b4-00c04fd430c8',
+  OID: '6ba7b812-9dad-11d1-80b4-00c04fd430c8',
+  X500: '6ba7b814-9dad-11d1-80b4-00c04fd430c8',
+};
+
+export interface GenerateOptions {
+  readonly namespace?: string;
+  readonly name?: string;
+}
+
+export type GenerateResult = { readonly ok: true; readonly value: string } | { readonly ok: false; readonly error: string };
+
+export function generateUuid(version: UuidVersion, opts: GenerateOptions = {}): GenerateResult {
+  if (version === 'v4') return { ok: true, value: crypto.randomUUID() };
+  if (version === 'v1') return { ok: true, value: uuidV1() };
+  if (version === 'v7') return { ok: true, value: uuidV7() };
+
+  if (!opts.namespace || !uuidValidate(opts.namespace)) {
+    return { ok: false, error: 'Enter a valid namespace UUID.' };
+  }
+  if (!opts.name) {
+    return { ok: false, error: 'Enter a name to hash.' };
+  }
+  return { ok: true, value: uuidV5(opts.name, opts.namespace) };
 }
 
 export interface UuidInspection {
@@ -17,4 +50,22 @@ export function inspectUuid(value: string): UuidInspection {
 
   const version = parseInt(match[3], 16);
   return { valid: true, version, variant: 'RFC 4122' };
+}
+
+const GREGORIAN_TO_UNIX_EPOCH_100NS = 122192928000000000n;
+
+/** Decodes the 60-bit 100ns-tick timestamp embedded in a v1 UUID, or null if not a v1 UUID. */
+export function decodeV1Timestamp(value: string): Date | null {
+  const match = UUID_PATTERN.exec(value.trim());
+  if (!match || parseInt(match[3], 16) !== 1) return null;
+
+  const timeLow = match[1];
+  const timeMid = match[2];
+  const timeHiAndVersion = value.trim().split('-')[2];
+  if (!timeHiAndVersion) return null;
+
+  const timeHi = timeHiAndVersion.slice(1); // strip the version nibble
+  const ticks = BigInt(`0x${timeHi}${timeMid}${timeLow}`);
+  const unixMillis = Number((ticks - GREGORIAN_TO_UNIX_EPOCH_100NS) / 10000n);
+  return new Date(unixMillis);
 }

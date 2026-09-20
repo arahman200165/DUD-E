@@ -107,13 +107,13 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'uuid',
     title: 'UUID Generator / Inspector',
-    description: 'Generate RFC 4122 v4 UUIDs and inspect an existing UUID’s version and variant.',
+    description: 'Generate v1/v4/v5/v7 UUIDs (with namespace support), inspect an existing UUID, and bulk-export the generated list.',
     category: 'developer',
-    keywords: ['uuid', 'guid', 'generate', 'inspect', 'identifier', 'rfc 4122'],
+    keywords: ['uuid', 'guid', 'generate', 'inspect', 'identifier', 'rfc 4122', 'namespace', 'v1', 'v5', 'v7'],
     route: '/tools/uuid',
     load: () => import('../../tools/uuid/uuid').then((m) => m.Uuid),
     status: 'stable',
-    persistence: { input: 'session', preferences: 'none' },
+    persistence: { input: 'session', preferences: 'local' },
   },
   {
     id: 'url-encode',
