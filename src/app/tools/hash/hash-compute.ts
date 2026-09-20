@@ -37,3 +37,20 @@ export async function computeHashes(
 ): Promise<readonly HashOutput[]> {
   return Promise.all(algorithms.map(async (algorithm) => ({ algorithm, hex: await computeHash(text, algorithm) })));
 }
+
+/** Buffer-based sibling of `computeHash`, used by the File Hashing tool. */
+export async function computeFileHash(buffer: ArrayBuffer, algorithm: HashAlgorithm): Promise<string> {
+  if (algorithm === 'MD5') return md5(new Uint8Array(buffer));
+
+  const digest = await crypto.subtle.digest(algorithm, buffer);
+  return toHex(digest);
+}
+
+export async function computeFileHashes(
+  buffer: ArrayBuffer,
+  algorithms: readonly HashAlgorithm[],
+): Promise<readonly HashOutput[]> {
+  return Promise.all(
+    algorithms.map(async (algorithm) => ({ algorithm, hex: await computeFileHash(buffer, algorithm) })),
+  );
+}

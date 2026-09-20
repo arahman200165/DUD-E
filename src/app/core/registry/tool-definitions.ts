@@ -385,4 +385,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'local', preferences: 'local' },
   },
+  {
+    id: 'file-hash',
+    title: 'File Hash Generator',
+    shortTitle: 'File Hash',
+    description: 'MD5, SHA-1, SHA-256, SHA-384, and SHA-512 digests for a local file.',
+    category: 'security',
+    keywords: ['hash', 'file', 'checksum', 'md5', 'sha1', 'sha256', 'sha512', 'digest', 'integrity', 'verify'],
+    route: '/tools/file-hash',
+    load: () => import('../../tools/file-hash/file-hash').then((m) => m.FileHash),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    execution: { worker: 'required' },
+  },
 ];

@@ -1,0 +1,30 @@
+<div
+  role="button"
+  tabindex="0"
+  class="flex flex-col items-center justify-center gap-1 rounded-sm border border-dashed px-3 py-4 text-center text-ui text-text-muted transition-colors"
+  [class]="isDragOver() ? 'border-accent bg-accent/10' : 'border-border hover:bg-panel-elevated'"
+  [class.opacity-50]="disabled()"
+  [class.pointer-events-none]="disabled()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+  (click)="onZoneClick()"
+  (keydown)="onZoneKeydown($event)"
+>
+  @if (selectedFile(); as file) {
+    <span class="font-mono text-text">{{ file.name }}</span>
+    <span class="text-ui-xs">{{ formatSize(file.size) }}</span>
+  } @else {
+    <span>{{ label() }}</span>
+  }
+
+  <input
+    #fileInput
+    type="file"
+    hidden
+    [accept]="accept() ?? ''"
+    [multiple]="multiple()"
+    [disabled]="disabled()"
+    (change)="onFileInputChange($event)"
+  />
+</div>

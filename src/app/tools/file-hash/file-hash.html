@@ -1,0 +1,73 @@
+<app-tool-shell title="File Hash Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <app-file-drop label="Drop a file here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      @for (algorithm of algorithms; track algorithm) {
+        <label class="flex items-center gap-1.5">
+          <input
+            type="checkbox"
+            class="accent-accent"
+            [checked]="isSelected(algorithm)"
+            (change)="toggleAlgorithm(algorithm, $event)"
+          />
+          {{ algorithm }}
+        </label>
+      }
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+        [disabled]="!selectedFile()"
+        (click)="compute()"
+      >
+        Compute
+      </button>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated disabled:opacity-40"
+        [disabled]="job()?.status() !== 'running'"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+      @if (job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+    </div>
+
+    @if (job(); as currentJob) {
+      @if (currentJob.error(); as message) {
+        <app-error-panel [message]="message" />
+      }
+
+      @if (currentJob.result(); as results) {
+        <div class="flex flex-col gap-1.5">
+          @for (result of results; track result.algorithm) {
+            <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel p-2 text-ui">
+              <div class="flex flex-col overflow-hidden">
+                <span class="text-text-muted">{{ result.algorithm }}</span>
+                <span class="truncate font-mono text-text">{{ result.hex }}</span>
+              </div>
+              <button
+                type="button"
+                class="shrink-0 rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated"
+                (click)="copy(result.hex)"
+              >
+                Copy
+              </button>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</app-tool-shell>

@@ -8,9 +8,11 @@ class FakeWorker {
   onerror: ((event: ErrorEvent) => void) | null = null;
   terminated = false;
   readonly posted: WorkerRequestMessage<unknown>[] = [];
+  readonly transfers: Transferable[][] = [];
 
-  postMessage(data: WorkerRequestMessage<unknown>): void {
+  postMessage(data: WorkerRequestMessage<unknown>, transfer: Transferable[] = []): void {
     this.posted.push(data);
+    this.transfers.push(transfer);
   }
 
   terminate(): void {
@@ -106,6 +108,21 @@ describe('WorkerClientService', () => {
 
     expect(job.status()).toBe('running');
     expect(job.result()).toBeNull();
+  });
+
+  it('passes a transfer list through to postMessage when provided', () => {
+    const worker = new FakeWorker();
+    const buffer = new ArrayBuffer(8);
+    service.run(() => worker as unknown as Worker, { buffer }, [buffer]);
+
+    expect(worker.transfers[0]).toEqual([buffer]);
+  });
+
+  it('defaults to an empty transfer list when none is provided', () => {
+    const worker = new FakeWorker();
+    service.run(() => worker as unknown as Worker, {});
+
+    expect(worker.transfers[0]).toEqual([]);
   });
 
   it('turns a synchronous worker-construction failure into a job error instead of throwing', () => {

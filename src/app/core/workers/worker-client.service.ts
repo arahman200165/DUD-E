@@ -55,7 +55,7 @@ class WorkerJobHandle<TResult> implements WorkerJob<TResult> {
  */
 @Injectable({ providedIn: 'root' })
 export class WorkerClientService {
-  run<TPayload, TResult>(createWorker: () => Worker, payload: TPayload): WorkerJob<TResult> {
+  run<TPayload, TResult>(createWorker: () => Worker, payload: TPayload, transfer?: Transferable[]): WorkerJob<TResult> {
     let worker: Worker | undefined;
     let terminated = false;
 
@@ -96,7 +96,7 @@ export class WorkerClientService {
 
     try {
       const request: WorkerRequestMessage<TPayload> = { id, payload };
-      worker.postMessage(request);
+      worker.postMessage(request, transfer ?? []);
     } catch (error) {
       job.reject(toErrorPayload(error).message);
     }

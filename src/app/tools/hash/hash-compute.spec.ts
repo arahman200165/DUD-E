@@ -1,4 +1,4 @@
-import { computeHash, computeHashes } from './hash-compute';
+import { computeFileHash, computeFileHashes, computeHash, computeHashes } from './hash-compute';
 
 describe('computeHash', () => {
   it('computes the known MD5 test vector for "abc"', async () => {
@@ -42,5 +42,28 @@ describe('computeHashes', () => {
 
   it('returns an empty array for an empty algorithm list', async () => {
     expect(await computeHashes('abc', [])).toEqual([]);
+  });
+});
+
+describe('computeFileHash', () => {
+  const abcBuffer = () => new TextEncoder().encode('abc').buffer;
+
+  it('matches the string-based digest for the same bytes', async () => {
+    expect(await computeFileHash(abcBuffer(), 'MD5')).toBe(await computeHash('abc', 'MD5'));
+    expect(await computeFileHash(abcBuffer(), 'SHA-256')).toBe(await computeHash('abc', 'SHA-256'));
+  });
+
+  it('produces the known MD5 test vector for "abc"', async () => {
+    expect(await computeFileHash(abcBuffer(), 'MD5')).toBe('900150983cd24fb0d6963f7d28e17f72');
+  });
+});
+
+describe('computeFileHashes', () => {
+  it('computes multiple algorithms in the requested order for a buffer', async () => {
+    const buffer = new TextEncoder().encode('abc').buffer;
+    const results = await computeFileHashes(buffer, ['MD5', 'SHA-1']);
+
+    expect(results.map((r) => r.algorithm)).toEqual(['MD5', 'SHA-1']);
+    expect(results[0].hex).toBe('900150983cd24fb0d6963f7d28e17f72');
   });
 });
