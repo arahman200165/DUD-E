@@ -330,4 +330,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
   },
+  {
+    id: 'glob-tester',
+    title: 'Glob Pattern Tester',
+    description: 'Test a glob pattern against a list of sample paths.',
+    category: 'developer',
+    keywords: ['glob', 'pattern', 'match', 'wildcard', 'test', 'paths', 'gitignore'],
+    route: '/tools/glob-tester',
+    load: () => import('../../tools/glob-tester/glob-tester').then((m) => m.GlobTester),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
 ];
