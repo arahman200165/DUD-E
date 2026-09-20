@@ -251,4 +251,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
+  {
+    id: 'http-status',
+    title: 'HTTP Status Code Reference',
+    description: 'Searchable reference of every IANA-registered HTTP status code.',
+    category: 'web',
+    keywords: ['http', 'status', 'code', 'response', 'reference', '404', '500'],
+    route: '/tools/http-status',
+    load: () => import('../../tools/http-status/http-status').then((m) => m.HttpStatus),
+    status: 'stable',
+    persistence: { input: 'local', preferences: 'none' },
+  },
 ];

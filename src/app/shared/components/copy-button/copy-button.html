@@ -1,0 +1,8 @@
+<button
+  type="button"
+  class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated disabled:cursor-not-allowed disabled:opacity-50"
+  [disabled]="text() === ''"
+  (click)="copy()"
+>
+  {{ copied() ? 'Copied!' : label() }}
+</button>
