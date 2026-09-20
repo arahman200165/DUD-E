@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="360" viewBox="0 0 1400 360" role="img" aria-labelledby="title desc">
+  <title id="title">DUDE — Development Utility Deck Engine</title>
+  <desc id="desc">Original geometric DUDE logo. A modular D-shaped engine mark with a central execution chevron, paired with a compact wordmark.</desc>
+
+  <defs>
+    <style>
+      .wordmark {
+        font-family: Inter, Geist, "SF Pro Display", "Segoe UI", Arial, sans-serif;
+        font-size: 138px;
+        font-weight: 800;
+        letter-spacing: 16px;
+      }
+      .tagline {
+        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 7px;
+      }
+    </style>
+  </defs>
+
+  <!--
+    DUDE primary horizontal logo
+    Brand: Development Utility Deck Engine
+    Transparent background by design.
+
+    Palette:
+      Ink / wordmark: #F4F7FB
+      Accent cyan:    #38D8FF
+      Accent violet:  #8B5CF6
+      Muted text:     #91A4BA
+  -->
+
+  <!-- Icon -->
+  <g transform="translate(44 52)">
+    <!-- D / deck enclosure -->
+    <path d="M20 8H102C172 8 218 50 218 128S172 248 102 248H20Z"
+          fill="none" stroke="#F4F7FB" stroke-width="18" stroke-linejoin="round"/>
+
+    <!-- Modular deck rails -->
+    <path d="M58 66H132" stroke="#38D8FF" stroke-width="16" stroke-linecap="round"/>
+    <path d="M58 128H158" stroke="#38D8FF" stroke-width="16" stroke-linecap="round"/>
+    <path d="M58 190H132" stroke="#38D8FF" stroke-width="16" stroke-linecap="round"/>
+
+    <!-- Engine / execute core -->
+    <path d="M146 90L188 128L146 166Z" fill="#8B5CF6"/>
+
+    <!-- Small terminal nodes: extensible modules -->
+    <rect x="46" y="55" width="22" height="22" rx="5" fill="#38D8FF"/>
+    <rect x="46" y="117" width="22" height="22" rx="5" fill="#38D8FF"/>
+    <rect x="46" y="179" width="22" height="22" rx="5" fill="#38D8FF"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="342" y="196" fill="#F4F7FB" class="wordmark">DUDE</text>
+
+  <!-- Thin technical divider -->
+  <rect x="349" y="228" width="868" height="2" rx="1" fill="#26384C"/>
+
+  <!-- Expanded name -->
+  <text x="349" y="286" fill="#91A4BA" class="tagline">DEVELOPMENT UTILITY DECK ENGINE</text>
+
+  <!-- Accent registration bars -->
+  <rect x="1247" y="74" width="70" height="8" rx="4" fill="#38D8FF"/>
+  <rect x="1247" y="96" width="46" height="8" rx="4" fill="#8B5CF6"/>
+</svg>

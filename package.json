@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:e2e": "ng build && playwright test --config=e2e/playwright.config.ts",
-    "playwright:install": "playwright install chromium"
+    "playwright:install": "playwright install chromium",
+    "generate:brand-assets": "node scripts/generate-brand-assets.mjs"
   },
   "private": true,
   "packageManager": "npm@11.19.0",

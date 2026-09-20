@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="DUDE_logo_primary.svg" alt="DUDE — Development Utility Deck Engine" width="480" />
+</p>
+
 # DUDE — Development Utility Deck Engine
 
 [![Deploy](https://github.com/arahman200165/DUDE/actions/workflows/deploy.yml/badge.svg)](https://github.com/arahman200165/DUDE/actions/workflows/deploy.yml)
