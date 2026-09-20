@@ -32,7 +32,9 @@ async function stable(): Promise<void> {
 }
 
 function setSource(fixture: ComponentFixture<MarkdownWorkspace>, value: string): void {
-  const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+  // Not the first `<textarea>` in the DOM — the custom-CSS `<details>` block
+  // above the split-pane also renders one; select the source editor specifically.
+  const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea[placeholder="Type Markdown here…"]');
   textarea.value = value;
   textarea.dispatchEvent(new Event('input'));
 }

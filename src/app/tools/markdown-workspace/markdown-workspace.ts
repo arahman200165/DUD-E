@@ -1,17 +1,22 @@
-import { Component, ElementRef, ViewEncapsulation, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, ViewEncapsulation, computed, effect, inject, signal, viewChild, viewChildren } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import DOMPurify from 'dompurify';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { SplitPane } from '../../shared/components/split-pane/split-pane';
 import { BusyIndicator } from '../../shared/components/busy-indicator/busy-indicator';
+import { SandboxedMarkdownPreview } from '../../shared/components/sandboxed-markdown-preview/sandboxed-markdown-preview';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
 import { downloadFile } from '../../shared/utils/download-file';
+import { MARKDOWN_BODY_STYLES } from '../../shared/styles/markdown-body.styles';
+import { markdownPresetStyleVars, MARKDOWN_STYLE_PRESETS, type MarkdownStylePreset } from '../../shared/models/markdown-theme.model';
 import { WorkspaceRenderResult, buildWorkspaceResult } from './markdown-workspace-render';
 import { MarkdownWorkspacePayload } from './markdown-workspace-payload';
 import { MarkdownInsertAction, applyMarkdownInsertion } from './markdown-toolbar-insert';
 import { computeSyncedScrollTop } from './markdown-scroll-sync';
+import { MarkdownPluginKind, MarkdownPluginManifest } from './plugins/plugin-manifest.model';
+import { PluginRuntimeHost } from './plugins/plugin-runtime-host';
 
 /** Inputs above this size run in a Worker instead of blocking the main thread — higher than csv-viewer/yaml-json's 50k since markdown-it rendering is cheaper per byte. */
 const WORKER_THRESHOLD = 100_000;
@@ -21,7 +26,7 @@ const DEFAULT_SOURCE =
 
 @Component({
   selector: 'app-markdown-workspace',
-  imports: [ToolShell, SplitPane, BusyIndicator],
+  imports: [ToolShell, SplitPane, BusyIndicator, SandboxedMarkdownPreview, PluginRuntimeHost],
   templateUrl: './markdown-workspace.html',
   // Emulated encapsulation adds a scoping attribute to elements the Angular
   // template compiler renders, but never to content injected via
@@ -33,62 +38,7 @@ const DEFAULT_SOURCE =
   // this tool's whole point includes new table/task-list styling that
   // depends on these rules actually applying.
   encapsulation: ViewEncapsulation.None,
-  styles: `
-    .markdown-body :first-child {
-      margin-top: 0;
-    }
-    .markdown-body h1,
-    .markdown-body h2,
-    .markdown-body h3 {
-      font-weight: 600;
-      margin: 0.75em 0 0.4em;
-    }
-    .markdown-body p,
-    .markdown-body ul,
-    .markdown-body ol,
-    .markdown-body pre,
-    .markdown-body blockquote,
-    .markdown-body table {
-      margin: 0.5em 0;
-    }
-    .markdown-body ul,
-    .markdown-body ol {
-      padding-left: 1.4em;
-    }
-    .markdown-body code {
-      font-family: var(--font-mono);
-      background: var(--color-panel-elevated);
-      border-radius: 2px;
-      padding: 0.1em 0.3em;
-      font-size: 0.9em;
-    }
-    .markdown-body pre {
-      background: var(--color-panel-elevated);
-      border-radius: 4px;
-      padding: 0.6em 0.8em;
-      overflow: auto;
-    }
-    .markdown-body pre code {
-      background: none;
-      padding: 0;
-    }
-    .markdown-body blockquote {
-      border-left: 2px solid var(--color-border);
-      padding-left: 0.8em;
-      color: var(--color-text-muted);
-    }
-    .markdown-body a {
-      color: var(--color-accent);
-    }
-    .markdown-body table {
-      border-collapse: collapse;
-    }
-    .markdown-body th,
-    .markdown-body td {
-      border: 1px solid var(--color-border);
-      padding: 0.3em 0.6em;
-    }
-  `,
+  styles: [MARKDOWN_BODY_STYLES],
 })
 export class MarkdownWorkspace {
   private readonly persistence = inject(PersistenceService);
@@ -137,6 +87,26 @@ export class MarkdownWorkspace {
     const frontMatter = this.result()?.frontMatter;
     return frontMatter ? Object.entries(frontMatter) : [];
   });
+
+  protected readonly stylePresets = Object.entries(MARKDOWN_STYLE_PRESETS) as [MarkdownStylePreset, (typeof MARKDOWN_STYLE_PRESETS)[MarkdownStylePreset]][];
+  protected readonly stylePreset = this.persistence.signal<MarkdownStylePreset>('markdown-workspace', 'stylePreset', 'local', 'default');
+  protected readonly customCss = this.persistence.signal('markdown-workspace', 'customCss', 'local', '');
+  protected readonly presetStyleVars = computed(() => markdownPresetStyleVars(this.stylePreset()));
+  protected readonly usesCustomCss = computed(() => this.customCss().trim() !== '');
+
+  protected readonly plugins = this.persistence.signal<readonly MarkdownPluginManifest[]>('markdown-workspace', 'plugins', 'local', []);
+  private readonly pluginHosts = viewChildren(PluginRuntimeHost);
+  protected readonly showPluginPanel = signal(false);
+
+  protected readonly newPluginName = signal('');
+  protected readonly newPluginKind = signal<MarkdownPluginKind>('render-hook');
+  protected readonly newPluginSource = signal('');
+  protected readonly pluginFormError = signal('');
+
+  protected readonly pluginRunStatus = signal<'idle' | 'running'>('idle');
+  protected readonly pluginRunError = signal('');
+  protected readonly toolbarActionPlugins = computed(() => this.plugins().filter((p) => p.kind === 'toolbar-action'));
+  protected readonly renderHookPlugins = computed(() => this.plugins().filter((p) => p.kind === 'render-hook'));
 
   private isSyncingScroll = false;
 
@@ -245,5 +215,102 @@ export class MarkdownWorkspace {
 
   protected clear(): void {
     this.source.set('');
+  }
+
+  protected onStylePresetChange(event: Event): void {
+    this.stylePreset.set((event.target as HTMLSelectElement).value as MarkdownStylePreset);
+  }
+
+  protected onCustomCssInput(event: Event): void {
+    this.customCss.set((event.target as HTMLTextAreaElement).value);
+  }
+
+  protected togglePluginPanel(): void {
+    this.showPluginPanel.set(!this.showPluginPanel());
+  }
+
+  protected onNewPluginNameInput(event: Event): void {
+    this.newPluginName.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onNewPluginKindChange(event: Event): void {
+    this.newPluginKind.set((event.target as HTMLSelectElement).value as MarkdownPluginKind);
+  }
+
+  protected onNewPluginSourceInput(event: Event): void {
+    this.newPluginSource.set((event.target as HTMLTextAreaElement).value);
+  }
+
+  protected addPlugin(): void {
+    const name = this.newPluginName().trim();
+    const source = this.newPluginSource().trim();
+    if (!name || !source) {
+      this.pluginFormError.set('Enter a name and plugin source (must define a global run(input) function).');
+      return;
+    }
+
+    const manifest: MarkdownPluginManifest = { id: crypto.randomUUID(), name, kind: this.newPluginKind(), source };
+    this.plugins.update((list) => [...list, manifest]);
+    this.newPluginName.set('');
+    this.newPluginSource.set('');
+    this.pluginFormError.set('');
+  }
+
+  protected removePlugin(id: string): void {
+    this.plugins.update((list) => list.filter((p) => p.id !== id));
+  }
+
+  /** Sequentially feeds the full source through each loaded render-hook plugin, chaining outputs — plugins only ever produce more Markdown, re-entering the normal render/sanitize pipeline. */
+  protected async runRenderHookPlugins(): Promise<void> {
+    const list = this.plugins();
+    const hosts = this.pluginHosts();
+
+    this.pluginRunStatus.set('running');
+    this.pluginRunError.set('');
+    let current = this.source();
+
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].kind !== 'render-hook') continue;
+      const host = hosts[i];
+      if (!host) continue;
+
+      try {
+        current = await host.run(current);
+      } catch (error) {
+        this.pluginRunError.set(`Plugin "${list[i].name}" failed: ${error instanceof Error ? error.message : String(error)}`);
+        this.pluginRunStatus.set('idle');
+        return;
+      }
+    }
+
+    this.source.set(current);
+    this.pluginRunStatus.set('idle');
+  }
+
+  /** Runs one toolbar-action plugin against the current textarea selection, replacing it with the plugin's output. */
+  protected async runToolbarActionPlugin(pluginId: string): Promise<void> {
+    const textarea = this.sourceTextarea()?.nativeElement;
+    if (!textarea) return;
+
+    const list = this.plugins();
+    const index = list.findIndex((p) => p.id === pluginId);
+    const host = this.pluginHosts()[index];
+    if (index === -1 || !host) return;
+
+    const { selectionStart, selectionEnd } = textarea;
+    const selected = this.source().slice(selectionStart, selectionEnd);
+
+    this.pluginRunStatus.set('running');
+    this.pluginRunError.set('');
+    try {
+      const replacement = await host.run(selected);
+      const before = this.source().slice(0, selectionStart);
+      const after = this.source().slice(selectionEnd);
+      this.source.set(before + replacement + after);
+    } catch (error) {
+      this.pluginRunError.set(`Plugin "${list[index].name}" failed: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      this.pluginRunStatus.set('idle');
+    }
   }
 }

@@ -1,6 +1,6 @@
 <app-tool-shell title="Markdown Preview" status="stable">
   <div class="flex h-full min-h-0 flex-col gap-2">
-    <div class="flex items-center gap-3 text-ui text-text-muted">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
       <button
         type="button"
         class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
@@ -15,7 +15,31 @@
       >
         Clear
       </button>
+
+      <label class="flex items-center gap-1.5">
+        Style
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="stylePreset()"
+          (change)="onStylePresetChange($event)"
+        >
+          @for (entry of stylePresets; track entry[0]) {
+            <option [value]="entry[0]">{{ entry[1].label }}</option>
+          }
+        </select>
+      </label>
     </div>
+
+    <details class="text-ui text-text-muted">
+      <summary class="cursor-pointer">Custom CSS (renders in a sandboxed frame; disables nothing else here)</summary>
+      <textarea
+        rows="3"
+        class="mt-1 w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder=".markdown-body h1 { color: hotpink; }"
+        [value]="customCss()"
+        (input)="onCustomCssInput($event)"
+      ></textarea>
+    </details>
 
     <div class="min-h-0 flex-1 rounded-sm border border-border">
       <app-split-pane [initialRatio]="paneRatio()" (ratioChange)="onRatioChange($event)">
@@ -26,7 +50,17 @@
           [value]="source()"
           (input)="onSourceInput($event)"
         ></textarea>
-        <div slot="end" class="markdown-body h-full overflow-auto bg-panel px-3 py-2 text-sm text-text" [innerHTML]="renderedHtml()"></div>
+        <div slot="end" class="h-full">
+          @if (customCss().trim() !== '') {
+            <app-sandboxed-markdown-preview [html]="renderedHtml()" [css]="customCss()" />
+          } @else {
+            <div
+              class="markdown-body h-full overflow-auto bg-panel px-3 py-2 text-sm text-text"
+              [style]="presetStyleVars()"
+              [innerHTML]="renderedHtml()"
+            ></div>
+          }
+        </div>
       </app-split-pane>
     </div>
   </div>
