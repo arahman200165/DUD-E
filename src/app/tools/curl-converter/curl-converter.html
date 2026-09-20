@@ -1,0 +1,176 @@
+<app-tool-shell title="cURL Command Inspector / Converter" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <app-copy-button [text]="raw()" label="Copy command" />
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    @if (parsed().error; as error) {
+      <app-error-panel [message]="error" />
+    }
+    @if (parsed().warnings.length > 0) {
+      <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+        @for (warning of parsed().warnings; track warning) {
+          <div>{{ warning }}</div>
+        }
+      </div>
+    }
+
+    <div class="min-h-96 flex-1 rounded-sm border border-border">
+      <app-split-pane [initialRatio]="0.45">
+        <div slot="start" class="flex h-full flex-col gap-1 bg-panel p-2">
+          <span class="text-ui text-text-muted">Raw command</span>
+          <textarea
+            class="h-full w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="Paste a curl command…"
+            [value]="raw()"
+            (input)="onRawChange($event)"
+          ></textarea>
+        </div>
+
+        <div slot="end" class="flex h-full flex-col gap-3 overflow-auto bg-panel p-2">
+          <div class="flex items-center gap-2">
+            <select
+              class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="request().method"
+              (change)="onMethodChange($event)"
+            >
+              @for (method of methods; track method) {
+                <option [value]="method">{{ method }}</option>
+              }
+            </select>
+            <input
+              type="text"
+              class="flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              placeholder="https://example.com/path"
+              [value]="fullUrl()"
+              (input)="onUrlInput($event)"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">Query params</span>
+            <app-key-value-editor
+              [pairs]="request().queryParams"
+              (pairsChange)="onQueryParamsChange($event)"
+              addLabel="Add param"
+              emptyMessage="No query params."
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">Headers</span>
+            <app-key-value-editor
+              [pairs]="request().headers"
+              (pairsChange)="onHeadersChange($event)"
+              keyPlaceholder="Header-Name"
+              addLabel="Add header"
+              emptyMessage="No headers."
+            />
+          </div>
+
+          @if (request().body; as body) {
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center justify-between">
+                <span class="text-ui text-text-muted">Body</span>
+                <button
+                  type="button"
+                  class="rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+                  (click)="toggleMultipart()"
+                >
+                  {{ body.kind === 'multipart' ? 'Switch to raw body' : 'Switch to multipart form' }}
+                </button>
+              </div>
+              @if (body.kind === 'multipart') {
+                <app-key-value-editor
+                  [pairs]="body.fields"
+                  (pairsChange)="onMultipartFieldsChange($event)"
+                  keyPlaceholder="field name"
+                  valuePlaceholder="value (or @filename)"
+                  addLabel="Add field"
+                  emptyMessage="No form fields."
+                />
+              } @else {
+                <textarea
+                  rows="4"
+                  class="w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="Request body…"
+                  [value]="body.kind === 'raw' ? body.text : ''"
+                  (input)="onBodyInput($event)"
+                ></textarea>
+              }
+            </div>
+          }
+
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Basic auth</span>
+              @if (!request().auth) {
+                <button
+                  type="button"
+                  class="rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+                  (click)="addAuth()"
+                >
+                  Add Basic Auth
+                </button>
+              }
+            </div>
+            @if (request().auth; as auth) {
+              <div class="flex items-center gap-1">
+                <input
+                  type="text"
+                  class="w-1/3 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="username"
+                  [value]="auth.username"
+                  (input)="onAuthUsernameInput($event)"
+                />
+                <input
+                  type="text"
+                  class="flex-1 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="password"
+                  [value]="auth.password"
+                  (input)="onAuthPasswordInput($event)"
+                />
+                <button
+                  type="button"
+                  class="rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+                  (click)="removeAuth()"
+                >
+                  Remove
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </app-split-pane>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <label class="flex items-center gap-1.5 text-ui text-text-muted">
+          Export as
+          <select
+            class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="exportFormat()"
+            (change)="setExportFormat($event)"
+          >
+            @for (format of formats; track format.id) {
+              <option [value]="format.id">{{ format.label }}</option>
+            }
+          </select>
+        </label>
+        <app-copy-button [text]="exportedCode()" label="Copy code" />
+      </div>
+      <pre
+        class="max-h-64 overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text"
+        >{{ exportedCode() }}</pre
+      >
+    </div>
+  </div>
+</app-tool-shell>
