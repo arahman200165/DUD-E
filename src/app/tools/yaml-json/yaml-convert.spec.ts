@@ -1,0 +1,49 @@
+import { convertYaml } from './yaml-convert';
+
+describe('convertYaml', () => {
+  it('converts YAML to pretty-printed JSON with a 2-space indent', () => {
+    const result = convertYaml('a: 1\nb:\n  - 2\n  - 3\n', 'yaml-to-json', 2);
+
+    expect(result).toEqual({ ok: true, output: '{\n  "a": 1,\n  "b": [\n    2,\n    3\n  ]\n}' });
+  });
+
+  it('converts YAML to JSON with a tab indent', () => {
+    const result = convertYaml('a: 1\n', 'yaml-to-json', 'tab');
+
+    expect(result).toEqual({ ok: true, output: '{\n\t"a": 1\n}' });
+  });
+
+  it('converts JSON to YAML', () => {
+    const result = convertYaml('{"a":1,"b":[2,3]}', 'json-to-yaml', 2);
+
+    expect(result).toEqual({ ok: true, output: 'a: 1\nb:\n  - 2\n  - 3\n' });
+  });
+
+  it('rejects empty input for either direction', () => {
+    expect(convertYaml('', 'yaml-to-json', 2).ok).toBe(false);
+    expect(convertYaml('   ', 'json-to-yaml', 2).ok).toBe(false);
+  });
+
+  it('reports a parse error for malformed YAML', () => {
+    const result = convertYaml('a: [1,2\n', 'yaml-to-json', 2);
+
+    expect(result.ok).toBe(false);
+    expect(!result.ok && result.error.message.length > 0).toBe(true);
+  });
+
+  it('reports a parse error for malformed JSON', () => {
+    const result = convertYaml('{"a": }', 'json-to-yaml', 2);
+
+    expect(result.ok).toBe(false);
+    expect(!result.ok && result.error.message.length > 0).toBe(true);
+  });
+
+  it('round-trips a nested structure', () => {
+    const json = '{"name":"DUDE","tags":["dev","tools"],"active":true}';
+    const toYaml = convertYaml(json, 'json-to-yaml', 2);
+    expect(toYaml.ok).toBe(true);
+
+    const backToJson = toYaml.ok ? convertYaml(toYaml.output, 'yaml-to-json', 2) : null;
+    expect(backToJson).toEqual({ ok: true, output: JSON.stringify(JSON.parse(json), null, '  ') });
+  });
+});
