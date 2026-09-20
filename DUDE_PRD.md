@@ -1156,17 +1156,19 @@ Phase 0 was the weekend commitment; it is complete. Everything else follows as o
 
 ---
 
-## Phase 1 — High-Frequency Core Utilities
+## Phase 1 — High-Frequency Core Utilities (✅ Complete)
 
-10. URL Encoder / Decoder  
-11. Query String Parser / Builder  
+10. URL Encoder / Decoder — ✅ shipped  
+11. Query String Parser / Builder — ✅ shipped  
 12. UUID Generator / Inspector — ✅ shipped early, see Phase 0  
-13. Case Converter  
-14. Whitespace Cleaner / Normalizer  
-15. Slug Generator  
-16. HTML Entity Encoder / Decoder  
-17. Color Converter  
-18. Number Base Converter
+13. Case Converter — ✅ shipped  
+14. Whitespace Cleaner / Normalizer — ✅ shipped  
+15. Slug Generator — ✅ shipped  
+16. HTML Entity Encoder / Decoder — ✅ shipped  
+17. Color Converter — ✅ shipped  
+18. Number Base Converter — ✅ shipped
+
+**Goal:** Validate the “new tool in ≤30 minutes” success criterion across a batch of simple tools. **Achieved** — all remaining Phase 1 tools shipped, tested, and verified against direct-route resolution.
 
 ### Notes
 
@@ -1253,7 +1255,7 @@ Before adding them, create a separate security/design document.
 
 # 22. Roadmap Categorized by Domain
 
-For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0).
+For long-term discoverability, tools should ultimately be grouped roughly as follows. ✅ marks tools already shipped (see §20/§21 Phase 0–1).
 
 ## Data
 
@@ -1269,19 +1271,19 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 
 - Text Inspector ✅
 - Text Diff ✅
-- Case Converter
-- Whitespace Cleaner
-- Slug Generator
+- Case Converter ✅
+- Whitespace Cleaner ✅
+- Slug Generator ✅
 - Advanced Diff / Merge
 
 ## Encoding / Conversion
 
 - Base64 ✅
-- URL Encode / Decode
-- HTML Entities
-- Number Base Converter
+- URL Encode / Decode ✅
+- HTML Entities ✅
+- Number Base Converter ✅
 - File Base64
-- Color Converter
+- Color Converter ✅
 
 ## Security
 
@@ -1299,7 +1301,7 @@ For long-term discoverability, tools should ultimately be grouped roughly as fol
 
 ## Web / API
 
-- Query String Builder
+- Query String Builder ✅
 - HTTP Status Reference
 - HTTP Header Inspector
 - cURL Inspector / Converter
