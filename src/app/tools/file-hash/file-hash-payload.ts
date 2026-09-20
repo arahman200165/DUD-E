@@ -1,4 +1,4 @@
-import { HashAlgorithm } from '../hash/hash-compute';
+import { HashAlgorithm } from '../../../shared-logic/hash-compute';
 
 export interface FileHashPayload {
   readonly buffer: ArrayBuffer;

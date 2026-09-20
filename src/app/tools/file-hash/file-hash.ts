@@ -6,7 +6,7 @@ import { FileDrop } from '../../shared/components/file-drop/file-drop';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
-import { HASH_ALGORITHMS, HashAlgorithm, HashOutput } from '../hash/hash-compute';
+import { HASH_ALGORITHMS, HashAlgorithm, HashOutput } from '../../../shared-logic/hash-compute';
 import { FileHashPayload } from './file-hash-payload';
 
 @Component({

@@ -1,7 +1,10 @@
 /**
- * Pure, framework-free UTF-8-safe Base64 codec used by the Base64 tool.
- * Avoids the classic `escape`/`unescape` trick in favor of `TextEncoder`/
- * `TextDecoder`, so multi-byte characters round-trip correctly.
+ * Pure, framework-free UTF-8-safe Base64 codec. Lives outside `src/app/`
+ * (see `src/shared-logic/AGENTS.md`) because both the Base64 tool and
+ * `electron/hotkey-bridge.ts`'s clipboard quick-action (Phase 8 Stage 5)
+ * import it. Avoids the classic `escape`/`unescape` trick in favor of
+ * `TextEncoder`/`TextDecoder`, so multi-byte characters round-trip
+ * correctly.
  */
 
 export type Base64Result = { readonly ok: true; readonly value: string } | { readonly ok: false; readonly error: string };

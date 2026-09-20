@@ -1,4 +1,4 @@
-import { HashAlgorithm } from './hash-compute';
+import { HashAlgorithm } from '../../../shared-logic/hash-compute';
 
 export interface HashComputePayload {
   readonly text: string;

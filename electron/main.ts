@@ -4,6 +4,10 @@ import { startStaticServer } from './static-server';
 import { registerFsHandlers } from './fs-bridge';
 import { registerSecretsHandlers } from './secrets-bridge';
 import { registerLlmHandlers } from './llm-bridge';
+import { createTray, isAppQuitting, registerShellChromeHandlers } from './tray';
+import { registerHotkeyHandlers, unregisterAllHotkeys } from './hotkey-bridge';
+import { registerNotificationHandlers } from './notifications-bridge';
+import { closeAllFileWatches, registerFileWatchHandlers } from './file-watch-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -33,16 +37,36 @@ async function createWindow(): Promise<void> {
     },
   });
 
+  // Stage 5: closing the window hides it to the tray instead of quitting —
+  // `isAppQuitting()` (set via `before-quit`) is what allows a real close.
+  window.on('close', (event) => {
+    if (!isAppQuitting()) {
+      event.preventDefault();
+      window.hide();
+    }
+  });
+
+  createTray(window);
+
   await window.loadURL(await resolveWindowUrl());
 }
 
-void app.whenReady().then(() => {
+void app.whenReady().then(async () => {
   registerFsHandlers();
   registerSecretsHandlers();
   registerLlmHandlers();
+  registerShellChromeHandlers();
+  registerNotificationHandlers();
+  registerFileWatchHandlers();
+  await registerHotkeyHandlers();
   return createWindow();
 });
 
 app.on('window-all-closed', () => {
   app.quit();
+});
+
+app.on('will-quit', () => {
+  unregisterAllHotkeys();
+  closeAllFileWatches();
 });

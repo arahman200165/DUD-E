@@ -1,25 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { PlatformService, isElectronRuntime } from './platform.service';
-import type { DudeElectronBridge } from './electron-bridge';
-
-const STUB_FS: DudeElectronBridge['fs'] = {
-  pickDirectory: async () => ({ canceled: true }),
-  walk: async () => ({ ok: true, entries: [] }),
-  readFile: async () => ({ ok: true, data: new ArrayBuffer(0) }),
-  readdir: async () => ({ ok: true, names: [] }),
-  stat: async () => ({ ok: true, stat: { isFile: false, isDirectory: true, isSymbolicLink: false, size: 0, mtimeMs: 0 } }),
-};
-
-const STUB_SECRETS: DudeElectronBridge['secrets'] = {
-  get: async () => ({ ok: true, value: null }),
-  set: async () => ({ ok: true }),
-  remove: async () => ({ ok: true }),
-};
-
-const STUB_LLM: DudeElectronBridge['llm'] = {
-  isConfigured: async () => false,
-  getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
-};
+import { fakeElectronBridge } from './testing/fake-electron-bridge';
 
 describe('isElectronRuntime', () => {
   const originalDude = window.dude;
@@ -34,8 +15,7 @@ describe('isElectronRuntime', () => {
   });
 
   it('is true when the preload bridge reports desktop', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS, llm: STUB_LLM };
-    Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
+    Object.defineProperty(window, 'dude', { value: fakeElectronBridge(), configurable: true });
     expect(isElectronRuntime()).toBe(true);
   });
 });
@@ -48,8 +28,7 @@ describe('PlatformService', () => {
   });
 
   it('reports desktop when constructed under the Electron bridge', () => {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS, llm: STUB_LLM };
-    Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
+    Object.defineProperty(window, 'dude', { value: fakeElectronBridge(), configurable: true });
 
     TestBed.configureTestingModule({});
     const service = TestBed.inject(PlatformService);

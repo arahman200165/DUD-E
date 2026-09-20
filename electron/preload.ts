@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { DudeElectronBridge } from '../src/app/core/platform/electron-bridge';
+import type { DudeElectronBridge, FileWatchEvent } from '../src/app/core/platform/electron-bridge';
 
 const bridge: DudeElectronBridge = {
   platform: { isDesktop: true },
@@ -18,6 +18,26 @@ const bridge: DudeElectronBridge = {
   llm: {
     isConfigured: () => ipcRenderer.invoke('dude:llm:isConfigured'),
     getEndpoint: () => ipcRenderer.invoke('dude:llm:getEndpoint'),
+  },
+  shell: {
+    getLaunchOnLogin: () => ipcRenderer.invoke('dude:shell:getLaunchOnLogin'),
+    setLaunchOnLogin: (enabled) => ipcRenderer.invoke('dude:shell:setLaunchOnLogin', enabled),
+  },
+  quickActions: {
+    list: () => ipcRenderer.invoke('dude:quickActions:list'),
+    setHotkey: (actionId, accelerator) => ipcRenderer.invoke('dude:quickActions:setHotkey', actionId, accelerator),
+  },
+  notifications: {
+    show: (title, body) => ipcRenderer.invoke('dude:notifications:show', title, body),
+  },
+  fileWatch: {
+    watch: (rootPath, relativePath) => ipcRenderer.invoke('dude:fileWatch:watch', rootPath, relativePath),
+    unwatch: (watchId) => ipcRenderer.invoke('dude:fileWatch:unwatch', watchId),
+    onEvent: (callback) => {
+      const listener = (_event: Electron.IpcRendererEvent, message: FileWatchEvent) => callback(message);
+      ipcRenderer.on('dude:fileWatch:event', listener);
+      return () => ipcRenderer.removeListener('dude:fileWatch:event', listener);
+    },
   },
 };
 

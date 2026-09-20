@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { NativeFsService } from './native-fs.service';
 import type { DudeElectronBridge } from './electron-bridge';
+import { fakeElectronBridge } from './testing/fake-electron-bridge';
 
 describe('NativeFsService', () => {
   const originalDude = window.dude;
@@ -10,17 +11,7 @@ describe('NativeFsService', () => {
   });
 
   function withBridge(fs: DudeElectronBridge['fs']): NativeFsService {
-    const secrets: DudeElectronBridge['secrets'] = {
-      get: async () => ({ ok: true, value: null }),
-      set: async () => ({ ok: true }),
-      remove: async () => ({ ok: true }),
-    };
-    const llm: DudeElectronBridge['llm'] = {
-      isConfigured: async () => false,
-      getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
-    };
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs, secrets, llm };
-    Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
+    Object.defineProperty(window, 'dude', { value: fakeElectronBridge({ fs }), configurable: true });
     TestBed.configureTestingModule({});
     return TestBed.inject(NativeFsService);
   }

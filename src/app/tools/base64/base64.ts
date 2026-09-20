@@ -2,7 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
-import { decodeBase64, encodeBase64 } from './base64-codec';
+import { decodeBase64, encodeBase64 } from '../../../shared-logic/base64-codec';
 
 type Base64Mode = 'encode' | 'decode';
 

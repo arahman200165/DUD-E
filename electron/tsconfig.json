@@ -6,7 +6,9 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
-    "outDir": "../out-tsc/electron"
+    "outDir": "../out-tsc/electron",
+    "rootDir": ".."
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts", "../src/shared-logic/**/*.ts"],
+  "exclude": ["../src/shared-logic/**/*.spec.ts"]
 }

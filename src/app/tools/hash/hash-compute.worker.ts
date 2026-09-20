@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
 import { errorMessage, resultMessage, WorkerRequestMessage } from '../../core/workers/worker-protocol';
-import { HashOutput, computeHashes } from './hash-compute';
+import { HashOutput, computeHashes } from '../../../shared-logic/hash-compute';
 import { HashComputePayload } from './hash-compute-payload';
 
 export function handleMessage({ data }: MessageEvent<WorkerRequestMessage<HashComputePayload>>): void {

@@ -1,14 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SecureLocalService } from './secure-local.service';
 import type { DudeElectronBridge } from '../platform/electron-bridge';
-
-const STUB_FS: DudeElectronBridge['fs'] = {
-  pickDirectory: async () => ({ canceled: true }),
-  walk: async () => ({ ok: true, entries: [] }),
-  readFile: async () => ({ ok: true, data: new ArrayBuffer(0) }),
-  readdir: async () => ({ ok: true, names: [] }),
-  stat: async () => ({ ok: true, stat: { isFile: false, isDirectory: true, isSymbolicLink: false, size: 0, mtimeMs: 0 } }),
-};
+import { fakeElectronBridge } from '../platform/testing/fake-electron-bridge';
 
 describe('SecureLocalService', () => {
   const originalDude = window.dude;
@@ -17,14 +10,8 @@ describe('SecureLocalService', () => {
     Object.defineProperty(window, 'dude', { value: originalDude, configurable: true });
   });
 
-  const STUB_LLM: DudeElectronBridge['llm'] = {
-    isConfigured: async () => false,
-    getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
-  };
-
   function withBridge(secrets: DudeElectronBridge['secrets']): SecureLocalService {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets, llm: STUB_LLM };
-    Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
+    Object.defineProperty(window, 'dude', { value: fakeElectronBridge({ secrets }), configurable: true });
     TestBed.configureTestingModule({});
     return TestBed.inject(SecureLocalService);
   }

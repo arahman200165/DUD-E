@@ -1,19 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LlmProxyService } from './llm-proxy.service';
 import type { DudeElectronBridge } from './electron-bridge';
-
-const STUB_FS: DudeElectronBridge['fs'] = {
-  pickDirectory: async () => ({ canceled: true }),
-  walk: async () => ({ ok: true, entries: [] }),
-  readFile: async () => ({ ok: true, data: new ArrayBuffer(0) }),
-  readdir: async () => ({ ok: true, names: [] }),
-  stat: async () => ({ ok: true, stat: { isFile: false, isDirectory: true, isSymbolicLink: false, size: 0, mtimeMs: 0 } }),
-};
-const STUB_SECRETS: DudeElectronBridge['secrets'] = {
-  get: async () => ({ ok: true, value: null }),
-  set: async () => ({ ok: true }),
-  remove: async () => ({ ok: true }),
-};
+import { fakeElectronBridge } from './testing/fake-electron-bridge';
 
 describe('LlmProxyService', () => {
   const originalDude = window.dude;
@@ -25,8 +13,7 @@ describe('LlmProxyService', () => {
   });
 
   function withBridge(llm: DudeElectronBridge['llm']): LlmProxyService {
-    const bridge: DudeElectronBridge = { platform: { isDesktop: true }, fs: STUB_FS, secrets: STUB_SECRETS, llm };
-    Object.defineProperty(window, 'dude', { value: bridge, configurable: true });
+    Object.defineProperty(window, 'dude', { value: fakeElectronBridge({ llm }), configurable: true });
     TestBed.configureTestingModule({});
     return TestBed.inject(LlmProxyService);
   }

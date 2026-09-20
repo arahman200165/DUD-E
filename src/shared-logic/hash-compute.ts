@@ -1,11 +1,14 @@
 import { md5 } from 'js-md5';
 
 /**
- * Pure(-ish) hash computation used by the Hash Generator tool. Runs inside
- * `hash-compute.worker.ts`. Not framework-free in the strictest sense — it
- * depends on the ambient `crypto.subtle` global — but that global exists in
- * both the main thread and worker scope (and in the jsdom test environment),
- * so it needs no Angular/DOM-specific glue.
+ * Pure(-ish) hash computation. Lives outside `src/app/` (see
+ * `src/shared-logic/AGENTS.md`) because the Hash Generator/File Hash tools,
+ * their workers, and `electron/hotkey-bridge.ts`'s clipboard quick-action
+ * (Phase 8 Stage 5) all import it. Not framework-free in the strictest
+ * sense — it depends on the ambient `crypto.subtle` global — but that
+ * global exists in the main thread, worker scope, the jsdom test
+ * environment, and Node (Electron's main process), so it needs no
+ * Angular/DOM-specific glue.
  */
 
 export type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';

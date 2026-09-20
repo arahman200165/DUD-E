@@ -36,6 +36,11 @@ function resolveGrantedPath(rootPath: string, relativePath: string): string | nu
   return resolveWithinRoot(rootPath, relativePath);
 }
 
+/** Reused by `file-watch-bridge.ts` (Stage 5) to scope watches to already-granted roots. */
+export function isRootGranted(rootPath: string): boolean {
+  return grantedRoots.has(rootPath);
+}
+
 async function walk(rootPath: string): Promise<readonly { readonly path: string; readonly size: number }[]> {
   const entries: { path: string; size: number }[] = [];
 

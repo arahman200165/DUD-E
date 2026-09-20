@@ -5,7 +5,7 @@ import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
-import { HASH_ALGORITHMS, HashAlgorithm, HashOutput } from './hash-compute';
+import { HASH_ALGORITHMS, HashAlgorithm, HashOutput } from '../../../shared-logic/hash-compute';
 import { HashComputePayload } from './hash-compute-payload';
 
 @Component({

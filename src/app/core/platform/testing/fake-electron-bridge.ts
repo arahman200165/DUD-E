@@ -1,0 +1,47 @@
+import type { DudeElectronBridge } from '../electron-bridge';
+
+/**
+ * A full `DudeElectronBridge` stub with a sensible "nothing configured yet"
+ * default for every member, for specs that need `window.dude` present.
+ * Pass `overrides` for the parts the test actually cares about — this way
+ * a spec file doesn't need to restate every bridge member just to satisfy
+ * the type whenever a new one is added.
+ */
+export function fakeElectronBridge(overrides: Partial<DudeElectronBridge> = {}): DudeElectronBridge {
+  return {
+    platform: { isDesktop: true },
+    fs: {
+      pickDirectory: async () => ({ canceled: true }),
+      walk: async () => ({ ok: true, entries: [] }),
+      readFile: async () => ({ ok: true, data: new ArrayBuffer(0) }),
+      readdir: async () => ({ ok: true, names: [] }),
+      stat: async () => ({ ok: true, stat: { isFile: false, isDirectory: true, isSymbolicLink: false, size: 0, mtimeMs: 0 } }),
+    },
+    secrets: {
+      get: async () => ({ ok: true, value: null }),
+      set: async () => ({ ok: true }),
+      remove: async () => ({ ok: true }),
+    },
+    llm: {
+      isConfigured: async () => false,
+      getEndpoint: async () => ({ ok: false, error: 'not-configured' }),
+    },
+    shell: {
+      getLaunchOnLogin: async () => false,
+      setLaunchOnLogin: async () => ({ ok: true }),
+    },
+    quickActions: {
+      list: async () => [],
+      setHotkey: async () => ({ ok: true }),
+    },
+    notifications: {
+      show: async () => ({ ok: true }),
+    },
+    fileWatch: {
+      watch: async () => ({ ok: true, watchId: 'watch-1' }),
+      unwatch: async () => ({ ok: true }),
+      onEvent: () => () => {},
+    },
+    ...overrides,
+  };
+}
