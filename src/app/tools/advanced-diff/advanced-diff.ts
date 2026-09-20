@@ -1,0 +1,202 @@
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
+import { SplitPane } from '../../shared/components/split-pane/split-pane';
+import { BusyIndicator } from '../../shared/components/busy-indicator/busy-indicator';
+import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
+import { FileDrop } from '../../shared/components/file-drop/file-drop';
+import { PersistenceService } from '../../core/persistence/persistence.service';
+import { WorkerClientService } from '../../core/workers/worker-client.service';
+import { WorkerJob } from '../../core/workers/worker-job';
+import { downloadFile } from '../../shared/utils/download-file';
+import { DiffLineType } from '../diff/text-diff';
+import { DiffSegmentType } from './char-word-diff';
+import { DiffHunk, MergeDecision, buildHunks, buildMergedOutput } from './diff-hunks';
+import { formatUnifiedDiff } from './unified-diff';
+import { AdvancedDiffPayload, DiffGranularity } from './advanced-diff-payload';
+import { AdvancedDiffResult } from './advanced-diff-result';
+
+export type DiffInputMode = 'paste' | 'file';
+export type DiffViewMode = 'diff' | 'merge';
+
+const LINE_CLASSES: Record<DiffLineType, string> = {
+  add: 'bg-success/10 text-success',
+  remove: 'bg-error/10 text-error',
+  equal: 'text-text-muted',
+};
+
+const LINE_PREFIX: Record<DiffLineType, string> = { add: '+ ', remove: '- ', equal: '  ' };
+
+const SEGMENT_CLASSES: Record<DiffSegmentType, string> = {
+  add: 'bg-success/30 text-success',
+  remove: 'bg-error/30 text-error line-through',
+  equal: '',
+};
+
+@Component({
+  selector: 'app-advanced-diff',
+  imports: [ToolShell, SplitPane, BusyIndicator, ErrorPanel, FileDrop],
+  templateUrl: './advanced-diff.html',
+})
+export class AdvancedDiff implements OnDestroy {
+  private readonly persistence = inject(PersistenceService);
+  private readonly workerClient = inject(WorkerClientService);
+
+  protected readonly left = this.persistence.signal('advanced-diff', 'left', 'session', '');
+  protected readonly right = this.persistence.signal('advanced-diff', 'right', 'session', '');
+  protected readonly inputMode = this.persistence.signal<DiffInputMode>('advanced-diff', 'inputMode', 'local', 'paste');
+  protected readonly granularity = this.persistence.signal<DiffGranularity>(
+    'advanced-diff',
+    'granularity',
+    'local',
+    'line',
+  );
+  protected readonly viewMode = this.persistence.signal<DiffViewMode>('advanced-diff', 'viewMode', 'local', 'diff');
+  protected readonly paneRatio = this.persistence.signal('advanced-diff', 'paneRatio', 'local', 0.5);
+
+  protected readonly rejection = signal<string | null>(null);
+  protected readonly job = signal<WorkerJob<AdvancedDiffResult> | null>(null);
+
+  // In-memory only — merge decisions are keyed to a specific diff run and
+  // shouldn't silently reapply to unrelated content after a reload.
+  protected readonly mergeDecisions = signal<ReadonlyMap<number, MergeDecision>>(new Map());
+  protected readonly activeHunk = signal(0);
+
+  protected readonly hunks = computed<readonly DiffHunk[]>(() => {
+    const result = this.job()?.result();
+    return result ? buildHunks(result.lineDiff.lines) : [];
+  });
+
+  protected readonly mergedOutput = computed(() => {
+    const result = this.job()?.result();
+    return result ? buildMergedOutput(result.lineDiff.lines, this.hunks(), this.mergeDecisions()) : '';
+  });
+
+  protected readonly resolvedCount = computed(() => this.mergeDecisions().size);
+
+  protected readonly unifiedDiffText = computed(() => {
+    const result = this.job()?.result();
+    if (!result) return '';
+    return formatUnifiedDiff(result.lineDiff.lines, {
+      leftHasTrailingNewline: this.left() === '' || this.left().endsWith('\n'),
+      rightHasTrailingNewline: this.right() === '' || this.right().endsWith('\n'),
+    });
+  });
+
+  protected setInputMode(mode: DiffInputMode): void {
+    this.inputMode.set(mode);
+    this.rejection.set(null);
+  }
+
+  protected setGranularity(granularity: DiffGranularity): void {
+    this.granularity.set(granularity);
+  }
+
+  protected setViewMode(mode: DiffViewMode): void {
+    this.viewMode.set(mode);
+  }
+
+  protected onLeftInput(event: Event): void {
+    this.left.set((event.target as HTMLTextAreaElement).value);
+  }
+
+  protected onRightInput(event: Event): void {
+    this.right.set((event.target as HTMLTextAreaElement).value);
+  }
+
+  protected async onLeftFileSelected(file: File): Promise<void> {
+    this.left.set(await file.text());
+  }
+
+  protected async onRightFileSelected(file: File): Promise<void> {
+    this.right.set(await file.text());
+  }
+
+  protected onRejected(message: string): void {
+    this.rejection.set(message);
+  }
+
+  protected onRatioChange(ratio: number): void {
+    this.paneRatio.set(ratio);
+  }
+
+  protected run(): void {
+    this.job()?.cancel();
+    this.mergeDecisions.set(new Map());
+    this.activeHunk.set(0);
+
+    const payload: AdvancedDiffPayload = { left: this.left(), right: this.right(), granularity: this.granularity() };
+    this.job.set(
+      this.workerClient.run<AdvancedDiffPayload, AdvancedDiffResult>(
+        () => new Worker(new URL('./advanced-diff.worker', import.meta.url), { type: 'module' }),
+        payload,
+      ),
+    );
+  }
+
+  protected cancel(): void {
+    this.job()?.cancel();
+  }
+
+  protected clear(): void {
+    this.job()?.cancel();
+    this.left.set('');
+    this.right.set('');
+    this.job.set(null);
+    this.mergeDecisions.set(new Map());
+    this.rejection.set(null);
+  }
+
+  protected acceptHunk(hunkIndex: number, decision: MergeDecision): void {
+    const next = new Map(this.mergeDecisions());
+    next.set(hunkIndex, decision);
+    this.mergeDecisions.set(next);
+  }
+
+  protected isResolved(hunkIndex: number): boolean {
+    return this.mergeDecisions().has(hunkIndex);
+  }
+
+  protected decisionFor(hunkIndex: number): MergeDecision | undefined {
+    return this.mergeDecisions().get(hunkIndex);
+  }
+
+  protected goToHunk(index: number): void {
+    const hunks = this.hunks();
+    if (hunks.length === 0) return;
+    this.activeHunk.set(((index % hunks.length) + hunks.length) % hunks.length);
+    document.getElementById(`hunk-${this.activeHunk()}`)?.scrollIntoView({ block: 'nearest' });
+  }
+
+  protected nextHunk(): void {
+    this.goToHunk(this.activeHunk() + 1);
+  }
+
+  protected previousHunk(): void {
+    this.goToHunk(this.activeHunk() - 1);
+  }
+
+  protected lineClasses(type: DiffLineType): string {
+    return LINE_CLASSES[type];
+  }
+
+  protected linePrefix(type: DiffLineType): string {
+    return LINE_PREFIX[type];
+  }
+
+  protected segmentClasses(type: DiffSegmentType): string {
+    return SEGMENT_CLASSES[type];
+  }
+
+  protected copy(text: string): void {
+    void navigator.clipboard.writeText(text);
+  }
+
+  protected downloadPatch(): void {
+    const text = this.unifiedDiffText();
+    if (text !== '') downloadFile(new TextEncoder().encode(text), 'diff.patch', 'text/x-diff');
+  }
+
+  ngOnDestroy(): void {
+    this.job()?.cancel();
+  }
+}

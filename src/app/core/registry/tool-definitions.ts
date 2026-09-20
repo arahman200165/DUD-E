@@ -437,4 +437,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
   },
+  {
+    id: 'advanced-diff',
+    title: 'Advanced Diff / Merge',
+    shortTitle: 'Advanced Diff',
+    description: 'Line, word, and character diffing with a side-by-side merge view, file upload, and unified-diff export.',
+    category: 'text',
+    keywords: ['diff', 'merge', 'patch', 'unified diff', 'compare', 'word diff', 'character diff', 'hunks'],
+    route: '/tools/advanced-diff',
+    load: () => import('../../tools/advanced-diff/advanced-diff').then((m) => m.AdvancedDiff),
+    status: 'experimental',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'required' },
+  },
 ];
