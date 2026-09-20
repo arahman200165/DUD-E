@@ -364,6 +364,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
   },
   {
+    id: 'date-calculator',
+    title: 'Date Calculator',
+    description: 'Add/subtract calendar or business days from a date, and count days/weekdays/business-days between two dates.',
+    category: 'date-time',
+    keywords: ['date', 'calculator', 'business days', 'weekdays', 'holidays', 'add days', 'days between'],
+    route: '/tools/date-calculator',
+    load: () => import('../../tools/date-calculator/date-calculator').then((m) => m.DateCalculator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+  },
+  {
     id: 'duration-formatter',
     title: 'Duration Parser / Formatter',
     description: 'Parse a human or ISO 8601 duration and see it in every representation at once.',
