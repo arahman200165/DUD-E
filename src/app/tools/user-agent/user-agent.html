@@ -1,0 +1,66 @@
+<app-tool-shell title="User-Agent Parser" status="stable">
+  <div class="flex flex-col gap-3">
+    <textarea
+      rows="3"
+      class="w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      placeholder="Paste a User-Agent string…"
+      [value]="input()"
+      (input)="onInputChange($event)"
+    ></textarea>
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
+        (click)="useMyBrowser()"
+      >
+        Use my browser's UA
+      </button>
+      <app-copy-button [text]="input()" />
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <dl class="grid grid-cols-1 gap-x-6 gap-y-2 rounded-sm border border-border bg-panel p-3 text-ui sm:grid-cols-2">
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">Browser</dt>
+            <dd class="font-mono text-text">{{ current.parsed.browser.name ?? '—' }} {{ current.parsed.browser.version ?? '' }}</dd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">Engine</dt>
+            <dd class="font-mono text-text">{{ current.parsed.engine.name ?? '—' }} {{ current.parsed.engine.version ?? '' }}</dd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">OS</dt>
+            <dd class="font-mono text-text">{{ current.parsed.os.name ?? '—' }} {{ current.parsed.os.version ?? '' }}</dd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">Device type</dt>
+            <dd class="font-mono text-text">{{ current.parsed.device.type ?? '—' }}</dd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">Device vendor</dt>
+            <dd class="font-mono text-text">{{ current.parsed.device.vendor ?? '—' }}</dd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">Device model</dt>
+            <dd class="font-mono text-text">{{ current.parsed.device.model ?? '—' }}</dd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <dt class="text-text-muted">CPU architecture</dt>
+            <dd class="font-mono text-text">{{ current.parsed.cpu.architecture ?? '—' }}</dd>
+          </div>
+        </dl>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

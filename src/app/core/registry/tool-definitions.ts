@@ -297,4 +297,15 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
   },
+  {
+    id: 'user-agent',
+    title: 'User-Agent Parser',
+    description: 'Break a User-Agent string down into browser, engine, OS, and device details.',
+    category: 'web',
+    keywords: ['user agent', 'ua', 'browser', 'device', 'os', 'parse'],
+    route: '/tools/user-agent',
+    load: () => import('../../tools/user-agent/user-agent').then((m) => m.UserAgent),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+  },
 ];
