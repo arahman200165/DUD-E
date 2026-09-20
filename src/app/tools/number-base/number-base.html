@@ -1,0 +1,85 @@
+<app-tool-shell title="Number Base Converter" status="stable">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Quick convert</span>
+      <div class="flex flex-col gap-1">
+        @for (quick of quickBases; track quick.base) {
+          <div class="flex items-center gap-2">
+            <span class="w-16 shrink-0 text-ui text-text-muted">{{ quick.label }}</span>
+            <input
+              type="text"
+              class="flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="fieldValue(quick.base)"
+              (change)="onQuickFieldChange(quick.base, $event)"
+            />
+            <button
+              type="button"
+              class="shrink-0 rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+              (click)="copy(fieldValue(quick.base))"
+            >
+              Copy
+            </button>
+          </div>
+        }
+      </div>
+      @if (quickFieldError(); as message) {
+        <app-error-panel [message]="message" />
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Custom base-to-base</span>
+      <div class="flex flex-wrap items-center gap-2 text-ui text-text-muted">
+        <label class="flex items-center gap-1.5">
+          From base
+          <input
+            type="number"
+            min="2"
+            max="36"
+            class="w-16 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="fromBase()"
+            (change)="onFromBaseChange($event)"
+          />
+        </label>
+        <label class="flex items-center gap-1.5">
+          To base
+          <input
+            type="number"
+            min="2"
+            max="36"
+            class="w-16 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="toBase()"
+            (change)="onToBaseChange($event)"
+          />
+        </label>
+      </div>
+
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Value in the 'from' base…"
+        [value]="customInput()"
+        (input)="onCustomInputChange($event)"
+      />
+
+      @if (customInput() !== '') {
+        @if (customResult(); as result) {
+          @if (result.ok) {
+            <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel px-2 py-1">
+              <span class="font-mono text-xs text-text">{{ customOutput() }}</span>
+              <button
+                type="button"
+                class="shrink-0 rounded-sm border border-border px-1.5 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+                (click)="copy(customOutput())"
+              >
+                Copy
+              </button>
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
