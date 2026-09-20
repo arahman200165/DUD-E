@@ -10,6 +10,7 @@ import { WorkerJob } from '../../core/workers/worker-job';
 import { downloadFile } from '../../shared/utils/download-file';
 import { FileBase64DecodeResult, decodeBase64ToBytes, encodeFileToBase64 } from './file-base64-codec';
 import { FileBase64WorkerPayload, FileBase64WorkerResult } from './file-base64-worker-payload';
+import { FileSignature, sniffFileType } from './file-signature';
 
 /** Inputs above this size run in a Worker instead of blocking the main thread. */
 const WORKER_THRESHOLD = 2_000_000;
@@ -31,9 +32,25 @@ export class FileBase64 {
   protected readonly base64Input = this.persistence.signal('file-base64', 'input', 'session', '');
 
   protected readonly selectedFile = signal<File | null>(null);
+  /** First 16 bytes of the selected file, captured before its buffer may be transferred to a Worker. */
+  private readonly selectedFilePrefix = signal<Uint8Array | null>(null);
   protected readonly rejection = signal<string | null>(null);
   private readonly jobSignal = signal<WorkerJob<FileBase64WorkerResult> | null>(null);
   protected readonly job = this.jobSignal.asReadonly();
+
+  private readonly previewUrlSignal = signal<string | null>(null);
+  protected readonly previewUrl = this.previewUrlSignal.asReadonly();
+
+  protected readonly sniffedType = computed<FileSignature | null>(() => {
+    if (this.direction() === 'encode') {
+      const prefix = this.selectedFilePrefix();
+      return prefix ? sniffFileType(prefix) : null;
+    }
+    const result = this.decodeResult();
+    return result?.ok ? sniffFileType(result.bytes) : null;
+  });
+
+  protected readonly browserReportedType = computed(() => this.selectedFile()?.type || null);
 
   protected readonly usesDecodeWorker = computed(() => this.base64Input().length > WORKER_THRESHOLD);
 
@@ -71,12 +88,42 @@ export class FileBase64 {
       this.jobSignal.set(job);
       onCleanup(() => job.cancel());
     });
+
+    // Builds/revokes an Object URL for an image preview whenever the sniffed
+    // type or underlying content changes — the first place this tool manages
+    // a browser resource lifecycle, so cleanup on every rerun is essential.
+    effect((onCleanup) => {
+      const sniffed = this.sniffedType();
+      if (!sniffed || !sniffed.mime.startsWith('image/')) {
+        this.previewUrlSignal.set(null);
+        return;
+      }
+
+      const blob: Blob | null =
+        this.direction() === 'encode'
+          ? this.selectedFile()
+          : ((): Blob | null => {
+              const result = this.decodeResult();
+              return result?.ok ? new Blob([new Uint8Array(result.bytes)], { type: sniffed.mime }) : null;
+            })();
+
+      if (!blob) {
+        this.previewUrlSignal.set(null);
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      this.previewUrlSignal.set(url);
+      onCleanup(() => URL.revokeObjectURL(url));
+    });
   }
 
   protected setDirection(direction: FileBase64Direction): void {
     this.job()?.cancel();
     this.jobSignal.set(null);
     this.rejection.set(null);
+    this.selectedFile.set(null);
+    this.selectedFilePrefix.set(null);
     this.direction.set(direction);
   }
 
@@ -87,6 +134,7 @@ export class FileBase64 {
     this.selectedFile.set(file);
 
     const buffer = await file.arrayBuffer();
+    this.selectedFilePrefix.set(new Uint8Array(buffer.slice(0, 16)));
 
     if (buffer.byteLength > WORKER_THRESHOLD) {
       this.jobSignal.set(
@@ -123,6 +171,7 @@ export class FileBase64 {
     this.jobSignal.set(null);
     this.rejection.set(null);
     this.selectedFile.set(null);
+    this.selectedFilePrefix.set(null);
     this.base64Output.set('');
     this.base64Input.set('');
   }

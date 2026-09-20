@@ -50,6 +50,22 @@
         }
       }
 
+      @if (selectedFile()) {
+        <div class="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text-muted">
+          <span>Browser reports: {{ browserReportedType() || 'unknown' }}</span>
+          <span>&middot;</span>
+          <span>
+            Detected from bytes: {{ sniffedType()?.mime || 'unknown / plain text' }}
+            @if (sniffedType()?.note) {
+              ({{ sniffedType()?.note }})
+            }
+          </span>
+        </div>
+        @if (previewUrl(); as url) {
+          <img [src]="url" alt="Preview of the selected file" class="max-h-64 max-w-full rounded-sm border border-border object-contain" />
+        }
+      }
+
       @if (base64Output() !== '') {
         <div class="flex flex-col gap-1">
           <div class="flex items-center justify-between">
@@ -80,6 +96,13 @@
         @if (result.ok) {
           <div class="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text-muted">
             <span>{{ result.bytes.length }} bytes decoded</span>
+            <span>&middot;</span>
+            <span>
+              Detected from bytes: {{ sniffedType()?.mime || 'unknown / plain text' }}
+              @if (sniffedType()?.note) {
+                ({{ sniffedType()?.note }})
+              }
+            </span>
             <input
               type="text"
               class="w-40 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
@@ -94,6 +117,9 @@
               Download
             </button>
           </div>
+          @if (previewUrl(); as url) {
+            <img [src]="url" alt="Preview of the decoded file" class="max-h-64 max-w-full rounded-sm border border-border object-contain" />
+          }
         } @else {
           <app-error-panel [message]="result.error" />
         }
