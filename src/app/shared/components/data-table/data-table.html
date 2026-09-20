@@ -1,0 +1,20 @@
+<div class="h-full w-full overflow-auto">
+  <table class="w-full min-w-full border-collapse text-left text-xs">
+    <thead class="sticky top-0 z-10 bg-panel-elevated text-text-muted">
+      <tr>
+        @for (column of columns(); track $index) {
+          <th class="whitespace-nowrap border-b border-border px-2 py-1 font-medium">{{ column }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody class="font-mono text-text">
+      @for (row of rows(); track $index) {
+        <tr class="odd:bg-panel even:bg-panel-elevated/40">
+          @for (cell of row; track $index) {
+            <td class="whitespace-pre border-b border-border px-2 py-1">{{ cell }}</td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
