@@ -678,4 +678,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['json'], produces: ['json'] },
   },
+  {
+    id: 'json-patch-generate',
+    title: 'JSON Patch Generator',
+    description: 'Diff two JSON documents into an RFC 6902 JSON Patch.',
+    category: 'data',
+    keywords: ['json patch', 'rfc 6902', 'diff', 'compare', 'generate'],
+    route: '/tools/json-patch-generate',
+    load: () => import('../../tools/json-patch-generate/json-patch-generate').then((m) => m.JsonPatchGenerate),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['json'], produces: ['json'] },
+  },
 ];
