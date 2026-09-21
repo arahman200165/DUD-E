@@ -1,0 +1,12 @@
+<app-tool-shell title="Avro Viewer" status="stable">
+  <app-binary-format-viewer
+    accept=".avro"
+    dropLabel="Drop an uncompressed .avro file here, or click to browse"
+    [fileName]="fileName()"
+    [status]="status()"
+    [errorMessage]="errorMessage()"
+    [treeNodes]="treeNodes()"
+    (fileSelected)="onFileSelected($event)"
+    (rejected)="onRejected($event)"
+  />
+</app-tool-shell>
