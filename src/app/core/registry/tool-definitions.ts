@@ -940,4 +940,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'table'], produces: ['table'] },
   },
+  {
+    id: 'xml-xpath',
+    title: 'XML XPath Tester',
+    description: "Test an XPath expression against XML using the browser's native XPath engine.",
+    category: 'data',
+    keywords: ['xml', 'xpath', 'query', 'test', 'dom'],
+    route: '/tools/xml-xpath',
+    load: () => import('../../tools/xml-xpath/xml-xpath').then((m) => m.XmlXpath),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
