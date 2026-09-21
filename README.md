@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-67 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+68 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -62,6 +62,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [CSV ↔ SQL Converter](https://arahman200165.github.io/DUDE/tools/csv-sql) | Data | Converts CSV rows to SQL INSERT statements, or parses INSERT statements back into CSV. |
 | [CSV Delimiter Detector](https://arahman200165.github.io/DUDE/tools/csv-delimiter-detector) | Data | Detects the most likely delimiter in a pasted CSV/TSV/PSV sample and previews it as a table. |
 | [CSV Column Statistics](https://arahman200165.github.io/DUDE/tools/csv-stats) | Data | Computes per-column count, empty, distinct, and numeric min/max/mean statistics for a CSV. |
+| [CSV Cleaner](https://arahman200165.github.io/DUDE/tools/csv-cleaner) | Data | Trims whitespace, drops empty rows, and normalizes a messy CSV. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |

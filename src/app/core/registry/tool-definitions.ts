@@ -875,4 +875,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'table'], produces: ['table'] },
   },
+  {
+    id: 'csv-cleaner',
+    title: 'CSV Cleaner',
+    description: 'Trim whitespace, drop empty rows, and normalize a messy CSV.',
+    category: 'data',
+    keywords: ['csv', 'clean', 'trim', 'whitespace', 'empty rows', 'normalize'],
+    route: '/tools/csv-cleaner',
+    load: () => import('../../tools/csv-cleaner/csv-cleaner').then((m) => m.CsvCleaner),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
