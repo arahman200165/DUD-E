@@ -33,13 +33,14 @@ Add one entry to `TOOL_DEFINITIONS` in `src/app/core/registry/tool-definitions.t
   load: () => import('../../tools/base64/base64').then((m) => m.Base64Tool),
   status: 'stable',
   persistence: { input: 'session', preferences: 'local' },
+  io: { accepts: ['text'], produces: ['text'] },
 }
 ```
 
 - `category` must be one of the existing `ToolCategory` values (`tool-category.model.ts`) — `data`, `text`, `encoding`, `security`, `date-time`, `web`, `developer`, `documents`. Adding a new category is a bigger decision than adding a tool; don't do it casually.
 - `keywords` drives `ToolRegistryService.search` — used by both the deck's inline search and the command palette.
 - `load` is a dynamic `import()` returning the component class — this is what makes the route lazy (step 7 is then automatic).
-- `persistence` / `execution` / `network` here are declarative documentation of the choices you make in steps 4–6 — they aren't read at runtime by the shell, but keep them accurate for future maintainers.
+- `persistence` / `execution` / `network` / `io` here are declarative documentation of the choices you make in steps 4–7 — they aren't read at runtime by the shell, but keep them accurate for future maintainers.
 
 ## 3. Create the component
 
@@ -107,22 +108,26 @@ and bind the returned `WorkerJob`'s `status()` / `progress()` / `result()` / `er
 
 If the tool genuinely needs network access, set `network: { required: true }` in the `ToolDefinition` **and** bind `[networkRequired]="true"` on `<app-tool-shell>` in the component template — two separate places, both required (same gotcha as step 3). Every current tool sets this to false/omits it. Per the PRD's scope gate (§37), think hard before requiring network — there's no backend and no API-key infrastructure wired into any showcase tool yet.
 
-## 7. Expose the lazy route/component
+## 7. Declare I/O capabilities
+
+Set `io: { accepts: [...], produces: [...] }` in the `ToolDefinition`, using the shared vocabulary in `src/app/shared/models/tool-io.model.ts` (`DudeDataType`: `text`, `json`, `bytes`, `file`, `table`, `url`, `http-response`). This is the "Universal Input/Output Contract" from PRD §22 — like `persistence`/`execution`/`network`, it's declarative documentation only (not read by the shell at runtime yet), but it's what a future pipeline/Smart-Paste feature would build on, so keep it honest: describe what the tool's UI/logic actually consumes and emits today, not aspirational future capability. `tool-count.spec.ts`'s "Universal I/O contract coverage" spec fails if you forget it entirely.
+
+## 8. Expose the lazy route/component
 
 Nothing to do beyond step 2. `buildToolRoutes()` (`src/app/core/registry/tool-routes.ts`) automatically turns every `TOOL_DEFINITIONS` entry into a lazy `loadComponent` route nested under the root `ShellLayout` (`src/app/core/routing/app.routes.ts`). No route file edits needed — this is the "shell generated from tool metadata" promise (PRD §12.2) actually working.
 
-## 8. Add tests where appropriate
+## 9. Add tests where appropriate
 
 A framework-free `.spec.ts` for the pure transform is the highest-value test (fast, no TestBed) — see `base64-codec.spec.ts`. Only add a component-level spec if there's real branching logic in the component itself (e.g. json's worker-threshold test, `src/app/tools/json/json.spec.ts`). Don't chase coverage for its own sake (PRD §18 — "ship first").
 
-## 9. Verify search/sidebar/command palette discovery
+## 10. Verify search/sidebar/command palette discovery
 
 Run the app (`ng serve`) and confirm:
 - the tool appears in the sidebar under its category;
 - typing part of its title/keywords into the deck search or the command palette (`Ctrl+K`) surfaces it.
 
-Then run `npm test` — `tool-search.spec.ts` and `tool-registry.service.spec.ts` iterate the real `TOOL_DEFINITIONS` array, so a malformed new entry (duplicate id, duplicate route, etc.) will usually fail one of them immediately.
+Then run `npm test` — `tool-search.spec.ts` and `tool-registry.service.spec.ts` iterate the real `TOOL_DEFINITIONS` array, so a malformed new entry (duplicate id, duplicate route, etc.) will usually fail one of them immediately. Also update the "N tools ship today" line and the Tools table in `README.md` — `tool-count.spec.ts` fails the build if they drift from `TOOL_DEFINITIONS`.
 
-## 10. Verify the direct URL
+## 11. Verify the direct URL
 
 After `ng build`, confirm the lazy chunk loads and the route resolves correctly when hit directly (not just via in-app navigation) — this is what Milestone 9's `e2e/production-direct-route.spec.ts` automates for the `json` tool as a template if you want to extend it. At minimum, serve the production build locally and hard-navigate to `/DUDE/tools/<id>` to confirm it isn't relying on client-side router state that a fresh page load wouldn't have.

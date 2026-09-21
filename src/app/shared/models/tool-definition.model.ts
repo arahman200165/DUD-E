@@ -1,5 +1,6 @@
 import { ToolCategory } from './tool-category.model';
 import { PersistencePolicy } from './persistence-policy.model';
+import { ToolIOCapabilities } from './tool-io.model';
 
 export interface ToolPersistencePolicy {
   readonly input?: PersistencePolicy;
@@ -27,5 +28,6 @@ export interface ToolDefinition {
   readonly persistence?: ToolPersistencePolicy;
   readonly execution?: ToolExecutionPolicy;
   readonly network?: ToolNetworkPolicy;
+  readonly io?: ToolIOCapabilities;
   readonly status?: 'stable' | 'experimental';
 }

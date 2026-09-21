@@ -1806,11 +1806,13 @@ This matters because it's the single change most likely to make DUDE feel like o
 
 This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
 
-## A Universal Input/Output Contract
+## A Universal Input/Output Contract (✅ Designed and backfilled — Milestone 31)
 
 Pipelines are only "almost automatic," per the source material, if tools already agree on what they consume and produce. A universal I/O contract would have every tool declare its inputs and outputs in terms of a small shared vocabulary — `Text`, `Bytes`, `File`, `JSON`, `Table`, `HTTPResponse` — instead of each tool inventing its own ad hoc shape. JSON Formatter, Base64 Decoder, Regex Extractor, a future HTTP Request tool, and Hash Generator would all speak the same handful of types.
 
 This matters because it is the enabling primitive underneath pipelines, smart paste-detection, and a shared workspace/scratchpad alike — build this once, and three other items on this list get meaningfully easier. It is also the most architecturally invasive item here: it means extending (not just using) the `ToolDefinition` contract described in §12.1/§27, and every existing tool would eventually need to declare itself in these terms to fully participate, which is a migration, not a 30-minute addition.
+
+**Status:** the vocabulary is designed and every tool now declares it. `DudeDataType` (`src/app/shared/models/tool-io.model.ts`) is `text | json | bytes | file | table | url | http-response` — the source material's sketch plus `url`, which several web tools (URL/URI Inspector, Query String Parser, cURL Converter) treat as semantically distinct from generic text. `ToolDefinition.io: { accepts, produces }` is populated on all 51 registry entries. This is declarative documentation only, following the same soft-launch precedent as `persistence`/`execution`/`network` — **pipelines, Smart Paste, and any other consumer of this data still need their own design pass before being scheduled**; only the shared vocabulary itself is done.
 
 This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
 

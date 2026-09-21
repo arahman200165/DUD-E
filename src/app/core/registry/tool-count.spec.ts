@@ -36,3 +36,12 @@ describe('README tool count', () => {
     ).toBe(showcaseToolCount);
   });
 });
+
+describe('Universal I/O contract coverage', () => {
+  it('declares a non-empty io.accepts and io.produces for every tool', () => {
+    for (const definition of TOOL_DEFINITIONS) {
+      expect(definition.io?.accepts.length, `${definition.id} is missing io.accepts`).toBeGreaterThan(0);
+      expect(definition.io?.produces.length, `${definition.id} is missing io.produces`).toBeGreaterThan(0);
+    }
+  });
+});
