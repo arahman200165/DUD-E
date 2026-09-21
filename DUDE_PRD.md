@@ -46,7 +46,7 @@ V1 is complete. The extensible framework, all core infrastructure (registry, per
 
 With V1 delivered, the old weekend scope gate no longer applies. New work — additional tools, enhancements to existing tools, or framework extensions — proceeds directly from the §21 Tool Roadmap. The product principles, architecture, and shared conventions documented below remain the standing contract for any new work; only the temporary "hold the line until Sunday" constraints have been retired.
 
-Phases 0–7 of that roadmap are complete: the original 10 showcase tools plus 47 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is in progress** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. Stages 1–7 (Electron shell; native file access; OS-level secret storage; local LLM proxy + AI regex features; desktop shell chrome; local collab server; BYO relay server) shipped as Milestones 21–27; only Stage 8 (auto-update + distribution) remains. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
+Phases 0–8 of that roadmap are complete: the original 10 showcase tools plus 47 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is complete** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. All 8 stages (Electron shell; native file access; OS-level secret storage; local LLM proxy + AI regex features; desktop shell chrome; local collab server; BYO relay server; auto-update + distribution) shipped as Milestones 21–28. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
 
 ---
 
@@ -1052,7 +1052,7 @@ Git Repo Browser and Directory Diff both read an entire local folder into browse
 
 ---
 
-## Phase 8 — Downloadable Desktop App with a Bundled Backend (In Progress — Framework: Establishes the Desktop-Packaging Track — Stages 1–7 of 8 shipped)
+## Phase 8 — Downloadable Desktop App with a Bundled Backend (✅ Complete — Framework: Establishes the Desktop-Packaging Track — all 8 stages shipped)
 
 Like Phase 0, this is a framework-first phase: it adds a new deployment target and a bundled backend, not new tools with registry entries. Tool-level enhancements that land as part of this phase (Regex Tester, Advanced Markdown Workspace, Directory Diff, Git Repo Browser) stay documented inside their own §20 sections rather than incrementing the shipped-tool count, the same way Phase 7's enhancements did.
 
@@ -1077,7 +1077,7 @@ Each stage is expected to become its own Milestone number when implemented, foll
 5. **Desktop shell chrome** — system tray, launch-on-login, native OS notifications, a global-hotkey clipboard quick-action registry (Base64 encode/decode, UUID generate, SHA-256 hash), and file-watch infrastructure (auto-reload-on-change is deliberately not wired into any tool yet — see the Stage 5 note below). **✅ shipped as Milestone 25.**
 6. **Local collab server** — a same-machine/LAN real-time collaboration backend for Advanced Markdown Workspace, CRDT-based via Yjs. **✅ shipped as Milestone 26.**
 7. **BYO relay server for cross-network collab** — a standalone relay server shipped from this repo (`relay/`, with a `Dockerfile`) that users self-host and point their desktop app at via a configured URL in Settings, extending Stage 6's collab session across networks. **✅ shipped as Milestone 27** — see the Stage 7 note below for the room/session identity model actually implemented, and what of the original open question remains deferred.
-8. **Auto-update + distribution** — `electron-updater` against GitHub Releases; a new CI workflow builds a Windows installer via `electron-builder` (NSIS for the unsigned GitHub Releases path, MSIX/appx for Microsoft Store submission), separate from the existing GitHub Pages `deploy.yml`. Store submission itself (Partner Center) is a manual process, not automated in CI.
+8. **Auto-update + distribution** — `electron-updater` against GitHub Releases; a new CI workflow builds a Windows installer via `electron-builder` (NSIS for the unsigned GitHub Releases path, MSIX/appx for Microsoft Store submission), separate from the existing GitHub Pages `deploy.yml`. Store submission itself (Partner Center) is a manual process, not automated in CI. **✅ shipped as Milestone 28** — see the Stage 8 note below for the versioning/release-automation model actually implemented and the placeholder Store identity values that still need a real swap before submission.
 
 **Explicitly deferred within Phase 8:** macOS/Linux builds, code-signed non-Store distribution, named-but-accountless relay participants (Stage 7 shipped anonymous room codes only — see the Stage 7 note), any provider-specific (non-OpenAI-compatible) LLM integration, wiring Stage 5's file-watch capability into any specific tool's auto-reload UX.
 
@@ -1089,7 +1089,7 @@ Each stage is expected to become its own Milestone number when implemented, foll
 
 ### Notes
 
-Stage 1 chose a local loopback static server (bound `127.0.0.1`, OS-assigned port) to serve the built app to the `BrowserWindow` over `http://`, instead of a `file://` load — this means the existing path-based router needed no hash-routing fork, and the server does real SPA fallback to `index.html` instead of needing the web build's `public/404.html` GitHub Pages workaround. The new `electron/` folder (main process + preload, compiled by `esbuild` to CommonJS) stays entirely outside `tsconfig.app.json`, mirroring the existing `tsconfig.worker.json` precedent for a second narrow build target; see `electron/AGENTS.md` for the contextIsolation/sandbox/preload-bridge rule it documents. A new `angular.json` `electron` build configuration overrides `baseHref` to `/` and disables the service worker (unsupported/redundant outside a real HTTP(S) origin's normal lifecycle, and superseded by Stage 8's `electron-updater`); `PlatformService` (§26.6) also gates the service worker's runtime registration off under Electron as a second layer of defense. `npm run electron:dev` points Electron at a live `ng serve` for hot-reload development; `npm run electron:start` runs the full build → compile → launch path. Packaging (`electron-builder`, installers, CI) stays deferred to Stage 8, per plan.
+Stage 1 chose a local loopback static server (bound `127.0.0.1`, OS-assigned port) to serve the built app to the `BrowserWindow` over `http://`, instead of a `file://` load — this means the existing path-based router needed no hash-routing fork, and the server does real SPA fallback to `index.html` instead of needing the web build's `public/404.html` GitHub Pages workaround. The new `electron/` folder (main process + preload, compiled by `esbuild` to CommonJS) stays entirely outside `tsconfig.app.json`, mirroring the existing `tsconfig.worker.json` precedent for a second narrow build target; see `electron/AGENTS.md` for the contextIsolation/sandbox/preload-bridge rule it documents. A new `angular.json` `electron` build configuration overrides `baseHref` to `/` and disables the service worker (unsupported/redundant outside a real HTTP(S) origin's normal lifecycle, and superseded by Stage 8's `electron-updater`); `PlatformService` (§27.6) also gates the service worker's runtime registration off under Electron as a second layer of defense. `npm run electron:dev` points Electron at a live `ng serve` for hot-reload development; `npm run electron:start` runs the full build → compile → launch path. Packaging (`electron-builder`, installers, CI) stays deferred to Stage 8, per plan.
 
 Two bugs surfaced only through live app testing, not the unit suite or code review — consistent with the Phase 6 sandbox lesson that this class of issue needs real runtime verification:
 1. `app.getAppPath()` resolves to the entry script's own directory (`dist/electron`), not the repo root, when Electron is launched with a direct file path (`electron dist/electron/main.js`) rather than a project directory — every request 404'd until the static server's root was resolved relative to `__dirname` instead.
@@ -1106,6 +1106,8 @@ Two bugs surfaced only through live app testing, not the unit suite or code revi
 **Stage 6** hand-rolled the `y-websocket` wire protocol (`y-protocols/sync` + `y-protocols/awareness` message framing over a plain `ws` WebSocket) rather than depending on `y-websocket` itself, whose package only exports the browser `WebsocketProvider` client under a resolvable subpath, not its server utility. This is also the one narrow, deliberate exception to every other Phase 8 backend's `127.0.0.1`-only rule: the collab server binds `0.0.0.0` (LAN reachability is the point), mitigated by a random per-session code required before a connection is accepted. A unit test simulating two paired clients (`markdown-collab-client.spec.ts`) caught a real duplication race before it ever ran live: if both sides of a fresh session tried to seed initial content, both texts got concatenated in CRDT-merge order. Fixed by making only the session *host* ever seed content — a *joiner* always starts empty and adopts whatever the host provides.
 
 **Stage 7** factored the Yjs room logic out of `electron/collab-server.ts` into `collab-relay/room.ts`, shared with the new standalone `relay/` deployable, rather than duplicating the wiring twice. The relay supports multiple concurrent rooms keyed by the WebSocket URL path, each room's code established by its first connection's own client-generated `?code=` (the relay itself never issues codes — same pattern as the local server), torn down once its last participant leaves. Advanced Markdown Workspace's "Host via Relay" option connects directly to `<relayUrl>/<roomId>` with no Electron IPC involved, since relay-hosting is really just a specially-generated join. Verified with a real two-client WebSocket round-trip against a running relay instance, not only unit tests. The room/session identity model shipped is intentionally minimal — anonymous, client-generated room codes only; named-but-accountless participants (the richer half of the original open question) remains deferred.
+
+**Stage 8** made versioning and release-cutting fully automatic rather than a manual decision: `package.json` started at `0.0.1`, and a new `version-bump.yml` workflow bumps the patch version and pushes a matching `vX.Y.Z` tag on **every** push to `master` — not just Electron-relevant commits — so every future commit, tool or framework, becomes a desktop release candidate; this was a deliberate, explicit choice made with the user, not an oversight. The tag push triggers a separate `release.yml` (Windows runner, its own `npm test` gate since the bump job itself runs unconditionally with no test gate) that runs `electron-builder` and publishes both an unsigned NSIS installer and an MSIX/appx package to the matching GitHub Release. The MSIX ships with **placeholder** Microsoft Store package-identity values (`electron-builder.yml`'s `appx` block) — it's real and sideloadable today, but not submittable to the Store until those are swapped for values reserved through a real Microsoft Partner Center account, which the project doesn't have yet. `electron-updater`'s `autoUpdater` only drives the NSIS install path (downloads a new release automatically in the background, installs only when the user clicks "Restart & Install" — never silently, mirroring the web build's existing update precedent); the MSIX path would update through the Store/App Installer's own infrastructure instead, out of scope here. A new `DesktopUpdateService` (`core/platform/`) mirrors the shape of the existing web-only `UpdateService` but stays fully separate — `update-badge.ts` is the only shared file, branching internally on `PlatformService.isDesktop()` so `shell-layout.html` needed no changes at all.
 
 ---
 
@@ -1802,7 +1804,7 @@ This needs its own design pass before being scheduled into a phase — see Phase
 
 Pipelines are only "almost automatic," per the source material, if tools already agree on what they consume and produce. A universal I/O contract would have every tool declare its inputs and outputs in terms of a small shared vocabulary — `Text`, `Bytes`, `File`, `JSON`, `Table`, `HTTPResponse` — instead of each tool inventing its own ad hoc shape. JSON Formatter, Base64 Decoder, Regex Extractor, a future HTTP Request tool, and Hash Generator would all speak the same handful of types.
 
-This matters because it is the enabling primitive underneath pipelines, smart paste-detection, and a shared workspace/scratchpad alike — build this once, and three other items on this list get meaningfully easier. It is also the most architecturally invasive item here: it means extending (not just using) the `ToolDefinition` contract described in §12.1/§26, and every existing tool would eventually need to declare itself in these terms to fully participate, which is a migration, not a 30-minute addition.
+This matters because it is the enabling primitive underneath pipelines, smart paste-detection, and a shared workspace/scratchpad alike — build this once, and three other items on this list get meaningfully easier. It is also the most architecturally invasive item here: it means extending (not just using) the `ToolDefinition` contract described in §12.1/§27, and every existing tool would eventually need to declare itself in these terms to fully participate, which is a migration, not a 30-minute addition.
 
 This needs its own design pass before being scheduled into a phase — see Phase 21, a placeholder Track A phase reserved for cross-tool workflow foundations.
 
@@ -1879,7 +1881,7 @@ Network integrations are allowed later.
 
 User-supplied API keys are the chosen credential model.
 
-## 23.1 Rules
+## 24.1 Rules
 
 No static private secrets in source control.
 
@@ -1894,7 +1896,7 @@ Each API-backed tool should declare:
 - what user input is transmitted;
 - what happens offline.
 
-## 23.2 Default key storage
+## 24.2 Default key storage
 
 Default:
 
@@ -2004,7 +2006,7 @@ The shell should consume tool metadata rather than importing tool-specific behav
 
 # 27. Shared Services
 
-## 26.1 Tool Registry Service
+## 27.1 Tool Registry Service
 
 Responsibilities:
 
@@ -2015,7 +2017,7 @@ Responsibilities:
 - stable IDs;
 - duplicate validation in development.
 
-## 26.2 Persistence Service
+## 27.2 Persistence Service
 
 Responsibilities:
 
@@ -2026,7 +2028,7 @@ Responsibilities:
 - clear tool state;
 - clear all DUDE state.
 
-## 26.3 Worker Service
+## 27.3 Worker Service
 
 Responsibilities:
 
@@ -2036,7 +2038,7 @@ Responsibilities:
 - terminate failed jobs;
 - expose busy state.
 
-## 26.4 Connectivity Service
+## 27.4 Connectivity Service
 
 Responsibilities:
 
@@ -2044,7 +2046,7 @@ Responsibilities:
 - tool-level network status;
 - compact offline UI support.
 
-## 26.5 Search Service
+## 27.5 Search Service
 
 Responsibilities:
 
@@ -2057,7 +2059,7 @@ Do not overbuild search.
 
 A straightforward in-memory search is sufficient.
 
-## 26.6 Platform Service
+## 27.6 Platform Service
 
 Added in §21 Phase 8 Stage 1 as the seam every desktop-only stage conditions on. Responsibilities:
 

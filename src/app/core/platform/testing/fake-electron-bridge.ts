@@ -47,6 +47,12 @@ export function fakeElectronBridge(overrides: Partial<DudeElectronBridge> = {}):
       stopSession: async () => ({ ok: true }),
       participantCount: async () => 0,
     },
+    update: {
+      checkForUpdates: async () => ({ ok: true }),
+      quitAndInstall: async () => ({ ok: true }),
+      onUpdateDownloaded: () => () => {},
+      onUpdateError: () => () => {},
+    },
     ...overrides,
   };
 }

@@ -44,6 +44,20 @@ const bridge: DudeElectronBridge = {
     stopSession: () => ipcRenderer.invoke('dude:collab:stopSession'),
     participantCount: () => ipcRenderer.invoke('dude:collab:participantCount'),
   },
+  update: {
+    checkForUpdates: () => ipcRenderer.invoke('dude:update:check'),
+    quitAndInstall: () => ipcRenderer.invoke('dude:update:quitAndInstall'),
+    onUpdateDownloaded: (callback) => {
+      const listener = (_event: Electron.IpcRendererEvent, info: { version: string }) => callback(info);
+      ipcRenderer.on('dude:update:downloaded', listener);
+      return () => ipcRenderer.removeListener('dude:update:downloaded', listener);
+    },
+    onUpdateError: (callback) => {
+      const listener = (_event: Electron.IpcRendererEvent, message: string) => callback(message);
+      ipcRenderer.on('dude:update:error', listener);
+      return () => ipcRenderer.removeListener('dude:update:error', listener);
+    },
+  },
 };
 
 contextBridge.exposeInMainWorld('dude', bridge);

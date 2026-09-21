@@ -1,0 +1,43 @@
+name: Release
+
+# Phase 8 Stage 8 (Milestone 28): builds the Windows desktop installer
+# (NSIS + MSIX/appx) and publishes it to a GitHub Release matching the
+# pushed tag. Triggered by the tag version-bump.yml creates on every
+# master push — separate from deploy.yml, which stays GitHub Pages-only.
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build (Angular, Electron configuration)
+        run: npm run build -- --configuration production,electron
+
+      - name: Compile Electron main/preload
+        run: npm run electron:compile
+
+      - name: Package and publish (NSIS + MSIX)
+        run: npx electron-builder --config electron-builder.yml --win nsis appx --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

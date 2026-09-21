@@ -1,6 +1,8 @@
 // Regenerates DUDE's raster brand assets (PWA manifest PNGs, apple-touch-icon,
-// favicon.ico, og-image.png) from the vector source at the repo root:
-//   DUDE_logo_icon.svg -> manifest PNGs, apple-touch-icon.png, favicon.ico, og-image.png
+// favicon.ico, og-image.png, Electron packaging icon) from the vector source
+// at the repo root:
+//   DUDE_logo_icon.svg -> manifest PNGs, apple-touch-icon.png, favicon.ico,
+//                         og-image.png, build/icon.ico, build/icon.png
 //
 // Uses @playwright/test's bundled Chromium (already a devDependency, already
 // installed via `npm run playwright:install`) purely as an SVG->PNG rasterizer.
@@ -17,10 +19,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const ICONS_DIR = path.join(PUBLIC_DIR, 'icons');
+const BUILD_DIR = path.join(ROOT, 'build');
 
 const MANIFEST_SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
 const FAVICON_SIZES = [16, 32, 48];
 const APPLE_TOUCH_SIZE = 180;
+// electron-builder's Windows NSIS/appx targets require an ICO with at least
+// a 256x256 frame (Phase 8 Stage 8) — reuses the same buildIco() as favicon.ico.
+const PACKAGING_ICO_SIZES = [16, 32, 48, 64, 128, 256];
+const PACKAGING_PNG_SIZE = 512;
 
 async function renderSvgToPng(browser, svgMarkup, width, height) {
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
@@ -111,6 +118,7 @@ async function main() {
   const iconSvgSource = await readFile(path.join(ROOT, 'DUDE_logo_icon.svg'), 'utf8');
 
   await mkdir(ICONS_DIR, { recursive: true });
+  await mkdir(BUILD_DIR, { recursive: true });
 
   const browser = await chromium.launch();
 
@@ -144,6 +152,21 @@ async function main() {
     const ogPng = await renderSvgToPng(browser, ogSvg, 1200, 630);
     await writeFile(path.join(PUBLIC_DIR, 'og-image.png'), ogPng);
     console.log('wrote og-image.png');
+
+    // 5. build/icon.ico + build/icon.png (electron-builder Windows packaging, Phase 8 Stage 8)
+    const packagingFrames = [];
+    for (const size of PACKAGING_ICO_SIZES) {
+      const svg = sizedIconSvg(iconSvgSource, size);
+      const buffer = await renderSvgToPng(browser, svg, size, size);
+      packagingFrames.push({ size, buffer });
+    }
+    await writeFile(path.join(BUILD_DIR, 'icon.ico'), buildIco(packagingFrames));
+    console.log('wrote build/icon.ico');
+
+    const packagingPngSvg = sizedIconSvg(iconSvgSource, PACKAGING_PNG_SIZE);
+    const packagingPng = await renderSvgToPng(browser, packagingPngSvg, PACKAGING_PNG_SIZE, PACKAGING_PNG_SIZE);
+    await writeFile(path.join(BUILD_DIR, 'icon.png'), packagingPng);
+    console.log('wrote build/icon.png');
   } finally {
     await browser.close();
   }

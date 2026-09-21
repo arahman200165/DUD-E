@@ -49,6 +49,12 @@ export interface DudeElectronBridge {
     stopSession(): Promise<{ readonly ok: true }>;
     participantCount(): Promise<number>;
   };
+  readonly update: {
+    checkForUpdates(): Promise<VoidResult>;
+    quitAndInstall(): Promise<VoidResult>;
+    onUpdateDownloaded(callback: (info: { readonly version: string }) => void): () => void;
+    onUpdateError(callback: (message: string) => void): () => void;
+  };
 }
 
 export interface QuickActionInfo {

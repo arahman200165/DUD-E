@@ -9,6 +9,7 @@ import { registerHotkeyHandlers, unregisterAllHotkeys } from './hotkey-bridge';
 import { registerNotificationHandlers } from './notifications-bridge';
 import { closeAllFileWatches, registerFileWatchHandlers } from './file-watch-bridge';
 import { registerCollabHandlers, stopCollabServerOnQuit } from './collab-bridge';
+import { checkForUpdatesOnStartup, registerUpdateHandlers } from './update-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -48,8 +49,10 @@ async function createWindow(): Promise<void> {
   });
 
   createTray(window);
+  registerUpdateHandlers(window);
 
   await window.loadURL(await resolveWindowUrl());
+  checkForUpdatesOnStartup();
 }
 
 void app.whenReady().then(async () => {

@@ -1,12 +1,12 @@
-@if (updateService.updateReady()) {
+@if (updateReady()) {
   <div class="flex items-center gap-2 rounded border border-info/40 bg-info/10 px-2 py-1 text-ui text-info">
     <span>Update available</span>
     <button
       type="button"
       class="rounded-sm border border-info/40 px-1.5 py-0.5 text-ui-xs uppercase tracking-wide text-info hover:bg-info/20"
-      (click)="updateService.activateUpdate()"
+      (click)="activate()"
     >
-      Reload
+      {{ actionLabel() }}
     </button>
   </div>
 }

@@ -1,0 +1,55 @@
+name: Version Bump
+
+# Phase 8 Stage 8 (Milestone 28): bumps package.json's patch version and
+# pushes a matching `vX.Y.Z` tag on every push to master, so every commit
+# becomes a desktop release candidate — see DUDE_PRD.md §21's Stage 8 note
+# for why this is a deliberate, informed choice rather than an oversight.
+# The tag push this job creates is what triggers release.yml.
+#
+# Requires the repo's Settings -> Actions -> General -> "Read and write
+# permissions" to be enabled for Actions — an external, one-time manual
+# step this workflow cannot grant itself. Without it, the push steps 403.
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: version-bump
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    # Loop guard: the bump commit's own push re-fires this workflow — skip
+    # it by recognizing its own commit-message pattern. Deliberately not
+    # using `[skip ci]`, since that would also suppress the tag-push event
+    # release.yml needs (the tag points at this same commit).
+    if: "!contains(github.event.head_commit.message, 'chore: bump version to')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump patch version
+        id: bump
+        run: |
+          npm version patch --no-git-tag-version
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit, tag, and push
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to v${{ steps.bump.outputs.version }}"
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push origin HEAD:master
+          git push origin "v${{ steps.bump.outputs.version }}"
