@@ -42,7 +42,9 @@ export function pivotCsv(
   if (valueColumn.trim() === '') return { ok: false, error: { message: 'Enter the value column.' } };
 
   const parsed = Papa.parse<Record<string, string>>(input, { header: true, skipEmptyLines: true });
-  if (parsed.errors.length > 0) return { ok: false, error: { message: parsed.errors[0].message } };
+  // A single-column CSV has no delimiter to detect; Papa still parses it correctly and just warns.
+  const fatalErrors = parsed.errors.filter((error) => error.code !== 'UndetectableDelimiter');
+  if (fatalErrors.length > 0) return { ok: false, error: { message: fatalErrors[0].message } };
 
   const fields = parsed.meta.fields ?? [];
   for (const [label, column] of [

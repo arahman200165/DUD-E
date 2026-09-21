@@ -31,11 +31,14 @@ export function joinCsv(
   if (leftKey.trim() === '') return { ok: false, error: { message: 'Enter the left key column.' } };
   if (rightKey.trim() === '') return { ok: false, error: { message: 'Enter the right key column.' } };
 
+  // A single-column CSV has no delimiter to detect; Papa still parses it correctly and just warns.
   const left = Papa.parse<Record<string, string>>(leftInput, { header: true, skipEmptyLines: true });
-  if (left.errors.length > 0) return { ok: false, error: { message: left.errors[0].message } };
+  const leftFatalErrors = left.errors.filter((error) => error.code !== 'UndetectableDelimiter');
+  if (leftFatalErrors.length > 0) return { ok: false, error: { message: leftFatalErrors[0].message } };
 
   const right = Papa.parse<Record<string, string>>(rightInput, { header: true, skipEmptyLines: true });
-  if (right.errors.length > 0) return { ok: false, error: { message: right.errors[0].message } };
+  const rightFatalErrors = right.errors.filter((error) => error.code !== 'UndetectableDelimiter');
+  if (rightFatalErrors.length > 0) return { ok: false, error: { message: rightFatalErrors[0].message } };
 
   const leftFields = left.meta.fields ?? [];
   const rightFields = right.meta.fields ?? [];
