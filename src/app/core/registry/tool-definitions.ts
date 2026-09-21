@@ -901,4 +901,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'table'], produces: ['text'] },
   },
+  {
+    id: 'csv-join',
+    title: 'CSV Join / Merge',
+    description: 'Join two CSVs on a key column, inner or left.',
+    category: 'data',
+    keywords: ['csv', 'join', 'merge', 'combine', 'key'],
+    route: '/tools/csv-join',
+    load: () => import('../../tools/csv-join/csv-join').then((m) => m.CsvJoin),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text', 'table'], produces: ['table'] },
+  },
 ];
