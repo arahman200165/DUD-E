@@ -757,4 +757,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'ini-formatter',
+    title: 'INI Formatter / Parser',
+    description: 'Convert between INI and JSON, in either direction.',
+    category: 'data',
+    keywords: ['ini', 'format', 'parse', 'config', 'sections'],
+    route: '/tools/ini-formatter',
+    load: () => import('../../tools/ini-formatter/ini-formatter').then((m) => m.IniFormatter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text', 'json'], produces: ['json', 'text'] },
+  },
 ];
