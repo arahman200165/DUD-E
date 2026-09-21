@@ -665,4 +665,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['json', 'text'], produces: ['json', 'text'] },
   },
+  {
+    id: 'json-merge',
+    title: 'JSON Merge',
+    description: 'Deep-merge two JSON documents, or apply an RFC 7396 JSON Merge Patch.',
+    category: 'data',
+    keywords: ['json', 'merge', 'combine', 'deep merge', 'merge patch', 'rfc 7396', 'union'],
+    route: '/tools/json-merge',
+    load: () => import('../../tools/json-merge/json-merge').then((m) => m.JsonMerge),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['json'], produces: ['json'] },
+  },
 ];
