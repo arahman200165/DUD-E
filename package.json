@@ -96,7 +96,7 @@
     "@types/ws": "^8.18.1",
     "concurrently": "^10.0.5",
     "cross-env": "^10.1.0",
-    "electron": "^33.0.0",
+    "electron": "^44.0.0",
     "electron-builder": "^26.15.3",
     "esbuild": "^0.24.0",
     "jsdom": "^30.1.0",
@@ -108,7 +108,7 @@
     "wait-on": "^9.1.0"
   },
   "allowScripts": {
-    "electron@33.4.11": true,
+    "electron@44.4.3": true,
     "esbuild@0.28.2": true,
     "esbuild@0.24.2": true,
     "@parcel/watcher@2.6.0": true,

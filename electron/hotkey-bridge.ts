@@ -28,16 +28,16 @@ const QUICK_ACTIONS: readonly QuickAction[] = [
   {
     id: 'base64-encode-clipboard',
     label: 'Base64 Encode Clipboard',
-    run: () => {
-      const result = encodeBase64(clipboard.readText());
+    run: async () => {
+      const result = encodeBase64(await clipboard.readText());
       if (result.ok) clipboard.writeText(result.value);
     },
   },
   {
     id: 'base64-decode-clipboard',
     label: 'Base64 Decode Clipboard',
-    run: () => {
-      const result = decodeBase64(clipboard.readText());
+    run: async () => {
+      const result = decodeBase64(await clipboard.readText());
       if (result.ok) clipboard.writeText(result.value);
     },
   },
@@ -52,7 +52,7 @@ const QUICK_ACTIONS: readonly QuickAction[] = [
     id: 'hash-sha256-clipboard',
     label: 'SHA-256 Hash Clipboard',
     run: async () => {
-      const text = clipboard.readText();
+      const text = await clipboard.readText();
       if (!text) return;
       clipboard.writeText(await computeHash(text, 'SHA-256'));
     },
