@@ -1,0 +1,71 @@
+<app-tool-shell title="XML Schema / XSD Validator" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <button
+        type="button"
+        class="rounded-sm border border-border bg-accent px-3 py-0.5 font-medium text-bg hover:opacity-90"
+        (click)="validate()"
+      >
+        Validate
+      </button>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+
+      <app-busy-indicator [status]="busyStatus()" />
+    </div>
+
+    <div class="grid min-h-0 flex-1 grid-cols-1 gap-3 md:grid-cols-2">
+      <div class="flex min-h-0 flex-col gap-1">
+        <span class="text-ui text-text-muted">XML document</span>
+        <textarea
+          class="h-full min-h-32 w-full resize-none rounded-sm border border-border bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Paste the XML document to validate here…"
+          [value]="xmlInput()"
+          (input)="onXmlInputChange($event)"
+        ></textarea>
+      </div>
+
+      <div class="flex min-h-0 flex-col gap-1">
+        <span class="text-ui text-text-muted">XSD schema</span>
+        <textarea
+          class="h-full min-h-32 w-full resize-none rounded-sm border border-border bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Paste the XSD schema here…"
+          [value]="xsdInput()"
+          (input)="onXsdInputChange($event)"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-auto rounded-sm border border-border bg-panel p-2">
+      @if (result(); as current) {
+        @if (current.ok) {
+          @if (current.valid) {
+            <div class="text-ui text-text">✓ Valid — the document conforms to the schema.</div>
+          } @else {
+            <div class="flex flex-col gap-2">
+              <div class="text-ui text-text">✗ Invalid — {{ current.issues.length }} issue{{ current.issues.length === 1 ? '' : 's' }}:</div>
+              <ul class="flex flex-col gap-1 font-mono text-xs text-text">
+                @for (issue of current.issues; track $index) {
+                  <li>
+                    @if (issue.line !== null) {
+                      <span class="text-text-muted">Line {{ issue.line }}:</span>
+                    }
+                    {{ issue.message }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        } @else {
+          <app-error-panel [message]="current.error.message" />
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>

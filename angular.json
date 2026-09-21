@@ -33,6 +33,10 @@
                 "glob": "{pyodide.js,pyodide.asm.mjs,pyodide.asm.wasm,pyodide-lock.json,python_stdlib.zip}",
                 "input": "node_modules/pyodide",
                 "output": "assets/vendor/pyodide/"
+              },
+              {
+                "glob": "{xmllint-browser.mjs,xmllint.wasm}",
+                "input": "node_modules/xmllint-wasm"
               }
             ],
             "styles": ["src/styles.css"],
