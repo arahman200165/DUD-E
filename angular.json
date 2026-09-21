@@ -37,6 +37,11 @@
               {
                 "glob": "{xmllint-browser.mjs,xmllint.wasm}",
                 "input": "node_modules/xmllint-wasm"
+              },
+              {
+                "glob": "sql-wasm-browser.wasm",
+                "input": "node_modules/sql.js/dist",
+                "output": "assets/vendor/sql.js/"
               }
             ],
             "styles": ["src/styles.css"],

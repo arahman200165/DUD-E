@@ -39,6 +39,14 @@
       "resources": {
         "files": ["/xmllint-browser.mjs", "/xmllint.wasm"]
       }
+    },
+    {
+      "name": "sql.js",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "files": ["/assets/vendor/sql.js/**"]
+      }
     }
   ]
 }

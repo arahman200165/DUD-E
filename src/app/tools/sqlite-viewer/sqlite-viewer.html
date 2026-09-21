@@ -1,0 +1,47 @@
+<app-tool-shell title="SQLite File Viewer" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <app-file-drop
+      accept=".sqlite,.sqlite3,.db"
+      label="Drop a SQLite file here, or click to browse"
+      (fileSelected)="onFileSelected($event)"
+      (rejected)="onRejected($event)"
+    />
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      @if (fileName(); as name) {
+        <span class="font-mono text-text">{{ name }}</span>
+      }
+
+      @if (tables().length > 0) {
+        <div class="flex flex-wrap overflow-hidden rounded-sm border border-border">
+          @for (table of tables(); track table.name) {
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="table.name === activeTable()?.name"
+              [class.text-bg]="table.name === activeTable()?.name"
+              [class.text-text-muted]="table.name !== activeTable()?.name"
+              (click)="selectTable(table.name)"
+            >
+              {{ table.name }}
+            </button>
+          }
+        </div>
+      }
+
+      <app-busy-indicator [status]="status()" />
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-auto rounded-sm border border-border bg-panel p-2">
+      @if (errorMessage(); as message) {
+        <app-error-panel [message]="message" />
+      } @else if (activeTable(); as table) {
+        @if (table.columns.length === 0) {
+          <div class="text-ui text-text-muted">Table "{{ table.name }}" has no rows.</div>
+        } @else {
+          <app-data-table [columns]="table.columns" [rows]="table.rows" />
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
