@@ -106,11 +106,11 @@ and bind the returned `WorkerJob`'s `status()` / `progress()` / `result()` / `er
 
 ## 6. Choose a network policy
 
-If the tool genuinely needs network access, set `network: { required: true }` in the `ToolDefinition` **and** bind `[networkRequired]="true"` on `<app-tool-shell>` in the component template — two separate places, both required (same gotcha as step 3). Every current tool sets this to false/omits it. Per the PRD's scope gate (§37), think hard before requiring network — there's no backend and no API-key infrastructure wired into any showcase tool yet.
+If the tool genuinely needs network access, set `network: { required: true }` in the `ToolDefinition` **and** bind `[networkRequired]="true"` on `<app-tool-shell>` in the component template — two separate places, both required (same gotcha as step 3). Every current tool sets this to false/omits it. Per the PRD's scope gate (§35), think hard before requiring network — there's no backend and no API-key infrastructure wired into any showcase tool yet.
 
 ## 7. Declare I/O capabilities
 
-Set `io: { accepts: [...], produces: [...] }` in the `ToolDefinition`, using the shared vocabulary in `src/app/shared/models/tool-io.model.ts` (`DudeDataType`: `text`, `json`, `bytes`, `file`, `table`, `url`, `http-response`). This is the "Universal Input/Output Contract" from PRD §22 — like `persistence`/`execution`/`network`, it's declarative documentation only (not read by the shell at runtime yet), but it's what a future pipeline/Smart-Paste feature would build on, so keep it honest: describe what the tool's UI/logic actually consumes and emits today, not aspirational future capability. `tool-count.spec.ts`'s "Universal I/O contract coverage" spec fails if you forget it entirely.
+Set `io: { accepts: [...], produces: [...] }` in the `ToolDefinition`, using the shared vocabulary in `src/app/shared/models/tool-io.model.ts` (`DudeDataType`: `text`, `json`, `bytes`, `file`, `table`, `url`, `http-response`). This is the "Universal Input/Output Contract" from PRD §21 Phase 21 — like `persistence`/`execution`/`network`, it's declarative documentation only (not read by the shell at runtime yet), but it's what a future pipeline/Smart-Paste feature would build on, so keep it honest: describe what the tool's UI/logic actually consumes and emits today, not aspirational future capability. `tool-count.spec.ts`'s "Universal I/O contract coverage" spec fails if you forget it entirely.
 
 ## 8. Expose the lazy route/component
 

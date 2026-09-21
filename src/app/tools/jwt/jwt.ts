@@ -12,7 +12,7 @@ const EXPIRY_BADGE_CLASSES: Record<JwtExpiryStatus['kind'], string> = {
 /**
  * Deliberately does NOT inject PersistenceService — JWTs are sensitive and
  * this tool must never persist input, even under a `session` policy
- * (PRD Section 14.1/31: JWT values are the canonical "no automatic
+ * (PRD Section 14.1/30: JWT values are the canonical "no automatic
  * persistence" example, and a plain in-memory signal is the simplest way
  * to guarantee that no storage backend is ever touched).
  */

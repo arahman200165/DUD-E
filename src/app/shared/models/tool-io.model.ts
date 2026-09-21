@@ -1,6 +1,6 @@
 /**
- * Shared vocabulary a tool declares its inputs/outputs in terms of, per DUDE_PRD.md §22's
- * "Universal Input/Output Contract" sketch. Declarative documentation only, like `persistence`/
+ * Shared vocabulary a tool declares its inputs/outputs in terms of, per DUDE_PRD.md §21 Phase 21's
+ * "Universal Input/Output Contract" item. Declarative documentation only, like `persistence`/
  * `execution`/`network` on ToolDefinition -- not read by the shell at runtime. It exists so tools
  * agree on a common shape before anything (pipelines, Smart Paste) is built on top of it.
  */

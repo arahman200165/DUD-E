@@ -29,7 +29,7 @@ Wrap content in `<app-tool-shell title="...">` (`src/app/shared/components/tool-
 
 - Raw user input → `session`; UI preferences (mode, indent, algorithm) → `local`; anything sensitive → `none` (see `jwt`'s entry for the pattern).
 - Worker dispatch: `required` for anything always-slow (hash, regex, diff); `optional` above a size threshold (see `json.ts`'s `WORKER_THRESHOLD` pattern) otherwise.
-- Network access defaults to false; per PRD §37 there's no backend or API-key infrastructure wired in yet, so think hard before requiring it.
+- Network access defaults to false; per PRD §35 there's no backend or API-key infrastructure wired in yet, so think hard before requiring it.
 
 Full detail and code snippets for all of the above: `ADDING_A_TOOL.md` steps 2, 4–6.
 

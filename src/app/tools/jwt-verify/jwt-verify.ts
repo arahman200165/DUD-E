@@ -15,7 +15,7 @@ const ALGORITHMS_BY_MODE: Record<JwtVerifyMode, readonly string[]> = {
 
 /**
  * Deliberately does NOT persist the token, secret, key material, or JWKS
- * URL — all sensitive/sensitive-adjacent (PRD Section 14.1/31), mirroring
+ * URL — all sensitive/sensitive-adjacent (PRD Section 14.1/30), mirroring
  * the existing decode-only JWT Debugger's bare-signal approach. Only the
  * verification mode and public-key format are non-sensitive UI preferences.
  */

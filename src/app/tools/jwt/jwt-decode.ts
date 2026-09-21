@@ -3,7 +3,7 @@
  *
  * This only decodes the header/payload segments and reports the raw
  * signature segment — it never attempts signature verification (PRD
- * Section 32: never claim that decoding verifies authenticity).
+ * Section 31: never claim that decoding verifies authenticity).
  */
 
 export type JwtExpiryStatus =

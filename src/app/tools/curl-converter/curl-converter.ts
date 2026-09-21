@@ -15,7 +15,7 @@ const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 
 /**
  * Deliberately does NOT persist raw input — cURL commands routinely embed
- * Authorization headers and cookies (PRD Section 14.1/31), so this tool
+ * Authorization headers and cookies (PRD Section 14.1/30), so this tool
  * follows the same "no automatic persistence" pattern as the JWT Debugger.
  */
 @Component({

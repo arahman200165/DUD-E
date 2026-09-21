@@ -43,7 +43,7 @@ class WorkerJobHandle<TResult> implements WorkerJob<TResult> {
 }
 
 /**
- * Reusable worker execution layer (PRD Section 15/26.3). Spawns one fresh
+ * Reusable worker execution layer (PRD Section 15/25.3). Spawns one fresh
  * `Worker` per submitted job and terminates it on completion, error, or
  * cancellation — no pooling, no shared state between jobs.
  *

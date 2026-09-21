@@ -9,7 +9,7 @@ import { describeHeader } from './well-known-headers';
 
 /**
  * Deliberately does NOT inject PersistenceService — pasted headers routinely
- * carry Authorization/Cookie values (PRD Section 14.1/31), so this tool
+ * carry Authorization/Cookie values (PRD Section 14.1/30), so this tool
  * follows the same "no automatic persistence" pattern as the JWT Debugger.
  */
 @Component({

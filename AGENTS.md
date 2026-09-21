@@ -12,7 +12,7 @@ Adding or changing a tool must never require editing `src/app/shell/`, `src/app/
 
 ## Conventions an agent must follow here
 
-- **Categories are closed.** `ToolCategory` (`src/app/shared/models/tool-category.model.ts`) has exactly 8 values (`data, text, encoding, security, date-time, web, developer, documents`). Adding a new one is a bigger decision than adding a tool — check `DUDE_PRD.md` §22's domain map first; a tool's literal name can be misleading (e.g. Color Converter → `encoding`, not a hypothetical "design" category).
+- **Categories are closed.** `ToolCategory` (`src/app/shared/models/tool-category.model.ts`) has exactly 8 values (`data, text, encoding, security, date-time, web, developer, documents`). Adding a new one is a bigger decision than adding a tool — check `DUDE_PRD.md` §21's domain map first; a tool's literal name can be misleading (e.g. Color Converter → `encoding`, not a hypothetical "design" category).
 - **Dependency-minimal by default.** Prefer native Web APIs (`URLSearchParams`, `crypto.randomUUID`, `BigInt`, `Intl.*`, a detached `<textarea>` for HTML parsing) over libraries. Reach for a small library only for genuinely fiddly, easy-to-get-subtly-wrong logic (color-space math, unicode transliteration, cron math) — see `DUDE_PRD.md` §17 and the library list in `README.md`.
 - **Git history convention:** each tool ships as its own commit directly to `master`, no feature branches/PRs, message format `Milestone N: <Tool Name>`. Check `git log --oneline | grep -i milestone` for the current highest number before picking the next one. Framework-layer/doc-only changes get their own milestone numbers too.
 - **Testing posture:** "protect the framework, not chase coverage" (`DUDE_PRD.md` §18). Unit-test every tool's pure transform logic; don't add component/e2e tests just for coverage.
@@ -21,5 +21,5 @@ Adding or changing a tool must never require editing `src/app/shell/`, `src/app/
 ## Key docs
 
 - `README.md` — architecture, tech stack, PWA/offline model, deployment.
-- `DUDE_PRD.md` — full product spec; §21/§22 map every shipped and proposed tool to a phase and category.
+- `DUDE_PRD.md` — full product spec; §21 (Roadmap) maps every shipped and proposed tool to a phase and category.
 - `ADDING_A_TOOL.md` — the canonical add-a-tool recipe. Read it first for any tool work.

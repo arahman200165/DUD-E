@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 
 /**
  * Pure Markdown-to-safe-HTML rendering used by the Markdown Preview tool
- * (PRD Section 20.5: "safe HTML handling policy" / Section 32: "no
+ * (PRD Section 20.5: "safe HTML handling policy" / Section 31: "no
  * untrusted HTML execution without sanitization").
  *
  * Defense in depth: `html: false` makes markdown-it escape any raw HTML in

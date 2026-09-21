@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 
 /**
- * The app-wide "offline state primitive" (PRD Section 11/26.4). Wraps the
+ * The app-wide "offline state primitive" (PRD Section 11/25.4). Wraps the
  * browser's `online`/`offline` window events in a signal so the rest of the
  * app never touches `navigator.onLine` or window listeners directly.
  */

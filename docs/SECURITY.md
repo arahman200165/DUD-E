@@ -2,7 +2,7 @@
 
 DUDE is a local-first, client-side app: by default, everything you paste, upload, or generate stays in your browser tab (or, on desktop, on your machine) and is never sent anywhere. This document is the concrete, current-state accounting of the handful of places that isn't strictly true, what gets stored and where, the sandbox execution model's guarantees and limits, the Electron desktop app's process/IPC boundaries, and how to report a vulnerability.
 
-See [`README.md`](../README.md) for the product overview and [`DUDE_PRD.md`](../DUDE_PRD.md) §31–33 for the underlying product requirements (Large Inputs, Sensitive Inputs, Security Boundaries) this document reports the current implementation of.
+See [`README.md`](../README.md) for the product overview and [`DUDE_PRD.md`](../DUDE_PRD.md) §29–31 for the underlying product requirements (Large Inputs, Sensitive Inputs, Security Boundaries) this document reports the current implementation of.
 
 ## What leaves the device
 

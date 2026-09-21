@@ -10,7 +10,7 @@ import { createCollabRoom, type CollabRoom } from '../collab-relay/room';
  * a relay URL instead of (or in addition to) its own local server.
  *
  * Untrusted-by-default from the app's perspective (see
- * `MarkdownCollabClient`'s doc comment and DUDE_PRD.md §33's amendment):
+ * `MarkdownCollabClient`'s doc comment and DUDE_PRD.md §31's amendment):
  * every message this relay forwards is treated purely as Yjs CRDT sync/
  * awareness data by the clients that receive it, never as anything that
  * triggers app-side privileged behavior.

@@ -38,7 +38,7 @@ export function resolveWithinRoot(root: string, requestPath: string): string | n
 
 /**
  * A minimal static file server for the built Angular output, bound to
- * `127.0.0.1` only on an OS-assigned port (PRD Phase 8 §33: the bundled
+ * `127.0.0.1` only on an OS-assigned port (PRD Phase 8 §31: the bundled
  * backend must never expose an external interface). Falls back to
  * `index.html` for any extensionless path that isn't an existing file, doing
  * for real what the web build's `public/404.html` trick works around on
