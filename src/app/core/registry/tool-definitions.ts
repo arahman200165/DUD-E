@@ -1006,4 +1006,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['file', 'bytes'], produces: ['json'] },
   },
+  {
+    id: 'cbor-viewer',
+    title: 'CBOR Viewer',
+    description: 'Decode a CBOR file and inspect its structure.',
+    category: 'data',
+    keywords: ['cbor', 'decode', 'binary', 'inspect'],
+    route: '/tools/cbor-viewer',
+    load: () => import('../../tools/cbor-viewer/cbor-viewer').then((m) => m.CborViewer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    execution: { worker: 'none' },
+    io: { accepts: ['file', 'bytes'], produces: ['json'] },
+  },
 ];
