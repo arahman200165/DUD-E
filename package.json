@@ -4,6 +4,9 @@
   "description": "DUDE — Developer Utility Dashboard Engine: a dark-mode-only, offline-capable PWA of client-side developer micro-tools, also shipping as a Windows Electron desktop build.",
   "author": "arahman200165",
   "main": "dist/electron/main.js",
+  "engines": {
+    "npm": "11.19.0"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

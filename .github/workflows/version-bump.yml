@@ -35,6 +35,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pin npm version
+        run: npm install -g npm@11.19.0
+
       - name: Configure git identity
         run: |
           git config user.name "github-actions[bot]"
