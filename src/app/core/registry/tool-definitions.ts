@@ -11,7 +11,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/text-inspector/text-inspector').then((m) => m.TextInspector),
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
-    network: { required: true },
+    network: { required: true, detail: 'LanguageTool API' },
     io: { accepts: ['text'], produces: ['json'] },
   },
   {
@@ -483,7 +483,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/jwt-verify/jwt-verify').then((m) => m.JwtVerify),
     status: 'experimental',
     persistence: { input: 'none', preferences: 'local' },
-    network: { required: true },
+    network: { required: true, detail: 'JWKS / OIDC discovery' },
     io: { accepts: ['text', 'url'], produces: ['json'] },
   },
   {

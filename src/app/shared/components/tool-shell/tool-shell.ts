@@ -5,10 +5,11 @@ import { ToolRegistryService } from '../../../core/registry/tool-registry.servic
 import { CATEGORY_METADATA } from '../../models/tool-category.model';
 import { OfflineBadge } from '../offline-badge/offline-badge';
 import { CategoryIcon } from '../category-icon/category-icon';
+import { SecurityBadge } from '../security-badge/security-badge';
 
 @Component({
   selector: 'app-tool-shell',
-  imports: [OfflineBadge, CategoryIcon],
+  imports: [OfflineBadge, CategoryIcon, SecurityBadge],
   templateUrl: './tool-shell.html',
 })
 export class ToolShell {
@@ -22,7 +23,8 @@ export class ToolShell {
 
   protected readonly showOfflineBadge = computed(() => this.networkRequired() && !this.connectivity.online());
 
-  protected readonly category = computed(() => this.registry.getByRoute(this.router.url)?.category);
+  protected readonly definition = computed(() => this.registry.getByRoute(this.router.url));
+  protected readonly category = computed(() => this.definition()?.category);
   protected readonly categoryMeta = computed(() => {
     const category = this.category();
     return category ? CATEGORY_METADATA[category] : undefined;

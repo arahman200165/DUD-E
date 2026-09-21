@@ -13,6 +13,7 @@ export interface ToolExecutionPolicy {
 
 export interface ToolNetworkPolicy {
   readonly required: boolean;
+  readonly detail?: string;
 }
 
 export interface ToolDefinition {
