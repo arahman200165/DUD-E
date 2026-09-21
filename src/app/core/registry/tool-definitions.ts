@@ -783,4 +783,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'json'], produces: ['json', 'text'] },
   },
+  {
+    id: 'yaml-linter',
+    title: 'YAML Linter',
+    description: 'Validate YAML and surface parse errors with line and column detail.',
+    category: 'data',
+    keywords: ['yaml', 'lint', 'validate', 'syntax', 'error'],
+    route: '/tools/yaml-linter',
+    load: () => import('../../tools/yaml-linter/yaml-linter').then((m) => m.YamlLinter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];

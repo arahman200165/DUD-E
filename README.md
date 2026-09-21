@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-60 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+61 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -55,6 +55,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [TOML Formatter / Validator](https://arahman200165.github.io/DUDE/tools/toml-formatter) | Data | Validates and reformats TOML. |
 | [INI Formatter / Parser](https://arahman200165.github.io/DUDE/tools/ini-formatter) | Data | Converts between INI and JSON, in either direction. |
 | [Properties File Parser](https://arahman200165.github.io/DUDE/tools/properties-parser) | Data | Converts between Java-style .properties files and JSON, in either direction. |
+| [YAML Linter](https://arahman200165.github.io/DUDE/tools/yaml-linter) | Data | Validates YAML and surfaces parse errors with line and column detail. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |
