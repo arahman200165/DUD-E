@@ -796,4 +796,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'yaml-merge',
+    title: 'YAML Merge',
+    description: 'Deep-merge two YAML documents into one.',
+    category: 'data',
+    keywords: ['yaml', 'merge', 'combine', 'deep merge'],
+    route: '/tools/yaml-merge',
+    load: () => import('../../tools/yaml-merge/yaml-merge').then((m) => m.YamlMerge),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
