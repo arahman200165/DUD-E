@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-75 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+76 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -70,6 +70,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [XML XPath Tester](https://arahman200165.github.io/DUDE/tools/xml-xpath) | Data | Tests an XPath expression against XML using the browser's native XPath engine. |
 | [XML ↔ CSV Converter](https://arahman200165.github.io/DUDE/tools/xml-csv) | Data | Converts flat XML records to CSV rows and back. |
 | [XML Schema / XSD Validator](https://arahman200165.github.io/DUDE/tools/xml-xsd-validator) | Data | Validates XML against an XSD schema via libxml2 compiled to WebAssembly. |
+| [MessagePack Decoder](https://arahman200165.github.io/DUDE/tools/msgpack-decoder) | Data | Decodes a MessagePack-encoded file and inspects its structure. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |
