@@ -52,6 +52,7 @@
     "fast-xml-parser": "^5.11.1",
     "franc-min": "^6.2.0",
     "humanize-duration": "^3.35.0",
+    "ini": "^7.0.0",
     "isomorphic-git": "^1.42.2",
     "jmespath": "^0.16.0",
     "jose": "^6.2.12",
@@ -71,12 +72,14 @@
     "rrule": "^2.8.1",
     "rxjs": "~7.8.0",
     "semver": "^7.8.5",
+    "smol-toml": "^1.8.0",
     "tiptap-markdown": "^0.9.0",
     "tslib": "^2.3.0",
     "ua-parser-js": "^2.0.10",
     "uuid": "^14.0.2",
     "ws": "^8.21.3",
     "y-protocols": "^1.0.7",
+    "yaml": "^2.9.1",
     "yjs": "^13.6.32"
   },
   "devDependencies": {

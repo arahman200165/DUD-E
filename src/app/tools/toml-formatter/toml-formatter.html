@@ -1,0 +1,78 @@
+<app-tool-shell title="TOML Formatter / Validator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'format'"
+          [class.text-bg]="mode() === 'format'"
+          [class.text-text-muted]="mode() !== 'format'"
+          (click)="setMode('format')"
+        >
+          Format
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'validate'"
+          [class.text-bg]="mode() === 'validate'"
+          [class.text-text-muted]="mode() !== 'validate'"
+          (click)="setMode('validate')"
+        >
+          Validate
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+
+      @if (usesWorker() && job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">TOML</span>
+      <textarea
+        rows="10"
+        class="w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste TOML here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (usesWorker() && job()?.error(); as workerError) {
+      <app-error-panel [message]="workerError" />
+    } @else if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">{{ mode() === 'validate' ? 'Valid TOML' : 'Formatted TOML' }}</span>
+            <button
+              type="button"
+              class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+              (click)="copy(current.output)"
+            >
+              Copy
+            </button>
+          </div>
+          <textarea
+            rows="10"
+            readonly
+            class="w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+            [value]="current.output"
+          ></textarea>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error.message" />
+      }
+    }
+  </div>
+</app-tool-shell>

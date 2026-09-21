@@ -744,4 +744,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'json'], produces: ['table', 'json'] },
   },
+  {
+    id: 'toml-formatter',
+    title: 'TOML Formatter / Validator',
+    description: 'Validate and reformat TOML.',
+    category: 'data',
+    keywords: ['toml', 'format', 'validate', 'config'],
+    route: '/tools/toml-formatter',
+    load: () => import('../../tools/toml-formatter/toml-formatter').then((m) => m.TomlFormatter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
