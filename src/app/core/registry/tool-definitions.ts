@@ -717,4 +717,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['json'], produces: ['json'] },
   },
+  {
+    id: 'json-sort-keys',
+    title: 'JSON Sort Keys',
+    description: "Sort a JSON document's object keys alphabetically, top-level or recursively.",
+    category: 'data',
+    keywords: ['json', 'sort', 'keys', 'alphabetical', 'order', 'normalize'],
+    route: '/tools/json-sort-keys',
+    load: () => import('../../tools/json-sort-keys/json-sort-keys').then((m) => m.JsonSortKeys),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['json'], produces: ['json'] },
+  },
 ];
