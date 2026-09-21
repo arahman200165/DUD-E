@@ -1121,9 +1121,9 @@ Two bugs surfaced only through live app testing, not the unit suite or code revi
 
 Everything below is organized into two tracks. **Track A — Browser-Extensible** covers tool ideas that are fully implementable client-side today — parsing, formatting, computation, encoding, generation, and "upload a file and inspect it" tools — with no dependency on the desktop-packaging track established in Phase 8. **Track B** (below, after Track A) covers ideas that genuinely need live OS/network/filesystem/socket access a browser sandbox cannot provide, and are explicitly gated on that desktop track (§21 Phase 8). The split is deliberate: it lets the large majority of the roadmap doc's ideas stay on the current architecture's committed near-term path, while keeping the smaller, genuinely native-only subset clearly separate and non-committed until Phase 8 is picked up.
 
-## Phase 9 — Structured Data Depth (Proposed — Track A: Browser-Extensible)
+## Phase 9 — Structured Data Depth (✅ Complete — Track A: Browser-Extensible)
 
-Goal: extend the Data category with power-tools and additional format support beyond the core JSON/YAML/XML/CSV converters already shipped.
+Goal: extend the Data category with power-tools and additional format support beyond the core JSON/YAML/XML/CSV converters already shipped. **Achieved** — all 34 items shipped as Milestones 39–72, each its own tool commit. Notable deviations from the plan as originally written: the Avro Viewer (#31) hand-rolls the Object Container File decoder instead of using `avsc` — `avsc`'s own "browser" build still requires Node built-ins (`stream`/`util`/`path`) that fail to bundle without extra polyfill configuration this repo doesn't otherwise carry, so it's kept only as a devDependency for cross-checking the wire format during development. The Universal Structured Data Converter (#1) ended up calling the same underlying libraries (`js-yaml`, `fast-xml-parser`, `papaparse`, `smol-toml`) directly rather than importing sibling tools' logic as originally envisioned, since TOML Formatter/XML Formatter/YAML ↔ JSON Converter's actual exports (reformat-only, or direction-keyed rather than parse/stringify) weren't a clean fit to reuse as-is. The seven binary-format viewers (#27–33) share one new shared primitive, `app-binary-format-viewer` (file drop + tree/table result view).
 
 1. Universal Structured Data Converter — single workbench converting between JSON, YAML, XML, TOML, and CSV
 2. TOML Formatter / Validator
@@ -1162,7 +1162,7 @@ Goal: extend the Data category with power-tools and additional format support be
 
 ### Notes
 
-Large JSON Streaming Viewer and JSON Table Viewer extend the existing JSON Formatter's Tree view (§20) rather than becoming separate tools. `sql.js` (SQLite compiled to WASM) is the natural library for #33, consistent with the library-forward dependency philosophy (§17).
+Large JSON Streaming Viewer and JSON Table Viewer extend the existing JSON Formatter's Tree view (§20) rather than becoming separate tools. `sql.js` (SQLite compiled to WASM) is the natural library for #33, consistent with the library-forward dependency philosophy (§17); TOML support (#1, #2) uses `smol-toml`; the XSD Validator (#21) uses `xmllint-wasm` (libxml2 compiled to WebAssembly). Both `sql.js` and `xmllint-wasm` needed an explicit build-time asset copy plus a service-worker cache-manifest entry (mirroring Pyodide's existing pattern in §21 Phase 8) — neither library's own bundler-asset-detection worked out of the box against this app's esbuild-based build, and `sql.js`'s browser build resolves to a differently-named `.wasm` file than its Node build, only caught via real end-to-end browser testing rather than unit tests.
 
 ---
 
