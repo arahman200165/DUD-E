@@ -770,4 +770,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'json'], produces: ['json', 'text'] },
   },
+  {
+    id: 'properties-parser',
+    title: 'Properties File Parser',
+    description: 'Convert between Java-style .properties files and JSON, in either direction.',
+    category: 'data',
+    keywords: ['properties', 'java', 'parse', 'config', 'key value'],
+    route: '/tools/properties-parser',
+    load: () => import('../../tools/properties-parser/properties-parser').then((m) => m.PropertiesParser),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text', 'json'], produces: ['json', 'text'] },
+  },
 ];
