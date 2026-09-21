@@ -704,4 +704,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['json'], produces: ['json'] },
   },
+  {
+    id: 'json-pointer',
+    title: 'JSON Pointer Tester',
+    description: 'Resolve an RFC 6901 JSON Pointer against a JSON document.',
+    category: 'data',
+    keywords: ['json pointer', 'rfc 6901', 'resolve', 'path', 'query'],
+    route: '/tools/json-pointer',
+    load: () => import('../../tools/json-pointer/json-pointer').then((m) => m.JsonPointer),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['json'], produces: ['json'] },
+  },
 ];
