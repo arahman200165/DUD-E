@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-70 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+71 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -65,6 +65,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [CSV Cleaner](https://arahman200165.github.io/DUDE/tools/csv-cleaner) | Data | Trims whitespace, drops empty rows, and normalizes a messy CSV. |
 | [CSV Deduplicator](https://arahman200165.github.io/DUDE/tools/csv-dedupe) | Data | Removes duplicate rows from a CSV, optionally by a subset of key columns. |
 | [CSV Join / Merge](https://arahman200165.github.io/DUDE/tools/csv-join) | Data | Joins two CSVs on a key column, inner or left. |
+| [CSV Pivot](https://arahman200165.github.io/DUDE/tools/csv-pivot) | Data | Pivots a CSV: groups by a row key and column key, aggregating a value column. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |

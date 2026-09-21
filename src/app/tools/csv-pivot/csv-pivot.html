@@ -1,0 +1,109 @@
+<app-tool-shell title="CSV Pivot" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Row key
+        <input
+          type="text"
+          class="w-28 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="region"
+          [value]="rowKeyColumn()"
+          (input)="onRowKeyChange($event)"
+        />
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        Column key
+        <input
+          type="text"
+          class="w-28 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="product"
+          [value]="columnKeyColumn()"
+          (input)="onColumnKeyChange($event)"
+        />
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        Value
+        <input
+          type="text"
+          class="w-28 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="amount"
+          [value]="valueColumn()"
+          (input)="onValueColumnChange($event)"
+        />
+      </label>
+
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="aggregation() === 'sum'"
+          [class.text-bg]="aggregation() === 'sum'"
+          [class.text-text-muted]="aggregation() !== 'sum'"
+          (click)="setAggregation('sum')"
+        >
+          Sum
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="aggregation() === 'count'"
+          [class.text-bg]="aggregation() === 'count'"
+          [class.text-text-muted]="aggregation() !== 'count'"
+          (click)="setAggregation('count')"
+        >
+          Count
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="aggregation() === 'avg'"
+          [class.text-bg]="aggregation() === 'avg'"
+          [class.text-text-muted]="aggregation() !== 'avg'"
+          (click)="setAggregation('avg')"
+        >
+          Avg
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+
+      @if (usesWorker() && job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+    </div>
+
+    <div class="flex min-h-0 flex-1 flex-col gap-1">
+      <span class="text-ui text-text-muted">CSV</span>
+      <textarea
+        class="h-full min-h-24 w-full resize-none rounded-sm border border-border bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste CSV (with a header row) here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-auto rounded-sm border border-border bg-panel">
+      @if (usesWorker() && job()?.error(); as workerError) {
+        <div class="p-2">
+          <app-error-panel [message]="workerError" />
+        </div>
+      } @else if (result(); as current) {
+        @if (current.ok) {
+          <app-data-table [columns]="current.table.columns" [rows]="current.table.rows" />
+        } @else {
+          <div class="p-2">
+            <app-error-panel [message]="current.error.message" />
+          </div>
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
