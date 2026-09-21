@@ -1,0 +1,51 @@
+<app-tool-shell title="YAML Anchor / Alias Visualizer" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <span>Lists every anchor's definition and each alias that references it.</span>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+
+      @if (usesWorker() && job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+    </div>
+
+    <div class="min-h-0 flex-1 rounded-sm border border-border">
+      <app-split-pane [initialRatio]="paneRatio()" (ratioChange)="onRatioChange($event)">
+        <textarea
+          slot="start"
+          class="h-full w-full resize-none bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none"
+          placeholder="Paste YAML with anchors (&name) and aliases (*name) here…"
+          [value]="input()"
+          (input)="onInputChange($event)"
+        ></textarea>
+
+        <div slot="end" class="flex h-full flex-col overflow-auto bg-panel">
+          @if (usesWorker() && job()?.error(); as workerError) {
+            <div class="p-2">
+              <app-error-panel [message]="workerError" />
+            </div>
+          } @else if (result(); as current) {
+            @if (current.ok) {
+              @if (current.anchors.length === 0) {
+                <div class="p-2 text-ui text-text-muted">No anchors found in this document.</div>
+              } @else {
+                <app-data-table [columns]="['Anchor', 'Defined at', 'Referenced at']" [rows]="rows()" />
+              }
+            } @else {
+              <div class="p-2">
+                <app-error-panel [message]="current.error.message" />
+              </div>
+            }
+          }
+        </div>
+      </app-split-pane>
+    </div>
+  </div>
+</app-tool-shell>
