@@ -7,6 +7,7 @@
 [![Deploy](https://github.com/arahman200165/DUDE/actions/workflows/deploy.yml/badge.svg)](https://github.com/arahman200165/DUDE/actions/workflows/deploy.yml)
 [![Live Demo](https://img.shields.io/badge/demo-live-22c55e)](https://arahman200165.github.io/DUDE/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3b82f6.svg)](LICENSE)
+[![Security Policy](https://img.shields.io/badge/security-policy-informational)](docs/SECURITY.md)
 
 A dense, dark-mode-only, installable Progressive Web App that consolidates the small developer utilities you'd otherwise Google one at a time — JSON formatting, regex testing, JWT decoding, hashing, diffing, and more — into a single fast, offline-capable, keyboard-driven deck.
 
@@ -166,7 +167,7 @@ DUDE is an installable Progressive Web App with an offline-capable app shell.
 
 **What's cached:** after the first successful page load over a network connection, the Angular service worker (`@angular/service-worker`) caches the app shell (HTML, JS, CSS bundles) and static assets (icons, manifest). Each tool's code is fetched and cached the first time you navigate to it.
 
-**What works offline:** once cached, the deck shell and any previously-visited local tool (e.g. JSON Formatter) launch and function fully offline — no network round-trip required. Two tools declare a network requirement: JWT Signature Verifier's JWKS/OIDC-discovery mode, and Text Inspector's grammar-check mode (calls the public LanguageTool API). Both show a compact "Offline" badge in their header when the app has no connectivity, degrade gracefully, and never block the rest of the app from working.
+**What works offline:** once cached, the deck shell and any previously-visited local tool (e.g. JSON Formatter) launch and function fully offline — no network round-trip required. Two tools declare a network requirement: JWT Signature Verifier's JWKS/OIDC-discovery mode, and Text Inspector's grammar-check mode (calls the public LanguageTool API). Both show a compact "Offline" badge in their header when the app has no connectivity, degrade gracefully, and never block the rest of the app from working — see [`docs/SECURITY.md`](docs/SECURITY.md) for exactly what each sends and when.
 
 **What does NOT work offline:** a tool (or the app itself) that has never been successfully loaded at least once while online cannot be launched offline — the service worker can only serve what it has previously cached.
 
