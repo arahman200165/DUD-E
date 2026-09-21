@@ -1,0 +1,13 @@
+<app-tool-shell title="Parquet Viewer" status="stable">
+  <app-binary-format-viewer
+    accept=".parquet"
+    dropLabel="Drop a Parquet file here, or click to browse"
+    [fileName]="fileName()"
+    [status]="status()"
+    [errorMessage]="errorMessage()"
+    [tableColumns]="tableColumns()"
+    [tableRows]="tableRows()"
+    (fileSelected)="onFileSelected($event)"
+    (rejected)="onRejected($event)"
+  />
+</app-tool-shell>
