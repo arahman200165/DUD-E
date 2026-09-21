@@ -1084,4 +1084,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['text'], produces: ['table', 'text'] },
   },
+  {
+    id: 'structured-data-converter',
+    title: 'Universal Structured Data Converter',
+    shortTitle: 'Structured Data Converter',
+    description: 'Convert between JSON, YAML, XML, TOML, and CSV, any format to any other.',
+    category: 'data',
+    keywords: ['json', 'yaml', 'xml', 'toml', 'csv', 'convert', 'universal', 'structured data'],
+    route: '/tools/structured-data-converter',
+    load: () => import('../../tools/structured-data-converter/structured-data-converter').then((m) => m.StructuredDataConverter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text', 'json', 'table'], produces: ['text', 'json', 'table'] },
+  },
 ];

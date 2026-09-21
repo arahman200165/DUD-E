@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-83 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+84 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -78,6 +78,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [SQLite File Viewer](https://arahman200165.github.io/DUDE/tools/sqlite-viewer) | Data | Browses the tables in a SQLite file, read-only, entirely client-side. |
 | [Protobuf Decoder](https://arahman200165.github.io/DUDE/tools/protobuf-decoder) | Data | Decodes a Protobuf-encoded payload against a user-supplied .proto schema. |
 | [Resx Tool](https://arahman200165.github.io/DUDE/tools/resx-tool) | Data | Views, diffs, merges, and extracts format tokens from .NET .resx resource files. |
+| [Universal Structured Data Converter](https://arahman200165.github.io/DUDE/tools/structured-data-converter) | Data | Converts between JSON, YAML, XML, TOML, and CSV, any format to any other. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |
