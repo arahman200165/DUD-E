@@ -836,4 +836,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'csv-sql',
+    title: 'CSV ↔ SQL Converter',
+    description: 'Convert CSV rows to SQL INSERT statements, or parse INSERT statements back into CSV.',
+    category: 'data',
+    keywords: ['csv', 'sql', 'insert', 'convert', 'database'],
+    route: '/tools/csv-sql',
+    load: () => import('../../tools/csv-sql/csv-sql').then((m) => m.CsvSql),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text', 'table'], produces: ['text', 'table'] },
+  },
 ];
