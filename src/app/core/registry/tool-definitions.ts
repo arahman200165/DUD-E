@@ -652,4 +652,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['json'], produces: ['json'] },
   },
+  {
+    id: 'json-flatten',
+    title: 'JSON Flatten / Unflatten',
+    description: 'Flatten nested JSON into dot/bracket-notation path keys, or unflatten them back into nested JSON.',
+    category: 'data',
+    keywords: ['json', 'flatten', 'unflatten', 'dot notation', 'nested', 'path', 'keys'],
+    route: '/tools/json-flatten',
+    load: () => import('../../tools/json-flatten/json-flatten').then((m) => m.JsonFlatten),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['json', 'text'], produces: ['json', 'text'] },
+  },
 ];
