@@ -2,12 +2,22 @@ name: Release
 
 # Phase 8 Stage 8 (Milestone 28): builds the Windows desktop installer
 # (NSIS + MSIX/appx) and publishes it to a GitHub Release matching the
-# pushed tag. Triggered by the tag version-bump.yml creates on every
-# master push — separate from deploy.yml, which stays GitHub Pages-only.
+# pushed tag. Separate from deploy.yml, which stays GitHub Pages-only.
+#
+# Two triggers, for two different tag sources:
+# - `push: tags` fires for a tag pushed by an actual human (e.g. a manual
+#   `git tag`/`git push --tags`), which carries a real user identity, not
+#   github-actions[bot]'s.
+# - `workflow_dispatch` is what version-bump.yml's own tag push actually
+#   relies on: a tag created and pushed using the default GITHUB_TOKEN
+#   does NOT auto-trigger other workflows (GitHub's anti-recursion
+#   guard), so version-bump.yml explicitly dispatches this workflow with
+#   `--ref` set to the tag it just created, right after pushing it.
 
 on:
   push:
     tags: ['v*.*.*']
+  workflow_dispatch:
 
 permissions:
   contents: write
