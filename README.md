@@ -24,6 +24,8 @@ Everything runs client-side. There's no backend, no accounts, no telemetry — y
 - **Dense, not decorative** — bold, functional color-coding by category and status, built for daily use, not for demos.
 - **Framework-first** — the registry, shell, persistence, and worker layers were built before the tools, so new tools are cheap and safe to add.
 
+The tools are the proof, not the point: DUDE is a **local-first, extensible developer workbench** for transforming, inspecting, and composing developer data — not just a growing pile of independent utilities. Every tool declares what it accepts and produces in a small shared vocabulary (`DudeDataType` — see `src/app/shared/models/tool-io.model.ts`), the foundation a future cross-tool pipeline or Smart Paste-detection feature would build on. That composition layer isn't shipped yet — today, using two tools together still means copying output to input by hand — but the registry contract every tool already speaks is what makes building it later a framework change, not a rewrite.
+
 ## Screenshots
 
 | Deck | JSON Formatter |
@@ -164,7 +166,7 @@ DUDE is an installable Progressive Web App with an offline-capable app shell.
 
 **What's cached:** after the first successful page load over a network connection, the Angular service worker (`@angular/service-worker`) caches the app shell (HTML, JS, CSS bundles) and static assets (icons, manifest). Each tool's code is fetched and cached the first time you navigate to it.
 
-**What works offline:** once cached, the deck shell and any previously-visited local tool (e.g. JSON Formatter) launch and function fully offline — no network round-trip required. Tools that declare a network requirement (none currently do) show a compact "Offline" badge in their header when the app has no connectivity, and never block the rest of the app from working.
+**What works offline:** once cached, the deck shell and any previously-visited local tool (e.g. JSON Formatter) launch and function fully offline — no network round-trip required. Two tools declare a network requirement: JWT Signature Verifier's JWKS/OIDC-discovery mode, and Text Inspector's grammar-check mode (calls the public LanguageTool API). Both show a compact "Offline" badge in their header when the app has no connectivity, degrade gracefully, and never block the rest of the app from working.
 
 **What does NOT work offline:** a tool (or the app itself) that has never been successfully loaded at least once while online cannot be launched offline — the service worker can only serve what it has previously cached.
 
