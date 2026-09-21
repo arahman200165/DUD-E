@@ -1448,7 +1448,7 @@ Goal: grow Color Converter into a full design toolkit and add CSS/HTML/image/QR 
 33. Base64 Image Viewer
 34. SVG Viewer / Formatter / Optimizer
 35. SVG ↔ Data URI
-36. Pixel Color Picker (on an uploaded image, not the live screen — that variant is Track B)
+36. Pixel Color Picker (on both an uploaded image and the live screen — that variant is Track B)
 37. QR Code Generator (URL, Wi-Fi, contact, TOTP presets)
 38. QR Code Scanner (from an uploaded image or webcam frame)
 39. Barcode Generator
