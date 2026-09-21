@@ -46,7 +46,7 @@ V1 is complete. The extensible framework, all core infrastructure (registry, per
 
 With V1 delivered, the old weekend scope gate no longer applies. New work — additional tools, enhancements to existing tools, or framework extensions — proceeds directly from the §21 Tool Roadmap. The product principles, architecture, and shared conventions documented below remain the standing contract for any new work; only the temporary "hold the line until Sunday" constraints have been retired.
 
-Phases 0–8 of that roadmap are complete: the original 10 showcase tools plus 47 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is complete** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. All 8 stages (Electron shell; native file access; OS-level secret storage; local LLM proxy + AI regex features; desktop shell chrome; local collab server; BYO relay server; auto-update + distribution) shipped as Milestones 21–28. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
+Phases 0–8 of that roadmap are complete: the original 10 showcase tools plus 40 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is complete** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. All 8 stages (Electron shell; native file access; OS-level secret storage; local LLM proxy + AI regex features; desktop shell chrome; local collab server; BYO relay server; auto-update + distribution) shipped as Milestones 21–28. §21 continues from there with a further, comprehensive future roadmap organized into two tracks — a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track. See §22 (Future Architecture Directions) and §23 (Long-Term Product Horizon) for that direction and its cross-cutting architectural implications, and §5.2 for how it revises the product's permanent non-goals.
 
 ---
 
@@ -295,6 +295,12 @@ These are durable product and architecture decisions, not temporary weekend cuts
 - a desktop build's **local, bundled backend** — used only to give Track B tools OS/network/filesystem access on the user's own machine — is now in scope;
 - a **cloud-hosted** backend, a DUDE-operated database, user accounts, and cloud sync remain permanent non-goals for the product as a whole, desktop included, unless a future decision explicitly revisits them (§23's monetization sketch flags this exact tension and does not resolve it);
 - the web/GitHub Pages build remains the permanent zero-install default (§4.9) — desktop is additive, not a replacement.
+
+**Amendment (2026-09-20):** "collaborative editing" above is narrowed by the same carve-out, not reopened wholesale. §21 Phase 8 Stages 6–7 ship real-time collaborative editing for Advanced Markdown Workspace, entirely within the scope the desktop-packaging amendment already grants:
+
+- a same-machine/LAN local collab server (Stage 6) and a user's own self-hosted relay (Stage 7, `relay/`, BYO — never a DUDE-run service) are in scope, because both are either the desktop build's local, bundled backend or infrastructure the user stands up themselves;
+- a DUDE-operated, cloud-hosted collaboration service — hosted rooms, accounts, server-stored documents — remains a permanent non-goal, unchanged from the list above;
+- the web/GitHub Pages build has no collaboration feature and isn't gaining one — this is desktop-only, additive, consistent with §4.9.
 
 ---
 
@@ -1042,7 +1048,7 @@ Every item explicitly deferred in the original showcase tools' write-ups (§20),
 **Explicitly out of scope at the time, now revisited:**
 
 - **AI-based regex generation/explanation** still needs either a hosted LLM proxy or local-model support DUDE doesn't have; it now belongs under the Local AI Utilities carve-out in §21's Track A roadmap rather than under desktop packaging specifically.
-- **Collaborative real-time editing** (Markdown) needs hosted rooms/documents/auth — this remains a permanent non-goal (§5.2) independent of the desktop track, since it requires multi-user cloud infrastructure DUDE does not take on.
+- **Collaborative real-time editing** (Markdown) over the open internet via DUDE-operated hosted rooms/documents/auth remains a permanent non-goal (§5.2) — DUDE will never run shared cloud infrastructure for this. A narrower form — a same-machine/LAN session, or a user's own self-hosted relay — is a different, in-scope thing; see §5.2's amendment and §21 Phase 8 Stages 6–7 below, which ship exactly that.
 
 ### Notes
 
