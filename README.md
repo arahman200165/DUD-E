@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-53 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+54 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -48,6 +48,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [JSON Flatten / Unflatten](https://arahman200165.github.io/DUDE/tools/json-flatten) | Data | Flattens nested JSON into dot/bracket-notation path keys, or unflattens them back into nested JSON. |
 | [JSON Merge](https://arahman200165.github.io/DUDE/tools/json-merge) | Data | Deep-merges two JSON documents, or applies an RFC 7396 JSON Merge Patch. |
 | [JSON Patch Generator](https://arahman200165.github.io/DUDE/tools/json-patch-generate) | Data | Diffs two JSON documents into an RFC 6902 JSON Patch. |
+| [JSON Patch Tester](https://arahman200165.github.io/DUDE/tools/json-patch-test) | Data | Applies an RFC 6902 JSON Patch to a JSON document and shows the result. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |

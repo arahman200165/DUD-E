@@ -691,4 +691,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['json'], produces: ['json'] },
   },
+  {
+    id: 'json-patch-test',
+    title: 'JSON Patch Tester',
+    description: 'Apply an RFC 6902 JSON Patch to a JSON document and see the result.',
+    category: 'data',
+    keywords: ['json patch', 'rfc 6902', 'apply', 'test', 'patch'],
+    route: '/tools/json-patch-test',
+    load: () => import('../../tools/json-patch-test/json-patch-test').then((m) => m.JsonPatchTest),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['json'], produces: ['json'] },
+  },
 ];
