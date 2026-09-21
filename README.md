@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-63 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+64 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -58,6 +58,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [YAML Linter](https://arahman200165.github.io/DUDE/tools/yaml-linter) | Data | Validates YAML and surfaces parse errors with line and column detail. |
 | [YAML Merge](https://arahman200165.github.io/DUDE/tools/yaml-merge) | Data | Deep-merges two YAML documents into one. |
 | [YAML Anchor / Alias Visualizer](https://arahman200165.github.io/DUDE/tools/yaml-anchors) | Data | Visualizes a YAML document's anchors and aliases and where each one resolves. |
+| [YAML Path Tester](https://arahman200165.github.io/DUDE/tools/yaml-path) | Data | Queries a YAML document with a JSONPath or JMESPath expression. |
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |

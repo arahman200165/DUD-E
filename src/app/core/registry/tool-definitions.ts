@@ -823,4 +823,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text'], produces: ['table'] },
   },
+  {
+    id: 'yaml-path',
+    title: 'YAML Path Tester',
+    description: 'Query a YAML document with a JSONPath or JMESPath expression.',
+    category: 'data',
+    keywords: ['yaml', 'jsonpath', 'jmespath', 'query', 'path', 'filter'],
+    route: '/tools/yaml-path',
+    load: () => import('../../tools/yaml-path/yaml-path').then((m) => m.YamlPath),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];
