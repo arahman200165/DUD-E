@@ -4,7 +4,9 @@ import { TOOL_DEFINITIONS } from './tool-definitions';
 
 describe('README tool count', () => {
   const readmePath = resolve(process.cwd(), 'README.md');
-  const readme = readFileSync(readmePath, 'utf-8');
+  // Normalize CRLF -> LF: git checks this file out with CRLF line endings on Windows runners
+  // (e.g. release.yml's windows-latest), which would otherwise break the bare `\n` splits below.
+  const readme = readFileSync(readmePath, 'utf-8').replace(/\r\n/g, '\n');
 
   // "Settings" is a desktop-only configuration page (Electron LLM proxy setup), not one of the
   // showcased developer micro-tools -- the PRD (§21 Phase 8) already treats it as not incrementing
