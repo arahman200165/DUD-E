@@ -1,0 +1,61 @@
+<app-tool-shell title="Protobuf Decoder" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="grid min-h-0 flex-[2] grid-cols-1 gap-3 md:grid-cols-2">
+      <div class="flex min-h-0 flex-col gap-1">
+        <span class="text-ui text-text-muted">.proto schema</span>
+        <textarea
+          class="h-full min-h-32 w-full resize-none rounded-sm border border-border bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Paste your .proto schema here…"
+          [value]="schemaText()"
+          (input)="onSchemaTextChange($event)"
+        ></textarea>
+        @if (schemaError(); as message) {
+          <app-error-panel [message]="message" />
+        }
+      </div>
+
+      <div class="flex min-h-0 flex-col gap-2">
+        <span class="text-ui text-text-muted">Binary payload</span>
+        <app-file-drop label="Drop the encoded payload here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+        @if (messageTypeNames().length > 0) {
+          <div class="flex flex-wrap items-center gap-1.5 text-ui text-text-muted">
+            Message type
+            <div class="flex flex-wrap overflow-hidden rounded-sm border border-border">
+              @for (name of messageTypeNames(); track name) {
+                <button
+                  type="button"
+                  class="px-2 py-0.5"
+                  [class.bg-accent]="name === selectedMessageType()"
+                  [class.text-bg]="name === selectedMessageType()"
+                  [class.text-text-muted]="name !== selectedMessageType()"
+                  (click)="selectMessageType(name)"
+                >
+                  {{ name }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (rejection(); as message) {
+          <app-error-panel [message]="message" />
+        }
+      </div>
+    </div>
+
+    <div class="min-h-0 flex-[3] overflow-auto rounded-sm border border-border bg-panel p-2">
+      @if (decodeResult(); as current) {
+        @if (current.ok) {
+          @if (treeNodes(); as nodes) {
+            <app-tree-view [nodes]="nodes" />
+          }
+        } @else {
+          <app-error-panel [message]="current.error.message" />
+        }
+      } @else {
+        <div class="text-ui text-text-muted">Provide a valid schema and a payload file to decode.</div>
+      }
+    </div>
+  </div>
+</app-tool-shell>
