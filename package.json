@@ -5,7 +5,8 @@
   "author": "arahman200165",
   "main": "dist/electron/main.js",
   "engines": {
-    "npm": "11.19.0"
+    "npm": "11.19.0",
+    "node": "^24.15.0"
   },
   "scripts": {
     "ng": "ng",
@@ -62,7 +63,7 @@
     "markdown-it": "^15.0.2",
     "markdown-it-task-lists": "^2.1.1",
     "papaparse": "^5.7.0",
-    "parse-duration": "^2.1.8",
+    "parse-duration": "^2.1.9",
     "picomatch": "^4.0.7",
     "pyodide": "^314.0.7",
     "regexp-tree": "^0.1.27",
@@ -88,23 +89,23 @@
     "@types/humanize-duration": "^3.27.4",
     "@types/jmespath": "^0.15.2",
     "@types/luxon": "^3.7.5",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "@types/papaparse": "^5.5.2",
     "@types/picomatch": "^4.0.3",
     "@types/semver": "^7.8.0",
     "@types/ws": "^8.18.1",
-    "concurrently": "^9.1.0",
-    "cross-env": "^7.0.3",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
     "electron": "^33.0.0",
     "electron-builder": "^26.15.3",
     "esbuild": "^0.24.0",
-    "jsdom": "^28.0.0",
+    "jsdom": "^30.1.0",
     "postcss": "^8.5.28",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
     "vitest": "^4.0.8",
-    "wait-on": "^8.0.1"
+    "wait-on": "^9.1.0"
   },
   "allowScripts": {
     "electron@33.4.11": true,
