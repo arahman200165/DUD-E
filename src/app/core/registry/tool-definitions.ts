@@ -849,4 +849,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text', 'table'], produces: ['text', 'table'] },
   },
+  {
+    id: 'csv-delimiter-detector',
+    title: 'CSV Delimiter Detector',
+    description: 'Detect the most likely delimiter in a pasted CSV/TSV/PSV sample and preview it as a table.',
+    category: 'data',
+    keywords: ['csv', 'tsv', 'delimiter', 'detect', 'separator'],
+    route: '/tools/csv-delimiter-detector',
+    load: () => import('../../tools/csv-delimiter-detector/csv-delimiter-detector').then((m) => m.CsvDelimiterDetector),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['table'] },
+  },
 ];
