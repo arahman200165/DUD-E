@@ -1,0 +1,101 @@
+<app-tool-shell title="Resx Tool" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'view'"
+          [class.text-bg]="mode() === 'view'"
+          [class.text-text-muted]="mode() !== 'view'"
+          (click)="setMode('view')"
+        >
+          View
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'tokens'"
+          [class.text-bg]="mode() === 'tokens'"
+          [class.text-text-muted]="mode() !== 'tokens'"
+          (click)="setMode('tokens')"
+        >
+          Tokens
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'diff'"
+          [class.text-bg]="mode() === 'diff'"
+          [class.text-text-muted]="mode() !== 'diff'"
+          (click)="setMode('diff')"
+        >
+          Diff
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'merge'"
+          [class.text-bg]="mode() === 'merge'"
+          [class.text-text-muted]="mode() !== 'merge'"
+          (click)="setMode('merge')"
+        >
+          Merge
+        </button>
+      </div>
+    </div>
+
+    <div class="grid min-h-0 flex-1 grid-cols-1 gap-3" [class.md:grid-cols-2]="needsOverlay()">
+      <div class="flex min-h-0 flex-col gap-1">
+        <span class="text-ui text-text-muted">{{ needsOverlay() ? 'Base .resx' : '.resx' }}</span>
+        <textarea
+          class="h-full min-h-32 w-full resize-none rounded-sm border border-border bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Paste .resx XML here…"
+          [value]="baseInput()"
+          (input)="onBaseInputChange($event)"
+        ></textarea>
+      </div>
+
+      @if (needsOverlay()) {
+        <div class="flex min-h-0 flex-col gap-1">
+          <span class="text-ui text-text-muted">Overlay .resx</span>
+          <textarea
+            class="h-full min-h-32 w-full resize-none rounded-sm border border-border bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="Paste the .resx to compare/merge on top here…"
+            [value]="overlayInput()"
+            (input)="onOverlayInputChange($event)"
+          ></textarea>
+        </div>
+      }
+    </div>
+
+    <div class="min-h-0 flex-[2] overflow-auto rounded-sm border border-border bg-panel p-2">
+      @if (errorMessage(); as message) {
+        <app-error-panel [message]="message" />
+      } @else if (mode() === 'view' && viewTable(); as table) {
+        <app-data-table [columns]="table.columns" [rows]="table.rows" />
+      } @else if (mode() === 'tokens' && tokensTable(); as table) {
+        <app-data-table [columns]="table.columns" [rows]="table.rows" />
+      } @else if (mode() === 'diff' && diffTable(); as table) {
+        <app-data-table [columns]="table.columns" [rows]="table.rows" />
+      } @else if (mode() === 'merge' && mergedXml(); as xml) {
+        <div class="flex h-full flex-col">
+          <div class="flex items-center justify-end pb-1.5">
+            <button
+              type="button"
+              class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+              (click)="copy(xml)"
+            >
+              Copy
+            </button>
+          </div>
+          <textarea
+            readonly
+            class="h-full w-full flex-1 resize-none bg-panel font-mono text-xs text-text focus:outline-none"
+            [value]="xml"
+          ></textarea>
+        </div>
+      }
+    </div>
+  </div>
+</app-tool-shell>

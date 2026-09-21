@@ -1071,4 +1071,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['file', 'bytes', 'text'], produces: ['json'] },
   },
+  {
+    id: 'resx-tool',
+    title: 'Resx Tool',
+    description: 'View, diff, merge, and extract format tokens from .NET .resx resource files.',
+    category: 'data',
+    keywords: ['resx', '.net', 'resource', 'diff', 'merge', 'localization', 'i18n', 'token'],
+    route: '/tools/resx-tool',
+    load: () => import('../../tools/resx-tool/resx-tool').then((m) => m.ResxTool),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text'], produces: ['table', 'text'] },
+  },
 ];
