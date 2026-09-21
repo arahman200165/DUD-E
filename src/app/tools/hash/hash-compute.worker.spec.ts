@@ -6,18 +6,25 @@ function messageEvent(id: string, payload: HashComputePayload): MessageEvent<Wor
   return { data: { id, payload } } as MessageEvent<WorkerRequestMessage<HashComputePayload>>;
 }
 
-function flush(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 0));
-}
-
 describe('hash-compute.worker handleMessage', () => {
   let posted: unknown[];
+  let posted$: Promise<void>;
 
   beforeEach(() => {
     posted = [];
+    // `handleMessage` posts exactly once (result or error) after its internal `computeHashes()` promise
+    // settles. Waiting a fixed tick (e.g. `setTimeout(resolve, 0)`) raced with that promise under load
+    // (observed flaking in CI) -- resolving on the post itself, per test, is deterministic instead.
+    let resolvePosted: () => void;
+    posted$ = new Promise((resolve) => {
+      resolvePosted = resolve;
+    });
     vi.stubGlobal(
       'postMessage',
-      vi.fn((message: unknown) => posted.push(message)),
+      vi.fn((message: unknown) => {
+        posted.push(message);
+        resolvePosted();
+      }),
     );
   });
 
@@ -27,7 +34,7 @@ describe('hash-compute.worker handleMessage', () => {
 
   it('posts a result message with computed hashes for a valid payload', async () => {
     handleMessage(messageEvent('job-1', { text: 'hello', algorithms: ['MD5', 'SHA-256'] }));
-    await flush();
+    await posted$;
 
     expect(posted).toHaveLength(1);
     const message = posted[0] as { id: string; kind: string; result: { algorithm: string; hex: string }[] };
@@ -41,7 +48,7 @@ describe('hash-compute.worker handleMessage', () => {
     const digestSpy = vi.spyOn(crypto.subtle, 'digest').mockRejectedValueOnce(new Error('digest failed'));
 
     handleMessage(messageEvent('job-2', { text: 'hello', algorithms: ['SHA-256'] }));
-    await flush();
+    await posted$;
 
     expect(posted).toHaveLength(1);
     const message = posted[0] as { id: string; kind: string; error: { message: string } };
