@@ -82,7 +82,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Text Inspector](https://arahman200165.github.io/DUDE/tools/text-inspector) | Text | Character, word, line, and UTF-8 byte metrics for any text, including selections. |
 | [Text Diff](https://arahman200165.github.io/DUDE/tools/diff) | Text | Line-oriented diff between two blocks of text, computed in a worker. |
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |
-| [Whitespace Cleaner / Normalizer](https://arahman200165.github.io/DUDE/tools/whitespace-cleaner) | Text | Trims, collapses, and normalizes whitespace, line endings, and invisible characters. |
+| [Whitespace Cleaner / Normalizer](https://arahman200165.github.io/DUDE/tools/whitespace-cleaner) | Text | Trims, collapses, and normalizes whitespace, line endings, tabs/spaces, and indentation. |
 | [Unicode Character Inspector](https://arahman200165.github.io/DUDE/tools/unicode-character-inspector) | Text | Inspects pasted text character by character: code point, UTF-8/UTF-16 bytes, general category, Unicode block, and official name. |
 | [Unicode Code Point Converter](https://arahman200165.github.io/DUDE/tools/unicode-code-point-converter) | Text | Converts between U+XXXX notation, decimal, HTML entities, JS `\u` escapes, and UTF-8 hex bytes, single or bulk. |
 | [Invisible / Control / Zero-Width Character Scanner](https://arahman200165.github.io/DUDE/tools/invisible-char-scanner) | Text | Scans text for invisible, control, and zero-width characters, lists each occurrence, and strips selected kinds. |

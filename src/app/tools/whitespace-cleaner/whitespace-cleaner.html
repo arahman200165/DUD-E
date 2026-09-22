@@ -12,14 +12,6 @@
       <label class="flex items-center gap-1.5">
         <input
           type="checkbox"
-          [checked]="options().normalizeLineEndings"
-          (change)="toggle('normalizeLineEndings')"
-        />
-        Normalize line endings
-      </label>
-      <label class="flex items-center gap-1.5">
-        <input
-          type="checkbox"
           [checked]="options().stripTrailingWhitespace"
           (change)="toggle('stripTrailingWhitespace')"
         />
@@ -38,18 +30,40 @@
         Strip invisible characters
       </label>
 
-      <label class="flex items-center gap-1.5">
-        Tabs
-        <select
-          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
-          [value]="options().tabConversion"
-          (change)="onTabConversionChange($event)"
-        >
-          <option value="none">Unchanged</option>
-          <option value="tabs-to-spaces">Tabs → spaces</option>
-          <option value="spaces-to-tabs">Spaces → tabs</option>
-        </select>
-      </label>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-2 text-ui text-text-muted">
+      <span class="font-medium text-text">Line endings</span>
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="options().lineEnding"
+        (change)="onLineEndingChange($event)"
+      >
+        <option value="unchanged">Unchanged</option>
+        <option value="lf">LF (\n)</option>
+        <option value="crlf">CRLF (\r\n)</option>
+        <option value="cr">CR (\r)</option>
+      </select>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-2 text-ui text-text-muted">
+      <span class="font-medium text-text">Tabs ↔ spaces</span>
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="options().tabConversion"
+        (change)="onTabConversionChange($event)"
+      >
+        <option value="none">Unchanged</option>
+        <option value="tabs-to-spaces">Tabs → spaces</option>
+        <option value="spaces-to-tabs">Spaces → tabs</option>
+      </select>
 
       @if (options().tabConversion !== 'none') {
         <label class="flex items-center gap-1.5">
@@ -64,14 +78,50 @@
           />
         </label>
       }
+    </div>
 
-      <button
-        type="button"
-        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
-        (click)="clear()"
-      >
-        Clear
-      </button>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-2 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="options().reindent" (change)="toggle('reindent')" />
+        <span class="font-medium text-text">Reindent</span>
+      </label>
+
+      @if (options().reindent) {
+        <label class="flex items-center gap-1.5">
+          From
+          <input
+            type="number"
+            min="1"
+            max="16"
+            class="w-14 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="options().reindentFromWidth"
+            (change)="onReindentFromWidthChange($event)"
+          />
+          spaces/level
+        </label>
+        <label class="flex items-center gap-1.5">
+          To
+          <select
+            class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="options().reindentToStyle"
+            (change)="onReindentToStyleChange($event)"
+          >
+            <option value="spaces">Spaces</option>
+            <option value="tabs">Tabs</option>
+          </select>
+        </label>
+        @if (options().reindentToStyle === 'spaces') {
+          <input
+            type="number"
+            min="1"
+            max="16"
+            class="w-14 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="options().reindentToWidth"
+            (change)="onReindentToWidthChange($event)"
+          />
+          <span>spaces/level</span>
+        }
+      }
     </div>
 
     <div class="flex flex-col gap-1">
