@@ -1,0 +1,160 @@
+<app-tool-shell title="Number Theory Toolkit" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      @for (option of tabs; track option.id) {
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="tab() === option.id"
+          [class.text-bg]="tab() === option.id"
+          [class.text-text-muted]="tab() !== option.id"
+          (click)="setTab(option.id)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+
+    @if (tab() === 'modular') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-wrap gap-1 text-ui text-text-muted">
+          @for (option of modOps; track option.id) {
+            <button
+              type="button"
+              class="rounded-sm border px-2 py-0.5"
+              [class.border-accent]="modOpSelected() === option.id"
+              [class.text-accent]="modOpSelected() === option.id"
+              [class.border-border]="modOpSelected() !== option.id"
+              (click)="setModOp(option.id)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">A</span>
+            <input
+              type="text"
+              class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="modA()"
+              (input)="onModAChange($event)"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">B</span>
+            <input
+              type="text"
+              class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="modB()"
+              (input)="onModBChange($event)"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">M (modulus)</span>
+            <input
+              type="text"
+              class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="modM()"
+              (input)="onModMChange($event)"
+            />
+          </div>
+        </div>
+
+        @if (modResult(); as result) {
+          @if (result.ok) {
+            <div class="rounded-sm border border-border bg-panel p-3 font-mono text-lg text-accent">{{ result.value }}</div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+
+        @if (modInverseResult(); as inv) {
+          <div class="text-ui text-text-muted">
+            Modular inverse of A mod M:
+            @if (inv.ok) {
+              <span class="font-mono text-text">{{ inv.value }}</span>
+            } @else {
+              <span class="text-text-muted">{{ inv.error }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (tab() === 'gcd-lcm') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Numbers (comma or space separated)</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="gcdLcmInput()"
+            (input)="onGcdLcmInputChange($event)"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui text-text-muted">GCD</div>
+            @if (gcdResult(); as result) {
+              @if (result.ok) {
+                <div class="font-mono text-lg text-accent">{{ result.value }}</div>
+              } @else {
+                <app-error-panel [message]="result.error" />
+              }
+            }
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui text-text-muted">LCM</div>
+            @if (lcmResult(); as result) {
+              @if (result.ok) {
+                <div class="font-mono text-lg text-accent">{{ result.value }}</div>
+              } @else {
+                <app-error-panel [message]="result.error" />
+              }
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (tab() === 'primes') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Number</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="primeInput()"
+            (input)="onPrimeInputChange($event)"
+          />
+        </div>
+
+        @if (primeResult(); as result) {
+          @if (result.ok) {
+            <div class="rounded-sm border border-border bg-panel p-3">
+              <span class="font-mono text-lg" [class.text-success]="result.value.isPrime" [class.text-warning]="!result.value.isPrime">
+                {{ result.value.isPrime ? 'Prime' : 'Not prime' }}
+              </span>
+              @if (result.value.smallestFactor; as factor) {
+                <span class="ml-2 text-ui text-text-muted">smallest factor: {{ factor }}</span>
+              }
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+
+        @if (factorizeResult(); as result) {
+          @if (result.ok) {
+            <div class="font-mono text-sm text-text">{{ result.value.join(' × ') }}</div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
