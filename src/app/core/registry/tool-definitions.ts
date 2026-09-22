@@ -1479,4 +1479,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'percentage-ratio-calculator',
+    title: 'Percentage & Ratio Calculator',
+    description: 'Percentage of, percent-of-what, percent change, ratio simplification, and proportion solving.',
+    category: 'developer',
+    keywords: ['percentage', 'percent', 'ratio', 'proportion', 'percent change', 'simplify ratio'],
+    route: '/tools/percentage-ratio-calculator',
+    load: () => import('../../tools/percentage-ratio-calculator/percentage-ratio-calculator').then((m) => m.PercentageRatioCalculator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];

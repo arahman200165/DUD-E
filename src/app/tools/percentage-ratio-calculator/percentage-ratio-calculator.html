@@ -1,0 +1,133 @@
+<app-tool-shell title="Percentage & Ratio Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      @for (option of tabs; track option.id) {
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="tab() === option.id"
+          [class.text-bg]="tab() === option.id"
+          [class.text-text-muted]="tab() !== option.id"
+          (click)="setTab(option.id)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+
+    @if (tab() === 'percentage') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-wrap gap-1 text-ui text-text-muted">
+          @for (option of percentModes; track option.id) {
+            <button
+              type="button"
+              class="rounded-sm border px-2 py-0.5"
+              [class.border-accent]="percentMode() === option.id"
+              [class.text-accent]="percentMode() === option.id"
+              [class.border-border]="percentMode() !== option.id"
+              (click)="setPercentMode(option.id)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">X</span>
+            <input
+              type="text"
+              class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="percentX()"
+              (input)="onPercentXChange($event)"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-ui text-text-muted">Y</span>
+            <input
+              type="text"
+              class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="percentY()"
+              (input)="onPercentYChange($event)"
+            />
+          </div>
+        </div>
+
+        @if (percentResult(); as result) {
+          @if (result.ok) {
+            <div class="rounded-sm border border-border bg-panel p-3">
+              <div class="text-ui text-text-muted">{{ percentResultLabel() }}</div>
+              <div class="font-mono text-lg text-accent">{{ result.value }}{{ percentMode() === 'of' ? '' : '%' }}</div>
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      </div>
+    }
+
+    @if (tab() === 'ratio') {
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <span class="text-ui text-text-muted">Simplify a ratio A:B</span>
+          <div class="flex items-center gap-2">
+            <input
+              type="text"
+              class="w-24 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="ratioA()"
+              (input)="onRatioAChange($event)"
+            />
+            <span class="text-text-muted">:</span>
+            <input
+              type="text"
+              class="w-24 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="ratioB()"
+              (input)="onRatioBChange($event)"
+            />
+          </div>
+          @if (simplifyResult(); as result) {
+            @if (result.ok) {
+              <div class="font-mono text-lg text-accent">{{ result.value.a }} : {{ result.value.b }}</div>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-ui text-text-muted">Solve a proportion A:B = C:x</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <input
+              type="text"
+              class="w-20 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="proportionA()"
+              (input)="onProportionAChange($event)"
+            />
+            <span class="text-text-muted">:</span>
+            <input
+              type="text"
+              class="w-20 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="proportionB()"
+              (input)="onProportionBChange($event)"
+            />
+            <span class="text-text-muted">=</span>
+            <input
+              type="text"
+              class="w-20 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="proportionC()"
+              (input)="onProportionCChange($event)"
+            />
+            <span class="text-text-muted">: x</span>
+          </div>
+          @if (proportionResult(); as result) {
+            @if (result.ok) {
+              <div class="font-mono text-lg text-accent">x = {{ result.value }}</div>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+</app-tool-shell>
