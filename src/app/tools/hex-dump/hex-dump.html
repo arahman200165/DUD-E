@@ -1,0 +1,105 @@
+<app-tool-shell title="Hex Dump Viewer / Builder" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'toHexDump'"
+          [class.text-bg]="direction() === 'toHexDump'"
+          [class.text-text-muted]="direction() !== 'toHexDump'"
+          (click)="setDirection('toHexDump')"
+        >
+          File &rarr; Hex Dump
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'toFile'"
+          [class.text-bg]="direction() === 'toFile'"
+          [class.text-text-muted]="direction() !== 'toFile'"
+          (click)="setDirection('toFile')"
+        >
+          Hex Dump &rarr; File
+        </button>
+      </div>
+
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+        Clear
+      </button>
+
+      @if (job(); as currentJob) {
+        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    @if (direction() === 'toHexDump') {
+      <app-file-drop label="Drop a file here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+      @if (job(); as currentJob) {
+        @if (currentJob.error(); as message) {
+          <app-error-panel [message]="message" />
+        }
+      }
+
+      @if (selectedFile(); as file) {
+        <div class="text-ui text-text-muted">{{ file.name }} &middot; {{ file.size }} bytes</div>
+      }
+
+      @if (dumpOutput() !== '') {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">Hex dump</span>
+            <app-copy-button [text]="dumpOutput()" />
+          </div>
+          <textarea
+            rows="16"
+            readonly
+            class="w-full whitespace-pre rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+            [value]="dumpOutput()"
+          ></textarea>
+        </div>
+      }
+    } @else {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Hex dump (same format this tool produces: offset, hex, |ASCII|)</span>
+        <textarea
+          rows="16"
+          class="w-full whitespace-pre rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="00000000  48 65 6c 6c 6f 2c 20 77  6f 72 6c 64 21           |Hello, world!|"
+          [value]="dumpInput()"
+          (input)="onDumpInputChange($event)"
+        ></textarea>
+      </div>
+
+      @if (job(); as currentJob) {
+        @if (currentJob.error(); as message) {
+          <app-error-panel [message]="message" />
+        }
+      }
+
+      @if (parseResult(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text-muted">
+            <span>{{ result.value.length }} bytes decoded</span>
+            <input
+              type="text"
+              class="w-40 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="downloadFilename()"
+              (input)="onFilenameChange($event)"
+            />
+            <button type="button" class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="download()">
+              Download
+            </button>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    }
+  </div>
+</app-tool-shell>

@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-109 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+110 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -115,6 +115,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [ROT13 / ROT47 Cipher](https://arahman200165.github.io/DUDE/tools/rot-cipher) | Encoding | Applies the self-inverse ROT13 or ROT47 letter/character rotation cipher. |
 | [Escape / Unescape Toolkit](https://arahman200165.github.io/DUDE/tools/escape-unescape-toolkit) | Encoding | Escapes or unescapes text for JavaScript, CSS, SQL, POSIX shell, PowerShell, or quoted-printable. |
 | [Data URI Converter](https://arahman200165.github.io/DUDE/tools/data-uri-converter) | Encoding | Generates a data: URI from a file or text, or decodes one back to a previewable, downloadable file. |
+| [Hex Dump Viewer / Builder](https://arahman200165.github.io/DUDE/tools/hex-dump) | Encoding | Renders a file as a classic offset/hex/ASCII hex dump, or rebuilds a file from a pasted hex dump. |
 | [JWT Debugger](https://arahman200165.github.io/DUDE/tools/jwt) | Security | Decodes a JWT's header and payload — never persisted, never verifies signatures. |
 | [Hash Generator](https://arahman200165.github.io/DUDE/tools/hash) | Security | MD5, SHA-1, SHA-256, SHA-384, and SHA-512 digests, computed in a worker. |
 | [File Hash Generator](https://arahman200165.github.io/DUDE/tools/file-hash) | Security | MD5, SHA-1, SHA-256, SHA-384, and SHA-512 digests for a local file. |
