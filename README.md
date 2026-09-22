@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-99 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+100 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -98,6 +98,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Lorem Ipsum & Placeholder Text Generator](https://arahman200165.github.io/DUDE/tools/lorem-ipsum-generator) | Text | Generates classic Lorem Ipsum or faker-based placeholder text, as words, sentences, or paragraphs. |
 | [ASCII Art Generator / Banner](https://arahman200165.github.io/DUDE/tools/ascii-art-generator) | Text | Renders text as an ASCII-art banner, with a choice of FIGlet fonts. |
 | [Keyword Frequency Analyzer](https://arahman200165.github.io/DUDE/tools/keyword-frequency-analyzer) | Text | Counts word frequency in text, with stop-word filtering and a minimum-length filter. |
+| [String Similarity Calculator](https://arahman200165.github.io/DUDE/tools/string-similarity-calculator) | Text | Compares two strings with Levenshtein distance/similarity and Jaro-Winkler similarity. |
 | [Slug Generator](https://arahman200165.github.io/DUDE/tools/slug-generator) | Text | Turns a title into a URL-friendly slug, with transliteration and length control. |
 | [Advanced Diff / Merge](https://arahman200165.github.io/DUDE/tools/advanced-diff) | Text | Line, word, and character diffing with a side-by-side two-way or three-way merge view, file upload, and unified-diff export. |
 | [Directory Diff](https://arahman200165.github.io/DUDE/tools/directory-diff) | Text | Compares two folders for added/removed/changed files, with a line diff or hex byte diff on drill-down. |

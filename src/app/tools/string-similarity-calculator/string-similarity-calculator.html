@@ -1,0 +1,34 @@
+<app-tool-shell title="String Similarity Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">String A</span>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="left()"
+        (input)="onLeftChange($event)"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">String B</span>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="right()"
+        (input)="onRightChange($event)"
+      />
+    </div>
+
+    <div class="grid max-w-sm grid-cols-2 gap-x-6 gap-y-1.5 text-ui">
+      <span class="text-text-muted">Levenshtein distance</span>
+      <span class="font-mono text-text">{{ result().levenshteinDistance }}</span>
+
+      <span class="text-text-muted">Levenshtein similarity</span>
+      <span class="font-mono text-text">{{ percent(result().levenshteinSimilarity) }}</span>
+
+      <span class="text-text-muted">Jaro-Winkler similarity</span>
+      <span class="font-mono text-text">{{ percent(result().jaroWinklerSimilarity) }}</span>
+    </div>
+  </div>
+</app-tool-shell>
