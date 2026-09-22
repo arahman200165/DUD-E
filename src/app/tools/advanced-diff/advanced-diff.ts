@@ -15,6 +15,7 @@ import { formatUnifiedDiff } from './unified-diff';
 import { AdvancedDiffPayload, DiffGranularity } from './advanced-diff-payload';
 import { AdvancedDiffResult } from './advanced-diff-result';
 import { buildThreeWayMergeOutput, ThreeWayDecision, ThreeWayHunk } from './three-way-merge';
+import { IgnoreOptions, NO_IGNORE_OPTIONS } from './diff-normalize';
 
 export type DiffInputMode = 'paste' | 'file';
 export type DiffViewMode = 'diff' | 'merge';
@@ -56,6 +57,12 @@ export class AdvancedDiff implements OnDestroy {
   protected readonly paneRatio = this.persistence.signal('advanced-diff', 'paneRatio', 'local', 0.5);
   protected readonly mergeMode = this.persistence.signal<MergeMode>('advanced-diff', 'mergeMode', 'local', 'two-way');
   protected readonly base = this.persistence.signal('advanced-diff', 'base', 'session', '');
+  protected readonly ignoreOptions = this.persistence.signal<IgnoreOptions>(
+    'advanced-diff',
+    'ignoreOptions',
+    'local',
+    NO_IGNORE_OPTIONS,
+  );
 
   protected readonly rejection = signal<string | null>(null);
   protected readonly job = signal<WorkerJob<AdvancedDiffResult> | null>(null);
@@ -113,6 +120,10 @@ export class AdvancedDiff implements OnDestroy {
     this.threeWayDecisions.set(new Map());
   }
 
+  protected toggleIgnoreOption(key: keyof IgnoreOptions): void {
+    this.ignoreOptions.update((current) => ({ ...current, [key]: !current[key] }));
+  }
+
   protected onLeftInput(event: Event): void {
     this.left.set((event.target as HTMLTextAreaElement).value);
   }
@@ -155,6 +166,7 @@ export class AdvancedDiff implements OnDestroy {
       left: this.left(),
       right: this.right(),
       granularity: this.granularity(),
+      ignoreOptions: this.ignoreOptions(),
       base: this.mergeMode() === 'three-way' ? this.base() : undefined,
     };
     this.job.set(

@@ -4,6 +4,7 @@ import { AdvancedDiff } from './advanced-diff';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob, WorkerJobStatus } from '../../core/workers/worker-job';
 import { AdvancedDiffResult } from './advanced-diff-result';
+import { NO_IGNORE_OPTIONS } from './diff-normalize';
 
 class FakeWorkerJob implements WorkerJob<AdvancedDiffResult> {
   readonly status: Signal<WorkerJobStatus> = signal<WorkerJobStatus>('running');
@@ -51,7 +52,7 @@ describe('AdvancedDiff component', () => {
 
     expect(fakeWorkerClient.run).toHaveBeenCalledTimes(1);
     const payload = fakeWorkerClient.run.mock.calls[0][1] as { left: string; right: string; granularity: string };
-    expect(payload).toEqual({ left: 'a\nb', right: 'a\nc', granularity: 'word' });
+    expect(payload).toEqual({ left: 'a\nb', right: 'a\nc', granularity: 'word', ignoreOptions: NO_IGNORE_OPTIONS });
   });
 
   it('builds hunks and a merged output from the job result, honoring accepted decisions', () => {

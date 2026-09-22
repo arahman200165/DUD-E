@@ -105,6 +105,19 @@
         </div>
       }
 
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="ignoreOptions().ignoreWhitespace" (change)="toggleIgnoreOption('ignoreWhitespace')" />
+        Ignore whitespace
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="ignoreOptions().ignoreLineEndings" (change)="toggleIgnoreOption('ignoreLineEndings')" />
+        Ignore line endings
+      </label>
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="ignoreOptions().ignoreCase" (change)="toggleIgnoreOption('ignoreCase')" />
+        Ignore case
+      </label>
+
       <button
         type="button"
         class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
@@ -201,6 +214,9 @@
               }
             </div>
           } @else if (diffResult.fineDiff; as fine) {
+            @if (ignoreOptions().ignoreWhitespace || ignoreOptions().ignoreLineEndings || ignoreOptions().ignoreCase) {
+              <p class="text-ui text-text-muted">Word/char highlighting shows normalized text while ignore-options are active.</p>
+            }
             <div class="max-h-64 overflow-auto whitespace-pre-wrap rounded-sm border border-border bg-panel p-2 font-mono text-ui">
               @for (segment of fine.segments; track $index) {
                 <span [class]="segmentClasses(segment.type)">{{ segment.text }}</span>

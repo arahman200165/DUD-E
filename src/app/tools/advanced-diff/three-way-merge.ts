@@ -1,4 +1,5 @@
-import { computeLineDiff, DiffLine } from '../diff/text-diff';
+import { DiffLine } from '../diff/text-diff';
+import { computeLineDiffIgnoring, IgnoreOptions, NO_IGNORE_OPTIONS } from './diff-normalize';
 
 /**
  * Hand-rolled diff3-style three-way merge — no dependency; the ecosystem has
@@ -40,9 +41,9 @@ interface RawEntry {
   readonly context: boolean;
 }
 
-function buildRawEntries(base: string, left: string, right: string): readonly RawEntry[] {
-  const baseVsLeft = computeLineDiff(base, left).lines;
-  const baseVsRight = computeLineDiff(base, right).lines;
+function buildRawEntries(base: string, left: string, right: string, ignoreOptions: IgnoreOptions): readonly RawEntry[] {
+  const baseVsLeft = computeLineDiffIgnoring(base, left, ignoreOptions).lines;
+  const baseVsRight = computeLineDiffIgnoring(base, right, ignoreOptions).lines;
 
   const entries: RawEntry[] = [];
   let li = 0;
@@ -103,8 +104,13 @@ export interface ThreeWayMergeResult {
   readonly hunks: readonly ThreeWayHunk[];
 }
 
-export function computeThreeWayMerge(base: string, left: string, right: string): ThreeWayMergeResult {
-  const entries = buildRawEntries(base, left, right);
+export function computeThreeWayMerge(
+  base: string,
+  left: string,
+  right: string,
+  ignoreOptions: IgnoreOptions = NO_IGNORE_OPTIONS,
+): ThreeWayMergeResult {
+  const entries = buildRawEntries(base, left, right, ignoreOptions);
 
   const hunks: ThreeWayHunk[] = [];
   let i = 0;

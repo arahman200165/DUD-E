@@ -28,7 +28,7 @@ export interface DiffResult {
   readonly summary: DiffSummary;
 }
 
-function splitLines(text: string): readonly string[] {
+export function splitLines(text: string): readonly string[] {
   if (text === '') return [];
   const withoutTrailingNewline = text.endsWith('\n') ? text.slice(0, -1) : text;
   return withoutTrailingNewline.split('\n');
