@@ -162,6 +162,10 @@
         <input type="checkbox" [checked]="ignoreOptions().ignoreCase" (change)="toggleIgnoreOption('ignoreCase')" />
         Ignore case
       </label>
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="detectMovedBlocksEnabled()" (change)="toggleDetectMovedBlocks()" />
+        Detect moved blocks
+      </label>
 
       <button
         type="button"
@@ -378,7 +382,16 @@
             @for (hunk of hunks(); track hunk.index) {
               <div [id]="'hunk-' + hunk.index" class="rounded-sm border border-border bg-panel p-2 font-mono text-ui">
                 <div class="mb-1 flex items-center justify-between text-ui-xs text-text-muted">
-                  <span>Hunk {{ hunk.index + 1 }}</span>
+                  <span>
+                    Hunk {{ hunk.index + 1 }}
+                    @if (movedAnnotationFor(hunk.index); as moved) {
+                      @if (moved.movedTo !== undefined) {
+                        <span class="text-accent">&#8618; moved to hunk {{ moved.movedTo + 1 }}</span>
+                      } @else if (moved.movedFrom !== undefined) {
+                        <span class="text-accent">&#8618; moved from hunk {{ moved.movedFrom + 1 }}</span>
+                      }
+                    }
+                  </span>
                   @if (isResolved(hunk.index)) {
                     <span class="text-success">Resolved &mdash; {{ decisionFor(hunk.index) }}</span>
                   }

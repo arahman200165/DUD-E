@@ -17,6 +17,7 @@ import { AdvancedDiffResult } from './advanced-diff-result';
 import { buildThreeWayMergeOutput, ThreeWayDecision, ThreeWayHunk } from './three-way-merge';
 import { IgnoreOptions, NO_IGNORE_OPTIONS } from './diff-normalize';
 import { SemanticDiffView } from './semantic-diff-view/semantic-diff-view';
+import { detectMovedBlocks, MovedBlockAnnotation } from './moved-block-diff';
 
 export type DiffInputMode = 'paste' | 'file';
 export type DiffViewMode = 'diff' | 'merge';
@@ -75,10 +76,16 @@ export class AdvancedDiff implements OnDestroy {
   protected readonly threeWayDecisions = signal<ReadonlyMap<number, ThreeWayDecision>>(new Map());
   protected readonly activeHunk = signal(0);
 
+  protected readonly detectMovedBlocksEnabled = this.persistence.signal('advanced-diff', 'detectMovedBlocks', 'local', false);
+
   protected readonly hunks = computed<readonly DiffHunk[]>(() => {
     const result = this.job()?.result();
     return result ? buildHunks(result.lineDiff.lines) : [];
   });
+
+  protected readonly movedBlockAnnotations = computed<ReadonlyMap<number, MovedBlockAnnotation>>(() =>
+    this.detectMovedBlocksEnabled() ? detectMovedBlocks(this.hunks()) : new Map(),
+  );
 
   protected readonly mergedOutput = computed(() => {
     const result = this.job()?.result();
@@ -128,6 +135,14 @@ export class AdvancedDiff implements OnDestroy {
 
   protected toggleIgnoreOption(key: keyof IgnoreOptions): void {
     this.ignoreOptions.update((current) => ({ ...current, [key]: !current[key] }));
+  }
+
+  protected toggleDetectMovedBlocks(): void {
+    this.detectMovedBlocksEnabled.update((v) => !v);
+  }
+
+  protected movedAnnotationFor(hunkIndex: number): MovedBlockAnnotation | undefined {
+    return this.movedBlockAnnotations().get(hunkIndex);
   }
 
   protected onLeftInput(event: Event): void {
