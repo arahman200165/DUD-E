@@ -261,6 +261,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'duplicate-finder',
+    title: 'Duplicate Finder',
+    description: 'Finds duplicate lines or duplicate words in text, with counts and one-click removal.',
+    category: 'text',
+    keywords: ['duplicate', 'dedupe', 'lines', 'words', 'unique', 'remove duplicates'],
+    route: '/tools/duplicate-finder',
+    load: () => import('../../tools/duplicate-finder/duplicate-finder').then((m) => m.DuplicateFinder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['json', 'text'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',
