@@ -53,6 +53,7 @@
     "electron-updater": "^6.8.9",
     "fast-json-patch": "^3.1.1",
     "fast-xml-parser": "^5.11.1",
+    "figlet": "^1.11.4",
     "franc-min": "^6.2.0",
     "humanize-duration": "^3.35.0",
     "hyparquet": "^1.31.1",
