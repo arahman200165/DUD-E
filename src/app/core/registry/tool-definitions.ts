@@ -311,6 +311,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'find-replace-text',
+    title: 'Find & Replace',
+    description: 'Literal (non-regex) find and replace, with case-sensitive and whole-word options.',
+    category: 'text',
+    keywords: ['find', 'replace', 'search', 'literal', 'case sensitive', 'whole word'],
+    route: '/tools/find-replace-text',
+    load: () => import('../../tools/find-replace-text/find-replace-text').then((m) => m.FindReplaceText),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',
