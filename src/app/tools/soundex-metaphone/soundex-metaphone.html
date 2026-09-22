@@ -1,0 +1,22 @@
+<app-tool-shell title="Soundex / Metaphone" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Words (one per line, or comma-separated)</span>
+      <textarea
+        rows="4"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Robert&#10;Rupert&#10;Ashcraft"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (entries().length > 0) {
+      <div class="min-h-0 flex-1 overflow-auto rounded-sm border border-border">
+        <app-data-table [columns]="columns" [rows]="rows()" />
+      </div>
+    } @else {
+      <p class="text-ui text-text-muted">Enter one or more words to see their phonetic codes.</p>
+    }
+  </div>
+</app-tool-shell>

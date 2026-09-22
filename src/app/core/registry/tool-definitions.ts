@@ -375,6 +375,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['json'] },
   },
   {
+    id: 'soundex-metaphone',
+    title: 'Soundex / Metaphone',
+    description: 'Computes the Soundex and Metaphone phonetic codes for one or more words.',
+    category: 'text',
+    keywords: ['soundex', 'metaphone', 'phonetic', 'sounds like', 'pronunciation'],
+    route: '/tools/soundex-metaphone',
+    load: () => import('../../tools/soundex-metaphone/soundex-metaphone').then((m) => m.SoundexMetaphone),
+    status: 'stable',
+    persistence: { input: 'session' },
+    io: { accepts: ['text'], produces: ['table'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',
