@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-2">
+  @if (result(); as r) {
+    @if (!r.ok) {
+      <p class="text-ui text-error">{{ r.error }}</p>
+    } @else {
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <span>{{ r.width }}&times;{{ r.height }}</span>
+        <span>{{ r.diffPixelCount }} of {{ r.totalPixels }} pixels differ ({{ r.diffPercentage.toFixed(2) }}%)</span>
+      </div>
+    }
+  }
+
+  <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Left</span>
+      @if (leftUrl(); as url) {
+        <img [src]="url" alt="Left image" class="max-h-64 w-full rounded-sm border border-border object-contain" />
+      } @else {
+        <div class="flex h-32 items-center justify-center rounded-sm border border-dashed border-border text-ui text-text-muted">No image</div>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Right</span>
+      @if (rightUrl(); as url) {
+        <img [src]="url" alt="Right image" class="max-h-64 w-full rounded-sm border border-border object-contain" />
+      } @else {
+        <div class="flex h-32 items-center justify-center rounded-sm border border-dashed border-border text-ui text-text-muted">No image</div>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Diff</span>
+      @if (diffUrl(); as url) {
+        <img [src]="url" alt="Pixel diff" class="max-h-64 w-full rounded-sm border border-border object-contain" />
+      } @else {
+        <div class="flex h-32 items-center justify-center rounded-sm border border-dashed border-border text-ui text-text-muted">No diff yet</div>
+      }
+    </div>
+  </div>
+</div>

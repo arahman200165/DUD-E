@@ -65,6 +65,16 @@
         >
           XML
         </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'image'"
+          [class.text-bg]="mode() === 'image'"
+          [class.text-text-muted]="mode() !== 'image'"
+          (click)="setMode('image')"
+        >
+          Image
+        </button>
       </div>
 
       @if (mode() === 'text') {
@@ -102,96 +112,137 @@
         </div>
       }
 
-      <div class="flex overflow-hidden rounded-sm border border-border">
+      @if (mode() !== 'image') {
+        <div class="flex overflow-hidden rounded-sm border border-border">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="viewMode() === 'diff'"
+            [class.text-bg]="viewMode() === 'diff'"
+            [class.text-text-muted]="viewMode() !== 'diff'"
+            (click)="setViewMode('diff')"
+          >
+            Diff
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="viewMode() === 'merge'"
+            [class.text-bg]="viewMode() === 'merge'"
+            [class.text-text-muted]="viewMode() !== 'merge'"
+            (click)="setViewMode('merge')"
+          >
+            Merge
+          </button>
+        </div>
+
+        @if (viewMode() === 'merge') {
+          <div class="flex overflow-hidden rounded-sm border border-border">
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="mergeMode() === 'two-way'"
+              [class.text-bg]="mergeMode() === 'two-way'"
+              [class.text-text-muted]="mergeMode() !== 'two-way'"
+              (click)="setMergeMode('two-way')"
+            >
+              Two-way
+            </button>
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="mergeMode() === 'three-way'"
+              [class.text-bg]="mergeMode() === 'three-way'"
+              [class.text-text-muted]="mergeMode() !== 'three-way'"
+              (click)="setMergeMode('three-way')"
+            >
+              Three-way
+            </button>
+          </div>
+        }
+
+        <label class="flex items-center gap-1.5">
+          <input type="checkbox" [checked]="ignoreOptions().ignoreWhitespace" (change)="toggleIgnoreOption('ignoreWhitespace')" />
+          Ignore whitespace
+        </label>
+        <label class="flex items-center gap-1.5">
+          <input type="checkbox" [checked]="ignoreOptions().ignoreLineEndings" (change)="toggleIgnoreOption('ignoreLineEndings')" />
+          Ignore line endings
+        </label>
+        <label class="flex items-center gap-1.5">
+          <input type="checkbox" [checked]="ignoreOptions().ignoreCase" (change)="toggleIgnoreOption('ignoreCase')" />
+          Ignore case
+        </label>
+        <label class="flex items-center gap-1.5">
+          <input type="checkbox" [checked]="detectMovedBlocksEnabled()" (change)="toggleDetectMovedBlocks()" />
+          Detect moved blocks
+        </label>
+
         <button
           type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="viewMode() === 'diff'"
-          [class.text-bg]="viewMode() === 'diff'"
-          [class.text-text-muted]="viewMode() !== 'diff'"
-          (click)="setViewMode('diff')"
+          class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
+          (click)="run()"
         >
           Diff
         </button>
         <button
           type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="viewMode() === 'merge'"
-          [class.text-bg]="viewMode() === 'merge'"
-          [class.text-text-muted]="viewMode() !== 'merge'"
-          (click)="setViewMode('merge')"
+          class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated disabled:opacity-40"
+          [disabled]="job()?.status() !== 'running'"
+          (click)="cancel()"
         >
-          Merge
+          Cancel
         </button>
-      </div>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
 
-      @if (viewMode() === 'merge') {
-        <div class="flex overflow-hidden rounded-sm border border-border">
-          <button
-            type="button"
-            class="px-2 py-0.5"
-            [class.bg-accent]="mergeMode() === 'two-way'"
-            [class.text-bg]="mergeMode() === 'two-way'"
-            [class.text-text-muted]="mergeMode() !== 'two-way'"
-            (click)="setMergeMode('two-way')"
-          >
-            Two-way
-          </button>
-          <button
-            type="button"
-            class="px-2 py-0.5"
-            [class.bg-accent]="mergeMode() === 'three-way'"
-            [class.text-bg]="mergeMode() === 'three-way'"
-            [class.text-text-muted]="mergeMode() !== 'three-way'"
-            (click)="setMergeMode('three-way')"
-          >
-            Three-way
-          </button>
-        </div>
-      }
+        @if (job(); as currentJob) {
+          <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+        }
+      } @else {
+        <label class="flex items-center gap-1.5">
+          Sensitivity
+          <input
+            type="number"
+            min="0"
+            max="1"
+            step="0.05"
+            class="w-16 rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="imageThreshold()"
+            (change)="onImageThresholdChange($event)"
+          />
+        </label>
+        <button
+          type="button"
+          class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
+          (click)="runImageDiff()"
+        >
+          Compare Images
+        </button>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated disabled:opacity-40"
+          [disabled]="imageJob()?.status() !== 'running'"
+          (click)="cancelImageDiff()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
 
-      <label class="flex items-center gap-1.5">
-        <input type="checkbox" [checked]="ignoreOptions().ignoreWhitespace" (change)="toggleIgnoreOption('ignoreWhitespace')" />
-        Ignore whitespace
-      </label>
-      <label class="flex items-center gap-1.5">
-        <input type="checkbox" [checked]="ignoreOptions().ignoreLineEndings" (change)="toggleIgnoreOption('ignoreLineEndings')" />
-        Ignore line endings
-      </label>
-      <label class="flex items-center gap-1.5">
-        <input type="checkbox" [checked]="ignoreOptions().ignoreCase" (change)="toggleIgnoreOption('ignoreCase')" />
-        Ignore case
-      </label>
-      <label class="flex items-center gap-1.5">
-        <input type="checkbox" [checked]="detectMovedBlocksEnabled()" (change)="toggleDetectMovedBlocks()" />
-        Detect moved blocks
-      </label>
-
-      <button
-        type="button"
-        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10"
-        (click)="run()"
-      >
-        Diff
-      </button>
-      <button
-        type="button"
-        class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated disabled:opacity-40"
-        [disabled]="job()?.status() !== 'running'"
-        (click)="cancel()"
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
-        (click)="clear()"
-      >
-        Clear
-      </button>
-
-      @if (job(); as currentJob) {
-        <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
+        @if (imageJob(); as currentImageJob) {
+          <app-busy-indicator [status]="currentImageJob.status()" [progress]="currentImageJob.progress()" />
+        }
       }
     </div>
 
@@ -199,7 +250,20 @@
       <app-error-panel [message]="message" />
     }
 
-    @if (viewMode() === 'merge' && mergeMode() === 'three-way') {
+    @if (mode() === 'image') {
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <app-file-drop accept="image/*" label="Drop the left image here…" (fileSelected)="onLeftImageSelected($event)" (rejected)="onRejected($event)" />
+        <app-file-drop accept="image/*" label="Drop the right image here…" (fileSelected)="onRightImageSelected($event)" (rejected)="onRejected($event)" />
+      </div>
+
+      @if (imageJob(); as currentImageJob) {
+        @if (currentImageJob.error(); as message) {
+          <app-error-panel [message]="message" />
+        }
+      }
+
+      <app-image-diff-view [leftFile]="leftImageFile()" [rightFile]="rightImageFile()" [result]="imageJob()?.result() ?? null" />
+    } @else if (viewMode() === 'merge' && mergeMode() === 'three-way') {
       <div class="flex flex-col gap-1">
         <span class="text-ui text-text-muted">Base (common ancestor)</span>
         @if (inputMode() === 'paste') {
@@ -216,6 +280,7 @@
       </div>
     }
 
+    @if (mode() !== 'image') {
     <div class="min-h-40 flex-1 rounded-sm border border-border">
       <app-split-pane [initialRatio]="paneRatio()" (ratioChange)="onRatioChange($event)">
         <div slot="start" class="h-full">
@@ -248,8 +313,9 @@
         </div>
       </app-split-pane>
     </div>
+    }
 
-    @if (job(); as currentJob) {
+    @if (mode() !== 'image' && job(); as currentJob) {
       @if (currentJob.error(); as message) {
         <app-error-panel [message]="message" />
       }

@@ -18,6 +18,9 @@ import { buildThreeWayMergeOutput, ThreeWayDecision, ThreeWayHunk } from './thre
 import { IgnoreOptions, NO_IGNORE_OPTIONS } from './diff-normalize';
 import { SemanticDiffView } from './semantic-diff-view/semantic-diff-view';
 import { detectMovedBlocks, MovedBlockAnnotation } from './moved-block-diff';
+import { AdvancedDiffImagePayload } from './advanced-diff-image-payload';
+import { AdvancedDiffImageResult } from './advanced-diff-image-result';
+import { ImageDiffView } from './image-diff-view/image-diff-view';
 
 export type DiffInputMode = 'paste' | 'file';
 export type DiffViewMode = 'diff' | 'merge';
@@ -39,7 +42,7 @@ const SEGMENT_CLASSES: Record<DiffSegmentType, string> = {
 
 @Component({
   selector: 'app-advanced-diff',
-  imports: [ToolShell, SplitPane, BusyIndicator, ErrorPanel, FileDrop, SemanticDiffView],
+  imports: [ToolShell, SplitPane, BusyIndicator, ErrorPanel, FileDrop, SemanticDiffView, ImageDiffView],
   templateUrl: './advanced-diff.html',
 })
 export class AdvancedDiff implements OnDestroy {
@@ -77,6 +80,13 @@ export class AdvancedDiff implements OnDestroy {
   protected readonly activeHunk = signal(0);
 
   protected readonly detectMovedBlocksEnabled = this.persistence.signal('advanced-diff', 'detectMovedBlocks', 'local', false);
+
+  // Images are never JSON-serializable and shouldn't round-trip through sessionStorage -- held
+  // in-memory only, like FileDrop's own selected-file state.
+  protected readonly leftImageFile = signal<File | null>(null);
+  protected readonly rightImageFile = signal<File | null>(null);
+  protected readonly imageThreshold = this.persistence.signal('advanced-diff', 'imageThreshold', 'local', 0.1);
+  protected readonly imageJob = signal<WorkerJob<AdvancedDiffImageResult> | null>(null);
 
   protected readonly hunks = computed<readonly DiffHunk[]>(() => {
     const result = this.job()?.result();
@@ -203,12 +213,51 @@ export class AdvancedDiff implements OnDestroy {
     this.job()?.cancel();
   }
 
+  protected onLeftImageSelected(file: File): void {
+    this.leftImageFile.set(file);
+  }
+
+  protected onRightImageSelected(file: File): void {
+    this.rightImageFile.set(file);
+  }
+
+  protected onImageThresholdChange(event: Event): void {
+    this.imageThreshold.set(Number((event.target as HTMLInputElement).value) || 0.1);
+  }
+
+  protected async runImageDiff(): Promise<void> {
+    const left = this.leftImageFile();
+    const right = this.rightImageFile();
+    if (!left || !right) return;
+
+    this.imageJob()?.cancel();
+
+    const [leftBuffer, rightBuffer] = await Promise.all([left.arrayBuffer(), right.arrayBuffer()]);
+    const payload: AdvancedDiffImagePayload = { left: leftBuffer, right: rightBuffer, threshold: this.imageThreshold() };
+
+    this.imageJob.set(
+      this.workerClient.run<AdvancedDiffImagePayload, AdvancedDiffImageResult>(
+        () => new Worker(new URL('./advanced-diff-image.worker', import.meta.url), { type: 'module' }),
+        payload,
+        [leftBuffer, rightBuffer],
+      ),
+    );
+  }
+
+  protected cancelImageDiff(): void {
+    this.imageJob()?.cancel();
+  }
+
   protected clear(): void {
     this.job()?.cancel();
+    this.imageJob()?.cancel();
     this.left.set('');
     this.right.set('');
     this.base.set('');
     this.job.set(null);
+    this.imageJob.set(null);
+    this.leftImageFile.set(null);
+    this.rightImageFile.set(null);
     this.mergeDecisions.set(new Map());
     this.threeWayDecisions.set(new Map());
     this.rejection.set(null);
@@ -276,5 +325,6 @@ export class AdvancedDiff implements OnDestroy {
 
   ngOnDestroy(): void {
     this.job()?.cancel();
+    this.imageJob()?.cancel();
   }
 }

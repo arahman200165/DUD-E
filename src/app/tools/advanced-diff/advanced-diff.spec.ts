@@ -101,6 +101,50 @@ describe('AdvancedDiff component', () => {
     expect(fixture.componentInstance['job']()).toBeNull();
   });
 
+  it('dispatches an image worker job with array-buffer payloads on runImageDiff()', async () => {
+    const fixture = TestBed.createComponent(AdvancedDiff);
+    const leftFile = new File([new Uint8Array([1, 2, 3])], 'left.png', { type: 'image/png' });
+    const rightFile = new File([new Uint8Array([4, 5, 6])], 'right.png', { type: 'image/png' });
+    fixture.componentInstance['onLeftImageSelected'](leftFile);
+    fixture.componentInstance['onRightImageSelected'](rightFile);
+    fixture.detectChanges();
+
+    await fixture.componentInstance['runImageDiff']();
+
+    expect(fakeWorkerClient.run).toHaveBeenCalledTimes(1);
+    const payload = fakeWorkerClient.run.mock.calls[0][1] as { left: ArrayBuffer; right: ArrayBuffer; threshold: number };
+    expect(payload.threshold).toBe(0.1);
+    expect(new Uint8Array(payload.left)).toEqual(new Uint8Array([1, 2, 3]));
+    expect(new Uint8Array(payload.right)).toEqual(new Uint8Array([4, 5, 6]));
+  });
+
+  it('does not dispatch an image job while either image is missing', async () => {
+    const fixture = TestBed.createComponent(AdvancedDiff);
+    fixture.detectChanges();
+
+    await fixture.componentInstance['runImageDiff']();
+
+    expect(fakeWorkerClient.run).not.toHaveBeenCalled();
+  });
+
+  it('clear() also resets image-mode state', async () => {
+    const fixture = TestBed.createComponent(AdvancedDiff);
+    const leftFile = new File([new Uint8Array([1])], 'left.png', { type: 'image/png' });
+    const rightFile = new File([new Uint8Array([2])], 'right.png', { type: 'image/png' });
+    fixture.componentInstance['onLeftImageSelected'](leftFile);
+    fixture.componentInstance['onRightImageSelected'](rightFile);
+    fixture.detectChanges();
+    await fixture.componentInstance['runImageDiff']();
+    const imageJob = fakeWorkerClient.jobs[0];
+
+    fixture.componentInstance['clear']();
+
+    expect(imageJob.cancel).toHaveBeenCalled();
+    expect(fixture.componentInstance['leftImageFile']()).toBeNull();
+    expect(fixture.componentInstance['rightImageFile']()).toBeNull();
+    expect(fixture.componentInstance['imageJob']()).toBeNull();
+  });
+
   it('switching input mode does not clear already-loaded text', () => {
     const fixture = TestBed.createComponent(AdvancedDiff);
     fixture.componentInstance['left'].set('loaded from file');
