@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-85 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+86 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -84,6 +84,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Case Converter](https://arahman200165.github.io/DUDE/tools/case-converter) | Text | Converts text between camelCase, snake_case, kebab-case, Title Case, and more. |
 | [Whitespace Cleaner / Normalizer](https://arahman200165.github.io/DUDE/tools/whitespace-cleaner) | Text | Trims, collapses, and normalizes whitespace, line endings, and invisible characters. |
 | [Unicode Character Inspector](https://arahman200165.github.io/DUDE/tools/unicode-character-inspector) | Text | Inspects pasted text character by character: code point, UTF-8/UTF-16 bytes, general category, Unicode block, and official name. |
+| [Unicode Code Point Converter](https://arahman200165.github.io/DUDE/tools/unicode-code-point-converter) | Text | Converts between U+XXXX notation, decimal, HTML entities, JS `\u` escapes, and UTF-8 hex bytes, single or bulk. |
 | [Slug Generator](https://arahman200165.github.io/DUDE/tools/slug-generator) | Text | Turns a title into a URL-friendly slug, with transliteration and length control. |
 | [Advanced Diff / Merge](https://arahman200165.github.io/DUDE/tools/advanced-diff) | Text | Line, word, and character diffing with a side-by-side two-way or three-way merge view, file upload, and unified-diff export. |
 | [Directory Diff](https://arahman200165.github.io/DUDE/tools/directory-diff) | Text | Compares two folders for added/removed/changed files, with a line diff or hex byte diff on drill-down. |

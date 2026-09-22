@@ -1,0 +1,84 @@
+<app-tool-shell title="Unicode Code Point Converter" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button
+        type="button"
+        class="px-3 py-1"
+        [class.bg-accent]="mode() === 'single'"
+        [class.text-bg]="mode() === 'single'"
+        (click)="setMode('single')"
+      >
+        Single
+      </button>
+      <button
+        type="button"
+        class="border-l border-border px-3 py-1"
+        [class.bg-accent]="mode() === 'bulk'"
+        [class.text-bg]="mode() === 'bulk'"
+        (click)="setMode('bulk')"
+      >
+        Bulk
+      </button>
+    </div>
+
+    @if (mode() === 'single') {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Input</span>
+        <input
+          type="text"
+          class="w-full max-w-sm rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="U+0041, 0x41, 65, &#65;, A, or a single character…"
+          [value]="singleInput()"
+          (input)="onSingleInputChange($event)"
+        />
+      </div>
+
+      @if (singleResult(); as result) {
+        <div class="grid max-w-sm grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1.5 text-ui">
+          <span class="text-text-muted">U+ notation</span>
+          <span class="font-mono text-text">{{ result.uPlus }}</span>
+          <app-copy-button [text]="result.uPlus" />
+
+          <span class="text-text-muted">Decimal</span>
+          <span class="font-mono text-text">{{ result.decimal }}</span>
+          <app-copy-button [text]="result.decimal" />
+
+          <span class="text-text-muted">HTML entity (dec)</span>
+          <span class="font-mono text-text">{{ result.htmlDecimal }}</span>
+          <app-copy-button [text]="result.htmlDecimal" />
+
+          <span class="text-text-muted">HTML entity (hex)</span>
+          <span class="font-mono text-text">{{ result.htmlHex }}</span>
+          <app-copy-button [text]="result.htmlHex" />
+
+          <span class="text-text-muted">JS escape</span>
+          <span class="font-mono text-text">{{ result.jsEscape }}</span>
+          <app-copy-button [text]="result.jsEscape" />
+
+          <span class="text-text-muted">UTF-8 bytes (hex)</span>
+          <span class="font-mono text-text">{{ result.utf8Hex }}</span>
+          <app-copy-button [text]="result.utf8Hex" />
+        </div>
+      } @else {
+        <p class="text-ui text-text-muted">Unrecognized notation.</p>
+      }
+    } @else {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Input (one per line, or comma-separated)</span>
+        <textarea
+          rows="4"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="U+0041&#10;0x1F600&#10;65"
+          [value]="bulkInput()"
+          (input)="onBulkInputChange($event)"
+        ></textarea>
+      </div>
+
+      @if (bulkRows().length > 0) {
+        <div class="min-h-0 flex-1 overflow-auto rounded-sm border border-border">
+          <app-data-table [columns]="bulkColumns" [rows]="bulkRows()" />
+        </div>
+      }
+    }
+  </div>
+</app-tool-shell>
