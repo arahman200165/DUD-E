@@ -1207,57 +1207,34 @@ Language Detector and Readability Analyzer already shipped (§21 Phase 7); Text 
 
 ---
 
-## Phase 11 — Encoding & Numeric Representation Lab (Proposed — Track A: Browser-Extensible)
+## Phase 11 — Encoding & Numeric Representation Lab (Complete — Track A: Browser-Extensible)
 
 Goal: turn Encoding into a full representation/conversion laboratory and give Developer a programmer-calculator suite.
 
-1. Hex Encoder / Decoder
-2. Binary Encoder / Decoder
-3. ASCII ↔ Hex
-4. UTF-8 ↔ Hex
-5. UTF-16 ↔ Hex
-6. Base16
-7. Base32
-8. Base36
-9. Base58
-10. Base62
-11. Base85 / ASCII85
-12. Base91
-13. ROT13
-14. ROT47
-15. Punycode Converter
-16. JavaScript Escape / Unescape
-17. CSS Escape / Unescape
-18. SQL Escape Helper
-19. Shell Escape Helper
-20. PowerShell Escape Helper
-21. Quoted-Printable Encoder
-22. URL Percent-Encoding Inspector
-23. Data URI Generator
-24. Data URI Decoder
-25. File → Hex Dump
-26. Hex Dump → File
-27. Endianness Converter
-28. IEEE-754 Floating Point Inspector
-29. Integer Representation Inspector
-30. Two's Complement Calculator
-31. Bitwise Calculator
-32. Programmer Calculator (binary/octal/decimal/hex with bit-width visualization)
-33. Arbitrary Precision / BigInt Calculator
-34. Scientific Notation Converter
-35. Percentage Calculator
-36. Ratio Calculator
-37. Modular Arithmetic
-38. GCD / LCM
-39. Prime Checker / Factorization
-40. Range Generator
-41. Statistics Calculator
-42. Matrix Calculator
-43. Expression Evaluator
+**Achieved (Milestones 92-109):** the original 43-item list was consolidated to 18 shippable tools during planning, merging closely-related conversions into a single tool with an internal mode selector wherever the items were clearly variations on one underlying transform:
+
+1. Hex ↔ Text Converter (consolidates Hex Encoder/Decoder, ASCII ↔ Hex, UTF-8 ↔ Hex, and UTF-16 ↔ Hex into one mode-selectable tool)
+2. Base-N Encoder / Decoder (consolidates Binary Encoder/Decoder and Base16/32/36/58/62/85/91 into one mode-selectable tool)
+3. ROT13 / ROT47 Cipher
+4. Punycode Converter (placed in Web, alongside the existing URL/URI tools, rather than Encoding)
+5. Escape / Unescape Toolkit (consolidates JavaScript, CSS, SQL, Shell, PowerShell escaping, and Quoted-Printable into one mode-selectable tool)
+6. URL Percent-Encoding Inspector (placed in Web)
+7. Data URI Converter (consolidates Data URI Generator and Data URI Decoder)
+8. Hex Dump Viewer / Builder (consolidates File → Hex Dump and Hex Dump → File; Worker-optional above a size threshold)
+9. Numeric Representation Inspector (consolidates Endianness Converter, IEEE-754 Floating Point Inspector, and Integer Representation Inspector)
+10. Programmer Calculator (consolidates Two's Complement Calculator, Bitwise Calculator, and the original Programmer Calculator item, with an interactive bit-grid visualization)
+11. Arbitrary Precision Calculator (the original Arbitrary Precision / BigInt Calculator item)
+12. Scientific Notation Converter
+13. Percentage & Ratio Calculator (consolidates Percentage Calculator and Ratio Calculator)
+14. Number Theory Toolkit (consolidates Modular Arithmetic, GCD / LCM, and Prime Checker / Factorization)
+15. Range Generator
+16. Statistics Calculator (mathjs-powered)
+17. Matrix Calculator (mathjs-powered; Worker-optional above a cell-count threshold)
+18. Expression Evaluator (mathjs-powered sandboxed expression parser, not JavaScript `eval`)
 
 ### Notes
 
-Base64/Base64URL, JSON Escape/Unescape, and Unicode Escape/Unescape already ship. This phase absorbs the source doc's separate "Numbers & Mathematics" section rather than opening a new category — everything here fits Encoding or Developer without a taxonomy change.
+Base64/Base64URL, JSON Escape/Unescape, and Unicode Escape/Unescape already ship. This phase absorbs the source doc's separate "Numbers & Mathematics" section rather than opening a new category — everything here fits Encoding, Web, or Developer without a taxonomy change. Three new dependencies were added: `mathjs` (Statistics/Matrix/Expression tools), `base-x` (Base36/58/62), and `rfc4648` (RFC-conformant Base32) — plus `punycode` for the Punycode Converter. Base85/ASCII85 and basE91 are hand-rolled, since no well-maintained package implements either's bit-chunked spec.
 
 ---
 
