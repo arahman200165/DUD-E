@@ -1362,4 +1362,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'punycode-converter',
+    title: 'Punycode Converter',
+    description: 'Converts an internationalized domain name between Unicode and its Punycode (ASCII, "xn--") form.',
+    category: 'web',
+    keywords: ['punycode', 'idn', 'domain', 'unicode', 'ascii', 'xn--', 'internationalized'],
+    route: '/tools/punycode-converter',
+    load: () => import('../../tools/punycode-converter/punycode-converter').then((m) => m.PunycodeConverter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text', 'url'], produces: ['text', 'url'] },
+  },
 ];

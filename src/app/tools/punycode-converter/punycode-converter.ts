@@ -1,0 +1,38 @@
+import { Component, computed, inject } from '@angular/core';
+import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
+import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
+import { CopyButton } from '../../shared/components/copy-button/copy-button';
+import { PersistenceService } from '../../core/persistence/persistence.service';
+import { PunycodeDirection, convertPunycode } from './punycode-convert';
+
+@Component({
+  selector: 'app-punycode-converter',
+  imports: [ToolShell, ErrorPanel, CopyButton],
+  templateUrl: './punycode-converter.html',
+})
+export class PunycodeConverter {
+  private readonly persistence = inject(PersistenceService);
+
+  protected readonly direction = this.persistence.signal<PunycodeDirection>('punycode-converter', 'direction', 'local', 'toASCII');
+  protected readonly input = this.persistence.signal('punycode-converter', 'input', 'session', 'münchen.de');
+
+  protected readonly result = computed(() => convertPunycode(this.input(), this.direction()));
+
+  protected onInputChange(event: Event): void {
+    this.input.set((event.target as HTMLInputElement).value);
+  }
+
+  protected setDirection(direction: PunycodeDirection): void {
+    this.direction.set(direction);
+  }
+
+  protected swap(): void {
+    const current = this.result();
+    this.input.set(current.ok ? current.value : '');
+    this.direction.set(this.direction() === 'toASCII' ? 'toUnicode' : 'toASCII');
+  }
+
+  protected clear(): void {
+    this.input.set('');
+  }
+}
