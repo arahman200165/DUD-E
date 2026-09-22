@@ -7,13 +7,13 @@ describe('eff-wordlist', () => {
     expect(new Set(EFF_WORDLIST).size).toBe(EFF_WORDLIST.length);
   });
 
-  it('has a reasonably large word pool', () => {
-    expect(EFF_WORDLIST.length).toBeGreaterThan(400);
+  it('is the full EFF long wordlist (7,776 entries, one per 5-dice roll)', () => {
+    expect(EFF_WORDLIST.length).toBe(7776);
   });
 
-  it('contains only lowercase alphabetic words', () => {
+  it('contains only lowercase alphabetic words, with a few hyphenated entries', () => {
     for (const word of EFF_WORDLIST) {
-      expect(word).toMatch(/^[a-z]+$/);
+      expect(word).toMatch(/^[a-z]+(-[a-z]+)*$/);
     }
   });
 });
