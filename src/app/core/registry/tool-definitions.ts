@@ -299,6 +299,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'extract-columns',
+    title: 'Extract Columns',
+    description: 'Splits each line on a delimiter and extracts/reorders the selected columns.',
+    category: 'text',
+    keywords: ['columns', 'delimiter', 'split', 'fields', 'extract', 'csv-like'],
+    route: '/tools/extract-columns',
+    load: () => import('../../tools/extract-columns/extract-columns').then((m) => m.ExtractColumns),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',
