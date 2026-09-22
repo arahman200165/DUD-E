@@ -1,0 +1,160 @@
+<app-tool-shell title="Line Prefix/Suffix &amp; Numbering" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-3 py-1"
+          [class.bg-accent]="mode() === 'prefix-suffix'"
+          [class.text-bg]="mode() === 'prefix-suffix'"
+          (click)="setMode('prefix-suffix')"
+        >
+          Prefix/Suffix
+        </button>
+        <button
+          type="button"
+          class="border-l border-border px-3 py-1"
+          [class.bg-accent]="mode() === 'add-numbers'"
+          [class.text-bg]="mode() === 'add-numbers'"
+          (click)="setMode('add-numbers')"
+        >
+          Add Numbers
+        </button>
+        <button
+          type="button"
+          class="border-l border-border px-3 py-1"
+          [class.bg-accent]="mode() === 'remove-numbers'"
+          [class.text-bg]="mode() === 'remove-numbers'"
+          (click)="setMode('remove-numbers')"
+        >
+          Remove Numbers
+        </button>
+        <button
+          type="button"
+          class="border-l border-border px-3 py-1"
+          [class.bg-accent]="mode() === 'transform'"
+          [class.text-bg]="mode() === 'transform'"
+          (click)="setMode('transform')"
+        >
+          Per-Line Transform
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        (click)="apply()"
+      >
+        Apply to input
+      </button>
+    </div>
+
+    @if (mode() === 'prefix-suffix') {
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <label class="flex items-center gap-1.5">
+          Prefix
+          <input
+            type="text"
+            class="w-32 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="prefix()"
+            (input)="onPrefixChange($event)"
+          />
+        </label>
+        <label class="flex items-center gap-1.5">
+          Suffix
+          <input
+            type="text"
+            class="w-32 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="suffix()"
+            (input)="onSuffixChange($event)"
+          />
+        </label>
+      </div>
+    }
+
+    @if (mode() === 'add-numbers') {
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <label class="flex items-center gap-1.5">
+          Start at
+          <input
+            type="number"
+            class="w-20 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="numberOptions().start"
+            (input)="onStartChange($event)"
+          />
+        </label>
+        <label class="flex items-center gap-1.5">
+          Separator
+          <input
+            type="text"
+            class="w-20 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="numberOptions().separator"
+            (input)="onSeparatorChange($event)"
+          />
+        </label>
+        <label class="flex items-center gap-1.5">
+          <input type="checkbox" [checked]="numberOptions().padded" (change)="togglePadded()" />
+          Zero-pad
+        </label>
+      </div>
+    }
+
+    @if (mode() === 'transform') {
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="transform()"
+          (change)="onTransformChange($event)"
+        >
+          @for (t of transforms; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+        @if (transform() === 'find-replace') {
+          <label class="flex items-center gap-1.5">
+            Find
+            <input
+              type="text"
+              class="w-32 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="findReplace().find"
+              (input)="onFindChange($event)"
+            />
+          </label>
+          <label class="flex items-center gap-1.5">
+            Replace
+            <input
+              type="text"
+              class="w-32 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="findReplace().replace"
+              (input)="onReplaceChange($event)"
+            />
+          </label>
+        }
+      </div>
+    }
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Input</span>
+      <textarea
+        rows="6"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="One item per line…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Output</span>
+        <app-copy-button [text]="result()" />
+      </div>
+      <textarea
+        rows="6"
+        readonly
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+        [value]="result()"
+      ></textarea>
+    </div>
+  </div>
+</app-tool-shell>
