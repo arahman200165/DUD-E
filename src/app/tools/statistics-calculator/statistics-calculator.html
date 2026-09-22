@@ -1,0 +1,74 @@
+<app-tool-shell title="Statistics Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Numbers (comma, space, or newline separated)</span>
+      <textarea
+        rows="4"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (result(); as result) {
+      @if (result.ok) {
+        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Count</div>
+            <div class="font-mono text-sm text-text">{{ result.value.count }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Sum</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.sum) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Mean</div>
+            <div class="font-mono text-sm text-accent">{{ formatNumber(result.value.mean) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Median</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.median) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Mode</div>
+            <div class="font-mono text-sm text-text">{{ result.value.mode.join(', ') || 'none' }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Range</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.range) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Min / Max</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.min) }} / {{ formatNumber(result.value.max) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Q1 / Q3</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.q1) }} / {{ formatNumber(result.value.q3) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">IQR</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.iqr) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Variance (population)</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.variancePopulation) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Variance (sample)</div>
+            <div class="font-mono text-sm text-text">{{ formatNullable(result.value.varianceSample) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Std dev (population)</div>
+            <div class="font-mono text-sm text-text">{{ formatNumber(result.value.stdDevPopulation) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel p-2">
+            <div class="text-ui-xs text-text-muted">Std dev (sample)</div>
+            <div class="font-mono text-sm text-text">{{ formatNullable(result.value.stdDevSample) }}</div>
+          </div>
+        </div>
+      } @else {
+        <app-error-panel [message]="result.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
