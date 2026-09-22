@@ -1166,11 +1166,11 @@ Large JSON Streaming Viewer and JSON Table Viewer extend the existing JSON Forma
 
 ---
 
-## Phase 10 — Text Processing Depth (In Progress — Track A: Browser-Extensible)
+## Phase 10 — Text Processing Depth (✅ Complete — Track A: Browser-Extensible)
 
 Goal: extend the Text category with a full Unicode/line-manipulation toolkit and deeper text analysis than Text Inspector currently covers.
 
-**Achieved (Milestones 73-91):** the original 40-item list was consolidated to 19 shippable tools/enhancements during planning, merging closely-related line/character operations into single tools with an internal mode selector, dropping the item already covered by an existing tool, and reinterpreting one item that didn't map onto a paste-based (non-editor) tool:
+**Achieved (Milestones 73-91, plus 4 Advanced Diff/Merge enhancement milestones):** the original 40-item list was consolidated to 19 new/extended tools plus the 6 originally-planned Advanced Diff enhancements, merging closely-related line/character operations into single tools with an internal mode selector, dropping the item already covered by an existing tool, and reinterpreting one item that didn't map onto a paste-based (non-editor) tool:
 
 1. Unicode Character Inspector
 2. Unicode Code Point Converter
@@ -1194,7 +1194,12 @@ Goal: extend the Text category with a full Unicode/line-manipulation toolkit and
 
 **Dropped:** the original roadmap's Regex Find/Replace item — already covered by the existing Regex Tester's replace mode (§20).
 
-**Still to come:** items 35-40 of the original list (semantic JSON/YAML/XML diff modes, image diff mode, ignore-whitespace/case/line-ending options, and moved-block detection) remain enhancements to the existing Advanced Diff / Merge tool (§20) rather than new tools, tracked as a separate Milestone range.
+**Advanced Diff / Merge enhancements (items 35-40 of the original list)** all shipped as 4 incremental milestones enhancing the existing tool (§20) rather than new tools:
+
+20. Ignore-whitespace / ignore-line-endings / ignore-case options (also threaded through the three-way merge path)
+21. Semantic JSON/YAML/XML diff modes — one shared structural-diff engine (`fast-json-patch`'s `compare()`), three parser front-ends
+22. Moved-block detection — exact-match pairing of remove-only/add-only hunks, purely informational
+23. Image diff mode — pixel-level comparison via `pixelmatch`, fully separate payload/worker since images are a different data type from the rest of the tool
 
 ### Notes
 
