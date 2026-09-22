@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-96 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+97 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -95,6 +95,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Line Prefix/Suffix & Numbering](https://arahman200165.github.io/DUDE/tools/line-prefix-numbering) | Text | Adds a prefix/suffix, adds or removes line numbers, or applies a transform to every line at once. |
 | [Extract Columns](https://arahman200165.github.io/DUDE/tools/extract-columns) | Text | Splits each line on a delimiter and extracts/reorders the selected columns. |
 | [Find & Replace](https://arahman200165.github.io/DUDE/tools/find-replace-text) | Text | Literal (non-regex) find and replace, with case-sensitive and whole-word options. |
+| [Lorem Ipsum & Placeholder Text Generator](https://arahman200165.github.io/DUDE/tools/lorem-ipsum-generator) | Text | Generates classic Lorem Ipsum or faker-based placeholder text, as words, sentences, or paragraphs. |
 | [Slug Generator](https://arahman200165.github.io/DUDE/tools/slug-generator) | Text | Turns a title into a URL-friendly slug, with transliteration and length control. |
 | [Advanced Diff / Merge](https://arahman200165.github.io/DUDE/tools/advanced-diff) | Text | Line, word, and character diffing with a side-by-side two-way or three-way merge view, file upload, and unified-diff export. |
 | [Directory Diff](https://arahman200165.github.io/DUDE/tools/directory-diff) | Text | Compares two folders for added/removed/changed files, with a line diff or hex byte diff on drill-down. |

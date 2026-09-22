@@ -1,0 +1,78 @@
+<app-tool-shell title="Lorem Ipsum &amp; Placeholder Text Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-3 py-1"
+          [class.bg-accent]="options().source === 'classic'"
+          [class.text-bg]="options().source === 'classic'"
+          (click)="setSource('classic')"
+        >
+          Classic
+        </button>
+        <button
+          type="button"
+          class="border-l border-border px-3 py-1"
+          [class.bg-accent]="options().source === 'faker'"
+          [class.text-bg]="options().source === 'faker'"
+          (click)="setSource('faker')"
+        >
+          Placeholder (faker)
+        </button>
+      </div>
+
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="options().unit"
+        (change)="onUnitChange($event)"
+      >
+        <option value="words">Words</option>
+        <option value="sentences">Sentences</option>
+        <option value="paragraphs">Paragraphs</option>
+      </select>
+
+      <input
+        type="number"
+        min="1"
+        max="500"
+        class="w-20 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="options().count"
+        (input)="onCountChange($event)"
+      />
+
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="options().format"
+        (change)="onFormatChange($event)"
+      >
+        <option value="plain">Plain</option>
+        <option value="html-list">HTML list</option>
+        <option value="markdown-list">Markdown list</option>
+      </select>
+
+      @if (options().source === 'faker') {
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+          (click)="regenerate()"
+        >
+          Regenerate
+        </button>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Output</span>
+        <app-copy-button [text]="output()" />
+      </div>
+      <textarea
+        rows="10"
+        readonly
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+        [value]="output()"
+      ></textarea>
+    </div>
+  </div>
+</app-tool-shell>
