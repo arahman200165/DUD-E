@@ -2,10 +2,30 @@
 
 import { errorMessage, resultMessage, WorkerRequestMessage } from '../../core/workers/worker-protocol';
 import { computeCharDiff, computeWordDiff } from './char-word-diff';
-import { AdvancedDiffPayload } from './advanced-diff-payload';
-import { AdvancedDiffResult } from './advanced-diff-result';
+import { AdvancedDiffPayload, DiffMode } from './advanced-diff-payload';
+import { AdvancedDiffResult, SemanticDiffOutcome } from './advanced-diff-result';
 import { computeThreeWayMerge } from './three-way-merge';
 import { computeLineDiffIgnoring, hasAnyIgnoreOption, normalizeWholeText } from './diff-normalize';
+import { diffTrees, parseSemanticInput, SemanticFormat } from './object-tree-diff';
+
+const SEMANTIC_FORMAT_BY_MODE: Partial<Record<DiffMode, SemanticFormat>> = {
+  'semantic-json': 'json',
+  'semantic-yaml': 'yaml',
+  'semantic-xml': 'xml',
+};
+
+function computeSemanticDiff(payload: AdvancedDiffPayload): SemanticDiffOutcome | undefined {
+  const format = SEMANTIC_FORMAT_BY_MODE[payload.mode];
+  if (!format) return undefined;
+
+  const before = parseSemanticInput(payload.left, format);
+  if (!before.ok) return { ok: false, error: `Left input is not valid ${format.toUpperCase()}: ${before.error.message}` };
+
+  const after = parseSemanticInput(payload.right, format);
+  if (!after.ok) return { ok: false, error: `Right input is not valid ${format.toUpperCase()}: ${after.error.message}` };
+
+  return { ok: true, result: diffTrees(before.value, after.value, { ignoreCase: payload.ignoreOptions.ignoreCase }) };
+}
 
 export function handleMessage({ data }: MessageEvent<WorkerRequestMessage<AdvancedDiffPayload>>): void {
   const { id, payload } = data;
@@ -28,8 +48,9 @@ export function handleMessage({ data }: MessageEvent<WorkerRequestMessage<Advanc
       payload.base !== undefined
         ? computeThreeWayMerge(payload.base, payload.left, payload.right, payload.ignoreOptions)
         : undefined;
+    const semanticDiff = computeSemanticDiff(payload);
 
-    const result: AdvancedDiffResult = { lineDiff, fineDiff, threeWayMerge };
+    const result: AdvancedDiffResult = { lineDiff, fineDiff, semanticDiff, threeWayMerge };
     postMessage(resultMessage(id, result));
   } catch (error) {
     postMessage(errorMessage(id, error));

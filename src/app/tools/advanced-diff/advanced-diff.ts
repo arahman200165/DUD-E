@@ -12,10 +12,11 @@ import { DiffLineType } from '../diff/text-diff';
 import { DiffSegmentType } from './char-word-diff';
 import { DiffHunk, MergeDecision, buildHunks, buildMergedOutput } from './diff-hunks';
 import { formatUnifiedDiff } from './unified-diff';
-import { AdvancedDiffPayload, DiffGranularity } from './advanced-diff-payload';
+import { AdvancedDiffPayload, DiffGranularity, DiffMode } from './advanced-diff-payload';
 import { AdvancedDiffResult } from './advanced-diff-result';
 import { buildThreeWayMergeOutput, ThreeWayDecision, ThreeWayHunk } from './three-way-merge';
 import { IgnoreOptions, NO_IGNORE_OPTIONS } from './diff-normalize';
+import { SemanticDiffView } from './semantic-diff-view/semantic-diff-view';
 
 export type DiffInputMode = 'paste' | 'file';
 export type DiffViewMode = 'diff' | 'merge';
@@ -37,7 +38,7 @@ const SEGMENT_CLASSES: Record<DiffSegmentType, string> = {
 
 @Component({
   selector: 'app-advanced-diff',
-  imports: [ToolShell, SplitPane, BusyIndicator, ErrorPanel, FileDrop],
+  imports: [ToolShell, SplitPane, BusyIndicator, ErrorPanel, FileDrop, SemanticDiffView],
   templateUrl: './advanced-diff.html',
 })
 export class AdvancedDiff implements OnDestroy {
@@ -47,6 +48,7 @@ export class AdvancedDiff implements OnDestroy {
   protected readonly left = this.persistence.signal('advanced-diff', 'left', 'session', '');
   protected readonly right = this.persistence.signal('advanced-diff', 'right', 'session', '');
   protected readonly inputMode = this.persistence.signal<DiffInputMode>('advanced-diff', 'inputMode', 'local', 'paste');
+  protected readonly mode = this.persistence.signal<DiffMode>('advanced-diff', 'mode', 'local', 'text');
   protected readonly granularity = this.persistence.signal<DiffGranularity>(
     'advanced-diff',
     'granularity',
@@ -111,6 +113,10 @@ export class AdvancedDiff implements OnDestroy {
     this.granularity.set(granularity);
   }
 
+  protected setMode(mode: DiffMode): void {
+    this.mode.set(mode);
+  }
+
   protected setViewMode(mode: DiffViewMode): void {
     this.viewMode.set(mode);
   }
@@ -165,6 +171,7 @@ export class AdvancedDiff implements OnDestroy {
     const payload: AdvancedDiffPayload = {
       left: this.left(),
       right: this.right(),
+      mode: this.mode(),
       granularity: this.granularity(),
       ignoreOptions: this.ignoreOptions(),
       base: this.mergeMode() === 'three-way' ? this.base() : undefined,

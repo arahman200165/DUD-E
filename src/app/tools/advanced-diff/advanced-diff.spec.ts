@@ -52,7 +52,7 @@ describe('AdvancedDiff component', () => {
 
     expect(fakeWorkerClient.run).toHaveBeenCalledTimes(1);
     const payload = fakeWorkerClient.run.mock.calls[0][1] as { left: string; right: string; granularity: string };
-    expect(payload).toEqual({ left: 'a\nb', right: 'a\nc', granularity: 'word', ignoreOptions: NO_IGNORE_OPTIONS });
+    expect(payload).toEqual({ left: 'a\nb', right: 'a\nc', mode: 'text', granularity: 'word', ignoreOptions: NO_IGNORE_OPTIONS });
   });
 
   it('builds hunks and a merged output from the job result, honoring accepted decisions', () => {

@@ -102,7 +102,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Soundex / Metaphone](https://arahman200165.github.io/DUDE/tools/soundex-metaphone) | Text | Computes the Soundex and Metaphone phonetic codes for one or more words. |
 | [Text Tokenizer & N-Gram Generator](https://arahman200165.github.io/DUDE/tools/text-tokenizer-ngram) | Text | Tokenizes text into words or sentences, or generates word- or character-level n-grams with counts. |
 | [Slug Generator](https://arahman200165.github.io/DUDE/tools/slug-generator) | Text | Turns a title into a URL-friendly slug, with transliteration and length control. |
-| [Advanced Diff / Merge](https://arahman200165.github.io/DUDE/tools/advanced-diff) | Text | Line, word, and character diffing with a side-by-side two-way or three-way merge view, file upload, and unified-diff export. |
+| [Advanced Diff / Merge](https://arahman200165.github.io/DUDE/tools/advanced-diff) | Text | Line, word, character, or semantic JSON/YAML/XML diffing with a side-by-side two-way or three-way merge view, file upload, and unified-diff export. |
 | [Directory Diff](https://arahman200165.github.io/DUDE/tools/directory-diff) | Text | Compares two folders for added/removed/changed files, with a line diff or hex byte diff on drill-down. |
 | [Base64 Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/base64) | Encoding | UTF-8-safe text ↔ Base64 conversion. |
 | [URL Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/url-encode) | Encoding | Percent-encodes or decodes text as a URL component or a full URI. |

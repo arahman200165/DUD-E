@@ -28,34 +28,79 @@
         <button
           type="button"
           class="px-2 py-0.5"
-          [class.bg-accent]="granularity() === 'line'"
-          [class.text-bg]="granularity() === 'line'"
-          [class.text-text-muted]="granularity() !== 'line'"
-          (click)="setGranularity('line')"
+          [class.bg-accent]="mode() === 'text'"
+          [class.text-bg]="mode() === 'text'"
+          [class.text-text-muted]="mode() !== 'text'"
+          (click)="setMode('text')"
         >
-          Line
+          Text
         </button>
         <button
           type="button"
           class="px-2 py-0.5"
-          [class.bg-accent]="granularity() === 'word'"
-          [class.text-bg]="granularity() === 'word'"
-          [class.text-text-muted]="granularity() !== 'word'"
-          (click)="setGranularity('word')"
+          [class.bg-accent]="mode() === 'semantic-json'"
+          [class.text-bg]="mode() === 'semantic-json'"
+          [class.text-text-muted]="mode() !== 'semantic-json'"
+          (click)="setMode('semantic-json')"
         >
-          Word
+          JSON
         </button>
         <button
           type="button"
           class="px-2 py-0.5"
-          [class.bg-accent]="granularity() === 'char'"
-          [class.text-bg]="granularity() === 'char'"
-          [class.text-text-muted]="granularity() !== 'char'"
-          (click)="setGranularity('char')"
+          [class.bg-accent]="mode() === 'semantic-yaml'"
+          [class.text-bg]="mode() === 'semantic-yaml'"
+          [class.text-text-muted]="mode() !== 'semantic-yaml'"
+          (click)="setMode('semantic-yaml')"
         >
-          Char
+          YAML
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'semantic-xml'"
+          [class.text-bg]="mode() === 'semantic-xml'"
+          [class.text-text-muted]="mode() !== 'semantic-xml'"
+          (click)="setMode('semantic-xml')"
+        >
+          XML
         </button>
       </div>
+
+      @if (mode() === 'text') {
+        <div class="flex overflow-hidden rounded-sm border border-border">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="granularity() === 'line'"
+            [class.text-bg]="granularity() === 'line'"
+            [class.text-text-muted]="granularity() !== 'line'"
+            (click)="setGranularity('line')"
+          >
+            Line
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="granularity() === 'word'"
+            [class.text-bg]="granularity() === 'word'"
+            [class.text-text-muted]="granularity() !== 'word'"
+            (click)="setGranularity('word')"
+          >
+            Word
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="granularity() === 'char'"
+            [class.text-bg]="granularity() === 'char'"
+            [class.text-text-muted]="granularity() !== 'char'"
+            (click)="setGranularity('char')"
+          >
+            Char
+          </button>
+        </div>
+      }
 
       <div class="flex overflow-hidden rounded-sm border border-border">
         <button
@@ -206,7 +251,21 @@
       }
 
       @if (currentJob.result(); as diffResult) {
-        @if (viewMode() === 'diff') {
+        @if (viewMode() === 'diff' && mode() !== 'text') {
+          @if (diffResult.semanticDiff; as semantic) {
+            @if (semantic.ok) {
+              <app-semantic-diff-view [result]="semantic.result" />
+            } @else {
+              <app-error-panel [message]="semantic.error" />
+              <p class="text-ui text-text-muted">Falling back to line diff:</p>
+              <div class="max-h-64 overflow-auto rounded-sm border border-border bg-panel font-mono text-ui">
+                @for (line of diffResult.lineDiff.lines; track $index) {
+                  <div class="whitespace-pre-wrap px-2 py-0.5" [class]="lineClasses(line.type)">{{ linePrefix(line.type) }}{{ line.text }}</div>
+                }
+              </div>
+            }
+          }
+        } @else if (viewMode() === 'diff') {
           @if (granularity() === 'line') {
             <div class="max-h-64 overflow-auto rounded-sm border border-border bg-panel font-mono text-ui">
               @for (line of diffResult.lineDiff.lines; track $index) {
