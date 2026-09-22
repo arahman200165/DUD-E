@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-110 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+111 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -146,6 +146,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [HTML Preview](https://arahman200165.github.io/DUDE/tools/html-preview) | Developer | Live-renders pasted HTML — including its own inline `<script>`/`<style>` — in a network-isolated sandbox. |
 | [Template Renderer](https://arahman200165.github.io/DUDE/tools/template-renderer) | Developer | Renders an EJS template against a JSON context, in the same sandbox as the JavaScript Playground. |
 | [Python Playground](https://arahman200165.github.io/DUDE/tools/python-playground) | Developer | Runs Python via Pyodide (WebAssembly CPython) — no network calls once the runtime is cached. |
+| [Numeric Representation Inspector](https://arahman200165.github.io/DUDE/tools/numeric-representation-inspector) | Developer | Inspects a value's byte-order (endianness), IEEE-754 float bit layout, or integer representation across bit widths. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |

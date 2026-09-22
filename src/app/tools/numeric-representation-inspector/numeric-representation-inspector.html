@@ -1,0 +1,169 @@
+<app-tool-shell title="Numeric Representation Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      @for (option of tabs; track option.id) {
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="tab() === option.id"
+          [class.text-bg]="tab() === option.id"
+          [class.text-text-muted]="tab() !== option.id"
+          (click)="setTab(option.id)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+
+    @if (tab() === 'endianness') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+          <span>Width</span>
+          <div class="flex overflow-hidden rounded-sm border border-border">
+            @for (width of endiannessWidths; track width) {
+              <button
+                type="button"
+                class="px-2 py-0.5"
+                [class.bg-accent]="endiannessWidth() === width"
+                [class.text-bg]="endiannessWidth() === width"
+                (click)="setEndiannessWidth(width)"
+              >
+                {{ width }}-bit
+              </button>
+            }
+          </div>
+        </div>
+
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [placeholder]="'Hex digits, ' + endiannessWidth() / 4 + ' of them'"
+          [value]="endiannessInput()"
+          (input)="onEndiannessInputChange($event)"
+        />
+
+        @if (endiannessResult(); as result) {
+          @if (result.ok) {
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-2">
+                <div class="flex items-center justify-between text-ui text-text-muted">
+                  <span>Big-endian</span>
+                  <app-copy-button [text]="result.value.bigEndianHex" />
+                </div>
+                <div class="font-mono text-sm text-text">0x{{ result.value.bigEndianHex }}</div>
+                <div class="font-mono text-ui-xs text-text-muted">{{ result.value.bigEndianValue }}</div>
+              </div>
+              <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-2">
+                <div class="flex items-center justify-between text-ui text-text-muted">
+                  <span>Little-endian</span>
+                  <app-copy-button [text]="result.value.littleEndianHex" />
+                </div>
+                <div class="font-mono text-sm text-text">0x{{ result.value.littleEndianHex }}</div>
+                <div class="font-mono text-ui-xs text-text-muted">{{ result.value.littleEndianValue }}</div>
+              </div>
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      </div>
+    }
+
+    @if (tab() === 'ieee754') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+          <span>Precision</span>
+          <div class="flex overflow-hidden rounded-sm border border-border">
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="floatPrecision() === 32"
+              [class.text-bg]="floatPrecision() === 32"
+              (click)="setFloatPrecision(32)"
+            >
+              32-bit (float)
+            </button>
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="floatPrecision() === 64"
+              [class.text-bg]="floatPrecision() === 64"
+              (click)="setFloatPrecision(64)"
+            >
+              64-bit (double)
+            </button>
+          </div>
+        </div>
+
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="e.g. 3.14159"
+          [value]="floatInput()"
+          (input)="onFloatInputChange($event)"
+        />
+
+        @if (floatResult(); as result) {
+          @if (result.ok) {
+            <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-sm text-text">0x{{ result.value.hex }}</span>
+                <app-copy-button [text]="result.value.hex" />
+              </div>
+              <div class="flex flex-wrap gap-3 font-mono text-ui-xs">
+                <span class="text-accent">sign: {{ result.value.sign }}</span>
+                <span class="text-text-muted">exponent: {{ result.value.exponentBits }} (unbiased {{ result.value.exponentValue }})</span>
+                <span class="text-text-muted">mantissa: {{ result.value.mantissaBits }}</span>
+              </div>
+              <div class="text-text-muted">Reconstructed value: {{ result.value.reconstructed }}</div>
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      </div>
+    }
+
+    @if (tab() === 'integer') {
+      <div class="flex flex-col gap-3">
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="e.g. -1 or 300"
+          [value]="integerInput()"
+          (input)="onIntegerInputChange($event)"
+        />
+
+        @if (integerResult(); as result) {
+          @if (result.ok) {
+            <div class="flex flex-col gap-2">
+              @for (row of result.value; track row.bits) {
+                <div
+                  class="flex flex-col gap-1 rounded-sm border p-2"
+                  [class.border-border]="!row.overflowed"
+                  [class.border-warning]="row.overflowed"
+                >
+                  <div class="flex items-center justify-between text-ui text-text-muted">
+                    <span>{{ row.bits }}-bit</span>
+                    @if (row.overflowed) {
+                      <span class="text-warning">doesn't fit — wrapped</span>
+                    }
+                  </div>
+                  <div class="grid grid-cols-1 gap-1 font-mono text-ui-xs text-text sm:grid-cols-2">
+                    <div>unsigned: {{ row.unsignedValue }}</div>
+                    <div>signed: {{ row.signedValue }}</div>
+                    <div>hex: 0x{{ row.hex }}</div>
+                    <div>octal: 0o{{ row.octal }}</div>
+                  </div>
+                  <div class="break-all font-mono text-ui-xs text-text-muted">binary: {{ row.binary }}</div>
+                </div>
+              }
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>

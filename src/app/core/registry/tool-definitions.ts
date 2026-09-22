@@ -1427,4 +1427,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['file', 'text', 'bytes'], produces: ['text', 'file', 'bytes'] },
   },
+  {
+    id: 'numeric-representation-inspector',
+    title: 'Numeric Representation Inspector',
+    description: "Inspects a value's byte-order (endianness), IEEE-754 float bit layout, or integer representation across bit widths.",
+    category: 'developer',
+    keywords: ['endianness', 'little-endian', 'big-endian', 'ieee 754', 'float', 'double', 'integer', 'bit width', 'binary'],
+    route: '/tools/numeric-representation-inspector',
+    load: () => import('../../tools/numeric-representation-inspector/numeric-representation-inspector').then((m) => m.NumericRepresentationInspector),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text'], produces: ['json', 'text'] },
+  },
 ];
