@@ -1,0 +1,112 @@
+<app-tool-shell title="Programmer Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <span>Width</span>
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        @for (w of widths; track w) {
+          <button type="button" class="px-2 py-0.5" [class.bg-accent]="width() === w" [class.text-bg]="width() === w" (click)="setWidth(w)">
+            {{ w }}-bit
+          </button>
+        }
+      </div>
+
+      <span>Operation</span>
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="op()"
+        (change)="setOp($any($event.target).value)"
+      >
+        @for (option of ops; track option.id) {
+          <option [value]="option.id">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">A</span>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="42, -42, 0x2A, 0b101010, 0o52"
+          [value]="inputA()"
+          (input)="onInputAChange($event)"
+        />
+        @if (viewA(); as view) {
+          <div class="flex flex-wrap gap-0.5">
+            @for (bit of view.bits; track $index) {
+              <button
+                type="button"
+                class="h-5 w-5 rounded-sm border border-border font-mono text-ui-xs"
+                [class.bg-accent]="bit"
+                [class.text-bg]="bit"
+                [class.text-text-muted]="!bit"
+                (click)="toggleBitA($index)"
+              >
+                {{ bit ? '1' : '0' }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">B</span>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="42, -42, 0x2A, 0b101010, 0o52"
+          [value]="inputB()"
+          (input)="onInputBChange($event)"
+        />
+        @if (viewB(); as view) {
+          <div class="flex flex-wrap gap-0.5">
+            @for (bit of view.bits; track $index) {
+              <span
+                class="flex h-5 w-5 items-center justify-center rounded-sm border border-border font-mono text-ui-xs"
+                [class.bg-panel-elevated]="bit"
+                [class.text-text]="bit"
+                [class.text-text-muted]="!bit"
+              >
+                {{ bit ? '1' : '0' }}
+              </span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        @if (resultView(); as view) {
+          <div class="flex flex-col gap-2 rounded-sm border border-accent/40 bg-panel p-3">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Result</span>
+              <app-copy-button [text]="view.hex" />
+            </div>
+            <div class="flex flex-wrap gap-0.5">
+              @for (bit of view.bits; track $index) {
+                <span
+                  class="flex h-5 w-5 items-center justify-center rounded-sm border border-accent/40 font-mono text-ui-xs"
+                  [class.bg-accent]="bit"
+                  [class.text-bg]="bit"
+                  [class.text-text-muted]="!bit"
+                >
+                  {{ bit ? '1' : '0' }}
+                </span>
+              }
+            </div>
+            <div class="grid grid-cols-2 gap-1 font-mono text-ui-xs text-text sm:grid-cols-4">
+              <div>hex: 0x{{ view.hex }}</div>
+              <div>octal: 0o{{ view.octal }}</div>
+              <div>signed: {{ view.signedDecimal }}</div>
+              <div>unsigned: {{ view.unsignedDecimal }}</div>
+            </div>
+          </div>
+        }
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
