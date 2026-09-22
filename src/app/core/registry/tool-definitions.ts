@@ -737,6 +737,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'password-generator',
+    title: 'Password / Passphrase Generator',
+    description: 'Generates a random-character password or a diceware-style passphrase using a CSPRNG.',
+    category: 'security',
+    keywords: ['password', 'passphrase', 'generator', 'random', 'diceware', 'secure', 'csprng'],
+    route: '/tools/password-generator',
+    load: () => import('../../tools/password-generator/password-generator').then((m) => m.PasswordGenerator),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['json'], produces: ['text'] },
+  },
+  {
     id: 'json-schema-validator',
     title: 'JSON Schema Validator',
     shortTitle: 'Schema Validator',
