@@ -1,0 +1,89 @@
+<app-tool-shell title="HMAC Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Message</span>
+      <textarea
+        rows="5"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Type or paste the message to authenticate…"
+        [value]="message()"
+        (input)="onMessageInput($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Key</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          class="min-w-64 flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Secret key…"
+          [value]="key()"
+          (input)="onKeyInput($event)"
+        />
+
+        <div class="flex overflow-hidden rounded-sm border border-border text-ui">
+          @for (encoding of keyEncodings; track encoding.id) {
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="keyEncoding() === encoding.id"
+              [class.text-bg]="keyEncoding() === encoding.id"
+              [class.text-text-muted]="keyEncoding() !== encoding.id"
+              (click)="setKeyEncoding(encoding.id)"
+            >
+              {{ encoding.label }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Hash
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="hash()"
+          (change)="setHash($any($event.target).value)"
+        >
+          @for (algorithm of hashAlgorithms; track algorithm) {
+            <option [value]="algorithm">{{ algorithm }}</option>
+          }
+        </select>
+      </label>
+
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+        [disabled]="status() === 'computing'"
+        (click)="compute()"
+      >
+        Compute
+      </button>
+
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+        Clear
+      </button>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">HMAC-{{ hash() }}</span>
+            <app-copy-button [text]="current.value" />
+          </div>
+          <textarea
+            rows="3"
+            readonly
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+            [value]="current.value"
+          ></textarea>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

@@ -725,6 +725,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['json', 'text'], produces: ['text'] },
   },
   {
+    id: 'hmac-generator',
+    title: 'HMAC Generator',
+    description: 'HMAC-SHA1, HMAC-SHA256, HMAC-SHA384, and HMAC-SHA512 message authentication codes with a custom key.',
+    category: 'security',
+    keywords: ['hmac', 'mac', 'message authentication code', 'hash', 'sha256', 'sha512', 'signature'],
+    route: '/tools/hmac-generator',
+    load: () => import('../../tools/hmac-generator/hmac-generator').then((m) => m.HmacGenerator),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
+  {
     id: 'json-schema-validator',
     title: 'JSON Schema Validator',
     shortTitle: 'Schema Validator',
