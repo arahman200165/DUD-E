@@ -20,6 +20,18 @@ export class FileHash implements OnDestroy {
 
   protected readonly algorithms = HASH_ALGORITHMS;
 
+  protected readonly algorithmGroups: ReadonlyArray<{
+    readonly label: string;
+    readonly algorithms: readonly HashAlgorithm[];
+  }> = [
+    { label: 'Legacy', algorithms: ['MD5', 'SHA-1'] },
+    { label: 'SHA-2', algorithms: ['SHA-256', 'SHA-384', 'SHA-512'] },
+    { label: 'SHA-3', algorithms: ['SHA3-256', 'SHA3-384', 'SHA3-512'] },
+    { label: 'BLAKE', algorithms: ['BLAKE2b', 'BLAKE2s', 'BLAKE3'] },
+    { label: 'xxHash', algorithms: ['XXH32', 'XXH64'] },
+    { label: 'CRC', algorithms: ['CRC32', 'CRC64'] },
+  ];
+
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly selectedAlgorithms = this.persistence.signal<readonly HashAlgorithm[]>(
     'file-hash',

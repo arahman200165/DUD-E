@@ -32,6 +32,60 @@ describe('computeHash', () => {
   });
 });
 
+describe('computeHash — new algorithm families', () => {
+  it('computes the known SHA3-256 test vector for "abc"', async () => {
+    expect(await computeHash('abc', 'SHA3-256')).toBe(
+      '3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532',
+    );
+  });
+
+  it('produces a 96-character hex digest for SHA3-384', async () => {
+    expect(await computeHash('abc', 'SHA3-384')).toHaveLength(96);
+  });
+
+  it('produces a 128-character hex digest for SHA3-512', async () => {
+    expect(await computeHash('abc', 'SHA3-512')).toHaveLength(128);
+  });
+
+  it('computes the known BLAKE2b test vector for "abc"', async () => {
+    expect(await computeHash('abc', 'BLAKE2b')).toBe(
+      'ba80a53f981c4d0d6a2797b69f12f6e94c212f14685ac4b74b12bb6fdbffa2d17d87c5392aab792dc252d5de4533cc9518d38aa8dbf1925ab92386edd4009923',
+    );
+  });
+
+  it('computes the known BLAKE2s test vector for "abc"', async () => {
+    expect(await computeHash('abc', 'BLAKE2s')).toBe(
+      '508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982',
+    );
+  });
+
+  it('computes the known BLAKE3 test vector for "abc"', async () => {
+    expect(await computeHash('abc', 'BLAKE3')).toBe(
+      '6437b3ac38465133ffb63b75273a8db548c558465d79db03fd359c6cd5bd9d85',
+    );
+  });
+
+  it('computes the known xxHash32 test vector for empty input', async () => {
+    expect(await computeHash('', 'XXH32')).toBe('02cc5d05');
+  });
+
+  it('computes the known xxHash64 test vector for empty input', async () => {
+    expect(await computeHash('', 'XXH64')).toBe('ef46db3751d8e999');
+  });
+
+  it('computes the known CRC-32/ISO-HDLC check value for "123456789"', async () => {
+    expect(await computeHash('123456789', 'CRC32')).toBe('cbf43926');
+  });
+
+  it('computes the known CRC-64/XZ check value for "123456789"', async () => {
+    expect(await computeHash('123456789', 'CRC64')).toBe('995dc9bbdf1939fa');
+  });
+
+  it('is deterministic across repeated xxHash calls (cached WASM instance)', async () => {
+    expect(await computeHash('hello', 'XXH64')).toBe(await computeHash('hello', 'XXH64'));
+  });
+});
+
 describe('computeHashes', () => {
   it('computes multiple algorithms in the requested order', async () => {
     const results = await computeHashes('abc', ['MD5', 'SHA-1']);

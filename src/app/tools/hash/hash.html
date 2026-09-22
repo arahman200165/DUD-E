@@ -8,17 +8,22 @@
       (input)="onTextInput($event)"
     ></textarea>
 
-    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
-      @for (algorithm of algorithms; track algorithm) {
-        <label class="flex items-center gap-1.5">
-          <input
-            type="checkbox"
-            class="accent-accent"
-            [checked]="isSelected(algorithm)"
-            (change)="toggleAlgorithm(algorithm, $event)"
-          />
-          {{ algorithm }}
-        </label>
+    <div class="flex flex-col gap-1.5">
+      @for (group of algorithmGroups; track group.label) {
+        <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+          <span class="w-16 shrink-0 text-text-muted/70">{{ group.label }}</span>
+          @for (algorithm of group.algorithms; track algorithm) {
+            <label class="flex items-center gap-1.5">
+              <input
+                type="checkbox"
+                class="accent-accent"
+                [checked]="isSelected(algorithm)"
+                (change)="toggleAlgorithm(algorithm, $event)"
+              />
+              {{ algorithm }}
+            </label>
+          }
+        </div>
       }
     </div>
 
