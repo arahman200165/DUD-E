@@ -1,0 +1,60 @@
+<app-tool-shell title="ROT13 / ROT47 Cipher" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'rot13'"
+          [class.text-bg]="mode() === 'rot13'"
+          [class.text-text-muted]="mode() !== 'rot13'"
+          (click)="setMode('rot13')"
+        >
+          ROT13
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'rot47'"
+          [class.text-bg]="mode() === 'rot47'"
+          [class.text-text-muted]="mode() !== 'rot47'"
+          (click)="setMode('rot47')"
+        >
+          ROT47
+        </button>
+      </div>
+
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="swap()">
+        Use output as input
+      </button>
+
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+        Clear
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Input</span>
+      <textarea
+        rows="6"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Type or paste text here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Output (applying {{ mode() === 'rot13' ? 'ROT13' : 'ROT47' }} again reverses it)</span>
+        <app-copy-button [text]="output()" />
+      </div>
+      <textarea
+        rows="6"
+        readonly
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+        [value]="output()"
+      ></textarea>
+    </div>
+  </div>
+</app-tool-shell>
