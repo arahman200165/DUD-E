@@ -1544,4 +1544,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'expression-evaluator',
+    title: 'Expression Evaluator',
+    description: 'Evaluates a math expression with named variables, functions, units, and matrices via a sandboxed expression parser.',
+    category: 'developer',
+    keywords: ['expression', 'evaluator', 'calculator', 'math', 'formula', 'variables'],
+    route: '/tools/expression-evaluator',
+    load: () => import('../../tools/expression-evaluator/expression-evaluator').then((m) => m.ExpressionEvaluator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    execution: { worker: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
