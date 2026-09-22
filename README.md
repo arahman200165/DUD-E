@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-118 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+119 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -154,6 +154,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Number Theory Toolkit](https://arahman200165.github.io/DUDE/tools/number-theory-toolkit) | Developer | Modular arithmetic (including modular inverse), GCD/LCM of a list, and prime checking/factorization. |
 | [Range Generator](https://arahman200165.github.io/DUDE/tools/range-generator) | Developer | Generates a numeric sequence from a start, end, and step, with zero-padding and newline/comma/JSON output. |
 | [Statistics Calculator](https://arahman200165.github.io/DUDE/tools/statistics-calculator) | Developer | Count, sum, mean, median, mode, range, quartiles/IQR, and population/sample variance and standard deviation. |
+| [Matrix Calculator](https://arahman200165.github.io/DUDE/tools/matrix-calculator) | Developer | Adds, subtracts, multiplies, transposes, inverts, or finds the determinant of matrices entered as rows of numbers. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |

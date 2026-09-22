@@ -1531,4 +1531,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'none' },
     io: { accepts: ['text'], produces: ['json', 'text'] },
   },
+  {
+    id: 'matrix-calculator',
+    title: 'Matrix Calculator',
+    description: 'Adds, subtracts, multiplies, transposes, inverts, or finds the determinant of matrices entered as rows of numbers.',
+    category: 'developer',
+    keywords: ['matrix', 'determinant', 'inverse', 'transpose', 'linear algebra'],
+    route: '/tools/matrix-calculator',
+    load: () => import('../../tools/matrix-calculator/matrix-calculator').then((m) => m.MatrixCalculatorTool),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
