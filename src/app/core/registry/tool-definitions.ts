@@ -175,6 +175,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'unicode-character-inspector',
+    title: 'Unicode Character Inspector',
+    description: 'Inspect pasted text character by character: code point, UTF-8/UTF-16 bytes, general category, Unicode block, and official name.',
+    category: 'text',
+    keywords: ['unicode', 'character', 'inspector', 'codepoint', 'utf-8', 'utf-16', 'general category', 'block', 'char', 'name'],
+    route: '/tools/unicode-character-inspector',
+    load: () => import('../../tools/unicode-character-inspector/unicode-character-inspector').then((m) => m.UnicodeCharacterInspector),
+    status: 'stable',
+    persistence: { input: 'session' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',
