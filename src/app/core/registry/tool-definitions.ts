@@ -212,6 +212,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['json'] },
   },
   {
+    id: 'ascii-table',
+    title: 'ASCII Table',
+    description: 'Searchable reference of the 128 standard ASCII characters, with decimal, hex, octal, and control-code names.',
+    category: 'text',
+    keywords: ['ascii', 'table', 'reference', 'dec', 'hex', 'oct', 'character', 'control code'],
+    route: '/tools/ascii-table',
+    load: () => import('../../tools/ascii-table/ascii-table').then((m) => m.AsciiTable),
+    status: 'stable',
+    persistence: { input: 'local' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',
