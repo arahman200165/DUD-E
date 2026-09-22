@@ -249,6 +249,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'smart-quotes-normalizer',
+    title: 'Smart Quotes Normalizer',
+    description: 'Convert curly quotes, dashes, and ellipses to straight ASCII equivalents, or the reverse.',
+    category: 'text',
+    keywords: ['smart quotes', 'curly quotes', 'straight quotes', 'typographic', 'dash', 'em dash', 'en dash', 'ellipsis'],
+    route: '/tools/smart-quotes-normalizer',
+    load: () => import('../../tools/smart-quotes-normalizer/smart-quotes-normalizer').then((m) => m.SmartQuotesNormalizer),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
+  {
     id: 'slug-generator',
     title: 'Slug Generator',
     description: 'Turn a title into a URL-friendly slug, with transliteration and length control.',

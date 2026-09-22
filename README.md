@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-90 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+91 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -89,6 +89,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [ASCII Table](https://arahman200165.github.io/DUDE/tools/ascii-table) | Text | Searchable reference of the 128 standard ASCII characters, with decimal, hex, octal, and control-code names. |
 | [Unicode Table](https://arahman200165.github.io/DUDE/tools/unicode-table) | Text | Browses Unicode characters by block, or searches by code point, character, or name. |
 | [Unicode Normalization](https://arahman200165.github.io/DUDE/tools/unicode-normalization) | Text | Normalizes text to NFC, NFD, NFKC, or NFKD, with a before/after code point comparison. |
+| [Smart Quotes Normalizer](https://arahman200165.github.io/DUDE/tools/smart-quotes-normalizer) | Text | Converts curly quotes, dashes, and ellipses to straight ASCII equivalents, or the reverse. |
 | [Slug Generator](https://arahman200165.github.io/DUDE/tools/slug-generator) | Text | Turns a title into a URL-friendly slug, with transliteration and length control. |
 | [Advanced Diff / Merge](https://arahman200165.github.io/DUDE/tools/advanced-diff) | Text | Line, word, and character diffing with a side-by-side two-way or three-way merge view, file upload, and unified-diff export. |
 | [Directory Diff](https://arahman200165.github.io/DUDE/tools/directory-diff) | Text | Compares two folders for added/removed/changed files, with a line diff or hex byte diff on drill-down. |
