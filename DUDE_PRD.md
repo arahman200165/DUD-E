@@ -1166,54 +1166,39 @@ Large JSON Streaming Viewer and JSON Table Viewer extend the existing JSON Forma
 
 ---
 
-## Phase 10 — Text Processing Depth (Proposed — Track A: Browser-Extensible)
+## Phase 10 — Text Processing Depth (In Progress — Track A: Browser-Extensible)
 
 Goal: extend the Text category with a full Unicode/line-manipulation toolkit and deeper text analysis than Text Inspector currently covers.
 
+**Achieved (Milestones 73-91):** the original 40-item list was consolidated to 19 shippable tools/enhancements during planning, merging closely-related line/character operations into single tools with an internal mode selector, dropping the item already covered by an existing tool, and reinterpreting one item that didn't map onto a paste-based (non-editor) tool:
+
 1. Unicode Character Inspector
 2. Unicode Code Point Converter
-3. Invisible Character Viewer
-4. Control Character Viewer
-5. Zero-Width Character Detector
-6. ASCII Table
-7. Unicode Table
-8. Unicode Normalization (NFC / NFD / NFKC / NFKD)
-9. Smart Quotes Normalizer
-10. Line Ending Converter (CRLF / LF / CR)
-11. Tabs ↔ Spaces
-12. Indentation Converter
-13. Duplicate Line Remover
-14. Duplicate Word Detector
-15. Sort Lines
-16. Shuffle Lines
-17. Reverse Lines
-18. Unique Lines
-19. Prefix / Suffix Lines
-20. Add Line Numbers
-21. Remove Line Numbers
-22. Extract Columns
-23. Find / Replace
-24. Regex Find / Replace
-25. Multi-Cursor Text Transformer
-26. Lorem Ipsum Generator
-27. Placeholder Text Generator
-28. ASCII Art Generator
-29. ASCII Banner Generator
-30. Keyword Frequency Analyzer
-31. String Similarity Calculator (Levenshtein, Jaro-Winkler)
-32. Soundex / Metaphone
-33. Text Tokenizer
-34. N-Gram Generator
-35. Advanced Diff: semantic JSON diff mode
-36. Advanced Diff: semantic YAML diff mode
-37. Advanced Diff: semantic XML diff mode
-38. Advanced Diff: image diff mode
-39. Advanced Diff: ignore-whitespace / ignore-line-endings / ignore-case options
-40. Advanced Diff: moved-block detection
+3. Invisible/Control/Zero-Width Character Scanner (consolidates the original Invisible Character Viewer, Control Character Viewer, and Zero-Width Character Detector into one scan pass)
+4. ASCII Table
+5. Unicode Table
+6. Unicode Normalization (NFC / NFD / NFKC / NFKD)
+7. Smart Quotes Normalizer
+8. Whitespace Cleaner extension: Line Ending Converter, Tabs ↔ Spaces, Indentation Converter (enhancement to the existing Whitespace Cleaner / Normalizer tool, §20 — not a new tool)
+9. Duplicate Finder (Lines | Words modes — consolidates the original Duplicate Line Remover, Duplicate Word Detector, and Unique Lines)
+10. Line Order Tools (Sort / Shuffle / Reverse modes)
+11. Line Prefix/Suffix & Numbering (Prefix/Suffix | Add/Remove Line Numbers | Per-Line Transform modes — the Per-Line Transform mode reinterprets the original "Multi-Cursor Text Transformer," which doesn't map onto a paste-based tool with no real multi-cursor editor)
+12. Extract Columns
+13. Find & Replace (plain text)
+14. Lorem Ipsum & Placeholder Text Generator
+15. ASCII Art Generator / Banner
+16. Keyword Frequency Analyzer
+17. String Similarity Calculator (Levenshtein, Jaro-Winkler)
+18. Soundex / Metaphone
+19. Text Tokenizer & N-Gram Generator
+
+**Dropped:** the original roadmap's Regex Find/Replace item — already covered by the existing Regex Tester's replace mode (§20).
+
+**Still to come:** items 35-40 of the original list (semantic JSON/YAML/XML diff modes, image diff mode, ignore-whitespace/case/line-ending options, and moved-block detection) remain enhancements to the existing Advanced Diff / Merge tool (§20) rather than new tools, tracked as a separate Milestone range.
 
 ### Notes
 
-Items 35-40 are enhancements to the existing Advanced Diff / Merge tool (§20) rather than new tools. Language Detector and Readability Analyzer already shipped (§21 Phase 7); Text Statistics already ships on Text Inspector.
+Language Detector and Readability Analyzer already shipped (§21 Phase 7); Text Statistics already ships on Text Inspector.
 
 ---
 
