@@ -1,0 +1,61 @@
+<app-tool-shell title="Arbitrary Precision Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <span>Operation</span>
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="op()"
+        (change)="setOp($any($event.target).value)"
+      >
+        @for (option of ops; track option.id) {
+          <option [value]="option.id">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">A</span>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="123456789012345678901234567890"
+          [value]="inputA()"
+          (input)="onInputAChange($event)"
+        />
+      </div>
+
+      @if (!isUnary()) {
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">B</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="100"
+            [value]="inputB()"
+            (input)="onInputBChange($event)"
+          />
+        </div>
+      }
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">Result ({{ resultDigitCount() }} digit{{ resultDigitCount() === 1 ? '' : 's' }})</span>
+            <app-copy-button [text]="resultText()" />
+          </div>
+          <textarea
+            rows="6"
+            readonly
+            class="w-full whitespace-pre-wrap break-all rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+            [value]="resultText()"
+          ></textarea>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
