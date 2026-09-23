@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-205 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+209 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -243,6 +243,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [QR Code Scanner](https://arahman200165.github.io/DUDE/tools/qr-code-scanner) | Encoding | Decodes a QR code from an uploaded image or a live webcam feed, entirely client-side. |
 | [Barcode Generator](https://arahman200165.github.io/DUDE/tools/barcode-generator) | Encoding | Generates a CODE128, EAN-13/8, UPC, CODE39, ITF-14, or codabar barcode, with check-digit validation. |
 | [Barcode Reader](https://arahman200165.github.io/DUDE/tools/barcode-reader) | Encoding | Decodes a barcode from an uploaded image or a live webcam feed, entirely client-side. |
+| [Model Generator (JSON → Code)](https://arahman200165.github.io/DUDE/tools/model-generator) | Developer | Infers a type shape from sample JSON and generates a TypeScript, C#, Java, Kotlin, Swift, Python, Rust, Go, or SQL model. |
+| [Dev Snippets Reference](https://arahman200165.github.io/DUDE/tools/dev-snippets-reference) | Developer | Searchable reference of common HTTP headers, regex syntax, git/docker commands, shell idioms, SQL, CSS, HTML, Unicode, MIME types, cron syntax, and chmod. |
+| [chmod / Unix Permissions Converter](https://arahman200165.github.io/DUDE/tools/chmod-converter) | Developer | Converts between symbolic (rwxr-xr--) and octal (754) Unix permissions, with a visual owner/group/other checkbox grid and setuid/setgid/sticky bits. |
+| [Stack Trace Formatter](https://arahman200165.github.io/DUDE/tools/stack-trace-formatter) | Developer | Auto-detects and cleans up a Java, .NET, JavaScript, or Python stack trace, tagging library frames and Caused-by/inner-exception chains. |
+| [Error Code Reference](https://arahman200165.github.io/DUDE/tools/error-code-reference) | Developer | Searchable reference of Windows/Win32/HRESULT, POSIX errno, Linux signals, SQL, TLS alert, and DNS response codes. |
 
 ## Architecture
 
