@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-148 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+149 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -153,6 +153,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Date Calculator](https://arahman200165.github.io/DUDE/tools/date-calculator) | Date & Time | Adds/subtracts calendar or business days from a date, and counts days between two dates. |
 | [Week Number Calculator](https://arahman200165.github.io/DUDE/tools/week-number-calculator) | Date & Time | Converts a date to its ISO-8601 week number and back, and shows how many weeks a given week-year has. |
 | [DST Transition Explorer](https://arahman200165.github.io/DUDE/tools/dst-transition-explorer) | Date & Time | Lists every daylight-saving-time transition for a timezone in a chosen year, with the exact offset change and gap. |
+| [Timezone Offset Comparator](https://arahman200165.github.io/DUDE/tools/timezone-offset-comparator) | Date & Time | Compares UTC offsets across a full year, or pairwise, and shows when an asymmetric DST schedule changes the gap between two zones. |
 | [Query String Parser / Builder](https://arahman200165.github.io/DUDE/tools/query-string) | Web | Parses a query string or URL into key/value pairs, or builds one from scratch. |
 | [HTTP Status Code Reference](https://arahman200165.github.io/DUDE/tools/http-status) | Web | Searchable reference of IANA-registered HTTP status codes, grouped by class. |
 | [HTTP Header Inspector / Builder](https://arahman200165.github.io/DUDE/tools/http-header-inspector) | Web | Inspects pasted HTTP headers as key/value pairs, or builds a header set from scratch. |
