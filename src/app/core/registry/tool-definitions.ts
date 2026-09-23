@@ -2608,4 +2608,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['file'] },
   },
+  {
+    id: 'barcode-reader',
+    title: 'Barcode Reader',
+    description: 'Decodes a barcode from an uploaded image or a live webcam feed, entirely client-side.',
+    category: 'encoding',
+    keywords: ['barcode', 'scan', 'decode', 'webcam', 'camera', 'zxing'],
+    route: '/tools/barcode-reader',
+    load: () => import('../../tools/barcode-reader/barcode-reader').then((m) => m.BarcodeReader),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['text'] },
+  },
 ];
