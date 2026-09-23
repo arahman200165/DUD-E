@@ -1,0 +1,21 @@
+<div class="flex flex-col gap-1">
+  <div class="relative h-16">
+    <div class="absolute top-8 right-0 left-0 h-px bg-border"></div>
+    @for (marker of positionedMarkers(); track $index) {
+      <div class="absolute top-0 flex h-full -translate-x-1/2 flex-col items-center gap-1" [style.left.%]="marker.percent">
+        <span class="whitespace-nowrap text-ui-xs text-text-muted">{{ marker.label }}</span>
+        <span
+          class="w-px flex-1"
+          [class.bg-red-400]="marker.emphasis === 'now'"
+          [class.bg-accent]="marker.emphasis === 'accent'"
+          [class.bg-border]="!marker.emphasis || marker.emphasis === 'default'"
+        ></span>
+      </div>
+    }
+  </div>
+  <div class="relative h-4">
+    @for (tick of ticks(); track $index) {
+      <span class="absolute -translate-x-1/2 whitespace-nowrap text-ui-xs text-text-muted" [style.left.%]="tick.percent">{{ tick.label }}</span>
+    }
+  </div>
+</div>
