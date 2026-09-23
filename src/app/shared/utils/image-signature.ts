@@ -1,9 +1,9 @@
 /**
- * Minimal magic-byte sniffing for the handful of raster image formats this
- * tool cares about. Deliberately local/duplicated rather than imported from
- * `file-base64/file-signature.ts` -- tools are isolated folders per
- * `tools/AGENTS.md`, and this subset (no PDF/ZIP/WAV) is small enough that a
- * shared extraction isn't warranted yet.
+ * Magic-byte sniffing for common raster image formats. Extracted here on its
+ * second consumer (Base64 Image Viewer, then Image Metadata Inspector) per
+ * `shared/AGENTS.md` -- image-processing tools across Phase 17 (EXIF Viewer,
+ * Image Format Converter, etc.) all need to identify a format from bytes
+ * rather than trust a possibly-missing/wrong `File.type`.
  */
 
 export interface ImageSignature {
@@ -48,6 +48,14 @@ const SIGNATURE_RULES: readonly SignatureRule[] = [
   {
     checks: [{ offset: 0, bytes: [0x00, 0x00, 0x01, 0x00] }],
     signature: { mime: 'image/x-icon', extension: 'ico' },
+  },
+  {
+    checks: [{ offset: 0, bytes: [0x49, 0x49, 0x2a, 0x00] }], // little-endian TIFF
+    signature: { mime: 'image/tiff', extension: 'tif' },
+  },
+  {
+    checks: [{ offset: 0, bytes: [0x4d, 0x4d, 0x00, 0x2a] }], // big-endian TIFF
+    signature: { mime: 'image/tiff', extension: 'tif' },
   },
 ];
 

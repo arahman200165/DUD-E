@@ -1,0 +1,47 @@
+<app-tool-shell title="Image Metadata Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (loading()) {
+        <span>Reading...</span>
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop accept="image/*" label="Drop an image here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (metadata(); as data) {
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_16rem]">
+        <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-3 text-ui">
+          <div class="flex justify-between gap-4"><span class="text-text-muted">File name</span><span class="font-mono text-text">{{ data.fileName }}</span></div>
+          <div class="flex justify-between gap-4"><span class="text-text-muted">File size</span><span class="font-mono text-text">{{ formattedSize() }}</span></div>
+          <div class="flex justify-between gap-4"><span class="text-text-muted">Declared MIME</span><span class="font-mono text-text">{{ data.declaredMime }}</span></div>
+          <div class="flex justify-between gap-4">
+            <span class="text-text-muted">Detected format</span>
+            <span class="font-mono text-text">{{ data.detectedMime || 'unrecognized signature' }}</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-text-muted">Dimensions</span>
+            <span class="font-mono text-text">{{ data.width && data.height ? (data.width + ' x ' + data.height + ' px') : 'unavailable' }}</span>
+          </div>
+          <div class="flex justify-between gap-4"><span class="text-text-muted">Aspect ratio</span><span class="font-mono text-text">{{ data.aspectRatio }}</span></div>
+
+          @if (data.pngIhdr; as ihdr) {
+            <div class="mt-2 border-t border-border pt-2">
+              <div class="flex justify-between gap-4"><span class="text-text-muted">Bit depth</span><span class="font-mono text-text">{{ ihdr.bitDepth }}-bit</span></div>
+              <div class="flex justify-between gap-4"><span class="text-text-muted">Color type</span><span class="font-mono text-text">{{ ihdr.colorTypeName }}</span></div>
+              <div class="flex justify-between gap-4"><span class="text-text-muted">Interlaced</span><span class="font-mono text-text">{{ ihdr.interlaced ? 'Adam7' : 'No' }}</span></div>
+            </div>
+          }
+        </div>
+
+        @if (previewUrl(); as url) {
+          <img [src]="url" alt="Selected image preview" class="max-h-64 w-full rounded-sm border border-border object-contain" />
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
