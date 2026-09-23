@@ -11,6 +11,8 @@
           <option value="auto">Auto-detect</option>
           <option value="seconds">Seconds</option>
           <option value="milliseconds">Milliseconds</option>
+          <option value="microseconds">Microseconds</option>
+          <option value="nanoseconds">Nanoseconds</option>
         </select>
       </label>
 
@@ -36,12 +38,12 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <span class="text-ui text-text-muted">Timestamp → Date</span>
+      <span class="text-ui text-text-muted">Timestamp → Date (integer epoch value, ISO 8601, or RFC 2822)</span>
       <div class="flex gap-2">
         <input
           type="text"
           class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
-          placeholder="e.g. 1700000000"
+          placeholder="e.g. 1700000000, 2023-11-14T22:13:20Z, or Tue, 14 Nov 2023 22:13:20 GMT"
           [value]="timestampInput()"
           (input)="onTimestampInput($event)"
         />

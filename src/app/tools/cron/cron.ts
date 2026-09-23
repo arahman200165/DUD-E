@@ -13,6 +13,8 @@ const EXAMPLES: readonly { readonly label: string; readonly expression: string }
   { label: '@daily', expression: '@daily' },
 ];
 
+type RunDirection = 'next' | 'previous';
+
 @Component({
   selector: 'app-cron',
   imports: [ToolShell, ErrorPanel, CopyButton],
@@ -25,6 +27,7 @@ export class Cron {
   protected readonly expression = this.persistence.signal('cron', 'expression', 'session', '');
   protected readonly occurrenceCount = this.persistence.signal('cron', 'occurrenceCount', 'local', 5);
   protected readonly tzMode = this.persistence.signal<CronTimezoneMode>('cron', 'tzMode', 'local', 'local');
+  protected readonly direction = this.persistence.signal<RunDirection>('cron', 'direction', 'local', 'next');
 
   protected readonly result = computed(() =>
     parseCronExpression(this.expression(), { count: this.occurrenceCount(), tz: this.tzMode() }),
@@ -44,6 +47,10 @@ export class Cron {
 
   protected onTzModeChange(event: Event): void {
     this.tzMode.set((event.target as HTMLSelectElement).value as CronTimezoneMode);
+  }
+
+  protected setDirection(direction: RunDirection): void {
+    this.direction.set(direction);
   }
 
   protected clear(): void {

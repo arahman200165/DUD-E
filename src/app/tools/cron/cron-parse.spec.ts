@@ -47,4 +47,25 @@ describe('parseCronExpression', () => {
     const second = parseCronExpression('* * * * *', { count: 2, tz: 'utc', now: NOW });
     expect(first).toEqual(second);
   });
+
+  it('produces the requested number of strictly-decreasing previous runs, all before `now`', () => {
+    const result = parseCronExpression('0 9 * * 1', { count: 3, tz: 'utc', now: NOW });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.previousRuns).toHaveLength(3);
+    for (const run of result.previousRuns) {
+      expect(run.date.getTime()).toBeLessThan(NOW.getTime());
+    }
+    for (let i = 1; i < result.previousRuns.length; i++) {
+      expect(result.previousRuns[i].date.getTime()).toBeLessThan(result.previousRuns[i - 1].date.getTime());
+    }
+  });
+
+  it('produces a verbose, richer description', () => {
+    const result = parseCronExpression('0 */6 * * 1-5', { count: 1, tz: 'utc', now: NOW });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.description.toLowerCase()).toContain('monday through friday');
+  });
 });

@@ -31,8 +31,32 @@
           <option [value]="5">5 runs</option>
           <option [value]="10">10 runs</option>
           <option [value]="20">20 runs</option>
+          <option [value]="25">25 runs</option>
         </select>
       </label>
+
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'next'"
+          [class.text-bg]="direction() === 'next'"
+          [class.text-text-muted]="direction() !== 'next'"
+          (click)="setDirection('next')"
+        >
+          Next runs
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'previous'"
+          [class.text-bg]="direction() === 'previous'"
+          [class.text-text-muted]="direction() !== 'previous'"
+          (click)="setDirection('previous')"
+        >
+          Previous runs
+        </button>
+      </div>
 
       <label class="flex items-center gap-1.5">
         Display
@@ -61,8 +85,8 @@
           <div class="rounded-sm border border-border bg-panel p-2 text-ui text-text">{{ current.description }}</div>
 
           <div class="flex flex-col gap-1">
-            <span class="text-ui text-text-muted">Next runs</span>
-            @for (run of current.nextRuns; track run.date.getTime()) {
+            <span class="text-ui text-text-muted">{{ direction() === 'next' ? 'Next runs' : 'Previous runs' }}</span>
+            @for (run of (direction() === 'next' ? current.nextRuns : current.previousRuns); track run.date.getTime()) {
               <div class="flex items-center justify-between rounded-sm border border-border bg-panel px-2 py-1">
                 <span class="font-mono text-ui text-text">{{ run.display }}</span>
                 <app-copy-button [text]="run.display" />

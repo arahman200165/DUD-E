@@ -1,4 +1,4 @@
-import { dateToTimestamp, formatDate, parseTimestamp, resolveUnit, toDateTimeLocalValue } from './timestamp-convert';
+import { dateToTimestamp, formatDate, msToUnit, parseTimestamp, resolveUnit, toDateTimeLocalValue } from './timestamp-convert';
 
 describe('resolveUnit', () => {
   it('auto-detects seconds for a 10-digit value', () => {
@@ -19,6 +19,14 @@ describe('resolveUnit', () => {
 
   it('auto-detects seconds for a negative (pre-epoch) 10-digit value', () => {
     expect(resolveUnit('-1700000000', 'auto')).toBe('seconds');
+  });
+
+  it('auto-detects microseconds for a 16-digit value', () => {
+    expect(resolveUnit('1700000000000000', 'auto')).toBe('microseconds');
+  });
+
+  it('auto-detects nanoseconds for a 19-digit value', () => {
+    expect(resolveUnit('1700000000000000000', 'auto')).toBe('nanoseconds');
   });
 });
 
@@ -54,6 +62,42 @@ describe('parseTimestamp', () => {
     expect(result.ok && result.date.getTime()).toBe(-1_700_000_000_000);
     expect(result.ok && result.date.getTime() < 0).toBe(true);
   });
+
+  it('parses a microseconds timestamp without precision loss', () => {
+    const result = parseTimestamp('1700000000000000', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('microseconds');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
+  });
+
+  it('parses a nanoseconds timestamp without precision loss', () => {
+    const result = parseTimestamp('1700000000123456789', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('nanoseconds');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_123);
+  });
+
+  it('parses an ISO 8601 date string', () => {
+    const result = parseTimestamp('2023-11-14T22:13:20Z', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('iso8601');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
+  });
+
+  it('parses an RFC 2822 date string', () => {
+    const result = parseTimestamp('Tue, 14 Nov 2023 22:13:20 GMT', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('rfc2822');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
+  });
+
+  it('rejects a string that is neither an integer, ISO 8601, nor RFC 2822', () => {
+    expect(parseTimestamp('not-a-timestamp', 'auto').ok).toBe(false);
+  });
 });
 
 describe('dateToTimestamp', () => {
@@ -74,6 +118,24 @@ describe('dateToTimestamp', () => {
 
   it('rejects an unparseable date/time', () => {
     expect(dateToTimestamp('not-a-date', 'utc', 'seconds').ok).toBe(false);
+  });
+
+  it('converts a UTC date/time string to a microseconds timestamp', () => {
+    expect(dateToTimestamp('2023-11-14T22:13:20', 'utc', 'microseconds')).toEqual({ ok: true, value: '1700000000000000' });
+  });
+
+  it('converts a UTC date/time string to a nanoseconds timestamp', () => {
+    expect(dateToTimestamp('2023-11-14T22:13:20', 'utc', 'nanoseconds')).toEqual({ ok: true, value: '1700000000000000000' });
+  });
+});
+
+describe('msToUnit', () => {
+  it('converts to each unit', () => {
+    const ms = 1_700_000_000_000;
+    expect(msToUnit(ms, 'seconds')).toBe(1_700_000_000);
+    expect(msToUnit(ms, 'milliseconds')).toBe(1_700_000_000_000);
+    expect(msToUnit(ms, 'microseconds')).toBe('1700000000000000');
+    expect(msToUnit(ms, 'nanoseconds')).toBe('1700000000000000000');
   });
 });
 

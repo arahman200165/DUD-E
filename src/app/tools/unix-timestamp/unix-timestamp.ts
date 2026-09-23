@@ -4,9 +4,11 @@ import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import {
   DisplayTimezone,
+  NumericUnit,
   TimestampUnit,
   dateToTimestamp,
   formatDate,
+  msToUnit,
   parseTimestamp,
   toDateTimeLocalValue,
 } from './timestamp-convert';
@@ -24,7 +26,10 @@ export class UnixTimestamp {
   protected readonly timestampInput = this.persistence.signal('unix-timestamp', 'timestampInput', 'session', '');
   protected readonly dateInput = this.persistence.signal('unix-timestamp', 'dateInput', 'session', '');
 
-  protected readonly effectiveUnit = computed(() => (this.unit() === 'milliseconds' ? 'milliseconds' : 'seconds'));
+  protected readonly effectiveUnit = computed<NumericUnit>(() => {
+    const unit = this.unit();
+    return unit === 'auto' ? 'seconds' : unit;
+  });
 
   protected readonly timestampResult = computed(() => parseTimestamp(this.timestampInput(), this.unit()));
   protected readonly formattedDate = computed(() => {
@@ -54,8 +59,7 @@ export class UnixTimestamp {
 
   protected now(): void {
     const nowDate = new Date();
-    const seconds = Math.floor(nowDate.getTime() / 1000);
-    this.timestampInput.set(String(this.effectiveUnit() === 'seconds' ? seconds : nowDate.getTime()));
+    this.timestampInput.set(String(msToUnit(nowDate.getTime(), this.effectiveUnit())));
     this.dateInput.set(toDateTimeLocalValue(nowDate, this.tz()));
   }
 
