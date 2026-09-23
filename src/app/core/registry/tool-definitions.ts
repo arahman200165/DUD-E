@@ -2488,4 +2488,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['file'], produces: ['json', 'file'] },
   },
+  {
+    id: 'image-resizer',
+    title: 'Image Resizer',
+    description: 'Resizes an uploaded image to explicit dimensions or a percentage scale, with optional aspect-ratio lock.',
+    category: 'documents',
+    keywords: ['image', 'resize', 'scale', 'dimensions', 'canvas'],
+    route: '/tools/image-resizer',
+    load: () => import('../../tools/image-resizer/image-resizer').then((m) => m.ImageResizer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['file'], produces: ['file'] },
+  },
 ];
