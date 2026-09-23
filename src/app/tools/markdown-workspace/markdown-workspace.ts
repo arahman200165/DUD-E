@@ -20,6 +20,7 @@ import { MarkdownInsertAction, applyMarkdownInsertion } from './markdown-toolbar
 import { computeSyncedScrollTop } from './markdown-scroll-sync';
 import { MarkdownPluginKind, MarkdownPluginManifest } from './plugins/plugin-manifest.model';
 import { BUILT_IN_PLUGINS } from './plugins/builtin-plugins';
+import { lintMarkdown } from './markdown-lint';
 import { PluginRuntimeHost } from './plugins/plugin-runtime-host';
 import { CollabConnectionStatus, MarkdownCollabClient } from './collab/markdown-collab-client';
 
@@ -104,6 +105,9 @@ export class MarkdownWorkspace implements OnDestroy {
   protected readonly plugins = this.persistence.signal<readonly MarkdownPluginManifest[]>('markdown-workspace', 'plugins', 'local', BUILT_IN_PLUGINS);
   private readonly pluginHosts = viewChildren(PluginRuntimeHost);
   protected readonly showPluginPanel = signal(false);
+
+  protected readonly showLintPanel = signal(false);
+  protected readonly lintFindings = computed(() => lintMarkdown(this.source()));
 
   protected readonly newPluginName = signal('');
   protected readonly newPluginKind = signal<MarkdownPluginKind>('render-hook');
@@ -271,6 +275,23 @@ export class MarkdownWorkspace implements OnDestroy {
 
   protected toggleSyncScroll(): void {
     this.syncScroll.set(!this.syncScroll());
+  }
+
+  protected toggleLintPanel(): void {
+    this.showLintPanel.set(!this.showLintPanel());
+  }
+
+  /** Moves the textarea's cursor/selection to the start of the given 1-based line and focuses it. */
+  protected goToLine(line: number): void {
+    const textarea = this.sourceTextarea()?.nativeElement;
+    if (!textarea) return;
+
+    const lines = this.source().split('\n');
+    let offset = 0;
+    for (let i = 0; i < line - 1 && i < lines.length; i++) offset += lines[i].length + 1;
+
+    textarea.focus();
+    textarea.setSelectionRange(offset, offset + (lines[line - 1]?.length ?? 0));
   }
 
   protected insert(action: MarkdownInsertAction): void {
