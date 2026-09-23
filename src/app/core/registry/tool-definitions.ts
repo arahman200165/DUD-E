@@ -585,6 +585,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'cors-header-builder',
+    title: 'CORS Header Builder',
+    description: 'Builds the CORS response headers and checks whether a hypothetical request would pass preflight — construct-and-display, never a real request.',
+    category: 'web',
+    keywords: ['cors', 'cross-origin', 'header', 'preflight', 'access-control', 'origin'],
+    route: '/tools/cors-header-builder',
+    load: () => import('../../tools/cors-header-builder/cors-header-builder').then((m) => m.CorsHeaderBuilder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',
