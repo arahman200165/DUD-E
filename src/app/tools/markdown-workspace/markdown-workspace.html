@@ -1,4 +1,4 @@
-<app-tool-shell title="Advanced Markdown Workspace" status="experimental">
+<app-tool-shell title="Advanced Markdown Workspace" status="experimental" [networkRequired]="showLinkCheckerPanel()">
   <div class="flex h-full min-h-0 flex-col gap-2">
     <div class="flex flex-wrap items-center gap-1 text-ui text-text-muted">
       <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="insert('bold')"><strong>B</strong></button>
@@ -45,6 +45,9 @@
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showPluginPanel()" (click)="togglePluginPanel()">Plugins</button>
       <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showLintPanel()" (click)="toggleLintPanel()">
         Lint{{ lintFindings().length > 0 ? ' (' + lintFindings().length + ')' : '' }}
+      </button>
+      <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showLinkCheckerPanel()" (click)="toggleLinkCheckerPanel()">
+        Link Checker{{ documentLinks().length > 0 ? ' (' + documentLinks().length + ')' : '' }}
       </button>
       @if (platform.isDesktop()) {
         <button type="button" class="rounded-sm border border-border px-1.5 py-0.5 hover:bg-panel-elevated" [class.bg-panel-elevated]="showCollabPanel()" (click)="toggleCollabPanel()">
@@ -155,6 +158,45 @@
               <span>{{ finding.message }}</span>
             </button>
           }
+        }
+      </div>
+    }
+
+    @if (showLinkCheckerPanel()) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui-xs">
+        <p class="text-text-muted">
+          Checks every http(s) link found in the document with a HEAD (falling back to GET) request. This is the only
+          action in this tool that sends anything over the network — it happens only when you click the button below,
+          never automatically, and only the link URLs themselves are sent, nothing else about the document.
+        </p>
+        <button
+          type="button"
+          class="w-fit rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+          [disabled]="linkCheckStatus() === 'checking' || documentLinks().length === 0"
+          (click)="runLinkCheck()"
+        >
+          {{ linkCheckStatus() === 'checking' ? 'Checking…' : 'Check links' }}
+        </button>
+
+        @if (documentLinks().length === 0) {
+          <p class="text-text-muted">No links found in this document.</p>
+        } @else if (linkCheckResults(); as checkResults) {
+          <ul class="flex flex-col gap-1">
+            @for (outcome of checkResults; track $index) {
+              <li
+                class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel-elevated px-2 py-1"
+                [class.text-success]="outcome.status === 'ok'"
+                [class.text-error]="outcome.status === 'broken'"
+                [class.text-warning]="outcome.status === 'unverifiable'"
+                [class.text-text-muted]="outcome.status === 'skipped'"
+              >
+                <button type="button" class="truncate text-left hover:underline" (click)="goToLine(outcome.link.line)">
+                  L{{ outcome.link.line }} — {{ outcome.link.url }}
+                </button>
+                <span class="shrink-0">{{ outcome.detail }}</span>
+              </li>
+            }
+          </ul>
         }
       </div>
     }

@@ -1248,6 +1248,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'experimental',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
+    network: { required: true, detail: 'Link Checker: HEAD/GET per link, manual "Check links" button only' },
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
