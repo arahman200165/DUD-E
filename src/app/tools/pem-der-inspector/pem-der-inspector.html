@@ -1,0 +1,147 @@
+<app-tool-shell title="PEM / DER Inspector & Converter">
+  <div class="flex flex-col gap-3">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui w-fit">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="inputMode() === 'paste'"
+        [class.text-bg]="inputMode() === 'paste'"
+        [class.text-text-muted]="inputMode() !== 'paste'"
+        (click)="setInputMode('paste')"
+      >
+        Paste
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="inputMode() === 'file'"
+        [class.text-bg]="inputMode() === 'file'"
+        [class.text-text-muted]="inputMode() !== 'file'"
+        (click)="setInputMode('file')"
+      >
+        File
+      </button>
+    </div>
+
+    @if (inputMode() === 'paste') {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">PEM block, or hex-encoded raw DER bytes</span>
+        <textarea
+          rows="8"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----&#10;&#10;or hex-encoded DER: 30820...&#10;"
+          [value]="input()"
+          (input)="onInputChange($event)"
+        ></textarea>
+      </div>
+    } @else {
+      <app-file-drop
+        label="Drop a .pem/.der/.crt/.key file here, or click to browse"
+        (fileSelected)="onFileSelected($event)"
+        (rejected)="onRejected($event)"
+      />
+      @if (fileName(); as name) {
+        <span class="text-ui text-text-muted">Loaded: {{ name }}</span>
+      }
+    }
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    @if (result(); as current) {
+      @if (!current.ok) {
+        <app-error-panel [message]="current.error" />
+      } @else {
+        <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+          <div class="flex overflow-hidden rounded-sm border border-border text-ui-xs w-fit">
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="viewMode() === 'tree'"
+              [class.text-bg]="viewMode() === 'tree'"
+              [class.text-text-muted]="viewMode() !== 'tree'"
+              (click)="setViewMode('tree')"
+            >
+              ASN.1 Tree
+            </button>
+            <button
+              type="button"
+              class="px-2 py-0.5"
+              [class.bg-accent]="viewMode() === 'hex'"
+              [class.text-bg]="viewMode() === 'hex'"
+              [class.text-text-muted]="viewMode() !== 'hex'"
+              (click)="setViewMode('hex')"
+            >
+              Hex / PEM
+            </button>
+          </div>
+
+          @if (viewMode() === 'hex') {
+            <label class="flex items-center gap-1.5">
+              PEM type
+              <select
+                class="rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+                [value]="pemType()"
+                (change)="onPemTypeChange($event)"
+              >
+                @for (type of commonPemTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </label>
+          }
+        </div>
+
+        @for (block of treeNodesByBlock(); track block.label) {
+          <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-2">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">{{ block.label }}</span>
+              @if (viewMode() === 'hex') {
+                <app-copy-button [text]="hex(block.der)" />
+              }
+            </div>
+
+            @if (viewMode() === 'tree') {
+              <app-tree-view [nodes]="block.nodes" />
+            } @else {
+              <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-1">
+                  <span class="text-ui-xs text-text-muted">Hex DER ({{ block.der.length }} bytes)</span>
+                  <textarea
+                    rows="4"
+                    readonly
+                    class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+                    [value]="hex(block.der)"
+                  ></textarea>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-ui-xs text-text-muted">As PEM</span>
+                    <app-copy-button [text]="toPem(block.der)" />
+                  </div>
+                  <textarea
+                    rows="4"
+                    readonly
+                    class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+                    [value]="toPem(block.der)"
+                  ></textarea>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+    }
+
+    <div>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+</app-tool-shell>
