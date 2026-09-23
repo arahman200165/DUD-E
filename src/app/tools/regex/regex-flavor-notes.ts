@@ -1,15 +1,11 @@
-import { parse, traverse } from 'regexp-tree';
-import type { AstRegExp } from 'regexp-tree/ast';
+import { detectFeatures } from '../../shared/utils/regex-ast-features';
 
 /**
  * Cross-language regex "flavor" compatibility notes — a static per-flavor
- * dataset, not a re-implementation of each engine. Detects feature usage by
- * reusing `regexp-tree`'s AST (the same library `regex-explain.ts` uses)
- * when it parses cleanly (named groups, lookbehind, backreferences), via
- * its `traverse` helper rather than a hand-rolled recursive walk — falls
- * back to simple presence checks against the raw pattern source if AST
- * parsing failed, avoiding the escaping fragility a from-scratch tokenizer
- * would reintroduce.
+ * dataset, not a re-implementation of each engine. Feature detection itself
+ * (named groups, lookbehind, backreferences) lives in
+ * `shared/utils/regex-ast-features.ts`, shared with the Regex Flavor
+ * Converter.
  */
 
 export type RegexFlavor = 'js' | 'python' | 'java' | 'dotnet' | 'go';
@@ -28,46 +24,6 @@ export const REGEX_FLAVORS: Record<RegexFlavor, string> = {
   dotnet: '.NET',
   go: 'Go RE2',
 };
-
-interface DetectedFeatures {
-  readonly hasNamedGroups: boolean;
-  readonly hasLookbehind: boolean;
-  readonly hasLookahead: boolean;
-  readonly hasBackreference: boolean;
-}
-
-function detectFeatures(pattern: string, flags: string): DetectedFeatures {
-  try {
-    const ast: AstRegExp = parse(new RegExp(pattern, (flags.match(/[gimsuy]/g) ?? []).join('')));
-
-    let hasNamedGroups = false;
-    let hasLookahead = false;
-    let hasLookbehind = false;
-    let hasBackreference = false;
-
-    traverse(ast, {
-      Group(path) {
-        if (path.node.capturing && path.node.name) hasNamedGroups = true;
-      },
-      Assertion(path) {
-        if (path.node.kind === 'Lookahead') hasLookahead = true;
-        if (path.node.kind === 'Lookbehind') hasLookbehind = true;
-      },
-      Backreference() {
-        hasBackreference = true;
-      },
-    });
-
-    return { hasNamedGroups, hasLookbehind, hasLookahead, hasBackreference };
-  } catch {
-    return {
-      hasNamedGroups: /\(\?<[^=!]/.test(pattern),
-      hasLookbehind: /\(\?<[=!]/.test(pattern),
-      hasLookahead: /\(\?[=!]/.test(pattern),
-      hasBackreference: /\\\d/.test(pattern) || /\\k</.test(pattern),
-    };
-  }
-}
 
 export function flavorNotesFor(pattern: string, flags: string, flavor: RegexFlavor): readonly RegexFlavorNote[] {
   if (pattern === '') return [];
