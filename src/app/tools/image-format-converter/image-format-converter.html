@@ -1,0 +1,29 @@
+<app-tool-shell title="Image Format Converter" status="stable">
+  <div class="flex flex-col gap-3">
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop accept="image/*" label="Drop an image here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (selectedFile()) {
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <select class="rounded-sm border border-border bg-panel px-2 py-0.5 text-text" [value]="outputFormat()" (change)="outputFormat.set($any($event.target).value)">
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/webp">WebP</option>
+          <option value="image/avif">AVIF{{ avifSupported() === false ? ' (unsupported here)' : '' }}</option>
+        </select>
+        <button type="button" class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="convert()">Convert</button>
+      </div>
+
+      @if (resultUrl(); as url) {
+        <div class="flex items-center gap-3 text-ui text-text-muted">
+          <span>{{ resultFilename() }} ({{ (resultSize() / 1024).toFixed(1) }} KB)</span>
+          <button type="button" class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="download()">Download</button>
+        </div>
+        <img [src]="url" alt="Converted preview" class="max-h-96 max-w-full rounded-sm border border-border object-contain" />
+      }
+    }
+  </div>
+</app-tool-shell>
