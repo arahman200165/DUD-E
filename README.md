@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-176 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+177 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -212,6 +212,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [CSS Specificity Calculator / Comparer](https://arahman200165.github.io/DUDE/tools/css-specificity-calculator) | Developer | Scores one or more CSS selectors by specificity and ranks them from most to least specific. |
 | [CSS Selector Tester](https://arahman200165.github.io/DUDE/tools/css-selector-tester) | Developer | Tests a CSS selector against sample HTML and lists every matched element in document order. |
 | [CSS Formatter / Minifier](https://arahman200165.github.io/DUDE/tools/css-formatter) | Developer | Pretty-prints or minifies CSS, comment- and string-aware, including nested at-rules like @media. |
+| [Box Shadow Generator](https://arahman200165.github.io/DUDE/tools/box-shadow-generator) | Developer | Builds a single or multi-layer CSS box-shadow declaration with a live preview. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |

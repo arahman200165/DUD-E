@@ -2282,4 +2282,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'box-shadow-generator',
+    title: 'Box Shadow Generator',
+    description: 'Builds a single or multi-layer CSS box-shadow declaration with a live preview.',
+    category: 'developer',
+    keywords: ['box-shadow', 'css shadow', 'drop shadow', 'inset shadow', 'css generator'],
+    route: '/tools/box-shadow-generator',
+    load: () => import('../../tools/box-shadow-generator/box-shadow-generator').then((m) => m.BoxShadowGenerator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
