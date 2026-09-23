@@ -2414,4 +2414,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'meta-tag-generator',
+    title: 'Meta Tag Generator',
+    description: 'Builds a <head> meta tag block from title/description/viewport/charset/robots/canonical fields.',
+    category: 'developer',
+    keywords: ['meta tags', 'seo', 'head tags', 'viewport', 'canonical', 'robots meta'],
+    route: '/tools/meta-tag-generator',
+    load: () => import('../../tools/meta-tag-generator/meta-tag-generator').then((m) => m.MetaTagGenerator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
