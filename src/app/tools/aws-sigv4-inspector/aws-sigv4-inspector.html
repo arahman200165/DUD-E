@@ -1,0 +1,147 @@
+<app-tool-shell title="AWS Signature V4 Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'build'"
+        [class.text-bg]="mode() === 'build'"
+        (click)="setMode('build')"
+      >
+        Build
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'inspect'"
+        [class.text-bg]="mode() === 'inspect'"
+        (click)="setMode('inspect')"
+      >
+        Inspect
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Method
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="method()" (input)="onMethodInput($event)" />
+      </label>
+      <label class="col-span-2 flex flex-col gap-1 text-ui text-text-muted">
+        URL
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="https://service.region.amazonaws.com/path?query=value" [value]="url()" (input)="onUrlInput($event)" />
+      </label>
+    </div>
+
+    @if (mode() === 'build') {
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Access key
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="accessKey()" (input)="onAccessKeyInput($event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Secret key
+          <input type="password" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="secretKey()" (input)="onSecretKeyInput($event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Region
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="region()" (input)="onRegionInput($event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Service
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="s3, execute-api, iam, …" [value]="service()" (input)="onServiceInput($event)" />
+        </label>
+        <label class="col-span-2 flex flex-col gap-1 text-ui text-text-muted">
+          Session token (optional, STS temporary credentials)
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="sessionToken()" (input)="onSessionTokenInput($event)" />
+        </label>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Additional headers (host and x-amz-date are added automatically)</span>
+        <app-key-value-editor [pairs]="headerPairs()" (pairsChange)="onHeaderPairsChange($event)" keyPlaceholder="header" valuePlaceholder="value" addLabel="Add header" />
+      </div>
+    } @else {
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Secret key
+        <input type="password" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="inspectSecretKey()" (input)="onInspectSecretKeyInput($event)" />
+      </label>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Request headers as sent (must include host, x-amz-date, and Authorization)</span>
+        <app-key-value-editor [pairs]="inspectHeaderPairs()" (pairsChange)="onInspectHeaderPairsChange($event)" keyPlaceholder="header" valuePlaceholder="value" addLabel="Add header" />
+      </div>
+    }
+
+    <div class="flex flex-col gap-1">
+      <label class="flex items-center gap-2 text-ui text-text-muted">
+        <input type="checkbox" [checked]="unsignedPayload()" (change)="onUnsignedPayloadChange($event)" />
+        Unsigned payload (streaming / S3 chunked uploads)
+      </label>
+      @if (!unsignedPayload()) {
+        <span class="text-ui text-text-muted">Request body (used only to compute its SHA-256 hash)</span>
+        <textarea
+          rows="3"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="payload()"
+          (input)="onPayloadInput($event)"
+        ></textarea>
+      }
+    </div>
+
+    @if (mode() === 'build') {
+      @if (buildResult(); as current) {
+        @if (current.ok) {
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Authorization header</span>
+              <app-copy-button [text]="current.value.authorizationHeader" />
+            </div>
+            <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all whitespace-pre-wrap text-text">{{ current.value.authorizationHeader }}</pre>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui-xs text-text-muted">Canonical request</span>
+              <app-copy-button [text]="current.value.canonicalRequest" />
+            </div>
+            <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre-wrap text-text">{{ current.value.canonicalRequest }}</pre>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-ui-xs text-text-muted">String to sign</span>
+            <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre-wrap text-text">{{ current.value.stringToSign }}</pre>
+          </div>
+        } @else {
+          <app-error-panel [message]="current.error" />
+        }
+      }
+    } @else {
+      @if (inspectResult(); as current) {
+        @if (current.ok) {
+          @if (current.value.matches) {
+            <div class="rounded-sm border border-success/40 bg-success/10 px-2 py-1.5 text-ui text-success">
+              Signature matches — computed for {{ current.value.accessKey }}, scope {{ current.value.credentialScope }}.
+            </div>
+          } @else {
+            <div class="rounded-sm border border-error/40 bg-error/10 px-2 py-1.5 text-ui text-error">
+              Signature does not match. Expected <span class="font-mono break-all">{{ current.value.expectedSignature }}</span>, request carried
+              <span class="font-mono break-all">{{ current.value.providedSignature }}</span>.
+            </div>
+          }
+
+          <div class="flex flex-col gap-1">
+            <span class="text-ui-xs text-text-muted">Canonical request</span>
+            <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre-wrap text-text">{{ current.value.canonicalRequest }}</pre>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-ui-xs text-text-muted">String to sign</span>
+            <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre-wrap text-text">{{ current.value.stringToSign }}</pre>
+          </div>
+        } @else {
+          <app-error-panel [message]="current.error" />
+        }
+      }
+    }
+  </div>
+</app-tool-shell>
