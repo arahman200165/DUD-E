@@ -2221,4 +2221,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'color-blindness-simulator',
+    title: 'Color Blindness Simulator',
+    description: 'Simulates protanopia, deuteranopia, and tritanopia on an uploaded image via a per-pixel canvas transform.',
+    category: 'encoding',
+    keywords: ['color blindness', 'colour blindness', 'protanopia', 'deuteranopia', 'tritanopia', 'color vision deficiency', 'accessibility'],
+    route: '/tools/color-blindness-simulator',
+    load: () => import('../../tools/color-blindness-simulator/color-blindness-simulator').then((m) => m.ColorBlindnessSimulator),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['file'], produces: ['file'] },
+  },
 ];
