@@ -1291,29 +1291,25 @@ JWKS fetching-by-URL already ships on the JWT Signature Verifier (§20); every P
 
 ---
 
-## Phase 14 — Date & Time Depth (Proposed — Track A: Browser-Extensible)
+## Phase 14 — Date & Time Depth (✅ Complete — Track A: Browser-Extensible)
 
 Goal: round out Date & Time with additional parsers and time-math utilities beyond timestamp conversion, timezones, duration, and cron.
 
-1. ISO 8601 Parser
-2. RFC 3339 Parser
-3. RFC 2822 Parser
-4. Unix Microseconds / Nanoseconds support on the Unix Timestamp Converter
-5. Timezone Offset Comparator
-6. DST Transition Explorer
-7. Week Number Calculator
-8. Calendar Week Converter
-9. Relative Time Parser ("3 days ago" ↔ timestamp)
-10. Duration → ISO 8601
-11. Stopwatch
-12. Countdown
-13. Epoch Timeline Visualizer
-14. Cron Previous-Runs Preview (Cron Parser currently shows next-run only)
-15. Cron Humanizer depth (richer plain-English breakdown, e.g. "every six hours, Monday through Friday" plus the next 25 executions)
+**Achieved (Milestones 137-143):** the original 15 items consolidated into 6 new tools plus one bundled enhancement to two existing tools, per the design already anticipated by this phase's own Notes below:
+
+1. Week Number Calculator (items 7+8; one bidirectional tool — date → ISO week-year/week/weekday and back — rather than two one-direction tools, matching this codebase's existing bidirectional-tool pattern, e.g. Base64 Encoder/Decoder)
+2. DST Transition Explorer (item 6; day-by-day offset scan + binary search, hand-rolled since no library exposes transition instants directly — the scan itself lives in a new shared `shared/utils/dst-transitions.ts` since Timezone Offset Comparator needs the same data)
+3. Timezone Offset Comparator (item 5; a year-long offset grid across multiple zones *and* a pairwise ahead/behind calculator with next-change lookahead, both in one tool — the existing Date/Timezone Converter already covered a single moment's per-zone offset, so this had to do something that tool didn't)
+4. Relative Time Parser (item 9; bidirectional — free text to timestamp via a new `chrono-node` dependency, since natural-language date parsing is exactly the "genuinely fiddly" case that justifies a library per §17.1; timestamp back to text via the native `Intl.RelativeTimeFormat`)
+5. Stopwatch & Countdown (items 11+12; one tool with a mode toggle — the first real-time-ticking UI in the codebase, anchored on persisted start/target instants rather than a raw ticking counter so a reload mid-run resumes correctly)
+6. Epoch Timeline Visualizer (item 13; a free list of labeled timestamps *and* a start/end range, both modes plotted through a new shared `shared/components/timeline/` primitive)
+7. Unix Timestamp Converter + Cron Expression Parser enhancement (items 1-4 and 14-15, bundled into one milestone since neither is a new tool): Unix Timestamp Converter gained ISO 8601/RFC 3339/RFC 2822 auto-detected string input (`luxon`'s `fromISO`/`fromRFC2822`) and BigInt-backed microsecond/nanosecond units; Cron Expression Parser gained a previous-runs list (`cron-parser`'s already-available `prev()`), a next/previous direction toggle, verbose `cronstrue` humanization, and a 25-run option
+
+Item 10 (Duration → ISO 8601) needed no work: the existing Duration Parser/Formatter already accepted human-or-ISO-8601 input and always returned an `iso8601` field in its result.
 
 ### Notes
 
-`luxon` already covers most of the parsing/timezone math per Phase 4; items 1-3 and 14-15 extend the existing Cron Parser / Unix Timestamp Converter rather than becoming new tools.
+`luxon` already covers most of the parsing/timezone math per Phase 4; items 1-3 and 14-15 extended the existing Cron Parser / Unix Timestamp Converter rather than becoming new tools, per the plan above.
 
 ---
 
