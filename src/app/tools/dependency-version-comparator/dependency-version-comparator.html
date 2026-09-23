@@ -1,0 +1,58 @@
+<app-tool-shell title="Dependency Version Comparator" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <p class="text-ui text-text-muted">
+      Paste two dependency lists — <code>"name": "version"</code>, <code>name&#64;version</code>, or <code>name version</code>, one per line.
+    </p>
+
+    <div class="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-2">
+      <div class="flex min-h-32 flex-col gap-1">
+        <span class="text-ui text-text-muted">Before</span>
+        <textarea
+          class="flex-1 resize-none rounded-sm border border-border bg-panel p-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          spellcheck="false"
+          [value]="before()"
+          (input)="onBeforeChange($event)"
+        ></textarea>
+      </div>
+      <div class="flex min-h-32 flex-col gap-1">
+        <span class="text-ui text-text-muted">After</span>
+        <textarea
+          class="flex-1 resize-none rounded-sm border border-border bg-panel p-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          spellcheck="false"
+          [value]="after()"
+          (input)="onAfterChange($event)"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="overflow-auto rounded-sm border border-border">
+      <table class="w-full min-w-full border-collapse text-left text-xs">
+        <thead class="bg-panel-elevated text-text-muted">
+          <tr>
+            <th class="border-b border-border px-2 py-1 font-medium">Package</th>
+            <th class="border-b border-border px-2 py-1 font-medium">Before</th>
+            <th class="border-b border-border px-2 py-1 font-medium">After</th>
+            <th class="border-b border-border px-2 py-1 font-medium">Change</th>
+          </tr>
+        </thead>
+        <tbody class="text-text">
+          @for (entry of diff(); track entry.name) {
+            <tr class="odd:bg-panel even:bg-panel-elevated/40">
+              <td class="whitespace-nowrap border-b border-border px-2 py-1 font-mono">{{ entry.name }}</td>
+              <td class="whitespace-nowrap border-b border-border px-2 py-1 font-mono">{{ entry.before ?? '—' }}</td>
+              <td class="whitespace-nowrap border-b border-border px-2 py-1 font-mono">{{ entry.after ?? '—' }}</td>
+              <td
+                class="whitespace-nowrap border-b border-border px-2 py-1"
+                [class.text-danger]="entry.kind === 'upgraded-major' || entry.kind === 'removed'"
+                [class.text-warning]="entry.kind === 'upgraded-minor' || entry.kind === 'downgraded'"
+                [class.text-accent]="entry.kind === 'added' || entry.kind === 'upgraded-patch'"
+              >
+                {{ kindLabel(entry.kind) }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</app-tool-shell>
