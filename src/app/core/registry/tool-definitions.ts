@@ -1743,4 +1743,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text', 'json'], produces: ['text'] },
   },
+  {
+    id: 'jwt-claims-analyzer',
+    title: 'JWT Claims Analyzer',
+    shortTitle: 'Claims Analyzer',
+    description: 'Decodes a JWT and flags claim-level issues — missing/expired timestamps, risky algorithms, non-standard claims.',
+    category: 'security',
+    keywords: ['jwt', 'claims', 'analyze', 'lint', 'security', 'exp', 'iat', 'nbf', 'aud', 'iss', 'alg none'],
+    route: '/tools/jwt-claims-analyzer',
+    load: () => import('../../tools/jwt-claims-analyzer/jwt-claims-analyzer').then((m) => m.JwtClaimsAnalyzer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];

@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-134 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+135 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -135,6 +135,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [PKCS#12 / PFX Inspector](https://arahman200165.github.io/DUDE/tools/pkcs12-inspector) | Security | Inspects a .p12/.pfx file's certificates and private keys given its password. |
 | [JWKS Viewer](https://arahman200165.github.io/DUDE/tools/jwks-viewer) | Security | Inspects a JWKS document — enumerates keys, decodes each JWK's parameters, and flags common problems. |
 | [JWKS → Public Keys](https://arahman200165.github.io/DUDE/tools/jwks-to-pem) | Security | Converts JWKS keys to PEM (SPKI) or raw JWK for use outside the browser. |
+| [JWT Claims Analyzer](https://arahman200165.github.io/DUDE/tools/jwt-claims-analyzer) | Security | Decodes a JWT and flags claim-level issues — missing/expired timestamps, risky algorithms, non-standard claims. |
 | [Unix Timestamp Converter](https://arahman200165.github.io/DUDE/tools/unix-timestamp) | Date & Time | Converts between Unix timestamps and human-readable local/UTC dates. |
 | [Cron Expression Parser](https://arahman200165.github.io/DUDE/tools/cron) | Date & Time | Parses a cron expression into a human-readable schedule and previews its next run times. |
 | [Date / Timezone Converter](https://arahman200165.github.io/DUDE/tools/timezone-converter) | Date & Time | Converts a moment in time across a chosen set of IANA timezones, as a multi-zone world clock. |
