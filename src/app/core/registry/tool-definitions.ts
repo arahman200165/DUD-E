@@ -2524,4 +2524,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['file'], produces: ['file'] },
   },
+  {
+    id: 'image-compressor',
+    title: 'Image Compressor',
+    description: 'Compresses an uploaded image via real WASM codecs (MozJPEG/WebP/PNG), off the main thread, with a before/after size comparison.',
+    category: 'documents',
+    keywords: ['image', 'compress', 'optimize', 'jpeg', 'webp', 'png', 'wasm', 'file size'],
+    route: '/tools/image-compressor',
+    load: () => import('../../tools/image-compressor/image-compressor').then((m) => m.ImageCompressor),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    execution: { worker: 'required' },
+    io: { accepts: ['file'], produces: ['file'] },
+  },
 ];
