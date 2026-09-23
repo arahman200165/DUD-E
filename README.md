@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-168 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+169 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -107,7 +107,8 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Base64 Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/base64) | Encoding | UTF-8-safe text ↔ Base64 conversion. |
 | [URL Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/url-encode) | Encoding | Percent-encodes or decodes text as a URL component or a full URI. |
 | [HTML Entity Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/html-entities) | Encoding | Encodes text as HTML entities, or decodes named/numeric entities back to text. |
-| [Color Converter](https://arahman200165.github.io/DUDE/tools/color-converter) | Encoding | Converts between HEX, RGB, HSL, HSV, CMYK, and named CSS colors. |
+| [Color Converter](https://arahman200165.github.io/DUDE/tools/color-converter) | Encoding | Converts between HEX, RGB, HSL, HSV, CMYK, LAB, LCH, OKLAB, OKLCH, HWB, and named CSS colors. |
+| [Palette Generator](https://arahman200165.github.io/DUDE/tools/palette-generator) | Encoding | Generates complementary, analogous, triadic, tetradic, and monochromatic color palettes from a base color. |
 | [Number Base Converter](https://arahman200165.github.io/DUDE/tools/number-base) | Encoding | Converts whole numbers between binary, octal, decimal, hex, or any base 2–36. |
 | [File Base64 Converter](https://arahman200165.github.io/DUDE/tools/file-base64) | Encoding | Converts a local file to Base64 text, or a Base64 string back into a downloadable file, with MIME sniffing and an image preview. |
 | [Hex ↔ Text Converter](https://arahman200165.github.io/DUDE/tools/hex-text-converter) | Encoding | Converts between raw hex bytes and ASCII, UTF-8, or UTF-16 (LE/BE) text. |
