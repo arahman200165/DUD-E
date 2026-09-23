@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODES } from './http-status-data';
+import { HTTP_STATUS_CODES } from './http-status-codes';
 
 const CATEGORY_PREFIX: Record<string, string> = {
   '1xx Informational': '1',

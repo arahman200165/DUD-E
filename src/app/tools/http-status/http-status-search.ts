@@ -1,4 +1,4 @@
-import { HttpStatusCategory, HttpStatusEntry } from './http-status-data';
+import { HttpStatusCategory, HttpStatusEntry } from '../../shared/utils/http-status-codes';
 
 const CATEGORY_ORDER: readonly HttpStatusCategory[] = [
   '1xx Informational',

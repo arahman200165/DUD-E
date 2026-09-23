@@ -11,7 +11,7 @@ export type DudeDataType =
   | 'file' // a File/Blob carrying a name + MIME type
   | 'table' // { columns, rows } tabular data
   | 'url' // a URL/URI string
-  | 'http-response'; // reserved: no tool produces/consumes this yet (future HTTP client tool)
+  | 'http-response'; // a parsed HTTP response (status/headers/body) — first produced by HTTP Response Viewer
 
 export interface ToolIOCapabilities {
   readonly accepts: readonly DudeDataType[];

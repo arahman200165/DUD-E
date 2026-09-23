@@ -1,4 +1,4 @@
-import { HttpStatusEntry } from './http-status-data';
+import { HttpStatusEntry } from '../../shared/utils/http-status-codes';
 import { filterHttpStatusCodes } from './http-status-search';
 
 const DATA: readonly HttpStatusEntry[] = [

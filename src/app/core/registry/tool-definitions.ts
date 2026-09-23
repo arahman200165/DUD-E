@@ -512,6 +512,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['json'] },
   },
   {
+    id: 'http-response-viewer',
+    title: 'HTTP Response Viewer',
+    description: 'Paste a raw HTTP response to view its status, headers, and body, with automatic JSON pretty-printing.',
+    category: 'web',
+    keywords: ['http', 'response', 'viewer', 'status', 'headers', 'body', 'json', 'pretty-print'],
+    route: '/tools/http-response-viewer',
+    load: () => import('../../tools/http-response-viewer/http-response-viewer').then((m) => m.HttpResponseViewer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['http-response', 'json'] },
+  },
+  {
     id: 'http-header-inspector',
     title: 'HTTP Header Inspector / Builder',
     description: 'Inspect pasted HTTP headers as key/value pairs, or build a header set from scratch.',

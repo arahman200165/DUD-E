@@ -2,7 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { PersistenceService } from '../../core/persistence/persistence.service';
-import { HTTP_STATUS_CODES } from './http-status-data';
+import { HTTP_STATUS_CODES } from '../../shared/utils/http-status-codes';
 import { filterHttpStatusCodes } from './http-status-search';
 
 @Component({

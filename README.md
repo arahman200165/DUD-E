@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-155 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+156 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -159,6 +159,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Epoch Timeline Visualizer](https://arahman200165.github.io/DUDE/tools/epoch-timeline-visualizer) | Date & Time | Plots a list of labeled timestamps, or a start/end range, proportionally along a horizontal timeline relative to each other and to now. |
 | [Query String Parser / Builder](https://arahman200165.github.io/DUDE/tools/query-string) | Web | Parses a query string or URL into key/value pairs, or builds one from scratch. |
 | [HTTP Status Code Reference](https://arahman200165.github.io/DUDE/tools/http-status) | Web | Searchable reference of IANA-registered HTTP status codes, grouped by class. |
+| [HTTP Response Viewer](https://arahman200165.github.io/DUDE/tools/http-response-viewer) | Web | Pastes a raw HTTP response to view its status, headers, and body, with automatic JSON pretty-printing. |
 | [HTTP Header Inspector / Builder](https://arahman200165.github.io/DUDE/tools/http-header-inspector) | Web | Inspects pasted HTTP headers as key/value pairs, or builds a header set from scratch. |
 | [cURL Command Inspector / Converter](https://arahman200165.github.io/DUDE/tools/curl-converter) | Web | Parses a curl command into its parts, builds one interactively, and exports it as code in 8 languages. |
 | [HTTP Request Builder / Converter](https://arahman200165.github.io/DUDE/tools/http-request-builder) | Web | Builds an HTTP request from fields or a pasted raw HTTP/1.1 request, and exports it as cURL, raw HTTP, or any of the cURL converter's language targets. |
