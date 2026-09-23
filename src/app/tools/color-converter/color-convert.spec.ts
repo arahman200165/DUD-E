@@ -1,4 +1,4 @@
-import { parseColor } from './color-convert';
+import { oklabToOklch, parseColor, rgbToOklab } from './color-convert';
 
 describe('parseColor', () => {
   it('parses a hex color and returns every format', () => {
@@ -12,8 +12,16 @@ describe('parseColor', () => {
       hsl: 'hsl(0, 100%, 50%)',
       hsv: 'hsv(0, 100%, 100%)',
       cmyk: 'device-cmyk(0% 100% 100% 0%)',
+      lab: result.formats.lab,
+      lch: result.formats.lch,
+      hwb: result.formats.hwb,
+      oklab: result.formats.oklab,
+      oklch: result.formats.oklch,
       name: 'red',
     });
+
+    // Pure red's known OKLCh is ~ L=0.628 C=0.258 H=29.2deg (Ottosson reference values).
+    expect(result.formats.oklch).toMatch(/^oklch\(62\.[0-9]%/);
   });
 
   it('parses an rgb() string', () => {
@@ -66,5 +74,35 @@ describe('parseColor', () => {
       ok: false,
       error: 'Could not recognize this as a color.',
     });
+  });
+});
+
+describe('rgbToOklab / oklabToOklch', () => {
+  it('maps pure white to L≈1, a≈0, b≈0', () => {
+    const oklab = rgbToOklab(255, 255, 255);
+    expect(oklab.l).toBeCloseTo(1, 2);
+    expect(oklab.a).toBeCloseTo(0, 2);
+    expect(oklab.b).toBeCloseTo(0, 2);
+  });
+
+  it('maps pure black to L≈0, a≈0, b≈0', () => {
+    const oklab = rgbToOklab(0, 0, 0);
+    expect(oklab.l).toBeCloseTo(0, 2);
+    expect(oklab.a).toBeCloseTo(0, 2);
+    expect(oklab.b).toBeCloseTo(0, 2);
+  });
+
+  it('maps pure red to the known Ottosson reference OKLab value', () => {
+    const oklab = rgbToOklab(255, 0, 0);
+    expect(oklab.l).toBeCloseTo(0.6279, 3);
+    expect(oklab.a).toBeCloseTo(0.2249, 3);
+    expect(oklab.b).toBeCloseTo(0.1258, 3);
+  });
+
+  it('derives OKLCh chroma/hue from OKLab a/b', () => {
+    const oklch = oklabToOklch({ l: 0.5, a: 0.1, b: 0 });
+    expect(oklch.l).toBe(0.5);
+    expect(oklch.c).toBeCloseTo(0.1, 5);
+    expect(oklch.h).toBe(0);
   });
 });

@@ -20,13 +20,18 @@ export class ColorConverter {
     const current = this.result();
     if (!current.ok) return [];
 
-    const { hex, rgb, hsl, hsv, cmyk, name } = current.formats;
+    const { hex, rgb, hsl, hsv, cmyk, lab, lch, hwb, oklab, oklch, name } = current.formats;
     return [
       { label: 'HEX', value: hex },
       { label: 'RGB', value: rgb },
       { label: 'HSL', value: hsl },
       { label: 'HSV', value: hsv },
       { label: 'CMYK', value: cmyk },
+      { label: 'LAB', value: lab },
+      { label: 'LCH', value: lch },
+      { label: 'HWB', value: hwb },
+      { label: 'OKLAB', value: oklab },
+      { label: 'OKLCH', value: oklch },
       { label: 'Closest name', value: name ?? '—' },
     ];
   });
