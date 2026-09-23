@@ -1,0 +1,42 @@
+<app-tool-shell title="Regex Generator" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <p class="text-ui text-text-muted">
+      Non-AI, heuristic — generalizes a pattern from example strings, always validated against every example (and
+      counter-example) before being shown.
+    </p>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Examples (one per line, should match)</span>
+      <textarea
+        rows="5"
+        class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="examplesRaw()"
+        (input)="onExamplesInput($event)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Counter-examples (optional, one per line, should NOT match)</span>
+      <textarea
+        rows="3"
+        class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="counterExamplesRaw()"
+        (input)="onCounterExamplesInput($event)"
+      ></textarea>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">{{ current.generalized ? 'Generated pattern' : 'Generated pattern (literal alternation — examples had no common structure)' }}</span>
+            <app-copy-button [text]="current.pattern" />
+          </div>
+          <div class="w-full overflow-x-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre text-text">{{ current.pattern }}</div>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
