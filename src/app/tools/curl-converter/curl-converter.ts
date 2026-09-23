@@ -6,10 +6,10 @@ import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { KeyValuePair } from '../../shared/models/key-value-pair.model';
-import { ParsedHttpRequest, buildFullUrl, splitUrl } from './curl-request.model';
+import { ParsedHttpRequest, buildFullUrl, splitUrl } from '../../shared/http-request/http-request.model';
 import { parseCurl } from './curl-parse';
-import { buildCurlCommand } from './curl-build';
-import { EXPORT_FORMATS, ExportFormatId } from './export/curl-export.model';
+import { buildCurlCommand } from '../../shared/http-request/curl-build';
+import { EXPORT_FORMATS, ExportFormatId } from '../../shared/http-request/export/curl-export.model';
 
 const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 

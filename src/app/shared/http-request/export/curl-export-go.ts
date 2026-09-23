@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a Go net/http snippet. Multipart support is best-effort (manual mime/multipart construction). */
 export function generateGo(request: ParsedHttpRequest): string {

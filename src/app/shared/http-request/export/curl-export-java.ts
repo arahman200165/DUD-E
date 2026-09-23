@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a Java java.net.http.HttpClient snippet (Java 11+). Multipart is best-effort (no native helper). */
 export function generateJava(request: ParsedHttpRequest): string {

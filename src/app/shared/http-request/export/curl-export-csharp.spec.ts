@@ -1,4 +1,4 @@
-import { ParsedHttpRequest } from '../curl-request.model';
+import { ParsedHttpRequest } from '../http-request.model';
 import { generateCSharp } from './curl-export-csharp';
 
 const REQUEST: ParsedHttpRequest = {

@@ -1,4 +1,4 @@
-import { ParsedHttpRequest } from '../curl-request.model';
+import { ParsedHttpRequest } from '../http-request.model';
 import { generatePowerShell } from './curl-export-powershell';
 
 const REQUEST: ParsedHttpRequest = {

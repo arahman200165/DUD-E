@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a C# snippet using System.Net.Http.HttpClient. */
 export function generateCSharp(request: ParsedHttpRequest): string {

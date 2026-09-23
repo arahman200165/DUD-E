@@ -1,4 +1,4 @@
-import { EMPTY_REQUEST, buildFullUrl, splitUrl } from './curl-request.model';
+import { EMPTY_REQUEST, buildFullUrl, splitUrl } from './http-request.model';
 
 describe('splitUrl', () => {
   it('splits a URL with a query string into base and params', () => {

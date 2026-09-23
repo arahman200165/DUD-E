@@ -1,4 +1,4 @@
-import { ParsedHttpRequest } from '../curl-request.model';
+import { ParsedHttpRequest } from '../http-request.model';
 import { generateCSharp } from './curl-export-csharp';
 import { generateFetch } from './curl-export-fetch';
 import { generateGo } from './curl-export-go';

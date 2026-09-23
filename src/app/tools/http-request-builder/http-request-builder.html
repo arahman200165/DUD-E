@@ -1,0 +1,106 @@
+<app-tool-shell title="HTTP Request Builder / Converter" status="stable">
+  <div class="flex h-full min-h-0 flex-col gap-3">
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="inputMode() === 'build'" [class.text-bg]="inputMode() === 'build'" (click)="setInputMode('build')">
+        Build from fields
+      </button>
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="inputMode() === 'paste'" [class.text-bg]="inputMode() === 'paste'" (click)="setInputMode('paste')">
+        Paste raw HTTP request
+      </button>
+    </div>
+
+    @if (inputMode() === 'build') {
+      <div class="flex min-h-64 flex-1 flex-col gap-3 overflow-auto rounded-sm border border-border bg-panel p-2">
+        <div class="flex items-center gap-2">
+          <select
+            class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="method()"
+            (change)="onMethodChange($event)"
+          >
+            @for (m of methods; track m) {
+              <option [value]="m">{{ m }}</option>
+            }
+          </select>
+          <input
+            type="text"
+            class="flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="https://example.com/path"
+            [value]="url()"
+            (input)="onUrlInput($event)"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Query params</span>
+          <app-key-value-editor [pairs]="queryParamPairs()" (pairsChange)="onQueryParamsChange($event)" addLabel="Add param" emptyMessage="No query params." />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Headers</span>
+          <app-key-value-editor
+            [pairs]="headerPairs()"
+            (pairsChange)="onHeaderPairsChange($event)"
+            keyPlaceholder="Header-Name"
+            addLabel="Add header"
+            emptyMessage="No headers."
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Body</span>
+          <textarea
+            rows="4"
+            class="w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="Request body…"
+            [value]="bodyText()"
+            (input)="onBodyInput($event)"
+          ></textarea>
+        </div>
+      </div>
+    }
+
+    @if (inputMode() === 'paste') {
+      <div class="flex min-h-64 flex-1 flex-col gap-2 rounded-sm border border-border bg-panel p-2">
+        <div class="flex items-center gap-3 text-ui text-text-muted">
+          <span>Assume scheme when target is not absolute:</span>
+          <div class="flex overflow-hidden rounded-sm border border-border">
+            <button type="button" class="px-2 py-0.5" [class.bg-accent]="assumeScheme() === 'https'" [class.text-bg]="assumeScheme() === 'https'" (click)="setAssumeScheme('https')">
+              https
+            </button>
+            <button type="button" class="px-2 py-0.5" [class.bg-accent]="assumeScheme() === 'http'" [class.text-bg]="assumeScheme() === 'http'" (click)="setAssumeScheme('http')">
+              http
+            </button>
+          </div>
+        </div>
+        <textarea
+          class="h-full w-full resize-none rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="GET /path HTTP/1.1&#10;Host: example.com&#10;&#10;"
+          [value]="rawRequestText()"
+          (input)="onRawRequestInput($event)"
+        ></textarea>
+        @if (parsedRequest().error; as error) {
+          <app-error-panel [message]="error" />
+        }
+      </div>
+    }
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <label class="flex items-center gap-1.5 text-ui text-text-muted">
+          Export as
+          <select
+            class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="outputFormat()"
+            (change)="setOutputFormat($event)"
+          >
+            @for (format of outputFormats; track format.id) {
+              <option [value]="format.id">{{ format.label }}</option>
+            }
+          </select>
+        </label>
+        <app-copy-button [text]="outputCode()" label="Copy code" />
+      </div>
+      <pre class="max-h-64 overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text">{{ outputCode() }}</pre>
+    </div>
+  </div>
+</app-tool-shell>

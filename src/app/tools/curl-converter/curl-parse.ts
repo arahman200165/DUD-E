@@ -1,5 +1,5 @@
 import { KeyValuePair } from '../../shared/models/key-value-pair.model';
-import { BasicAuth, EMPTY_REQUEST, HttpBody, ParsedHttpRequest, splitUrl } from './curl-request.model';
+import { BasicAuth, EMPTY_REQUEST, HttpBody, ParsedHttpRequest, splitUrl } from '../../shared/http-request/http-request.model';
 import { tokenizeShellCommand } from './curl-shell-lex';
 
 /**

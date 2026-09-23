@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a Node.js snippet using axios (a common REST-client dependency, not a core-`http` snippet). */
 export function generateNode(request: ParsedHttpRequest): string {

@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a literal HTTP/1.1 request (text only, never executed). */
 export function generateRawHttp(request: ParsedHttpRequest): string {

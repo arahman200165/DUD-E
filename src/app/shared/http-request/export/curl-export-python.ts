@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a Python `requests` snippet. The body is always sent as a raw string via `data=`. */
 export function generatePython(request: ParsedHttpRequest): string {

@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from './curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from './http-request.model';
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'\\''`)}'`;

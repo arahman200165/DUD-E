@@ -1,4 +1,4 @@
-import { ParsedHttpRequest, buildFullUrl } from '../curl-request.model';
+import { ParsedHttpRequest, buildFullUrl } from '../http-request.model';
 
 /** Generates a JavaScript fetch() snippet. FormData is used for multipart bodies. */
 export function generateFetch(request: ParsedHttpRequest): string {

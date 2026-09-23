@@ -1,4 +1,4 @@
-import { buildCurlCommand } from './curl-build';
+import { buildCurlCommand } from '../../shared/http-request/curl-build';
 import { parseCurl } from './curl-parse';
 
 const FIXTURES = [

@@ -1,4 +1,4 @@
-import { KeyValuePair } from '../../shared/models/key-value-pair.model';
+import { KeyValuePair } from '../models/key-value-pair.model';
 
 export type HttpBody =
   | { readonly kind: 'none' }

@@ -1,5 +1,5 @@
 import { parseCurl } from './curl-parse';
-import { EMPTY_REQUEST } from './curl-request.model';
+import { EMPTY_REQUEST } from '../../shared/http-request/http-request.model';
 
 describe('parseCurl', () => {
   it('parses a representative real-world command', () => {
