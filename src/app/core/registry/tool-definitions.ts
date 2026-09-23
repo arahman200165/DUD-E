@@ -2464,4 +2464,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text', 'file'], produces: ['text', 'file'] },
   },
+  {
+    id: 'image-metadata-inspector',
+    title: 'Image Metadata Inspector',
+    description: 'Reports an uploaded image\'s file size, detected format, pixel dimensions, and (for PNG) bit depth and color type.',
+    category: 'documents',
+    keywords: ['image', 'metadata', 'dimensions', 'png', 'ihdr', 'bit depth', 'color type', 'inspector'],
+    route: '/tools/image-metadata-inspector',
+    load: () => import('../../tools/image-metadata-inspector/image-metadata-inspector').then((m) => m.ImageMetadataInspector),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['json'] },
+  },
 ];

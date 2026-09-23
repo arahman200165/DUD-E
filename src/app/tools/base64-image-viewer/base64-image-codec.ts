@@ -1,4 +1,4 @@
-import { ImageSignature, sniffImageType } from './image-signature';
+import { ImageSignature, sniffImageType } from '../../shared/utils/image-signature';
 
 /**
  * Pure, framework-free Base64 <-> image codec. Handles both a raw Base64
