@@ -1,0 +1,35 @@
+<app-tool-shell title="Barcode Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-end gap-3">
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Format
+        <select class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="format()" (change)="setFormat($any($event.target).value)">
+          @for (item of formats; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="flex flex-1 flex-col gap-1 text-ui text-text-muted">
+        Value
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="value()"
+          (input)="value.set($any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    @if (!validation().ok) {
+      <app-error-panel [message]="validation().message!" />
+    }
+
+    <div class="flex flex-col items-start gap-2 rounded-sm border border-border bg-panel-elevated p-3">
+      <svg #svg></svg>
+      @if (validation().ok) {
+        <button type="button" class="rounded-sm border border-accent px-2 py-0.5 text-ui text-accent hover:bg-accent/10" (click)="download()">Download SVG</button>
+      }
+    </div>
+  </div>
+</app-tool-shell>
