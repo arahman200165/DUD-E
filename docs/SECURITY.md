@@ -6,11 +6,12 @@ See [`README.md`](../README.md) for the product overview and [`DUDE_PRD.md`](../
 
 ## What leaves the device
 
-Nothing, by default. Three tools are the only exceptions, and all three require an explicit user action per use — none of them calls out automatically or in the background:
+Nothing, by default. Four tools are the only exceptions, and all four require an explicit user action per use — none of them calls out automatically or in the background:
 
 - **JWT Signature Verifier** (`/tools/jwt-verify`) — in JWKS mode, fetches the JWKS URL you supply (`jose`'s `createRemoteJWKSet`), or, if you pick a named preset (Auth0, Okta, Azure AD, Google), first fetches that provider's `.well-known/openid-configuration` discovery document to find its `jwks_uri`. In every case, the only thing that leaves your browser is a GET request to a URL you provided or explicitly selected — never the JWT itself, never its payload.
 - **Text Inspector** (`/tools/text-inspector`) — its grammar-check mode sends the text you're checking to the public LanguageTool API (`https://api.languagetool.org/v2/check`) via a manual "Check" button, not live-as-you-type. This is the one tool where pasted content itself is transmitted; don't use it on text you don't want a third-party service to see.
 - **Advanced Markdown Workspace** (`/tools/markdown-workspace`) — its Link Checker panel sends a HEAD request (falling back to GET if the server rejects HEAD) to every `http(s)` URL found in the document, via a manual "Check links" button, never automatically. Only the link URLs themselves leave the browser — nothing else about the document. Expect this to fail for many third-party sites that don't send CORS headers; those are reported as "couldn't check" rather than "broken," since the browser's Fetch API can't distinguish a CORS-blocked live link from a genuinely dead one.
+- **Package Metadata Inspector** (`/tools/package-metadata-inspector`) — sends the package name you enter to the public registry API for the ecosystem you pick (npm's `registry.npmjs.org`, PyPI's `pypi.org`, crates.io's `crates.io/api`, or NuGet's `api.nuget.org`), via a manual "Look up" button. Only the package name and chosen ecosystem leave the browser. Maven Central is not offered as an ecosystem choice — neither its search API nor its raw repository file server sends a permissive CORS header, so a browser-side `fetch` can't read the response, and this architecture has no backend to proxy it through.
 
 Every other tool — including ones that look network-adjacent, like cURL Command Inspector or HTTP Status Code Reference — only parses, formats, or looks up against data bundled in the app itself.
 
