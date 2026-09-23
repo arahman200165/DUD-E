@@ -2258,4 +2258,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'css-selector-tester',
+    title: 'CSS Selector Tester',
+    description: 'Tests a CSS selector against sample HTML and lists every matched element in document order.',
+    category: 'developer',
+    keywords: ['css', 'selector', 'querySelectorAll', 'test selector', 'css selector tester'],
+    route: '/tools/css-selector-tester',
+    load: () => import('../../tools/css-selector-tester/css-selector-tester').then((m) => m.CssSelectorTester),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];

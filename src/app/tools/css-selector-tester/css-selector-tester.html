@@ -1,0 +1,55 @@
+<app-tool-shell title="CSS Selector Tester" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Sample HTML</span>
+        <textarea
+          rows="10"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="html()"
+          (input)="onHtmlChange($event)"
+        ></textarea>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Matched elements</span>
+        <div class="flex h-[calc(100%-1.25rem)] flex-col gap-0.5 overflow-auto rounded-sm border border-border bg-panel p-2">
+          @if (result(); as current) {
+            @if (current.ok) {
+              @for (el of current.elements; track $index) {
+                <div
+                  class="font-mono text-xs"
+                  [class.text-accent]="el.matched"
+                  [class.text-text-muted]="!el.matched"
+                  [style.paddingLeft.rem]="el.depth * 0.75"
+                >
+                  {{ el.matched ? '✓ ' : '  ' }}{{ formatElement(el) }}
+                  @if (el.attributes.length) {
+                    <span class="text-text-muted">[{{ el.attributes[0].name }}="{{ el.attributes[0].value }}"]</span>
+                  }
+                </div>
+              }
+            } @else {
+              <span class="text-ui text-error">{{ current.error }}</span>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="CSS selector, e.g. .item[data-active]"
+        [value]="selector()"
+        (input)="onSelectorChange($event)"
+      />
+      @if (result(); as current) {
+        @if (current.ok) {
+          <span class="shrink-0 text-ui text-text-muted">{{ current.matchCount }} match{{ current.matchCount === 1 ? '' : 'es' }}</span>
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
