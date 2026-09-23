@@ -694,6 +694,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['table', 'json'] },
   },
   {
+    id: 'relative-time-parser',
+    title: 'Relative Time Parser',
+    description: 'Parses free text like "3 days ago" or "next tuesday" into a timestamp, and formats a timestamp back into relative text.',
+    category: 'date-time',
+    keywords: ['relative time', 'natural language', 'time ago', 'humanize', 'chrono', 'parse date'],
+    route: '/tools/relative-time-parser',
+    load: () => import('../../tools/relative-time-parser/relative-time-parser').then((m) => m.RelativeTimeParser),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
+  {
     id: 'random-data-generator',
     title: 'Random Data Generator',
     description: 'Generate realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON.',
