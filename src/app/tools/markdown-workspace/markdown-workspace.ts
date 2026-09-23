@@ -19,6 +19,7 @@ import { MarkdownWorkspacePayload } from './markdown-workspace-payload';
 import { MarkdownInsertAction, applyMarkdownInsertion } from './markdown-toolbar-insert';
 import { computeSyncedScrollTop } from './markdown-scroll-sync';
 import { MarkdownPluginKind, MarkdownPluginManifest } from './plugins/plugin-manifest.model';
+import { BUILT_IN_PLUGINS } from './plugins/builtin-plugins';
 import { PluginRuntimeHost } from './plugins/plugin-runtime-host';
 import { CollabConnectionStatus, MarkdownCollabClient } from './collab/markdown-collab-client';
 
@@ -100,7 +101,7 @@ export class MarkdownWorkspace implements OnDestroy {
   protected readonly presetStyleVars = computed(() => markdownPresetStyleVars(this.stylePreset()));
   protected readonly usesCustomCss = computed(() => this.customCss().trim() !== '');
 
-  protected readonly plugins = this.persistence.signal<readonly MarkdownPluginManifest[]>('markdown-workspace', 'plugins', 'local', []);
+  protected readonly plugins = this.persistence.signal<readonly MarkdownPluginManifest[]>('markdown-workspace', 'plugins', 'local', BUILT_IN_PLUGINS);
   private readonly pluginHosts = viewChildren(PluginRuntimeHost);
   protected readonly showPluginPanel = signal(false);
 
