@@ -1,0 +1,69 @@
+<app-tool-shell title="JWT Expiration Visualizer" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">JWT</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+      </div>
+      <textarea
+        rows="4"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste a JWT here…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (input() !== '' && decoded(); as current) {
+      @if (current.ok) {
+        @if (timelineResult(); as timeline) {
+          @if (timeline.ok) {
+            <div class="rounded-sm border px-2 py-1.5 text-ui" [class]="statusClasses(timeline.timeline.status)">
+              {{ statusLabel(timeline.timeline.status) }}
+            </div>
+
+            @if (timeline.timeline.percentElapsed !== undefined) {
+              <div class="flex flex-col gap-1">
+                <div class="h-2 w-full overflow-hidden rounded-full bg-panel-elevated">
+                  <div
+                    class="h-full rounded-full"
+                    [class]="barFillClasses(timeline.timeline.status)"
+                    [style.width.%]="timeline.timeline.percentElapsed"
+                  ></div>
+                </div>
+                <div class="flex justify-between text-ui-xs text-text-muted">
+                  <span>{{ timeline.timeline.percentElapsed | number: '1.0-0' }}% elapsed</span>
+                  @if (timeline.timeline.remainingMs !== undefined) {
+                    <span>{{ formatDuration(timeline.timeline.remainingMs) }} remaining</span>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="flex flex-wrap gap-4 text-ui text-text-muted">
+              @if (timeline.timeline.iat) {
+                <span>Issued at: <span class="font-mono text-text">{{ timeline.timeline.iat.toISOString() }}</span></span>
+              }
+              @if (timeline.timeline.nbf) {
+                <span>Not before: <span class="font-mono text-text">{{ timeline.timeline.nbf.toISOString() }}</span></span>
+              }
+              @if (timeline.timeline.exp) {
+                <span>Expires at: <span class="font-mono text-text">{{ timeline.timeline.exp.toISOString() }}</span></span>
+              }
+            </div>
+          } @else {
+            <app-error-panel [message]="timeline.error" />
+          }
+        }
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
