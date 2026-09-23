@@ -1,0 +1,51 @@
+<app-tool-shell title="OpenID Connect Discovery Document Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Discovery document (.well-known/openid-configuration)</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+      </div>
+      <textarea
+        rows="8"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder='{"issuer": "https://...", "authorization_endpoint": "...", "jwks_uri": "..."}'
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="h-56">
+          <app-data-table [columns]="fieldColumns" [rows]="fieldRows()" />
+        </div>
+
+        @if (current.findings.length > 0) {
+          <ul class="flex flex-col gap-1">
+            @for (finding of current.findings; track $index) {
+              <li class="rounded-sm border px-2 py-1 text-ui" [class]="severityClass(finding.severity)">{{ finding.message }}</li>
+            }
+          </ul>
+        } @else {
+          <p class="rounded-sm border border-success/40 bg-success/10 px-2 py-1.5 text-ui text-success">No issues found.</p>
+        }
+
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">Full document</span>
+            <app-copy-button [text]="format(current.doc)" />
+          </div>
+          <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ format(current.doc) }}</pre>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

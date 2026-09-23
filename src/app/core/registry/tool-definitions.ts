@@ -1834,4 +1834,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text', 'url'], produces: ['url', 'json'] },
   },
+  {
+    id: 'oidc-discovery-inspector',
+    title: 'OpenID Connect Discovery Document Inspector',
+    shortTitle: 'OIDC Discovery',
+    description: 'Inspects a pasted OIDC discovery document (.well-known/openid-configuration) — validates required fields and summarizes capabilities.',
+    category: 'security',
+    keywords: ['oidc', 'openid connect', 'discovery', 'well-known', 'openid-configuration', 'issuer', 'endpoints'],
+    route: '/tools/oidc-discovery-inspector',
+    load: () => import('../../tools/oidc-discovery-inspector/oidc-discovery-inspector').then((m) => m.OidcDiscoveryInspector),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
+  },
 ];
