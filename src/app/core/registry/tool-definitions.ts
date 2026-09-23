@@ -658,6 +658,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['json'] },
   },
   {
+    id: 'week-number-calculator',
+    title: 'Week Number Calculator',
+    description: 'Convert a date to its ISO-8601 week number and back, and see how many weeks a given week-year has.',
+    category: 'date-time',
+    keywords: ['week number', 'iso week', 'calendar week', 'iso 8601', 'week year', 'weekday'],
+    route: '/tools/week-number-calculator',
+    load: () => import('../../tools/week-number-calculator/week-number-calculator').then((m) => m.WeekNumberCalculator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
+  {
     id: 'random-data-generator',
     title: 'Random Data Generator',
     description: 'Generate realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON.',

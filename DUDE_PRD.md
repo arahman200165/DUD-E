@@ -1378,7 +1378,7 @@ Goal: grow Color Converter into a full design toolkit and add CSS/HTML/image/QR 
 5. Color Blindness Simulator
 6. Tailwind Color Matcher
 7. CSS Formatter / Minifier
-8. CSS Specificity Calculator
+8. CSS Specificity Calculator / Comparer
 9. CSS Selector Tester
 10. Flexbox Playground
 11. CSS Grid Playground
