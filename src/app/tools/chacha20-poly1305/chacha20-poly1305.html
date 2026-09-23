@@ -1,0 +1,162 @@
+<app-tool-shell title="ChaCha20-Poly1305 Encrypt / Decrypt">
+  <div class="flex flex-col gap-3">
+    <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+      Nothing typed here is ever saved. Encryption/decryption happens entirely offline — no network request is ever
+      made.
+    </div>
+
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui w-fit">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="opMode() === 'encrypt'"
+        [class.text-bg]="opMode() === 'encrypt'"
+        [class.text-text-muted]="opMode() !== 'encrypt'"
+        (click)="setOpMode('encrypt')"
+      >
+        Encrypt
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="opMode() === 'decrypt'"
+        [class.text-bg]="opMode() === 'decrypt'"
+        [class.text-text-muted]="opMode() !== 'decrypt'"
+        (click)="setOpMode('decrypt')"
+      >
+        Decrypt
+      </button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Variant
+        <select
+          class="rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="variant()"
+          (change)="setVariant($any($event.target).value)"
+        >
+          <option value="xchacha20poly1305">XChaCha20-Poly1305 (24-byte nonce)</option>
+          <option value="chacha20poly1305">ChaCha20-Poly1305 (12-byte nonce, RFC 8439)</option>
+        </select>
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        PBKDF2 iterations
+        <input
+          type="number"
+          min="1"
+          class="w-28 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="iterations()"
+          (input)="onIterationsInput($event)"
+        />
+      </label>
+    </div>
+
+    @if (variant() === 'chacha20poly1305') {
+      <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+        Base ChaCha20-Poly1305 uses a 12-byte nonce — unsafe to generate randomly at high volume under the same
+        passphrase due to collision risk. Prefer XChaCha20-Poly1305 unless you specifically need RFC 8439
+        compatibility.
+      </div>
+    }
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Passphrase</span>
+      <div class="flex items-center gap-2">
+        <input
+          [type]="showPassphrase() ? 'text' : 'password'"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Passphrase used to derive the key…"
+          [value]="passphrase()"
+          (input)="onPassphraseInput($event)"
+        />
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-1 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="toggleShowPassphrase()"
+        >
+          {{ showPassphrase() ? 'Hide' : 'Show' }}
+        </button>
+      </div>
+    </div>
+
+    @if (opMode() === 'encrypt') {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Plaintext</span>
+        <textarea
+          rows="5"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="plaintext()"
+          (input)="onPlaintextInput($event)"
+        ></textarea>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Ciphertext bundle</span>
+        <textarea
+          rows="5"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="variant.iterations.salt.nonce.ciphertext (as produced by Encrypt)…"
+          [value]="ciphertextBundle()"
+          (input)="onCiphertextInput($event)"
+        ></textarea>
+      </div>
+    }
+
+    <div class="flex flex-wrap items-center gap-3">
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10 disabled:opacity-40"
+        [disabled]="status() === 'busy'"
+        (click)="run()"
+      >
+        {{ opMode() === 'encrypt' ? 'Encrypt' : 'Decrypt' }}
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+      @if (usesWorker() && status() === 'busy') {
+        <app-busy-indicator status="running" />
+      }
+    </div>
+
+    @if (error(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    @if (opMode() === 'encrypt' && ciphertextBundle()) {
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Ciphertext bundle (share this — it embeds variant/salt/nonce, only the passphrase is secret)</span>
+          <app-copy-button [text]="ciphertextBundle()" />
+        </div>
+        <textarea
+          rows="4"
+          readonly
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+          [value]="ciphertextBundle()"
+        ></textarea>
+      </div>
+    }
+
+    @if (opMode() === 'decrypt' && plaintext() && !error()) {
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Decrypted plaintext</span>
+          <app-copy-button [text]="plaintext()" />
+        </div>
+        <textarea
+          rows="5"
+          readonly
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+          [value]="plaintext()"
+        ></textarea>
+      </div>
+    }
+  </div>
+</app-tool-shell>
