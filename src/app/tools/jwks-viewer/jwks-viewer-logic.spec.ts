@@ -1,0 +1,75 @@
+import { describe, expect, it } from 'vitest';
+import { generateKeyPair, exportJWK } from 'jose';
+import { parseJwks } from './jwks-viewer-logic';
+
+async function makeJwk(kid: string) {
+  const { publicKey } = await generateKeyPair('RS256', { extractable: true });
+  const jwk = await exportJWK(publicKey);
+  return { ...jwk, kid, alg: 'RS256', use: 'sig' };
+}
+
+describe('parseJwks', () => {
+  it('rejects empty input', async () => {
+    const result = await parseJwks('');
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects invalid JSON', async () => {
+    const result = await parseJwks('{not json');
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects a document without a "keys" array', async () => {
+    const result = await parseJwks('{"foo": "bar"}');
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects an empty "keys" array', async () => {
+    const result = await parseJwks('{"keys": []}');
+    expect(result.ok).toBe(false);
+  });
+
+  it('parses a valid JWKS and reports importable keys', async () => {
+    const jwk = await makeJwk('key-1');
+    const result = await parseJwks(JSON.stringify({ keys: [jwk] }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.keys).toHaveLength(1);
+    expect(result.keys[0].kid).toBe('key-1');
+    expect(result.keys[0].kty).toBe('RSA');
+    expect(result.keys[0].importable).toBe(true);
+    expect(result.keys[0].warnings).toHaveLength(0);
+  });
+
+  it('flags a missing kid', async () => {
+    const jwk = await makeJwk('key-1');
+    delete (jwk as Record<string, unknown>)['kid'];
+    const result = await parseJwks(JSON.stringify({ keys: [jwk] }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.keys[0].warnings.some((w) => w.includes('Missing "kid"'))).toBe(true);
+  });
+
+  it('flags duplicate kids across the set', async () => {
+    const a = await makeJwk('shared');
+    const b = await makeJwk('shared');
+    const result = await parseJwks(JSON.stringify({ keys: [a, b] }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.keys.every((k) => k.warnings.some((w) => w.includes('Duplicate "kid"')))).toBe(true);
+  });
+
+  it('flags a symmetric ("oct") key in a JWKS', async () => {
+    const result = await parseJwks(JSON.stringify({ keys: [{ kty: 'oct', k: 'c2VjcmV0', kid: 'sym' }] }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.keys[0].warnings.some((w) => w.includes('Symmetric'))).toBe(true);
+  });
+
+  it('flags an entry that is not an object', async () => {
+    const result = await parseJwks(JSON.stringify({ keys: ['not-an-object'] }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.keys[0].warnings[0]).toContain('not a JSON object');
+  });
+});
