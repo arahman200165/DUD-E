@@ -1313,38 +1313,39 @@ Item 10 (Duration → ISO 8601) needed no work: the existing Duration Parser/For
 
 ---
 
-## Phase 15 — Web & HTTP Depth (Proposed — Track A: Browser-Extensible)
+## Phase 15 — Web & HTTP Depth (✅ Complete — Track A: Browser-Extensible)
 
 Goal: deepen the Web category's URL/header/request tooling and broaden cURL's language coverage, all construct-and-display rather than send-a-real-request.
 
-1. URL Parser
-2. URL Builder
-3. URI Component Visualizer
-4. URL Normalizer
-5. Relative URL Resolver
-6. URL Comparison Tool
-7. URL Safety Inspector (heuristic checks: punycode homograph risk, suspicious TLD, etc.)
-8. Punycode Domain Inspector
-9. HTTP Request Builder (construct and display a request, no send)
-10. HTTP Response Viewer (paste/paste-and-format a response)
-11. Cookie Parser
-12. Set-Cookie Builder
-13. Accept Header Builder
-14. Cache-Control Builder
-15. CSP Builder
-16. CORS Header Builder
-17. Content-Disposition Builder
-18. Authorization Header Builder
-19. Range Header Builder
-20. HTTP Date Converter
-21. cURL → additional language targets: C#, Python requests, Python httpx, Java HttpClient, Kotlin, Go, Rust, PowerShell, PHP, Ruby, Dart, Swift
-22. HTTP Request → cURL (reverse of the existing cURL Inspector)
-23. Multipart Form Data Builder
-24. Form URL Encoded Builder
+**Achieved (Milestones 144-160):** the original 24 items consolidated into 12 new tools and 5 enhancements to existing tools, with 2 items needing no work and 1 cut outright:
+
+1. URL/URI Inspector — URI Component Visualizer enhancement (item 3; colorized scheme/userinfo/host/port/path/query/fragment breakdown view via a new RFC 3986 Appendix B segmenter; items 1-2, URL Parser and URL Builder, needed no work since this tool already parses, edits, and round-trips every part)
+2. URL Normalizer & Comparator (items 4-6; new tool, three modes — Normalize, Resolve, Compare — sharing one RFC 3986 §6.2 normalization core)
+3. URL Safety Inspector (item 7; new tool; heuristic checks — userinfo-before-host, IP-literal hosts, mixed-script IDN homograph risk, commonly-abused TLDs, deep subdomain chains — worded as signals, not verdicts)
+4. Punycode Converter — Inspect mode (item 8; enhancement adding a per-label script breakdown, reusing item 7's homograph-detection util as its second consumer)
+5. HTTP Request Builder / Converter (items 9+22; new tool — build from fields or parse a pasted raw HTTP/1.1 request, export as cURL or any cURL-converter language target)
+6. HTTP Response Viewer (item 10; new tool; first producer of the reserved `http-response` `DudeDataType`)
+7. Cookie Tools (items 11-12; new tool, Cookie/Set-Cookie mode toggle, with Set-Cookie mistake warnings)
+8. Accept Header Builder (item 13; new tool)
+9. Cache-Control Builder (item 14; new tool, separate request/response directive sets)
+10. CSP Builder (item 15; new tool, 18 known directives, weakening-combination warnings)
+11. CORS Header Builder (item 16; new tool, plus a hypothetical-request preflight evaluator)
+12. Content-Disposition Builder (item 17; new tool, RFC 5987 `filename*` encoding for non-ASCII filenames)
+13. Range Header Builder (item 19; new tool, request Range and response Content-Range)
+14. Unix Timestamp Converter — HTTP-date support (item 20; enhancement to the existing date-time tool rather than a new web-category one, since it's the same date-parsing surface)
+15. cURL Command Inspector/Converter — 7 more language exports (item 21; enhancement — Python (httpx), Kotlin (OkHttp), Rust (reqwest), PHP (cURL), Ruby (net/http), Dart (http), Swift (URLSession))
+16. Multipart Form Data Builder (item 23; new tool, file parts shown as a binary-data placeholder)
+17. Query String Parser/Builder — request-body framing (item 24; enhancement, a "Copy as request body" action reusing the existing codec)
+
+Item 18 (Authorization Header Builder) was cut: Basic Auth Header Generator, Bearer Token Builder, HTTP Digest Auth Helper, and AWS Signature V4 Inspector already cover Basic/Bearer/Digest/AWS4 between them, so a general-purpose builder would only duplicate four more-capable existing tools.
 
 ### Notes
 
-Items 21-22 extend the existing cURL Command Inspector / Converter (§20), which already covers 8 languages; Header Parser and HTTP Status Reference already ship.
+Two new `shared/` extractions followed the "extract when a second tool needs it" pattern already established in Phase 14: `shared/utils/url-homograph.ts` (mixed-script detection via native `\p{Script=...}` regex property escapes, the same technique `unicode-general-category.ts` uses) serves URL Safety Inspector and Punycode Converter's Inspect mode; `shared/http-request/` (relocated from `tools/curl-converter/`: the canonical `ParsedHttpRequest` model, `curl-build.ts`, and every `export/` language generator) serves cURL Command Inspector/Converter and the new HTTP Request Builder/Converter, which gets every export-language target "for free." `shared/utils/http-status-codes.ts` (relocated from HTTP Status Code Reference) similarly now serves HTTP Response Viewer's status-line lookup.
+
+Item 21's original 12-language list (C#, Python requests, Python httpx, Java HttpClient, Kotlin, Go, Rust, PowerShell, PHP, Ruby, Dart, Swift) turned out to overlap the existing 8 shipped languages in 5 places (C#, Python requests, Java HttpClient, Go, PowerShell already shipped pre-Phase-15) — only the 7 genuinely new targets needed writing.
+
+CORS Header Builder was planned to extract CSP Builder's directive/source-list row editor into a shared component (the anticipated "second consumer" moment), but building it revealed the shapes don't actually converge: CSP's values are space-separated multi-directive lists, CORS's Allow-Methods/Allow-Headers are single comma-separated fields. Each tool kept its own hand-rolled UI rather than force a shared abstraction that wouldn't meaningfully reduce duplication.
 
 ---
 
