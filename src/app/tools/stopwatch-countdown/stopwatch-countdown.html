@@ -1,0 +1,113 @@
+<app-tool-shell title="Stopwatch & Countdown" status="stable">
+  <div class="flex flex-col gap-4">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'stopwatch'"
+        [class.text-bg]="mode() === 'stopwatch'"
+        [class.text-text-muted]="mode() !== 'stopwatch'"
+        (click)="setMode('stopwatch')"
+      >
+        Stopwatch
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="mode() === 'countdown'"
+        [class.text-bg]="mode() === 'countdown'"
+        [class.text-text-muted]="mode() !== 'countdown'"
+        (click)="setMode('countdown')"
+      >
+        Countdown
+      </button>
+    </div>
+
+    @if (mode() === 'stopwatch') {
+      <div class="flex flex-col items-center gap-4 rounded-sm border border-border p-6">
+        <div class="font-mono text-4xl text-text tabular-nums">{{ stopwatchDisplay() }}</div>
+        <div class="flex gap-2">
+          @if (!stopwatchAnchor().running) {
+            <button type="button" class="rounded-sm border border-accent px-3 py-1 text-accent hover:bg-accent/10" (click)="startStopwatch()">
+              Start
+            </button>
+          } @else {
+            <button type="button" class="rounded-sm border border-border px-3 py-1 text-text hover:bg-panel-elevated" (click)="pauseStopwatch()">
+              Pause
+            </button>
+          }
+          <button type="button" class="rounded-sm border border-border px-3 py-1 text-text-muted hover:bg-panel-elevated" (click)="resetStopwatch()">
+            Reset
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="flex flex-col items-center gap-4 rounded-sm border border-border p-6">
+        <div class="flex items-end gap-2 text-ui text-text-muted">
+          <label class="flex flex-col items-center gap-1">
+            Hours
+            <input
+              type="number"
+              min="0"
+              class="w-16 rounded-sm border border-border bg-panel px-2 py-1 text-center font-mono text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="durationHours()"
+              (input)="onDurationHoursChange($event)"
+            />
+          </label>
+          <label class="flex flex-col items-center gap-1">
+            Minutes
+            <input
+              type="number"
+              min="0"
+              max="59"
+              class="w-16 rounded-sm border border-border bg-panel px-2 py-1 text-center font-mono text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="durationMinutes()"
+              (input)="onDurationMinutesChange($event)"
+            />
+          </label>
+          <label class="flex flex-col items-center gap-1">
+            Seconds
+            <input
+              type="number"
+              min="0"
+              max="59"
+              class="w-16 rounded-sm border border-border bg-panel px-2 py-1 text-center font-mono text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="durationSeconds()"
+              (input)="onDurationSecondsChange($event)"
+            />
+          </label>
+          <button type="button" class="rounded-sm border border-border px-2 py-1 text-text hover:bg-panel-elevated" (click)="applyDuration()">
+            Set
+          </button>
+        </div>
+
+        <div
+          class="font-mono text-4xl tabular-nums"
+          [class.text-text]="!countdownFinished()"
+          [class.text-red-400]="countdownFinished()"
+        >
+          {{ countdownDisplay() }}
+        </div>
+
+        @if (countdownFinished()) {
+          <div class="text-ui text-red-400">Time's up!</div>
+        }
+
+        <div class="flex gap-2">
+          @if (!countdownAnchor().running) {
+            <button type="button" class="rounded-sm border border-accent px-3 py-1 text-accent hover:bg-accent/10" (click)="startCountdown()">
+              Start
+            </button>
+          } @else {
+            <button type="button" class="rounded-sm border border-border px-3 py-1 text-text hover:bg-panel-elevated" (click)="pauseCountdown()">
+              Pause
+            </button>
+          }
+          <button type="button" class="rounded-sm border border-border px-3 py-1 text-text-muted hover:bg-panel-elevated" (click)="resetCountdown()">
+            Reset
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</app-tool-shell>
