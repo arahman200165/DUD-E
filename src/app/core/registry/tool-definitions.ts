@@ -2342,4 +2342,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'flexbox-playground',
+    title: 'Flexbox Playground',
+    description: 'Interactively builds flex container and item CSS with a live preview of editable, addable items.',
+    category: 'developer',
+    keywords: ['flexbox', 'flex', 'css flexbox', 'justify-content', 'align-items', 'css generator'],
+    route: '/tools/flexbox-playground',
+    load: () => import('../../tools/flexbox-playground/flexbox-playground').then((m) => m.FlexboxPlayground),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
