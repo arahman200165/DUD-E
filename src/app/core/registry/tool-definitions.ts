@@ -2572,4 +2572,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'none' },
     io: { accepts: ['file'], produces: ['json'] },
   },
+  {
+    id: 'qr-code-generator',
+    title: 'QR Code Generator',
+    description: 'Generates a QR code for a URL/text, Wi-Fi network, contact card, or TOTP secret.',
+    category: 'encoding',
+    keywords: ['qr', 'qr code', 'generate', 'wifi', 'vcard', 'totp', 'otpauth'],
+    route: '/tools/qr-code-generator',
+    load: () => import('../../tools/qr-code-generator/qr-code-generator').then((m) => m.QrCodeGenerator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['file'] },
+  },
 ];

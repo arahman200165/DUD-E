@@ -1,0 +1,104 @@
+<app-tool-shell title="QR Code Generator" status="stable">
+  <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-wrap overflow-hidden self-start rounded-sm border border-border text-ui">
+        @for (item of [{ id: 'text', label: 'URL / Text' }, { id: 'wifi', label: 'Wi-Fi' }, { id: 'contact', label: 'Contact' }, { id: 'totp', label: 'TOTP' }]; track item.id) {
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="preset() === item.id"
+            [class.text-bg]="preset() === item.id"
+            [class.text-text-muted]="preset() !== item.id"
+            (click)="setPreset($any(item.id))"
+          >
+            {{ item.label }}
+          </button>
+        }
+      </div>
+
+      @switch (preset()) {
+        @case ('wifi') {
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            SSID
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="wifiSsid()" (input)="wifiSsid.set($any($event.target).value)" />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Security
+            <select class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="wifiSecurity()" (change)="wifiSecurity.set($any($event.target).value)">
+              <option value="WPA">WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">Open (no password)</option>
+            </select>
+          </label>
+          @if (wifiSecurity() !== 'nopass') {
+            <label class="flex flex-col gap-1 text-ui text-text-muted">
+              Password
+              <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="wifiPassword()" (input)="wifiPassword.set($any($event.target).value)" />
+            </label>
+          }
+          <label class="flex items-center gap-2 text-ui text-text-muted">
+            <input type="checkbox" [checked]="wifiHidden()" (change)="wifiHidden.set($any($event.target).checked)" />
+            Hidden network
+          </label>
+        }
+        @case ('contact') {
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Name
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="contactName()" (input)="contactName.set($any($event.target).value)" />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Phone
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="contactPhone()" (input)="contactPhone.set($any($event.target).value)" />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Email
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="contactEmail()" (input)="contactEmail.set($any($event.target).value)" />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Organization
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="contactOrg()" (input)="contactOrg.set($any($event.target).value)" />
+          </label>
+        }
+        @case ('totp') {
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Secret (base32)
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-text" [value]="totpSecret()" (input)="totpSecret.set($any($event.target).value)" />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Issuer
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="totpIssuer()" (input)="totpIssuer.set($any($event.target).value)" />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Account name
+            <input type="text" class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="totpAccount()" (input)="totpAccount.set($any($event.target).value)" />
+          </label>
+        }
+        @default {
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            URL or text
+            <textarea rows="3" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text" [value]="text()" (input)="text.set($any($event.target).value)"></textarea>
+          </label>
+        }
+      }
+
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Error correction level
+        <select class="w-40 rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="errorCorrectionLevel()" (change)="errorCorrectionLevel.set($any($event.target).value)">
+          <option value="L">Low (L)</option>
+          <option value="M">Medium (M)</option>
+          <option value="Q">Quartile (Q)</option>
+          <option value="H">High (H)</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="flex flex-col items-center justify-start gap-3">
+      @if (errorMessage(); as message) {
+        <app-error-panel [message]="message" />
+      } @else if (dataUrl(); as url) {
+        <img [src]="url" alt="Generated QR code" class="rounded-sm border border-border" />
+        <button type="button" class="rounded-sm border border-accent px-2 py-0.5 text-ui text-accent hover:bg-accent/10" (click)="download()">Download PNG</button>
+      }
+    </div>
+  </div>
+</app-tool-shell>
