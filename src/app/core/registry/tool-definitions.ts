@@ -2426,4 +2426,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'opengraph-preview',
+    title: 'OpenGraph Preview',
+    description: 'Builds og:/twitter: meta tags and renders a live social-card preview, entirely from entered values -- no URL fetching.',
+    category: 'developer',
+    keywords: ['opengraph', 'og tags', 'twitter card', 'social preview', 'link preview'],
+    route: '/tools/opengraph-preview',
+    load: () => import('../../tools/opengraph-preview/opengraph-preview').then((m) => m.OpengraphPreview),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
