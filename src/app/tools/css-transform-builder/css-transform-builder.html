@@ -1,0 +1,64 @@
+<app-tool-shell title="CSS Transform Builder" status="stable">
+  <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+    <div class="flex flex-col gap-3">
+      <div class="grid grid-cols-2 gap-2">
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Translate X (px)
+          <input type="number" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().translateX" (input)="onNumberInput('translateX', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Translate Y (px)
+          <input type="number" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().translateY" (input)="onNumberInput('translateY', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Scale X
+          <input type="number" step="0.1" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().scaleX" (input)="onNumberInput('scaleX', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Scale Y
+          <input type="number" step="0.1" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().scaleY" (input)="onNumberInput('scaleY', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Rotate (deg)
+          <input type="number" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().rotate" (input)="onNumberInput('rotate', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted"></label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Skew X (deg)
+          <input type="number" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().skewX" (input)="onNumberInput('skewX', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          Skew Y (deg)
+          <input type="number" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="state().skewY" (input)="onNumberInput('skewY', $event)" />
+        </label>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-1">
+        <span class="text-ui text-text-muted">Origin:</span>
+        @for (origin of origins; track origin) {
+          <button
+            type="button"
+            class="rounded-sm border border-border px-1.5 py-0.5 text-ui"
+            [class.bg-accent]="state().origin === origin"
+            [class.text-bg]="state().origin === origin"
+            [class.text-text-muted]="state().origin !== origin"
+            (click)="setOrigin(origin)"
+          >
+            {{ origin }}
+          </button>
+        }
+      </div>
+
+      <button type="button" class="self-start rounded-sm border border-border px-2 py-1 text-ui text-text-muted hover:bg-panel-elevated" (click)="reset()">Reset</button>
+
+      <div class="flex items-center justify-between rounded-sm border border-border bg-panel px-2 py-1">
+        <pre class="flex-1 whitespace-pre-wrap font-mono text-xs text-text">{{ declaration() }}</pre>
+        <app-copy-button [text]="declaration()" />
+      </div>
+    </div>
+
+    <div class="h-64 overflow-hidden rounded-sm border border-border md:h-full">
+      <app-css-preview-sandbox [css]="previewCss()" [html]="previewHtml" />
+    </div>
+  </div>
+</app-tool-shell>
