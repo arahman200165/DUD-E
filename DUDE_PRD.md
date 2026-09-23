@@ -1349,18 +1349,24 @@ CORS Header Builder was planned to extract CSP Builder's directive/source-list r
 
 ---
 
-## Phase 16 — Regex Depth (Proposed — Track A: Browser-Extensible)
+## Phase 16 — Regex Depth (✅ Complete — Track A: Browser-Extensible)
 
 Goal: extend Regex Tester with visualization and benchmarking beyond the existing explainer/flavor-notes/replace features (§21 Phase 7).
 
-1. Regex Visualizer (railroad diagram of the pattern)
-2. Regex Benchmark (catastrophic-backtracking risk / timing across sample inputs)
-3. Regex Flavor Converter (translate a pattern between JS/.NET/Java/Python/PCRE/Go flavors, distinct from the existing compatibility-notes panel)
-4. Regex Generator (non-AI, heuristic: build a pattern from example strings) — the AI-based version stays deferred per §21 Phase 7
+**Achieved (Milestones 161-164):** all 4 items shipped as their own tool, one-to-one with the original list:
+
+1. Regex Visualizer (item 1; railroad diagram, built by walking the same regexp-tree AST node types regex-explain.ts already walks and mapping them to a new `railroad-diagrams` dependency's Diagram/Sequence/Choice/Terminal primitives — real DOM SVG output with built-in HTML-entity escaping, verified via a dedicated XSS-safety spec case)
+2. Regex Benchmark (item 2; a static heuristic AST scan for the two classic catastrophic-backtracking shapes — nested unbounded quantifiers, an unbounded quantifier around alternation — plus live per-sample timing, one worker per sample rather than one worker looping all samples, so a hung sample only costs that one job)
+3. Regex Flavor Converter (item 3; JS/Python/Java/.NET/PCRE/Go RE2, via a small named-group/backreference syntax normalization pass ahead of regexp-tree's JS-only parser, then a per-target-flavor AST-to-string emitter; a construct the target can't represent at all is still emitted with a disclosed warning, never silently dropped)
+4. Regex Generator (item 4; non-AI, heuristic, offline — run-length character-class tokenization with self-validation against every example/counter-example before a pattern is ever shown; the already-shipped Phase 8 Stage 4 AI-based natural-language-to-regex feature is untouched and distinct from this)
 
 ### Notes
 
-A visual regex railroad diagram is one of the higher-value additions here; `regexp-tree`'s existing AST (already a dependency, §21 Phase 7) is the natural base for both the visualizer and the flavor converter.
+`regexp-tree`'s existing AST (§21 Phase 7) was the shared front end for three of the four tools (Visualizer, Benchmark's static heuristic, Flavor Converter), exactly as anticipated. `shared/utils/regex-ast-features.ts` (relocated from `regex-flavor-notes.ts`'s `detectFeatures()`) is a new "extract on second consumer" shared util, the same pattern used throughout Phase 15 — the Flavor Converter needed it to warn when a target flavor can't represent a construct the source uses.
+
+The `railroad-diagrams` npm package (real npm package, zero dependencies, CC0) turned out to interop cleanly through esbuild via `allowedCommonJsDependencies` (confirmed with a real install + `ng build`) rather than needing the `ejs`-style static-asset-copy workaround that was anticipated as a real risk going in.
+
+The Benchmark tool's live-timing design changed from the plan's original one-worker-loops-all-samples idea: the shared worker protocol's `progress` channel turned out to be a plain number with no room for a rich per-sample payload, so a hung sample would have silently lost every already-completed sample's timing along with it. Dispatching one isolated, independently-cancelable worker per sample avoids that entirely, at the cost of more worker-spawn overhead per run.
 
 ---
 
