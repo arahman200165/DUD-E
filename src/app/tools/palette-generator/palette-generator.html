@@ -1,0 +1,45 @@
+<app-tool-shell title="Palette Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <input
+        type="text"
+        class="w-64 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="#3b82f6, rgb(59,130,246), hsl(217,91%,60%)…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      />
+
+      <select
+        class="rounded-sm border border-border bg-panel px-2 py-1 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="type()"
+        (change)="onTypeChange($event)"
+      >
+        @for (t of paletteTypes; track t.id) {
+          <option [value]="t.id">{{ t.label }}</option>
+        }
+      </select>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-wrap gap-3">
+          @for (color of current.colors; track color) {
+            <div class="flex flex-col items-center gap-1">
+              <div class="h-16 w-16 rounded-sm border border-border" [style.background]="color"></div>
+              <span class="font-mono text-ui text-text-muted">{{ color }}</span>
+              <app-copy-button [text]="color" />
+            </div>
+          }
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 border-t border-border pt-3">
+          <span class="text-ui text-text-muted">Export</span>
+          <app-copy-button [text]="cssVars()" label="Copy as CSS variables" />
+          <app-copy-button [text]="json()" label="Copy as JSON" />
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

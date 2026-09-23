@@ -2184,4 +2184,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'palette-generator',
+    title: 'Palette Generator',
+    description: 'Generates complementary, analogous, triadic, tetradic, and monochromatic color palettes from a base color.',
+    category: 'encoding',
+    keywords: ['palette', 'color scheme', 'complementary', 'analogous', 'triadic', 'tetradic', 'monochromatic', 'color palette'],
+    route: '/tools/palette-generator',
+    load: () => import('../../tools/palette-generator/palette-generator').then((m) => m.PaletteGenerator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];
