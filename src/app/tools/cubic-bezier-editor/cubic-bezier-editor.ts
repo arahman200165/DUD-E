@@ -43,7 +43,7 @@ export class CubicBezierEditor {
     return SVG_SIZE - ((y - Y_MIN) / Y_RANGE) * SVG_SIZE;
   }
 
-  private fromSvg(event: PointerEvent, svg: SVGSVGElement): { x: number; y: number } {
+  private fromSvg(event: PointerEvent, svg: Element): { x: number; y: number } {
     const rect = svg.getBoundingClientRect();
     const px = ((event.clientX - rect.left) / rect.width) * SVG_SIZE;
     const py = ((event.clientY - rect.top) / rect.height) * SVG_SIZE;
@@ -56,13 +56,13 @@ export class CubicBezierEditor {
     (event.target as Element).setPointerCapture(event.pointerId);
   }
 
-  protected dragP1(event: PointerEvent, svg: SVGSVGElement): void {
+  protected dragP1(event: PointerEvent, svg: Element): void {
     if (event.buttons === 0) return;
     const { x, y } = this.fromSvg(event, svg);
     this.points.update((p) => ({ ...p, x1: Math.min(1, Math.max(0, x)), y1: y }));
   }
 
-  protected dragP2(event: PointerEvent, svg: SVGSVGElement): void {
+  protected dragP2(event: PointerEvent, svg: Element): void {
     if (event.buttons === 0) return;
     const { x, y } = this.fromSvg(event, svg);
     this.points.update((p) => ({ ...p, x2: Math.min(1, Math.max(0, x)), y2: y }));
