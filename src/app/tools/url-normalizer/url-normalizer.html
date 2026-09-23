@@ -1,0 +1,148 @@
+<app-tool-shell title="URL Normalizer &amp; Comparator" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'normalize'" [class.text-bg]="mode() === 'normalize'" (click)="setMode('normalize')">
+        Normalize
+      </button>
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'resolve'" [class.text-bg]="mode() === 'resolve'" (click)="setMode('resolve')">
+        Resolve
+      </button>
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'compare'" [class.text-bg]="mode() === 'compare'" (click)="setMode('compare')">
+        Compare
+      </button>
+    </div>
+
+    @if (mode() === 'normalize' || mode() === 'compare') {
+      <div class="flex flex-wrap gap-x-4 gap-y-1 text-ui text-text-muted">
+        <label class="flex items-center gap-1">
+          <input type="checkbox" [checked]="sortQueryParams()" (change)="onSortQueryParamsChange($event)" />
+          Sort query params
+        </label>
+        <label class="flex items-center gap-1">
+          <input type="checkbox" [checked]="stripTrailingSlash()" (change)="onStripTrailingSlashChange($event)" />
+          Strip trailing slash
+        </label>
+        <label class="flex items-center gap-1">
+          <input type="checkbox" [checked]="stripFragment()" (change)="onStripFragmentChange($event)" />
+          Strip fragment
+        </label>
+      </div>
+    }
+
+    @if (mode() === 'normalize') {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">URL</span>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="normalizeInput()"
+          (input)="onNormalizeInput($event)"
+        />
+      </div>
+
+      @if (normalizeResult(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Normalized{{ result.changed ? '' : ' (already normalized)' }}</span>
+              <app-copy-button [text]="result.normalized" />
+            </div>
+            <div class="w-full overflow-x-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre text-text">{{ result.normalized }}</div>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    }
+
+    @if (mode() === 'resolve') {
+      <div class="grid grid-cols-1 gap-3">
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Base URL</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="resolveBase()"
+            (input)="onResolveBaseInput($event)"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Relative reference</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="resolveRelative()"
+            (input)="onResolveRelativeInput($event)"
+          />
+        </div>
+      </div>
+
+      @if (resolveResult(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Resolved</span>
+              <app-copy-button [text]="result.resolved" />
+            </div>
+            <div class="w-full overflow-x-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs whitespace-pre text-text">{{ result.resolved }}</div>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    }
+
+    @if (mode() === 'compare') {
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">URL A</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="compareA()"
+            (input)="onCompareAInput($event)"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">URL B</span>
+          <input
+            type="text"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="compareB()"
+            (input)="onCompareBInput($event)"
+          />
+        </div>
+      </div>
+
+      @if (compareResult(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-col gap-2">
+            <div class="text-ui" [class.text-accent]="result.equivalent" [class.text-error]="!result.equivalent">
+              {{ result.equivalent ? 'Equivalent' : 'Not equivalent' }}
+            </div>
+            <table class="w-full border-collapse text-xs">
+              <thead>
+                <tr class="text-ui text-text-muted">
+                  <th class="border-b border-border py-1 text-left">Component</th>
+                  <th class="border-b border-border py-1 text-left">A</th>
+                  <th class="border-b border-border py-1 text-left">B</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (diff of result.diffs; track diff.component) {
+                  <tr [class.text-error]="!diff.equal" [class.text-text-muted]="diff.equal">
+                    <td class="border-b border-border py-1 pr-2 capitalize">{{ diff.component }}</td>
+                    <td class="border-b border-border py-1 pr-2 font-mono">{{ diff.a || '(empty)' }}</td>
+                    <td class="border-b border-border py-1 font-mono">{{ diff.b || '(empty)' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    }
+  </div>
+</app-tool-shell>
