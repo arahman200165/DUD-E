@@ -1730,4 +1730,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text', 'json'], produces: ['json'] },
   },
+  {
+    id: 'jwks-to-pem',
+    title: 'JWKS → Public Keys',
+    shortTitle: 'JWKS → PEM',
+    description: 'Converts JWKS keys to PEM (SPKI) or raw JWK for use outside the browser.',
+    category: 'security',
+    keywords: ['jwks', 'jwk', 'pem', 'spki', 'public key', 'convert', 'export'],
+    route: '/tools/jwks-to-pem',
+    load: () => import('../../tools/jwks-to-pem/jwks-to-pem').then((m) => m.JwksToPem),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text', 'json'], produces: ['text'] },
+  },
 ];
