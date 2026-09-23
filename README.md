@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-200 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+201 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -239,6 +239,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [SVG Viewer / Formatter / Optimizer](https://arahman200165.github.io/DUDE/tools/svg-viewer) | Documents | Previews SVG markup and formats, minifies, or optimizes it (via SVGO). |
 | [SVG ↔ Data URI](https://arahman200165.github.io/DUDE/tools/svg-data-uri) | Encoding | Converts SVG markup to a data:image/svg+xml URI (URL-encoded or base64) and back. |
 | [Pixel Color Picker](https://arahman200165.github.io/DUDE/tools/pixel-color-picker) | Developer | Reads the exact color of any pixel in an uploaded image. |
+| [QR Code Generator](https://arahman200165.github.io/DUDE/tools/qr-code-generator) | Encoding | Generates a QR code for a URL/text, Wi-Fi network, contact card, or TOTP secret. |
 
 ## Architecture
 
