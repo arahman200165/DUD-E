@@ -6,6 +6,18 @@ import { KeyValueEditor } from '../../shared/components/key-value-editor/key-val
 import { KeyValuePair } from '../../shared/models/key-value-pair.model';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { UrlParts, buildUrl, parseUrl } from './url-parts';
+import { URI_COMPONENT_LEGEND, UriComponentKind, segmentUri } from './uri-component-visualizer';
+
+const KIND_CLASSES: Record<UriComponentKind, string> = {
+  scheme: 'text-sky-400',
+  userinfo: 'text-fuchsia-400',
+  host: 'text-emerald-400',
+  port: 'text-amber-400',
+  path: 'text-cyan-400',
+  query: 'text-pink-400',
+  fragment: 'text-orange-400',
+  punctuation: 'text-text-muted',
+};
 
 @Component({
   selector: 'app-url-inspector',
@@ -23,6 +35,8 @@ export class UrlInspector {
   );
 
   protected readonly parsed = computed(() => parseUrl(this.raw()));
+  protected readonly segments = computed(() => segmentUri(this.raw()));
+  protected readonly legend = URI_COMPONENT_LEGEND;
 
   protected onRawChange(event: Event): void {
     this.raw.set((event.target as HTMLInputElement).value);
@@ -38,6 +52,10 @@ export class UrlInspector {
 
   protected copyUrl(): void {
     void navigator.clipboard.writeText(this.raw());
+  }
+
+  protected kindClass(kind: UriComponentKind): string {
+    return KIND_CLASSES[kind];
   }
 
   private updateParts(patch: Partial<UrlParts>): void {

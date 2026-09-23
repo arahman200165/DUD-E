@@ -163,7 +163,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [cURL Command Inspector / Converter](https://arahman200165.github.io/DUDE/tools/curl-converter) | Web | Parses a curl command into its parts, builds one interactively, and exports it as code in 8 languages. |
 | [User-Agent Parser](https://arahman200165.github.io/DUDE/tools/user-agent) | Web | Breaks a User-Agent string down into browser, engine, OS, and device details. |
 | [MIME Type Reference](https://arahman200165.github.io/DUDE/tools/mime-types) | Web | Searchable reference of common IANA-registered MIME types with file-extension lookups. |
-| [URL / URI Inspector](https://arahman200165.github.io/DUDE/tools/url-inspector) | Web | Breaks a URL down into scheme, host, path, query, and fragment — and edits any part, round-tripping back to a full URL. |
+| [URL / URI Inspector](https://arahman200165.github.io/DUDE/tools/url-inspector) | Web | Breaks a URL down into scheme, host, path, query, and fragment — edits any part, round-tripping back to a full URL, with a colorized component breakdown view. |
 | [Punycode Converter](https://arahman200165.github.io/DUDE/tools/punycode-converter) | Web | Converts an internationalized domain name between Unicode and its Punycode (ASCII, "xn--") form. |
 | [URL Percent-Encoding Inspector](https://arahman200165.github.io/DUDE/tools/url-percent-inspector) | Web | Breaks a URL or component down byte-by-byte, grouping percent-encoded UTF-8 sequences and flagging unencoded reserved characters. |
 | [HTTP Digest Auth Helper](https://arahman200165.github.io/DUDE/tools/http-digest-auth-helper) | Web | Computes an RFC 7616/2617 HTTP Digest Authorization header from a WWW-Authenticate challenge and credentials. |

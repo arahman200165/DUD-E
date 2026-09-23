@@ -600,9 +600,10 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'url-inspector',
     title: 'URL / URI Inspector',
-    description: 'Break a URL down into scheme, host, path, query, and fragment — and edit any part.',
+    description:
+      'Break a URL down into scheme, host, path, query, and fragment — edit any part, and see a colorized component breakdown.',
     category: 'web',
-    keywords: ['url', 'uri', 'inspector', 'parse', 'scheme', 'host', 'query', 'fragment'],
+    keywords: ['url', 'uri', 'inspector', 'parse', 'scheme', 'host', 'query', 'fragment', 'visualizer', 'breakdown'],
     route: '/tools/url-inspector',
     load: () => import('../../tools/url-inspector/url-inspector').then((m) => m.UrlInspector),
     status: 'stable',
