@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-197 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+198 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -236,6 +236,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Image Cropper](https://arahman200165.github.io/DUDE/tools/image-cropper) | Documents | Drag-selects a crop area on an uploaded image and exports the cropped region. |
 | [Image Format Converter](https://arahman200165.github.io/DUDE/tools/image-format-converter) | Documents | Converts an uploaded image between PNG, JPEG, WebP, and AVIF (where the browser supports encoding it). |
 | [Image Compressor](https://arahman200165.github.io/DUDE/tools/image-compressor) | Documents | Compresses an uploaded image to JPEG, WebP, or PNG with an adjustable quality level and a before/after size comparison. |
+| [SVG Viewer / Formatter / Optimizer](https://arahman200165.github.io/DUDE/tools/svg-viewer) | Documents | Previews SVG markup and formats, minifies, or optimizes it (via SVGO). |
 
 ## Architecture
 

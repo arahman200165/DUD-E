@@ -1,0 +1,68 @@
+<app-tool-shell title="SVG Viewer / Formatter / Optimizer" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        @for (item of [{ id: 'format', label: 'Format' }, { id: 'minify', label: 'Minify' }, { id: 'optimize', label: 'Optimize' }]; track item.id) {
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="mode() === item.id"
+            [class.text-bg]="mode() === item.id"
+            [class.text-text-muted]="mode() !== item.id"
+            (click)="setMode($any(item.id))"
+          >
+            {{ item.label }}
+          </button>
+        }
+      </div>
+
+      <app-file-drop accept="image/svg+xml,.svg" label="Drop an .svg file, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">SVG source</span>
+        <textarea
+          rows="14"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="source()"
+          (input)="onSourceChange($event)"
+        ></textarea>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        @if (previewUrl(); as url) {
+          <div class="flex items-center justify-center rounded-sm border border-border bg-[repeating-conic-gradient(#00000022_0%_25%,transparent_0%_50%)] bg-[length:16px_16px] p-3">
+            <img [src]="url" alt="SVG preview" class="max-h-48 max-w-full" />
+          </div>
+        }
+
+        @if (errorMessage(); as message) {
+          <app-error-panel [message]="message" />
+        } @else {
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">
+              Output
+              @if (optimizeResult(); as opt) {
+                @if (opt.ok) {
+                  &middot; {{ opt.originalBytes }}B &rarr; {{ opt.optimizedBytes }}B
+                }
+              }
+            </span>
+            <app-copy-button [text]="outputText()" />
+          </div>
+          <textarea
+            rows="12"
+            readonly
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+            [value]="outputText()"
+          ></textarea>
+        }
+      </div>
+    </div>
+  </div>
+</app-tool-shell>

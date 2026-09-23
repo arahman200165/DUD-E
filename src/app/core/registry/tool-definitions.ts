@@ -2536,4 +2536,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['file'], produces: ['file'] },
   },
+  {
+    id: 'svg-viewer',
+    title: 'SVG Viewer / Formatter / Optimizer',
+    description: 'Previews SVG markup and formats, minifies, or optimizes it (via SVGO).',
+    category: 'documents',
+    keywords: ['svg', 'format', 'minify', 'optimize', 'svgo', 'vector'],
+    route: '/tools/svg-viewer',
+    load: () => import('../../tools/svg-viewer/svg-viewer').then((m) => m.SvgViewer),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text', 'file'], produces: ['text'] },
+  },
 ];
