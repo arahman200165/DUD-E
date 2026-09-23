@@ -1370,54 +1370,60 @@ The Benchmark tool's live-timing design changed from the plan's original one-wor
 
 ---
 
-## Phase 17 — Design, Markup & Media Tools (Proposed — Track A: Browser-Extensible)
+## Phase 17 — Design, Markup & Media Tools (✅ Complete — Track A: Browser-Extensible)
 
 Goal: grow Color Converter into a full design toolkit and add CSS/HTML/image/QR tools, all File-API/canvas-based with no OS access required.
 
-1. Color Converter: add LAB, LCH, OKLAB, OKLCH, HWB spaces
-2. Contrast Checker / WCAG Compliance Checker
-3. Palette Generator
-4. Gradient Generator
-5. Color Blindness Simulator
-6. Tailwind Color Matcher
-7. CSS Formatter / Minifier
-8. CSS Specificity Calculator / Comparer
-9. CSS Selector Tester
-10. Flexbox Playground
-11. CSS Grid Playground
-12. Box Shadow Generator
-13. Border Radius Generator
-14. CSS Transform Builder
-15. CSS Animation Builder
-16. Cubic-Bezier Editor
-17. HTML Formatter / Minifier
-18. DOM Tree Viewer
-19. HTML ↔ JSX Converter
-20. HTML Entity Explorer
-21. Meta Tag Generator
-22. OpenGraph Preview
-23. Structured Data / JSON-LD Tester
-24. Markdown Table Formatter
-25. Markdown Linter
-26. Markdown Link Checker
-27. Image Metadata Inspector
-28. EXIF Viewer / Cleaner
-29. Image Format Converter (PNG ↔ JPEG ↔ WebP ↔ AVIF)
-30. Image Compressor
-31. Image Resizer
-32. Image Cropper
-33. Base64 Image Viewer
-34. SVG Viewer / Formatter / Optimizer
-35. SVG ↔ Data URI
-36. Pixel Color Picker (on both an uploaded image and the live screen — that variant is Track B)
-37. QR Code Generator (URL, Wi-Fi, contact, TOTP presets)
-38. QR Code Scanner (from an uploaded image or webcam frame)
-39. Barcode Generator
-40. Barcode Reader
+**Achieved (Milestones 165-205):** all 40 items shipped, one-to-one with the original list:
+
+1. Color Converter: LAB/LCH/HWB via colord's own plugins, OKLAB/OKLCH via a hand-rolled Ottosson-matrix conversion (Milestone 165)
+2. Contrast Checker / WCAG Compliance Checker (Milestone 168)
+3. Palette Generator (Milestone 166)
+4. Gradient Generator (Milestone 167)
+5. Color Blindness Simulator — Machado 2009 matrices, canvas pixel transform on an uploaded image (Milestone 169)
+6. Tailwind Color Matcher (Milestone 170)
+7. CSS Formatter / Minifier — hand-rolled tokenizer/reprinter (Milestone 173)
+8. CSS Specificity Calculator / Comparer — via the `specificity` package (Milestone 171)
+9. CSS Selector Tester (Milestone 172)
+10. Flexbox Playground (Milestone 180)
+11. CSS Grid Playground (Milestone 181)
+12. Box Shadow Generator (Milestone 175)
+13. Border Radius Generator (Milestone 176)
+14. CSS Transform Builder (Milestone 178)
+15. CSS Animation Builder (Milestone 179)
+16. Cubic-Bezier Editor (Milestone 177)
+17. HTML Formatter / Minifier (Milestone 182)
+18. DOM Tree Viewer (Milestone 183)
+19. HTML ↔ JSX Converter (Milestone 185)
+20. HTML Entity Explorer (Milestone 184)
+21. Meta Tag Generator (Milestone 186)
+22. OpenGraph Preview (Milestone 187)
+23. Structured Data / JSON-LD Tester (Milestone 188)
+24. Markdown Table Formatter — a `toolbar-action` plugin on Advanced Markdown Workspace (Milestone 189)
+25. Markdown Linter — a new findings panel on Advanced Markdown Workspace (Milestone 190)
+26. Markdown Link Checker — a new findings panel plus a manual "Check links" liveness check, the third `docs/SECURITY.md` network exception (Milestone 191)
+27. Image Metadata Inspector (Milestone 193)
+28. EXIF Viewer / Cleaner — via `exifr` (Milestone 194)
+29. Image Format Converter (PNG ↔ JPEG ↔ WebP ↔ AVIF, AVIF feature-detected) (Milestone 197)
+30. Image Compressor (Milestone 198)
+31. Image Resizer (Milestone 195)
+32. Image Cropper (Milestone 196)
+33. Base64 Image Viewer (Milestone 192)
+34. SVG Viewer / Formatter / Optimizer — via `svgo`'s browser build (Milestone 199)
+35. SVG ↔ Data URI (Milestone 200)
+36. Pixel Color Picker — upload-image mode only (Track A); the live-screen variant stays Track B, tracked at Phase 29 item 6 (Milestone 201)
+37. QR Code Generator (URL, Wi-Fi, contact, TOTP presets) — via `qrcode` (Milestone 202)
+38. QR Code Scanner (from an uploaded image or webcam frame) — via `jsqr`, introducing the shared `camera-capture` primitive (Milestone 203)
+39. Barcode Generator — via `jsbarcode`, with GS1 check-digit validation for EAN-13/EAN-8/UPC-A (Milestone 204)
+40. Barcode Reader — via `@zxing/library`, reusing `camera-capture` (Milestone 205)
 
 ### Notes
 
-Items 24-26 extend Markdown Preview / Advanced Markdown Workspace (§20) rather than becoming new tools. Image tools use the Canvas/File APIs already available in-browser; `sharp`-equivalent WASM builds (e.g. `@squoosh/lib`) fit the library-forward philosophy (§17) for format conversion/compression.
+Milestone 174 (between Tailwind Color Matcher and Box Shadow Generator) built the `css-preview-sandbox` shared primitive — a sandboxed-iframe live-preview component, modeled on HTML Preview's iframe+CSP pattern but locked down further (no `allow-scripts` at all, since these tools render CSS only, never user script) — that all seven CSS live-preview tools (items 10-16) share. It's a framework-layer milestone with no numbered item of its own, the same pattern Milestone 16's `regex-ast-features.ts` extraction used.
+
+Item 30 (Image Compressor) deviates from this section's original plan: a real WASM codec (`@jsquash/jpeg`/`webp`/`png`, the maintained successor to `@squoosh/lib`) was implemented first, but its Emscripten `locateFile` resolution breaks once Angular's esbuild-based production build bundles the codec module — the `.wasm` binary never made it into `dist/`, a defect only a real `ng build` caught, not the unit test suite. Image Compressor ships on plain `canvas.toBlob()` quality-based compression instead: real but more modest size reduction, zero bundling risk. Items 27-29, 31-32, and 34-35 (the rest of the image/SVG tools) all shipped as originally planned, since none of them needed a WASM codec.
+
+Items 38 and 40 (QR Code Scanner, Barcode Reader) are the first `getUserMedia`/camera-API use anywhere in the codebase; `docs/SECURITY.md` gained a new "Camera access" section documenting it, alongside the network-exception entry item 26 added.
 
 ---
 
