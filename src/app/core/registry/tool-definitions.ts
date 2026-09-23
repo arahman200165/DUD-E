@@ -573,6 +573,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'csp-builder',
+    title: 'CSP Builder',
+    description: 'Builds or parses a Content-Security-Policy header directive by directive, flagging weakening combinations like unsafe-inline or a wildcard source.',
+    category: 'web',
+    keywords: ['csp', 'content-security-policy', 'header', 'security', 'xss', 'directive'],
+    route: '/tools/csp-builder',
+    load: () => import('../../tools/csp-builder/csp-builder').then((m) => m.CspBuilder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',
