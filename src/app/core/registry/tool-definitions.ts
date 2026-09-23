@@ -1782,4 +1782,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['json'], produces: ['text'] },
   },
+  {
+    id: 'pkce-verifier',
+    title: 'PKCE Verifier',
+    shortTitle: 'PKCE Verifier',
+    description: 'Checks whether a code_verifier matches a given code_challenge (round-trip validation).',
+    category: 'security',
+    keywords: ['pkce', 'code verifier', 'code challenge', 'verify', 'oauth', 's256', 'rfc 7636'],
+    route: '/tools/pkce-verifier',
+    load: () => import('../../tools/pkce-verifier/pkce-verifier').then((m) => m.PkceVerifier),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];
