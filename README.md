@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-164 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+165 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -181,6 +181,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [HTTP Digest Auth Helper](https://arahman200165.github.io/DUDE/tools/http-digest-auth-helper) | Web | Computes an RFC 7616/2617 HTTP Digest Authorization header from a WWW-Authenticate challenge and credentials. |
 | [AWS Signature V4 Inspector](https://arahman200165.github.io/DUDE/tools/aws-sigv4-inspector) | Web | Recomputes and verifies an AWS Signature Version 4 signed request, or builds one from scratch. |
 | [Regex Tester](https://arahman200165.github.io/DUDE/tools/regex) | Developer | Tests a pattern against text with match/capture-group detail, a plain-English explainer, cross-language flavor notes, and a replace mode, in a worker. |
+| [Regex Visualizer](https://arahman200165.github.io/DUDE/tools/regex-visualizer) | Developer | Renders a regular expression as a railroad syntax diagram. |
 | [UUID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/uuid) | Developer | Generates v1/v4/v5/v7 UUIDs (with namespace support), inspects an existing UUID, and bulk-exports the generated list. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, and range-checks versions against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
