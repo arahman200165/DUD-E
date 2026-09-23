@@ -1,0 +1,37 @@
+<app-tool-shell title="Tailwind Color Matcher" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <input
+        type="text"
+        class="w-64 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="#3b82f6, rgb(59,130,246), hsl(217,91%,60%), royalblue…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      />
+      @if (result(); as current) {
+        @if (current.ok) {
+          <div class="h-8 w-8 shrink-0 rounded-sm border border-border" [style.background]="input()"></div>
+        }
+      }
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          @for (match of current.matches; track match.className; let i = $index) {
+            <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel px-2 py-1">
+              <span class="w-6 shrink-0 text-ui text-text-muted">#{{ i + 1 }}</span>
+              <div class="h-6 w-6 shrink-0 rounded-sm border border-border" [style.background]="match.css"></div>
+              <span class="w-32 shrink-0 font-mono text-xs text-text">{{ match.family }}-{{ match.shade }}</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">bg-{{ match.className }} / text-{{ match.className }}</span>
+              <span class="shrink-0 text-ui text-text-muted">Δ {{ match.distance.toFixed(4) }}</span>
+              <app-copy-button [text]="match.className" />
+            </div>
+          }
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
