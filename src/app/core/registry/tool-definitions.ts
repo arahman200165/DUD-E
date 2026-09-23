@@ -2560,4 +2560,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'pixel-color-picker',
+    title: 'Pixel Color Picker',
+    description: 'Reads the exact color of any pixel in an uploaded image.',
+    category: 'developer',
+    keywords: ['color', 'pixel', 'eyedropper', 'picker', 'image'],
+    route: '/tools/pixel-color-picker',
+    load: () => import('../../tools/pixel-color-picker/pixel-color-picker').then((m) => m.PixelColorPicker),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['json'] },
+  },
 ];
