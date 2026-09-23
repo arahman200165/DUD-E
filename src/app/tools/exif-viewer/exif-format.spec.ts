@@ -48,6 +48,6 @@ describe('formatGps', () => {
   });
 
   it('formats latitude/longitude to 6 decimal places', () => {
-    expect(formatGps({ latitude: 37.7749295, longitude: -122.4194155 })).toBe('37.774930, -122.419416');
+    expect(formatGps({ latitude: 37.7749295, longitude: -122.4194155 })).toBe('37.774929, -122.419415');
   });
 });

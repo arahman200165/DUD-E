@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-190 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+197 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -229,6 +229,13 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |
+| [Base64 Image Viewer](https://arahman200165.github.io/DUDE/tools/base64-image-viewer) | Encoding | Previews a Base64 string or data URI as an image, or encodes an uploaded image to Base64. |
+| [Image Metadata Inspector](https://arahman200165.github.io/DUDE/tools/image-metadata-inspector) | Documents | Reports an uploaded image's file size, detected format, pixel dimensions, and (for PNG) bit depth and color type. |
+| [EXIF Viewer / Cleaner](https://arahman200165.github.io/DUDE/tools/exif-viewer) | Documents | Views an image's embedded EXIF metadata, or strips it entirely by re-encoding the image through canvas. |
+| [Image Resizer](https://arahman200165.github.io/DUDE/tools/image-resizer) | Documents | Resizes an uploaded image to explicit dimensions or a percentage scale, with optional aspect-ratio lock. |
+| [Image Cropper](https://arahman200165.github.io/DUDE/tools/image-cropper) | Documents | Drag-selects a crop area on an uploaded image and exports the cropped region. |
+| [Image Format Converter](https://arahman200165.github.io/DUDE/tools/image-format-converter) | Documents | Converts an uploaded image between PNG, JPEG, WebP, and AVIF (where the browser supports encoding it). |
+| [Image Compressor](https://arahman200165.github.io/DUDE/tools/image-compressor) | Documents | Compresses an uploaded image via real WASM codecs (MozJPEG/WebP/PNG), off the main thread, with a before/after size comparison. |
 
 ## Architecture
 
