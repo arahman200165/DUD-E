@@ -1,8 +1,12 @@
 import { DEFAULT_OG_SETTINGS, buildOgTags, hostnameFor } from './opengraph-logic';
 
 describe('buildOgTags', () => {
-  it('emits nothing for the empty defaults', () => {
-    expect(buildOgTags(DEFAULT_OG_SETTINGS)).toBe('');
+  it('emits nothing when every field, including type, is empty', () => {
+    expect(buildOgTags({ ...DEFAULT_OG_SETTINGS, type: '' })).toBe('');
+  });
+
+  it('emits only og:type for the untouched defaults, since type defaults to "website"', () => {
+    expect(buildOgTags(DEFAULT_OG_SETTINGS)).toBe('<meta property="og:type" content="website">');
   });
 
   it('emits og: meta tags for filled-in fields', () => {
