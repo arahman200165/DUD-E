@@ -636,6 +636,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'multipart-form-builder',
+    title: 'Multipart Form Data Builder',
+    description: 'Builds a multipart/form-data request body preview from text fields and attached files, with the matching Content-Type boundary header.',
+    category: 'web',
+    keywords: ['multipart', 'form-data', 'boundary', 'file upload', 'content-type'],
+    route: '/tools/multipart-form-builder',
+    load: () => import('../../tools/multipart-form-builder/multipart-form-builder').then((m) => m.MultipartFormBuilder),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['text', 'file'], produces: ['text'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code in 15 languages.',
