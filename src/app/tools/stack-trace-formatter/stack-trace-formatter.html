@@ -1,0 +1,56 @@
+<app-tool-shell title="Stack Trace Formatter" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-2 text-ui text-text-muted">
+      @for (option of modes; track option.id) {
+        <button
+          type="button"
+          class="rounded-sm border px-2 py-0.5"
+          [class.border-accent]="mode() === option.id"
+          [class.text-accent]="mode() === option.id"
+          [class.border-border]="mode() !== option.id"
+          (click)="setMode(option.id)"
+        >
+          {{ option.label }}
+        </button>
+      }
+
+      <span class="mx-1 text-border">|</span>
+
+      <label class="flex items-center gap-1.5">
+        <input type="checkbox" [checked]="hideLibraryFrames()" (change)="toggleHideLibraryFrames()" />
+        Hide library frames
+      </label>
+
+      @if (mode() === 'auto') {
+        <span>Detected: {{ result().language }}</span>
+      }
+    </div>
+
+    <div class="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-2">
+      <textarea
+        class="min-h-40 flex-1 resize-none rounded-sm border border-border bg-panel p-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste a stack trace…"
+        spellcheck="false"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+
+      <div class="flex min-h-40 flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Formatted</span>
+          <app-copy-button [text]="outputText()" />
+        </div>
+        <div class="flex-1 overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-xs">
+          @for (line of visibleLines(); track $index) {
+            <div
+              class="whitespace-pre"
+              [class.text-text-muted]="line.kind === 'frame-library' || line.kind === 'other'"
+              [class.text-text]="line.kind === 'frame-app' || line.kind === 'header'"
+              [class.text-warning]="line.kind === 'cause'"
+            >{{ line.text }}</div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</app-tool-shell>
