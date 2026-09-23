@@ -1,0 +1,80 @@
+<app-tool-shell title="Cubic-Bezier Editor" status="stable">
+  <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-wrap gap-1">
+        @for (preset of presets; track preset.name) {
+          <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="applyPreset(preset.points)">
+            {{ preset.name }}
+          </button>
+        }
+      </div>
+
+      <svg #svg [attr.viewBox]="'0 0 ' + svgSize + ' ' + svgSize" class="aspect-square w-full max-w-xs cursor-crosshair rounded-sm border border-border bg-panel touch-none">
+        <line [attr.x1]="toSvgX(0)" [attr.y1]="toSvgY(0)" [attr.x2]="toSvgX(1)" [attr.y2]="toSvgY(1)" stroke="currentColor" class="text-border" stroke-width="1" />
+        <line [attr.x1]="toSvgX(0)" [attr.y1]="toSvgY(0)" [attr.x2]="toSvgX(points().x1)" [attr.y2]="toSvgY(points().y1)" stroke="currentColor" class="text-text-muted" stroke-width="1.5" />
+        <line [attr.x1]="toSvgX(1)" [attr.y1]="toSvgY(1)" [attr.x2]="toSvgX(points().x2)" [attr.y2]="toSvgY(points().y2)" stroke="currentColor" class="text-text-muted" stroke-width="1.5" />
+        <path
+          [attr.d]="'M ' + toSvgX(0) + ' ' + toSvgY(0) + ' C ' + toSvgX(points().x1) + ' ' + toSvgY(points().y1) + ', ' + toSvgX(points().x2) + ' ' + toSvgY(points().y2) + ', ' + toSvgX(1) + ' ' + toSvgY(1)"
+          fill="none"
+          stroke="currentColor"
+          class="text-accent"
+          stroke-width="2"
+        />
+        <circle [attr.cx]="toSvgX(0)" [attr.cy]="toSvgY(0)" r="4" fill="currentColor" class="text-text-muted" />
+        <circle [attr.cx]="toSvgX(1)" [attr.cy]="toSvgY(1)" r="4" fill="currentColor" class="text-text-muted" />
+        <circle
+          [attr.cx]="toSvgX(points().x1)"
+          [attr.cy]="toSvgY(points().y1)"
+          r="7"
+          fill="currentColor"
+          class="text-accent"
+          (pointerdown)="startDrag($event)"
+          (pointermove)="dragP1($event, svg)"
+        />
+        <circle
+          [attr.cx]="toSvgX(points().x2)"
+          [attr.cy]="toSvgY(points().y2)"
+          r="7"
+          fill="currentColor"
+          class="text-accent"
+          (pointerdown)="startDrag($event)"
+          (pointermove)="dragP2($event, svg)"
+        />
+      </svg>
+
+      <div class="grid grid-cols-4 gap-2">
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          x1
+          <input type="number" step="0.01" min="0" max="1" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="points().x1" (input)="onNumberInput('x1', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          y1
+          <input type="number" step="0.01" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="points().y1" (input)="onNumberInput('y1', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          x2
+          <input type="number" step="0.01" min="0" max="1" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="points().x2" (input)="onNumberInput('x2', $event)" />
+        </label>
+        <label class="flex flex-col gap-0.5 text-ui text-text-muted">
+          y2
+          <input type="number" step="0.01" class="rounded-sm border border-border bg-panel px-1 py-0.5 text-xs text-text" [value]="points().y2" (input)="onNumberInput('y2', $event)" />
+        </label>
+      </div>
+
+      @if (validation(); as v) {
+        @if (!v.ok) {
+          <p class="text-ui text-error">{{ v.error }}</p>
+        }
+      }
+
+      <div class="flex items-center justify-between rounded-sm border border-border bg-panel px-2 py-1">
+        <code class="flex-1 truncate font-mono text-xs text-text">{{ value() }}</code>
+        <app-copy-button [text]="value()" />
+      </div>
+    </div>
+
+    <div class="h-40 overflow-hidden rounded-sm border border-border md:h-full">
+      <app-css-preview-sandbox [css]="previewCss()" [html]="previewHtml" />
+    </div>
+  </div>
+</app-tool-shell>

@@ -2306,4 +2306,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'cubic-bezier-editor',
+    title: 'Cubic-Bezier Editor',
+    description: 'Interactive cubic-bezier() easing curve editor with draggable control points and a live animated preview.',
+    category: 'developer',
+    keywords: ['cubic-bezier', 'easing', 'timing-function', 'css animation', 'transition-timing-function'],
+    route: '/tools/cubic-bezier-editor',
+    load: () => import('../../tools/cubic-bezier-editor/cubic-bezier-editor').then((m) => m.CubicBezierEditor),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
