@@ -31,7 +31,7 @@ const MATRICES: Record<ColorBlindnessType, readonly (readonly [number, number, n
 };
 
 /** Pure per-pixel RGBA transform. Framework-free so it could move to a Worker later. */
-export function simulateColorBlindness(rgba: Uint8ClampedArray, type: ColorBlindnessType): Uint8ClampedArray {
+export function simulateColorBlindness(rgba: ArrayLike<number>, type: ColorBlindnessType): Uint8ClampedArray<ArrayBuffer> {
   const [row0, row1, row2] = MATRICES[type];
   const out = new Uint8ClampedArray(rgba.length);
 
