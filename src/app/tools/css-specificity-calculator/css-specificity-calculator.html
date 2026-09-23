@@ -1,0 +1,34 @@
+<app-tool-shell title="CSS Specificity Calculator / Comparer" status="stable">
+  <div class="flex flex-col gap-3">
+    <textarea
+      rows="3"
+      class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      placeholder="One or more comma-separated selectors, e.g. #header .nav a:hover, .nav a, a"
+      [value]="input()"
+      (input)="onInputChange($event)"
+    ></textarea>
+
+    <div class="flex flex-col gap-1">
+      @for (entry of ranked(); track $index) {
+        <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel px-2 py-1">
+          @if (entry.rank; as rank) {
+            <span class="w-8 shrink-0 text-ui text-text-muted">#{{ rank }}</span>
+          } @else {
+            <span class="w-8 shrink-0 text-ui text-error">err</span>
+          }
+          @if (entry.result.ok) {
+            <span class="flex-1 truncate font-mono text-xs text-text">{{ entry.result.score.selector }}</span>
+            <span class="shrink-0 font-mono text-xs text-accent">{{ entry.result.score.formatted }}</span>
+          } @else {
+            <span class="flex-1 font-mono text-xs text-text-muted">{{ entry.result.error }}</span>
+          }
+        </div>
+      }
+    </div>
+
+    <p class="text-ui text-text-muted">
+      Specificity shown as (id, class/attribute/pseudo-class, type/pseudo-element) — higher wins. Ties are broken by
+      source order (later rule wins), which this tool can't know from selectors alone.
+    </p>
+  </div>
+</app-tool-shell>
