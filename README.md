@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-138 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+139 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -139,6 +139,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [JWT Expiration Visualizer](https://arahman200165.github.io/DUDE/tools/jwt-expiration-visualizer) | Security | Visualizes a JWT's iat/nbf/exp window on a timeline relative to now. |
 | [PKCE Generator](https://arahman200165.github.io/DUDE/tools/pkce-generator) | Security | Generates an RFC 7636 PKCE code_verifier and its S256 (or plain) code_challenge. |
 | [PKCE Verifier](https://arahman200165.github.io/DUDE/tools/pkce-verifier) | Security | Checks whether a code_verifier matches a given code_challenge (round-trip validation). |
+| [OAuth Scope Parser](https://arahman200165.github.io/DUDE/tools/oauth-scope-parser) | Security | Splits an OAuth/OIDC space-delimited scope string into individual scopes with known-scope annotations. |
 | [Unix Timestamp Converter](https://arahman200165.github.io/DUDE/tools/unix-timestamp) | Date & Time | Converts between Unix timestamps and human-readable local/UTC dates. |
 | [Cron Expression Parser](https://arahman200165.github.io/DUDE/tools/cron) | Date & Time | Parses a cron expression into a human-readable schedule and previews its next run times. |
 | [Date / Timezone Converter](https://arahman200165.github.io/DUDE/tools/timezone-converter) | Date & Time | Converts a moment in time across a chosen set of IANA timezones, as a multi-zone world clock. |

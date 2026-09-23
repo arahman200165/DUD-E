@@ -1795,4 +1795,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'oauth-scope-parser',
+    title: 'OAuth Scope Parser',
+    shortTitle: 'Scope Parser',
+    description: 'Splits an OAuth/OIDC space-delimited scope string into individual scopes with known-scope annotations.',
+    category: 'security',
+    keywords: ['oauth', 'scope', 'scopes', 'openid', 'permissions', 'space delimited', 'oidc'],
+    route: '/tools/oauth-scope-parser',
+    load: () => import('../../tools/oauth-scope-parser/oauth-scope-parser').then((m) => m.OAuthScopeParser),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];

@@ -1,0 +1,62 @@
+<app-tool-shell title="OAuth Scope Parser" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Scope string</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+      </div>
+      <textarea
+        rows="3"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="openid profile email offline_access"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (parsed().scopes.length > 0) {
+      <div class="h-56">
+        <app-data-table [columns]="columns" [rows]="rows()" />
+      </div>
+
+      @if (parsed().duplicates.length > 0) {
+        <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+          Duplicate scope(s): {{ parsed().duplicates.join(', ') }}
+        </div>
+      }
+
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Normalized (deduped, sorted)</span>
+          <app-copy-button [text]="parsed().normalized" />
+        </div>
+        <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">
+          {{ parsed().normalized }}
+        </div>
+      </div>
+    }
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Add a scope and build a new scope string</span>
+      <div class="flex gap-2">
+        <input
+          type="text"
+          class="flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="e.g. api.read"
+          [value]="extraScope()"
+          (input)="onExtraScopeChange($event)"
+        />
+        <app-copy-button [text]="builtScopeString()" label="Copy built string" />
+      </div>
+      <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">
+        {{ builtScopeString() }}
+      </div>
+    </div>
+  </div>
+</app-tool-shell>
