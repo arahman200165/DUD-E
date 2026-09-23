@@ -549,6 +549,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'accept-header-builder',
+    title: 'Accept Header Builder',
+    description: 'Builds or parses an Accept header, weighting media types with q values and showing the resulting preference order.',
+    category: 'web',
+    keywords: ['accept', 'header', 'media type', 'content negotiation', 'q value', 'mime'],
+    route: '/tools/accept-header-builder',
+    load: () => import('../../tools/accept-header-builder/accept-header-builder').then((m) => m.AcceptHeaderBuilder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',
