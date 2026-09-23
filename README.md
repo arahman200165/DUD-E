@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-203 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+204 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -242,6 +242,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [QR Code Generator](https://arahman200165.github.io/DUDE/tools/qr-code-generator) | Encoding | Generates a QR code for a URL/text, Wi-Fi network, contact card, or TOTP secret. |
 | [QR Code Scanner](https://arahman200165.github.io/DUDE/tools/qr-code-scanner) | Encoding | Decodes a QR code from an uploaded image or a live webcam feed, entirely client-side. |
 | [Barcode Generator](https://arahman200165.github.io/DUDE/tools/barcode-generator) | Encoding | Generates a CODE128, EAN-13/8, UPC, CODE39, ITF-14, or codabar barcode, with check-digit validation. |
+| [Barcode Reader](https://arahman200165.github.io/DUDE/tools/barcode-reader) | Encoding | Decodes a barcode from an uploaded image or a live webcam feed, entirely client-side. |
 
 ## Architecture
 
