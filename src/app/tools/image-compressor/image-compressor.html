@@ -17,27 +17,13 @@
         @if (format() !== 'png') {
           <label class="flex items-center gap-2">
             Quality
-            <input
-              type="range"
-              min="1"
-              max="100"
-              [value]="quality()"
-              (input)="quality.set($any($event.target).valueAsNumber)"
-            />
+            <input type="range" min="1" max="100" [value]="quality()" (input)="quality.set($any($event.target).valueAsNumber)" />
             <span class="font-mono">{{ quality() }}</span>
           </label>
         }
 
         <button type="button" class="rounded-sm border border-accent px-2 py-0.5 text-accent hover:bg-accent/10" (click)="compress()">Compress</button>
-
-        @if (job(); as currentJob) {
-          <app-busy-indicator [status]="currentJob.status()" [progress]="currentJob.progress()" />
-        }
       </div>
-
-      @if (job()?.error(); as message) {
-        <app-error-panel [message]="message" />
-      }
 
       @if (resultUrl(); as url) {
         <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">

@@ -235,7 +235,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Image Resizer](https://arahman200165.github.io/DUDE/tools/image-resizer) | Documents | Resizes an uploaded image to explicit dimensions or a percentage scale, with optional aspect-ratio lock. |
 | [Image Cropper](https://arahman200165.github.io/DUDE/tools/image-cropper) | Documents | Drag-selects a crop area on an uploaded image and exports the cropped region. |
 | [Image Format Converter](https://arahman200165.github.io/DUDE/tools/image-format-converter) | Documents | Converts an uploaded image between PNG, JPEG, WebP, and AVIF (where the browser supports encoding it). |
-| [Image Compressor](https://arahman200165.github.io/DUDE/tools/image-compressor) | Documents | Compresses an uploaded image via real WASM codecs (MozJPEG/WebP/PNG), off the main thread, with a before/after size comparison. |
+| [Image Compressor](https://arahman200165.github.io/DUDE/tools/image-compressor) | Documents | Compresses an uploaded image to JPEG, WebP, or PNG with an adjustable quality level and a before/after size comparison. |
 
 ## Architecture
 
