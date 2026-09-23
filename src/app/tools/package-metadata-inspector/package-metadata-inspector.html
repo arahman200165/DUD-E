@@ -1,0 +1,55 @@
+<app-tool-shell title="Package Metadata Inspector" status="stable" [networkRequired]="loading() || hasQueried()">
+  <div class="flex flex-col gap-3">
+    <p class="text-ui text-text-muted">
+      Looks up a package on its public registry. Maven Central is not supported — neither its search API nor its raw
+      repository server sends the CORS header a browser needs to read the response, and this app has no backend to proxy it
+      through.
+    </p>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <select
+        class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="ecosystem()"
+        (change)="onEcosystemChange($event)"
+      >
+        @for (entry of ecosystems; track entry[0]) {
+          <option [value]="entry[0]">{{ entry[1] }}</option>
+        }
+      </select>
+
+      <input
+        type="text"
+        class="flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Package name"
+        [value]="packageName()"
+        (input)="onPackageNameChange($event)"
+      />
+
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-3 py-1 text-ui text-accent hover:bg-accent/10 disabled:opacity-50"
+        [disabled]="loading()"
+        (click)="lookup()"
+      >
+        {{ loading() ? 'Looking up…' : 'Look up' }}
+      </button>
+    </div>
+
+    @if (error() !== '') {
+      <app-error-panel [message]="error()" />
+    }
+
+    @if (metadata(); as pkg) {
+      <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="font-mono text-sm text-text">{{ pkg.name }}&#64;{{ pkg.latestVersion }}</div>
+        @if (pkg.description) {
+          <div class="text-text-muted">{{ pkg.description }}</div>
+        }
+        <div class="text-text-muted">License: {{ pkg.license ?? 'unknown' }}</div>
+        <div class="text-text-muted">
+          Dependencies: {{ pkg.dependencyCount === null ? 'not exposed by this registry\'s API' : pkg.dependencyCount }}
+        </div>
+      </div>
+    }
+  </div>
+</app-tool-shell>
