@@ -1,0 +1,66 @@
+<app-tool-shell title="Compression Lab" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-2 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border px-2 py-0.5" [class.border-accent]="direction() === 'compress'" [class.text-accent]="direction() === 'compress'" [class.border-border]="direction() !== 'compress'" (click)="onDirectionChange('compress')">Compress</button>
+      <button type="button" class="rounded-sm border px-2 py-0.5" [class.border-accent]="direction() === 'decompress'" [class.text-accent]="direction() === 'decompress'" [class.border-border]="direction() !== 'decompress'" (click)="onDirectionChange('decompress')">Decompress</button>
+
+      <span class="mx-1 text-border">|</span>
+
+      <button type="button" class="rounded-sm border px-2 py-0.5" [class.border-accent]="inputMode() === 'text'" [class.text-accent]="inputMode() === 'text'" [class.border-border]="inputMode() !== 'text'" (click)="onInputModeChange('text')">Text</button>
+      <button type="button" class="rounded-sm border px-2 py-0.5" [class.border-accent]="inputMode() === 'file'" [class.text-accent]="inputMode() === 'file'" [class.border-border]="inputMode() !== 'file'" (click)="onInputModeChange('file')">File</button>
+
+      <span class="mx-1 text-border">|</span>
+
+      <label class="flex items-center gap-1.5">
+        Format
+        <select class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="format()" (change)="onFormatChange($event)">
+          @for (entry of formats; track entry[0]) {
+            <option [value]="entry[0]">{{ entry[1] }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (inputMode() === 'text') {
+      <textarea
+        class="min-h-32 resize-none rounded-sm border border-border bg-panel p-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Text to compress…"
+        spellcheck="false"
+        [value]="text()"
+        (input)="onTextInput($event)"
+      ></textarea>
+    } @else {
+      <app-file-drop (fileSelected)="onFileSelected($event)" (rejected)="onFileRejected($event)" />
+    }
+
+    <div>
+      <button
+        type="button"
+        class="rounded-sm border border-accent px-3 py-1 text-ui text-accent hover:bg-accent/10 disabled:opacity-50"
+        [disabled]="running()"
+        (click)="run()"
+      >
+        {{ running() ? 'Working…' : direction() === 'compress' ? 'Compress' : 'Decompress' }}
+      </button>
+    </div>
+
+    @if (error() !== '') {
+      <app-error-panel [message]="error()" />
+    }
+
+    @if (result(); as current) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2">
+        <div class="flex flex-wrap items-center gap-4 text-ui text-text-muted">
+          <span>Input: {{ formatBytes(current.stats.inputBytes) }}</span>
+          <span>Output: {{ formatBytes(current.stats.outputBytes) }}</span>
+          @if (current.stats.ratio !== null) {
+            <span>Ratio: {{ (current.stats.ratio * 100).toFixed(1) }}%</span>
+          }
+        </div>
+        <button type="button" class="w-fit rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="download()">
+          Download result
+        </button>
+      </div>
+    }
+  </div>
+</app-tool-shell>
