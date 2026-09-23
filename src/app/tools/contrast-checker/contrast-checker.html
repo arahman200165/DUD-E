@@ -1,0 +1,73 @@
+<app-tool-shell title="Contrast Checker / WCAG Compliance Checker" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-4">
+      <label class="flex items-center gap-2 text-ui text-text-muted">
+        Foreground
+        <input
+          type="color"
+          class="h-7 w-9 border border-border bg-transparent"
+          [value]="foreground()"
+          (input)="onForegroundChange($event)"
+        />
+        <input
+          type="text"
+          class="w-28 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+          [value]="foreground()"
+          (input)="onForegroundChange($event)"
+        />
+      </label>
+
+      <label class="flex items-center gap-2 text-ui text-text-muted">
+        Background
+        <input
+          type="color"
+          class="h-7 w-9 border border-border bg-transparent"
+          [value]="background()"
+          (input)="onBackgroundChange($event)"
+        />
+        <input
+          type="text"
+          class="w-28 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+          [value]="background()"
+          (input)="onBackgroundChange($event)"
+        />
+      </label>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="rounded-sm border border-border p-4" [style.background]="background()">
+          <p class="text-sm" [style.color]="foreground()">The quick brown fox jumps over the lazy dog.</p>
+          <p class="text-xl font-semibold" [style.color]="foreground()">Large text sample</p>
+        </div>
+
+        <div class="text-lg font-semibold text-text">Contrast ratio: {{ current.ratio.toFixed(2) }} : 1</div>
+
+        <div class="flex flex-wrap gap-2">
+          @for (
+            check of [
+              { label: 'AA Normal Text', pass: current.compliance.aaNormalText },
+              { label: 'AA Large Text', pass: current.compliance.aaLargeText },
+              { label: 'AAA Normal Text', pass: current.compliance.aaaNormalText },
+              { label: 'AAA Large Text', pass: current.compliance.aaaLargeText },
+              { label: 'UI Components (1.4.11)', pass: current.compliance.uiComponents },
+            ];
+            track check.label
+          ) {
+            <span
+              class="rounded-sm border px-2 py-1 text-ui"
+              [class.border-green-600]="check.pass"
+              [class.text-green-500]="check.pass"
+              [class.border-red-600]="!check.pass"
+              [class.text-red-500]="!check.pass"
+            >
+              {{ check.pass ? '✓' : '✗' }} {{ check.label }}
+            </span>
+          }
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
