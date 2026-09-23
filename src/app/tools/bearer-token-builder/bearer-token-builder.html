@@ -1,0 +1,41 @@
+<app-tool-shell title="Bearer Token Builder" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Token</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+      </div>
+      <textarea
+        rows="3"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste an access token here…"
+        [value]="token()"
+        (input)="onTokenInput($event)"
+      ></textarea>
+    </div>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">Authorization header</span>
+            <app-copy-button [text]="current.value.header" />
+          </div>
+          <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text">{{ current.value.header }}</div>
+        </div>
+
+        @for (warning of current.value.warnings; track warning) {
+          <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">{{ warning }}</div>
+        }
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>

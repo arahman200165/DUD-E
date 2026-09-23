@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-143 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+144 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -144,6 +144,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [OAuth 2.0 Playground](https://arahman200165.github.io/DUDE/tools/oauth-playground) | Security | Builds and inspects OAuth 2.0 / OIDC requests and responses for every grant type, without a live redirect flow. |
 | [OpenID Connect Discovery Document Inspector](https://arahman200165.github.io/DUDE/tools/oidc-discovery-inspector) | Security | Inspects a pasted OIDC discovery document (.well-known/openid-configuration) — validates required fields and summarizes capabilities. |
 | [Basic Auth Header Generator](https://arahman200165.github.io/DUDE/tools/basic-auth-generator) | Security | Builds (or decodes) an HTTP Basic Authorization header from a username and password. |
+| [Bearer Token Builder](https://arahman200165.github.io/DUDE/tools/bearer-token-builder) | Security | Wraps a token into a properly formatted Bearer Authorization header, with format validation. |
 | [Unix Timestamp Converter](https://arahman200165.github.io/DUDE/tools/unix-timestamp) | Date & Time | Converts between Unix timestamps and human-readable local/UTC dates. |
 | [Cron Expression Parser](https://arahman200165.github.io/DUDE/tools/cron) | Date & Time | Parses a cron expression into a human-readable schedule and previews its next run times. |
 | [Date / Timezone Converter](https://arahman200165.github.io/DUDE/tools/timezone-converter) | Date & Time | Converts a moment in time across a chosen set of IANA timezones, as a multi-zone world clock. |
