@@ -1207,7 +1207,7 @@ Language Detector and Readability Analyzer already shipped (§21 Phase 7); Text 
 
 ---
 
-## Phase 11 — Encoding & Numeric Representation Lab (Complete — Track A: Browser-Extensible)
+## Phase 11 — Encoding & Numeric Representation Lab (✅ Complete — Track A: Browser-Extensible)
 
 Goal: turn Encoding into a full representation/conversion laboratory and give Developer a programmer-calculator suite.
 
