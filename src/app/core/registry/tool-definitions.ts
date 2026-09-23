@@ -2378,4 +2378,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'dom-tree-viewer',
+    title: 'DOM Tree Viewer',
+    description: 'Parses HTML and renders it as a collapsible DOM tree — elements, attributes, text nodes, and comments.',
+    category: 'developer',
+    keywords: ['dom', 'html tree', 'dom viewer', 'html structure', 'element tree'],
+    route: '/tools/dom-tree-viewer',
+    load: () => import('../../tools/dom-tree-viewer/dom-tree-viewer').then((m) => m.DomTreeViewer),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];
