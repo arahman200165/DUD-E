@@ -609,6 +609,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'range-header-builder',
+    title: 'Range Header Builder',
+    description: 'Builds or parses a request Range header (single or multi-range, including open-ended and suffix ranges) and a response Content-Range header.',
+    category: 'web',
+    keywords: ['range', 'content-range', 'header', 'bytes', 'partial content', '206'],
+    route: '/tools/range-header-builder',
+    load: () => import('../../tools/range-header-builder/range-header-builder').then((m) => m.RangeHeaderBuilder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',

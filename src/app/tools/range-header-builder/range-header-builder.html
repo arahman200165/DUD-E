@@ -1,0 +1,65 @@
+<app-tool-shell title="Range Header Builder" status="stable">
+  <div class="flex h-full flex-col gap-4 overflow-auto">
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Range header (request)</span>
+          <app-copy-button [text]="rangeRaw()" />
+        </div>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="rangeRaw()"
+          (input)="onRangeRawChange($event)"
+        />
+      </div>
+
+      @if (rangeWarnings().length > 0) {
+        <div class="flex flex-col gap-1 rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+          @for (warning of rangeWarnings(); track warning) {
+            <div>{{ warning }}</div>
+          }
+        </div>
+      }
+
+      <app-key-value-editor
+        [pairs]="ranges()"
+        (pairsChange)="onRangesChange($event)"
+        keyPlaceholder="start"
+        valuePlaceholder="end (blank = to end)"
+        addLabel="Add range"
+        emptyMessage="No ranges — add one below. Leave start blank for a suffix range (last N bytes)."
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Content-Range header (response)</span>
+          <app-copy-button [text]="contentRangeRaw()" />
+        </div>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="contentRangeRaw()"
+          (input)="onContentRangeRawChange($event)"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Start
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="contentRange().start" (input)="onContentRangeFieldChange('start', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          End
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="contentRange().end" (input)="onContentRangeFieldChange('end', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Total (blank = *)
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="contentRange().total" (input)="onContentRangeFieldChange('total', $event)" />
+        </label>
+      </div>
+    </div>
+  </div>
+</app-tool-shell>
