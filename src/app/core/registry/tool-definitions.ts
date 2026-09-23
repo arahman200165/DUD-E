@@ -638,9 +638,9 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
-    description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',
+    description: 'Parse a cURL command into its parts, build one interactively, and export it as code in 15 languages.',
     category: 'web',
-    keywords: ['curl', 'http', 'request', 'convert', 'fetch', 'code export'],
+    keywords: ['curl', 'http', 'request', 'convert', 'fetch', 'code export', 'kotlin', 'rust', 'php', 'ruby', 'dart', 'swift', 'httpx'],
     route: '/tools/curl-converter',
     load: () => import('../../tools/curl-converter/curl-converter').then((m) => m.CurlConverter),
     status: 'stable',
