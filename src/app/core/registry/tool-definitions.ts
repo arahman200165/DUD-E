@@ -2438,4 +2438,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'json-ld-tester',
+    title: 'Structured Data / JSON-LD Tester',
+    shortTitle: 'JSON-LD Tester',
+    description: "Validates a JSON-LD block's shape against common Schema.org types, flagging missing required/recommended properties.",
+    category: 'developer',
+    keywords: ['json-ld', 'structured data', 'schema.org', 'rich results', 'seo'],
+    route: '/tools/json-ld-tester',
+    load: () => import('../../tools/json-ld-tester/json-ld-tester').then((m) => m.JsonLdTester),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['json'], produces: ['json'] },
+  },
 ];
