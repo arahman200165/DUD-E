@@ -1,0 +1,74 @@
+<app-tool-shell title="OAuth Token Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Access / refresh / ID token</span>
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+      </div>
+      <textarea
+        rows="4"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste a JWT-shaped or opaque OAuth token…"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+    </div>
+
+    @if (inspection(); as result) {
+      @if (result.kind === 'jwt') {
+        @if (result.decoded.ok) {
+          <div class="rounded-sm border border-border px-2 py-1.5 text-ui text-text-muted">
+            JWT-shaped token
+            @if (result.scopes.length > 0) {
+              — scopes: <span class="font-mono text-text">{{ result.scopes.join(', ') }}</span>
+            }
+          </div>
+
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Header</span>
+              <pre class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text">{{ format(result.decoded.header) }}</pre>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-ui text-text-muted">Payload</span>
+              <pre class="overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-ui text-text">{{ format(result.decoded.payload) }}</pre>
+            </div>
+          </div>
+
+          @switch (result.decoded.expiry.kind) {
+            @case ('expired') {
+              <div class="rounded-sm border border-error/40 bg-error/10 px-2 py-1.5 text-ui text-error">
+                Expired at {{ result.decoded.expiry.expiresAt.toISOString() }}
+              </div>
+            }
+            @case ('valid') {
+              <div class="rounded-sm border border-success/40 bg-success/10 px-2 py-1.5 text-ui text-success">
+                Valid until {{ result.decoded.expiry.expiresAt.toISOString() }}
+              </div>
+            }
+          }
+        } @else {
+          <app-error-panel [message]="result.decoded.error" />
+        }
+      } @else {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2 text-ui text-text-muted">
+          <p>This does not look like a JWT — treating it as an opaque token. Its internal structure, if any, is provider-specific and cannot be decoded here.</p>
+          <dl class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <dt class="text-text-muted">Length</dt>
+            <dd class="font-mono text-text">{{ result.length }} characters</dd>
+            <dt class="text-text-muted">Looks like a UUID</dt>
+            <dd class="font-mono text-text">{{ result.looksLikeUuid ? 'Yes' : 'No' }}</dd>
+            <dt class="text-text-muted">Looks like Base64</dt>
+            <dd class="font-mono text-text">{{ result.looksLikeBase64 ? 'Yes' : 'No' }}</dd>
+          </dl>
+        </div>
+      }
+    }
+  </div>
+</app-tool-shell>

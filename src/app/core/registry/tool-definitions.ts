@@ -1808,4 +1808,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'oauth-token-inspector',
+    title: 'OAuth Token Inspector',
+    shortTitle: 'Token Inspector',
+    description: 'Inspects an OAuth access/refresh/ID token — auto-detects JWT vs opaque, decodes claims and scope, flags expiry.',
+    category: 'security',
+    keywords: ['oauth', 'access token', 'refresh token', 'opaque token', 'introspection', 'bearer', 'jwt'],
+    route: '/tools/oauth-token-inspector',
+    load: () => import('../../tools/oauth-token-inspector/oauth-token-inspector').then((m) => m.OAuthTokenInspector),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['json'] },
+  },
 ];
