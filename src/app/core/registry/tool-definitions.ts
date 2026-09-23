@@ -1821,4 +1821,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'oauth-playground',
+    title: 'OAuth 2.0 Playground',
+    shortTitle: 'OAuth Playground',
+    description: 'Builds and inspects OAuth 2.0 / OIDC requests and responses for every grant type, without a live redirect flow.',
+    category: 'security',
+    keywords: ['oauth', 'oauth2', 'playground', 'authorization code', 'pkce', 'client credentials', 'password grant', 'device flow', 'implicit', 'refresh token', 'grant type', 'oidc'],
+    route: '/tools/oauth-playground',
+    load: () => import('../../tools/oauth-playground/oauth-playground').then((m) => m.OAuthPlayground),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text', 'url'], produces: ['url', 'json'] },
+  },
 ];

@@ -1,0 +1,262 @@
+<app-tool-shell title="OAuth 2.0 Playground" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap gap-1 text-ui text-text-muted">
+      @for (gt of grantTypes; track gt) {
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5"
+          [class.bg-accent]="grantType() === gt"
+          [class.text-bg]="grantType() === gt"
+          [class.text-text-muted]="grantType() !== gt"
+          (click)="setGrantType(gt)"
+        >
+          {{ grantLabels[gt] }}
+        </button>
+      }
+    </div>
+
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="subMode() === 'build'"
+        [class.text-bg]="subMode() === 'build'"
+        (click)="setSubMode('build')"
+      >
+        Build
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="subMode() === 'inspect'"
+        [class.text-bg]="subMode() === 'inspect'"
+        (click)="setSubMode('inspect')"
+      >
+        Inspect
+      </button>
+    </div>
+
+    @if (isImplicit()) {
+      <div class="rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+        The Implicit grant is deprecated by OAuth 2.0 Security Best Current Practice — prefer Authorization Code + PKCE instead.
+      </div>
+    }
+
+    @if (subMode() === 'build') {
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Client ID
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="clientId()" (input)="onClientIdInput($event)" />
+        </label>
+        @if (usesTokenStep()) {
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Client Secret
+            <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="clientSecret()" (input)="onClientSecretInput($event)" />
+          </label>
+        }
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Scope
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="openid profile" [value]="scope()" (input)="onScopeInput($event)" />
+        </label>
+      </div>
+
+      @if (usesPkce()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">PKCE pair</span>
+            <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="generatePkcePair()">
+              Generate
+            </button>
+          </div>
+          @if (codeVerifier() !== '') {
+            <div class="text-ui-xs text-text-muted">code_verifier</div>
+            <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text">{{ codeVerifier() }}</div>
+            <div class="text-ui-xs text-text-muted">code_challenge (S256)</div>
+            <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text">{{ codeChallenge() }}</div>
+          }
+        </div>
+      }
+
+      @if (usesAuthorizationStep()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <span class="text-ui text-text-muted">Step 1 — Authorization Request</span>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <label class="flex flex-col gap-1 text-ui text-text-muted">
+              Authorization endpoint
+              <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="https://auth.example.com/authorize" [value]="authorizationEndpoint()" (input)="onAuthorizationEndpointInput($event)" />
+            </label>
+            <label class="flex flex-col gap-1 text-ui text-text-muted">
+              Redirect URI
+              <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="https://app.example.com/callback" [value]="redirectUri()" (input)="onRedirectUriInput($event)" />
+            </label>
+            <label class="flex flex-col gap-1 text-ui text-text-muted">
+              State
+              <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="state()" (input)="onStateInput($event)" />
+            </label>
+          </div>
+
+          @if (authRequestResult(); as result) {
+            @if (result.ok) {
+              <div class="flex items-center justify-between">
+                <span class="text-ui-xs text-text-muted">Generated authorization URL</span>
+                <app-copy-button [text]="result.value.url" />
+              </div>
+              <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text">{{ result.value.url }}</div>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      }
+
+      @if (usesTokenStep()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <span class="text-ui text-text-muted">{{ usesAuthorizationStep() ? 'Step 2 — Token Request' : 'Token Request' }}</span>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <label class="flex flex-col gap-1 text-ui text-text-muted">
+              Token endpoint
+              <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="https://auth.example.com/token" [value]="tokenEndpoint()" (input)="onTokenEndpointInput($event)" />
+            </label>
+
+            @if (grantType() === 'authorization_code' || grantType() === 'pkce') {
+              <label class="flex flex-col gap-1 text-ui text-text-muted">
+                Authorization code
+                <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="code()" (input)="onCodeInput($event)" />
+              </label>
+              @if (usesPkce()) {
+                <label class="flex flex-col gap-1 text-ui text-text-muted">
+                  code_verifier
+                  <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="codeVerifier()" (input)="onCodeVerifierInput($event)" />
+                </label>
+              }
+            }
+
+            @if (grantType() === 'password') {
+              <label class="flex flex-col gap-1 text-ui text-text-muted">
+                Username
+                <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="username()" (input)="onUsernameInput($event)" />
+              </label>
+              <label class="flex flex-col gap-1 text-ui text-text-muted">
+                Password
+                <input type="password" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="password()" (input)="onPasswordInput($event)" />
+              </label>
+            }
+
+            @if (grantType() === 'refresh_token') {
+              <label class="flex flex-col gap-1 text-ui text-text-muted">
+                Refresh token
+                <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="refreshToken()" (input)="onRefreshTokenInput($event)" />
+              </label>
+            }
+          </div>
+
+          @if (tokenRequestResult(); as result) {
+            @if (result.ok) {
+              <div class="flex items-center justify-between">
+                <span class="text-ui-xs text-text-muted">Generated request</span>
+                <app-copy-button [text]="result.value.method + ' ' + result.value.url + '\n' + format(result.value.headers) + '\n\n' + result.value.body" label="Copy request" />
+              </div>
+              <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all whitespace-pre-wrap text-text">{{ result.value.method }} {{ result.value.url }}
+Content-Type: {{ result.value.headers['Content-Type'] }}
+
+{{ result.value.body }}</pre>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      }
+
+      @if (usesDeviceStep()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <span class="text-ui text-text-muted">Device Authorization Request</span>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Device authorization endpoint
+            <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="https://auth.example.com/device/code" [value]="deviceAuthorizationEndpoint()" (input)="onDeviceAuthorizationEndpointInput($event)" />
+          </label>
+
+          @if (deviceRequestResult(); as result) {
+            @if (result.ok) {
+              <div class="flex items-center justify-between">
+                <span class="text-ui-xs text-text-muted">Generated request</span>
+                <app-copy-button [text]="result.value.method + ' ' + result.value.url + '\n\n' + result.value.body" label="Copy request" />
+              </div>
+              <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all whitespace-pre-wrap text-text">{{ result.value.method }} {{ result.value.url }}
+
+{{ result.value.body }}</pre>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      }
+    } @else {
+      @if (usesAuthorizationStep()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <span class="text-ui text-text-muted">Inspect redirect callback</span>
+          <textarea
+            rows="2"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="https://app.example.com/callback?code=...&state=..."
+            [value]="callbackUrl()"
+            (input)="onCallbackUrlInput($event)"
+          ></textarea>
+
+          @if (callbackInspection(); as result) {
+            @if (result.ok) {
+              <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ format(result.value) }}</pre>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      }
+
+      @if (usesDeviceStep()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <span class="text-ui text-text-muted">Inspect device authorization response</span>
+          <textarea
+            rows="4"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder='{"device_code": "...", "user_code": "ABCD-EFGH", "verification_uri": "...", "interval": 5}'
+            [value]="deviceResponseJson()"
+            (input)="onDeviceResponseJsonInput($event)"
+          ></textarea>
+
+          @if (deviceResponseInspection(); as result) {
+            @if (result.ok) {
+              <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ format(result.value) }}</pre>
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      }
+
+      @if (!isImplicit()) {
+        <div class="flex flex-col gap-2 rounded-sm border border-border p-2">
+          <span class="text-ui text-text-muted">Inspect token response</span>
+          <textarea
+            rows="4"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder='{"access_token": "...", "token_type": "Bearer", "expires_in": 3600}'
+            [value]="tokenResponseJson()"
+            (input)="onTokenResponseJsonInput($event)"
+          ></textarea>
+
+          @if (tokenResponseInspection(); as result) {
+            @if (result.ok) {
+              @if (result.value.isError) {
+                <app-error-panel [message]="result.value.errorCode + (result.value.errorDescription ? ': ' + result.value.errorDescription : '')" />
+              } @else {
+                <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ format(result.value) }}</pre>
+              }
+            } @else {
+              <app-error-panel [message]="result.error" />
+            }
+          }
+        </div>
+      }
+    }
+  </div>
+</app-tool-shell>
