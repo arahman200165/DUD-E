@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-213 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+214 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -252,6 +252,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Archive Creator / Extractor](https://arahman200165.github.io/DUDE/tools/archive-tool) | Encoding | Creates or extracts ZIP, TAR, and TAR.GZ archives entirely client-side. |
 | [Dependency Version Comparator](https://arahman200165.github.io/DUDE/tools/dependency-version-comparator) | Developer | Diffs two pasted dependency lists (package.json-style), classifying each change as added, removed, or a major/minor/patch upgrade or downgrade. |
 | [Lockfile Inspector](https://arahman200165.github.io/DUDE/tools/lockfile-inspector) | Developer | Parses a package-lock.json, pnpm-lock.yaml, or yarn.lock into a searchable table of resolved package versions and their dependencies. |
+| [Package Metadata Inspector](https://arahman200165.github.io/DUDE/tools/package-metadata-inspector) | Developer | Looks up a package's latest version, description, license, and dependency count on npm, PyPI, crates.io, or NuGet. |
 
 ## Architecture
 
@@ -330,7 +331,7 @@ DUDE is an installable Progressive Web App with an offline-capable app shell.
 
 **What's cached:** after the first successful page load over a network connection, the Angular service worker (`@angular/service-worker`) caches the app shell (HTML, JS, CSS bundles) and static assets (icons, manifest). Each tool's code is fetched and cached the first time you navigate to it.
 
-**What works offline:** once cached, the deck shell and any previously-visited local tool (e.g. JSON Formatter) launch and function fully offline — no network round-trip required. Two tools declare a network requirement: JWT Signature Verifier's JWKS/OIDC-discovery mode, and Text Inspector's grammar-check mode (calls the public LanguageTool API). Both show a compact "Offline" badge in their header when the app has no connectivity, degrade gracefully, and never block the rest of the app from working — see [`docs/SECURITY.md`](docs/SECURITY.md) for exactly what each sends and when.
+**What works offline:** once cached, the deck shell and any previously-visited local tool (e.g. JSON Formatter) launch and function fully offline — no network round-trip required. Three tools declare a network requirement: JWT Signature Verifier's JWKS/OIDC-discovery mode, Text Inspector's grammar-check mode (calls the public LanguageTool API), and Package Metadata Inspector's registry lookups (npm/PyPI/crates.io/NuGet). All three show a compact "Offline" badge in their header when the app has no connectivity, degrade gracefully, and never block the rest of the app from working — see [`docs/SECURITY.md`](docs/SECURITY.md) for exactly what each sends and when.
 
 **What does NOT work offline:** a tool (or the app itself) that has never been successfully loaded at least once while online cannot be launched offline — the service worker can only serve what it has previously cached.
 
