@@ -1,0 +1,104 @@
+<app-tool-shell title="Cookie Tools" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'cookie'" [class.text-bg]="mode() === 'cookie'" (click)="setMode('cookie')">
+        Cookie (request)
+      </button>
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'set-cookie'" [class.text-bg]="mode() === 'set-cookie'" (click)="setMode('set-cookie')">
+        Set-Cookie (response)
+      </button>
+    </div>
+
+    @if (mode() === 'cookie') {
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Cookie header</span>
+          <app-copy-button [text]="cookieRaw()" />
+        </div>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="cookieRaw()"
+          (input)="onCookieRawChange($event)"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Cookies</span>
+        <app-key-value-editor [pairs]="cookiePairs()" (pairsChange)="onCookiePairsChange($event)" addLabel="Add cookie" emptyMessage="No cookies." />
+      </div>
+    }
+
+    @if (mode() === 'set-cookie') {
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Set-Cookie header</span>
+          <app-copy-button [text]="setCookieRaw()" />
+        </div>
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="setCookieRaw()"
+          (input)="onSetCookieRawChange($event)"
+        />
+      </div>
+
+      @if (setCookieWarnings().length > 0) {
+        <div class="flex flex-col gap-1 rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+          @for (warning of setCookieWarnings(); track warning) {
+            <div>{{ warning }}</div>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Name
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="setCookieAttributes().name" (input)="onSetCookieFieldChange('name', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Value
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="setCookieAttributes().value" (input)="onSetCookieFieldChange('value', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Domain
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="(host-only)" [value]="setCookieAttributes().domain" (input)="onSetCookieFieldChange('domain', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Path
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="/" [value]="setCookieAttributes().path" (input)="onSetCookieFieldChange('path', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Expires
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Wed, 21 Oct 2026 07:28:00 GMT" [value]="setCookieAttributes().expires" (input)="onSetCookieFieldChange('expires', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Max-Age (seconds)
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="3600" [value]="setCookieAttributes().maxAge" (input)="onSetCookieFieldChange('maxAge', $event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          SameSite
+          <select
+            class="rounded-sm border border-border bg-panel px-1.5 py-1 text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="setCookieAttributes().sameSite"
+            (change)="onSetCookieFieldChange('sameSite', $event)"
+          >
+            @for (option of sameSiteOptions; track option) {
+              <option [value]="option">{{ option || '(unset)' }}</option>
+            }
+          </select>
+        </label>
+        <div class="flex items-end gap-4 text-ui text-text-muted">
+          <label class="flex items-center gap-1">
+            <input type="checkbox" [checked]="setCookieAttributes().secure" (change)="onSetCookieFieldChange('secure', $event)" />
+            Secure
+          </label>
+          <label class="flex items-center gap-1">
+            <input type="checkbox" [checked]="setCookieAttributes().httpOnly" (change)="onSetCookieFieldChange('httpOnly', $event)" />
+            HttpOnly
+          </label>
+        </div>
+      </div>
+    }
+  </div>
+</app-tool-shell>

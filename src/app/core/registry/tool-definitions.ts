@@ -537,6 +537,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text', 'json'], produces: ['json', 'text'] },
   },
   {
+    id: 'cookie-tools',
+    title: 'Cookie Tools',
+    description: 'Parses a request Cookie header into name/value pairs, or builds a response Set-Cookie header with its attributes, flagging common mistakes.',
+    category: 'web',
+    keywords: ['cookie', 'set-cookie', 'samesite', 'secure', 'httponly', 'header'],
+    route: '/tools/cookie-tools',
+    load: () => import('../../tools/cookie-tools/cookie-tools').then((m) => m.CookieTools),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',
