@@ -15,6 +15,13 @@ export class QueryString {
   protected readonly raw = this.persistence.signal('query-string', 'raw', 'session', '');
   protected readonly pairs = computed(() => parseQueryString(this.raw()));
 
+  /**
+   * `application/x-www-form-urlencoded` request bodies use the same encoding as a URL
+   * query string, minus the leading `?` -- rebuilt from `pairs()` rather than reusing
+   * `raw()` directly, since raw may itself be a full URL or `?`-prefixed.
+   */
+  protected readonly formUrlEncodedBody = computed(() => buildQueryString(this.pairs()));
+
   protected onRawChange(event: Event): void {
     this.raw.set((event.target as HTMLTextAreaElement).value);
   }
@@ -43,6 +50,10 @@ export class QueryString {
 
   protected copy(): void {
     void navigator.clipboard.writeText(this.raw());
+  }
+
+  protected copyAsRequestBody(): void {
+    void navigator.clipboard.writeText(this.formUrlEncodedBody());
   }
 
   private replacePair(index: number, pair: QueryPair): void {

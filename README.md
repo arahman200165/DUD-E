@@ -157,7 +157,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Relative Time Parser](https://arahman200165.github.io/DUDE/tools/relative-time-parser) | Date & Time | Parses free text like "3 days ago" or "next tuesday" into a timestamp, and formats a timestamp back into relative text. |
 | [Stopwatch & Countdown](https://arahman200165.github.io/DUDE/tools/stopwatch-countdown) | Date & Time | A start/pause/reset stopwatch, and a countdown timer that ticks down from a set duration. |
 | [Epoch Timeline Visualizer](https://arahman200165.github.io/DUDE/tools/epoch-timeline-visualizer) | Date & Time | Plots a list of labeled timestamps, or a start/end range, proportionally along a horizontal timeline relative to each other and to now. |
-| [Query String Parser / Builder](https://arahman200165.github.io/DUDE/tools/query-string) | Web | Parses a query string or URL into key/value pairs, or builds one from scratch. |
+| [Query String Parser / Builder](https://arahman200165.github.io/DUDE/tools/query-string) | Web | Parses a query string or URL into key/value pairs, or builds one from scratch — also ready to copy as an application/x-www-form-urlencoded request body. |
 | [HTTP Status Code Reference](https://arahman200165.github.io/DUDE/tools/http-status) | Web | Searchable reference of IANA-registered HTTP status codes, grouped by class. |
 | [HTTP Response Viewer](https://arahman200165.github.io/DUDE/tools/http-response-viewer) | Web | Pastes a raw HTTP response to view its status, headers, and body, with automatic JSON pretty-printing. |
 | [HTTP Header Inspector / Builder](https://arahman200165.github.io/DUDE/tools/http-header-inspector) | Web | Inspects pasted HTTP headers as key/value pairs, or builds a header set from scratch. |

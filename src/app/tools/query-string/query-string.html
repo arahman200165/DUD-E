@@ -18,6 +18,14 @@
       <button
         type="button"
         class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
+        title="Same encoding as the query string, without a leading '?' — ready to use as an application/x-www-form-urlencoded request body."
+        (click)="copyAsRequestBody()"
+      >
+        Copy as request body
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated"
         (click)="clear()"
       >
         Clear
