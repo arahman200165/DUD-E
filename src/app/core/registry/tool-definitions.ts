@@ -845,6 +845,20 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text'] },
   },
   {
+    id: 'x509-certificate-inspector',
+    title: 'X.509 Certificate Inspector',
+    shortTitle: 'X.509 Inspector',
+    description: 'Inspects a certificate\'s subject/issuer, validity, SAN, extensions, and fingerprints.',
+    category: 'security',
+    keywords: ['x.509', 'certificate', 'ssl', 'tls', 'san', 'subject alternative name', 'fingerprint', 'expiration', 'pem', 'der'],
+    route: '/tools/x509-certificate-inspector',
+    load: () =>
+      import('../../tools/x509-certificate-inspector/x509-certificate-inspector').then((m) => m.X509CertificateInspector),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text', 'file'], produces: ['json'] },
+  },
+  {
     id: 'json-schema-validator',
     title: 'JSON Schema Validator',
     shortTitle: 'Schema Validator',

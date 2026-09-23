@@ -1,0 +1,210 @@
+<app-tool-shell title="X.509 Certificate Inspector">
+  <div class="flex flex-col gap-3">
+    <div class="flex overflow-hidden rounded-sm border border-border text-ui w-fit">
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="inputMode() === 'paste'"
+        [class.text-bg]="inputMode() === 'paste'"
+        [class.text-text-muted]="inputMode() !== 'paste'"
+        (click)="setInputMode('paste')"
+      >
+        Paste
+      </button>
+      <button
+        type="button"
+        class="px-2 py-0.5"
+        [class.bg-accent]="inputMode() === 'file'"
+        [class.text-bg]="inputMode() === 'file'"
+        [class.text-text-muted]="inputMode() !== 'file'"
+        (click)="setInputMode('file')"
+      >
+        File
+      </button>
+    </div>
+
+    @if (inputMode() === 'paste') {
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">PEM certificate, or hex-encoded raw DER bytes</span>
+        <textarea
+          rows="8"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"
+          [value]="input()"
+          (input)="onInputChange($event)"
+        ></textarea>
+      </div>
+    } @else {
+      <app-file-drop
+        label="Drop a .pem/.crt/.cer/.der file here, or click to browse"
+        (fileSelected)="onFileSelected($event)"
+        (rejected)="onRejected($event)"
+      />
+      @if (fileName(); as name) {
+        <span class="text-ui text-text-muted">Loaded: {{ name }}</span>
+      }
+    }
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <div>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    </div>
+
+    @if (result(); as current) {
+      @if (!current.ok) {
+        <app-error-panel [message]="current.error" />
+      } @else {
+        <div class="flex overflow-hidden rounded-sm border border-border text-ui w-fit">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="tab() === 'overview'"
+            [class.text-bg]="tab() === 'overview'"
+            [class.text-text-muted]="tab() !== 'overview'"
+            (click)="setTab('overview')"
+          >
+            Overview
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="tab() === 'san'"
+            [class.text-bg]="tab() === 'san'"
+            [class.text-text-muted]="tab() !== 'san'"
+            (click)="setTab('san')"
+          >
+            Subject Alt Names
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="tab() === 'extensions'"
+            [class.text-bg]="tab() === 'extensions'"
+            [class.text-text-muted]="tab() !== 'extensions'"
+            (click)="setTab('extensions')"
+          >
+            Extensions
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="tab() === 'fingerprints'"
+            [class.text-bg]="tab() === 'fingerprints'"
+            [class.text-text-muted]="tab() !== 'fingerprints'"
+            (click)="setTab('fingerprints')"
+          >
+            Fingerprints
+          </button>
+        </div>
+
+        @if (tab() === 'overview') {
+          <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui">
+            @if (timeStatus(); as status) {
+              @if (status === 'valid') {
+                <div class="text-success">Currently valid.</div>
+              } @else if (status === 'expired') {
+                <div class="text-error">Expired.</div>
+              } @else {
+                <div class="text-warning">Not yet valid.</div>
+              }
+            }
+            <div><span class="text-text-muted">Serial number:</span> {{ current.certificate.fields.serialNumber }}</div>
+            <div><span class="text-text-muted">Not before:</span> {{ current.certificate.fields.notBefore.toISOString() }}</div>
+            <div><span class="text-text-muted">Not after:</span> {{ current.certificate.fields.notAfter.toISOString() }}</div>
+            <div><span class="text-text-muted">Signature algorithm:</span> {{ current.certificate.fields.signatureAlgorithm }}</div>
+            @if (current.certificate.fields.publicKeyBits; as bits) {
+              <div><span class="text-text-muted">Public key:</span> RSA-{{ bits }}</div>
+            }
+
+            <div class="flex flex-col gap-1">
+              <span class="text-text-muted">Subject</span>
+              <table class="text-ui-xs">
+                <tbody>
+                  @for (field of current.certificate.fields.subject; track field.name + field.value) {
+                    <tr>
+                      <td class="pr-2 text-text-muted">{{ field.shortName || field.name }}</td>
+                      <td class="text-text">{{ field.value }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <span class="text-text-muted">Issuer</span>
+              <table class="text-ui-xs">
+                <tbody>
+                  @for (field of current.certificate.fields.issuer; track field.name + field.value) {
+                    <tr>
+                      <td class="pr-2 text-text-muted">{{ field.shortName || field.name }}</td>
+                      <td class="text-text">{{ field.value }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        @if (tab() === 'san') {
+          <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-2 text-ui-xs">
+            @if (current.certificate.fields.subjectAltNames.length === 0) {
+              <span class="text-text-muted">No Subject Alternative Name extension.</span>
+            }
+            @for (san of current.certificate.fields.subjectAltNames; track san.typeName + san.value) {
+              <div><span class="text-text-muted">{{ san.typeName }}:</span> {{ san.value }}</div>
+            }
+          </div>
+        }
+
+        @if (tab() === 'extensions') {
+          <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui">
+            <div>
+              <span class="text-text-muted">Basic Constraints:</span>
+              @if (current.certificate.fields.isCA === null) {
+                (not present)
+              } @else {
+                CA={{ current.certificate.fields.isCA }}@if (current.certificate.fields.pathLenConstraint !== null) {
+                  , pathLenConstraint={{ current.certificate.fields.pathLenConstraint }}
+                }
+              }
+            </div>
+            <div>
+              <span class="text-text-muted">Key Usage:</span>
+              {{ current.certificate.fields.keyUsage.length ? current.certificate.fields.keyUsage.join(', ') : '(not present)' }}
+            </div>
+            <div>
+              <span class="text-text-muted">Extended Key Usage:</span>
+              {{ current.certificate.fields.extKeyUsage.length ? current.certificate.fields.extKeyUsage.join(', ') : '(not present)' }}
+            </div>
+            @if (current.certificate.fields.subjectKeyIdentifier; as ski) {
+              <div><span class="text-text-muted">Subject Key Identifier:</span> {{ ski }}</div>
+            }
+          </div>
+        }
+
+        @if (tab() === 'fingerprints') {
+          <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui">
+            <div class="flex items-center justify-between">
+              <span><span class="text-text-muted">SHA-1:</span> {{ current.certificate.fingerprintSha1 }}</span>
+              <app-copy-button [text]="current.certificate.fingerprintSha1" />
+            </div>
+            <div class="flex items-center justify-between">
+              <span><span class="text-text-muted">SHA-256:</span> {{ current.certificate.fingerprintSha256 }}</span>
+              <app-copy-button [text]="current.certificate.fingerprintSha256" />
+            </div>
+          </div>
+        }
+      }
+    }
+  </div>
+</app-tool-shell>
