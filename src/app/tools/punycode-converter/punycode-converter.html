@@ -1,60 +1,109 @@
 <app-tool-shell title="Punycode Converter" status="stable">
   <div class="flex flex-col gap-3">
-    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
-      <div class="flex overflow-hidden rounded-sm border border-border">
-        <button
-          type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="direction() === 'toASCII'"
-          [class.text-bg]="direction() === 'toASCII'"
-          [class.text-text-muted]="direction() !== 'toASCII'"
-          (click)="setDirection('toASCII')"
-        >
-          Unicode → Punycode
-        </button>
-        <button
-          type="button"
-          class="px-2 py-0.5"
-          [class.bg-accent]="direction() === 'toUnicode'"
-          [class.text-bg]="direction() === 'toUnicode'"
-          [class.text-text-muted]="direction() !== 'toUnicode'"
-          (click)="setDirection('toUnicode')"
-        >
-          Punycode → Unicode
-        </button>
-      </div>
-
-      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="swap()">
-        Swap
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'convert'" [class.text-bg]="mode() === 'convert'" (click)="setMode('convert')">
+        Convert
       </button>
-
-      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
-        Clear
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="mode() === 'inspect'" [class.text-bg]="mode() === 'inspect'" (click)="setMode('inspect')">
+        Inspect
       </button>
     </div>
 
+    @if (mode() === 'convert') {
+      <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+        <div class="flex overflow-hidden rounded-sm border border-border">
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="direction() === 'toASCII'"
+            [class.text-bg]="direction() === 'toASCII'"
+            [class.text-text-muted]="direction() !== 'toASCII'"
+            (click)="setDirection('toASCII')"
+          >
+            Unicode → Punycode
+          </button>
+          <button
+            type="button"
+            class="px-2 py-0.5"
+            [class.bg-accent]="direction() === 'toUnicode'"
+            [class.text-bg]="direction() === 'toUnicode'"
+            [class.text-text-muted]="direction() !== 'toUnicode'"
+            (click)="setDirection('toUnicode')"
+          >
+            Punycode → Unicode
+          </button>
+        </div>
+
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="swap()">
+          Swap
+        </button>
+
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+          Clear
+        </button>
+      </div>
+    }
+
     <div class="flex flex-col gap-1">
-      <span class="text-ui text-text-muted">{{ direction() === 'toASCII' ? 'Unicode domain' : 'Punycode (ASCII) domain' }}</span>
+      <span class="text-ui text-text-muted">
+        {{ mode() === 'inspect' ? 'Domain' : direction() === 'toASCII' ? 'Unicode domain' : 'Punycode (ASCII) domain' }}
+      </span>
       <input
         type="text"
         class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
-        [placeholder]="direction() === 'toASCII' ? 'münchen.de' : 'xn--mnchen-3ya.de'"
+        [placeholder]="mode() === 'inspect' ? 'münchen.de or xn--mnchen-3ya.de' : direction() === 'toASCII' ? 'münchen.de' : 'xn--mnchen-3ya.de'"
         [value]="input()"
         (input)="onInputChange($event)"
       />
     </div>
 
-    @if (result(); as current) {
-      @if (current.ok) {
-        <div class="flex flex-col gap-1">
-          <div class="flex items-center justify-between">
-            <span class="text-ui text-text-muted">{{ direction() === 'toASCII' ? 'Punycode (ASCII) domain' : 'Unicode domain' }}</span>
-            <app-copy-button [text]="current.value" />
+    @if (mode() === 'convert') {
+      @if (result(); as current) {
+        @if (current.ok) {
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">{{ direction() === 'toASCII' ? 'Punycode (ASCII) domain' : 'Unicode domain' }}</span>
+              <app-copy-button [text]="current.value" />
+            </div>
+            <div class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ current.value }}</div>
           </div>
-          <div class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ current.value }}</div>
-        </div>
-      } @else {
-        <app-error-panel [message]="current.error" />
+        } @else {
+          <app-error-panel [message]="current.error" />
+        }
+      }
+    }
+
+    @if (mode() === 'inspect') {
+      @if (homograph(); as h) {
+        @if (h.ok) {
+          <div class="flex flex-col gap-2">
+            <div class="text-ui" [class.text-error]="h.mixedScriptRisk" [class.text-text-muted]="!h.mixedScriptRisk">
+              {{ h.mixedScriptRisk ? 'Mixed-script label detected — possible IDN homograph' : 'No mixed-script labels detected' }}
+            </div>
+            <div class="flex flex-col gap-1 text-ui text-text-muted">
+              <span>Punycode (ASCII): <span class="font-mono text-text">{{ h.asciiDomain }}</span></span>
+              <span>Unicode: <span class="font-mono text-text">{{ h.unicodeDomain }}</span></span>
+            </div>
+            <table class="w-full border-collapse text-xs">
+              <thead>
+                <tr class="text-ui text-text-muted">
+                  <th class="border-b border-border py-1 text-left">Label</th>
+                  <th class="border-b border-border py-1 text-left">Scripts</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (label of h.labels; track label.label) {
+                  <tr [class.text-error]="label.mixedScript" [class.text-text-muted]="!label.mixedScript">
+                    <td class="border-b border-border py-1 pr-2 font-mono">{{ label.label }}</td>
+                    <td class="border-b border-border py-1 font-mono">{{ label.scripts.join(', ') || '(none)' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <app-error-panel [message]="h.error" />
+        }
       }
     }
   </div>

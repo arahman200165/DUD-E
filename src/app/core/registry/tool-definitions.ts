@@ -1622,9 +1622,10 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'punycode-converter',
     title: 'Punycode Converter',
-    description: 'Converts an internationalized domain name between Unicode and its Punycode (ASCII, "xn--") form.',
+    description:
+      'Converts an internationalized domain name between Unicode and its Punycode (ASCII, "xn--") form, and inspects it for mixed-script homograph risk.',
     category: 'web',
-    keywords: ['punycode', 'idn', 'domain', 'unicode', 'ascii', 'xn--', 'internationalized'],
+    keywords: ['punycode', 'idn', 'domain', 'unicode', 'ascii', 'xn--', 'internationalized', 'homograph', 'mixed-script'],
     route: '/tools/punycode-converter',
     load: () => import('../../tools/punycode-converter/punycode-converter').then((m) => m.PunycodeConverter),
     status: 'stable',
