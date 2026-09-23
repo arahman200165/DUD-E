@@ -1,0 +1,104 @@
+<app-tool-shell title="HTTP Digest Auth Helper" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">WWW-Authenticate challenge (optional — auto-fills the fields below)</span>
+      <textarea
+        rows="2"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder='Digest realm="...", qop="auth", nonce="...", opaque="..."'
+        [value]="challengeInput()"
+        (input)="onChallengeInput($event)"
+      ></textarea>
+      @if (challenge(); as parsed) {
+        @if (parsed.ok) {
+          <button type="button" class="self-start rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="applyChallenge()">
+            Apply to fields below
+          </button>
+        } @else {
+          <app-error-panel [message]="parsed.error" />
+        }
+      }
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Username
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="username()" (input)="onUsernameInput($event)" />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Password
+        <input type="password" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="password()" (input)="onPasswordInput($event)" />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Realm
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="realm()" (input)="onRealmInput($event)" />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Nonce
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="nonce()" (input)="onNonceInput($event)" />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        HTTP method
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="method()" (input)="onMethodInput($event)" />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Digest URI
+        <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" placeholder="/path/to/resource" [value]="uri()" (input)="onUriInput($event)" />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Algorithm
+        <select class="rounded-sm border border-border bg-panel px-2 py-1 text-xs text-text" [value]="algorithm()" (change)="onAlgorithmChange($event)">
+          <option value="MD5">MD5</option>
+          <option value="MD5-sess">MD5-sess</option>
+          <option value="SHA-256">SHA-256</option>
+          <option value="SHA-256-sess">SHA-256-sess</option>
+        </select>
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        qop
+        <select class="rounded-sm border border-border bg-panel px-2 py-1 text-xs text-text" [value]="qop()" (change)="onQopChange($event)">
+          <option value="auth">auth</option>
+          <option value="auth-int">auth-int</option>
+          <option value="none">(none — legacy)</option>
+        </select>
+      </label>
+
+      @if (qop() !== 'none') {
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          nc
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="nc()" (input)="onNcInput($event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          cnonce
+          <div class="flex gap-2">
+            <input class="flex-1 rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="cnonce()" (input)="onCnonceInput($event)" />
+            <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="regenerateCnonce()">↻</button>
+          </div>
+        </label>
+      }
+    </div>
+
+    <button type="button" class="self-start rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="compute()">
+      Compute
+    </button>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-ui text-text-muted">Authorization header</span>
+            <app-copy-button [text]="current.value.authorizationHeader" />
+          </div>
+          <pre class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all whitespace-pre-wrap text-text">{{ current.value.authorizationHeader }}</pre>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 text-ui-xs text-text-muted sm:grid-cols-2">
+          <div>HA1: <span class="font-mono text-text">{{ current.value.ha1 }}</span></div>
+          <div>HA2: <span class="font-mono text-text">{{ current.value.ha2 }}</span></div>
+        </div>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
