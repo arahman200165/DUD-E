@@ -670,6 +670,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['json'] },
   },
   {
+    id: 'dst-transition-explorer',
+    title: 'DST Transition Explorer',
+    description: 'List every daylight-saving-time transition for a timezone in a chosen year, with the exact offset change and gap.',
+    category: 'date-time',
+    keywords: ['dst', 'daylight saving', 'timezone', 'transition', 'spring forward', 'fall back', 'utc offset'],
+    route: '/tools/dst-transition-explorer',
+    load: () => import('../../tools/dst-transition-explorer/dst-transition-explorer').then((m) => m.DstTransitionExplorer),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['table', 'json'] },
+  },
+  {
     id: 'random-data-generator',
     title: 'Random Data Generator',
     description: 'Generate realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON.',
