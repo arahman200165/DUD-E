@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-185 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+186 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -221,6 +221,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [CSS Grid Playground](https://arahman200165.github.io/DUDE/tools/css-grid-playground) | Developer | Interactively builds grid container and item-placement CSS with a live preview of editable, addable items. |
 | [HTML Formatter / Minifier](https://arahman200165.github.io/DUDE/tools/html-formatter) | Developer | Pretty-prints or minifies HTML by walking the parsed DOM, preserving `<pre>`/`<script>`/`<style>` content verbatim. |
 | [DOM Tree Viewer](https://arahman200165.github.io/DUDE/tools/dom-tree-viewer) | Developer | Parses HTML and renders it as a collapsible DOM tree — elements, attributes, text nodes, and comments. |
+| [HTML Entity Explorer](https://arahman200165.github.io/DUDE/tools/html-entity-explorer) | Developer | Searchable reference of common named HTML character entities, with decimal and hex codepoints. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |
