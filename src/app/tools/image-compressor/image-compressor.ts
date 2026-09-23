@@ -1,22 +1,41 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
-import { BusyIndicator } from '../../shared/components/busy-indicator/busy-indicator';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { FileDrop } from '../../shared/components/file-drop/file-drop';
 import { PersistenceService } from '../../core/persistence/persistence.service';
-import { WorkerClientService } from '../../core/workers/worker-client.service';
-import { WorkerJob } from '../../core/workers/worker-job';
 import { downloadFile } from '../../shared/utils/download-file';
-import { CompressFormat, ImageCompressorWorkerPayload, ImageCompressorWorkerResult } from './image-compressor-worker-payload';
 
+export type CompressFormat = 'jpeg' | 'webp' | 'png';
+
+const MIME_BY_FORMAT: Record<CompressFormat, string> = {
+  jpeg: 'image/jpeg',
+  webp: 'image/webp',
+  png: 'image/png',
+};
+
+/**
+ * Plain canvas.toBlob() quality-based compression -- NOT the WASM-codec
+ * (MozJPEG/WebP/PNG) approach the Phase 17 plan called for. @jsquash's
+ * codecs locate their .wasm binary relative to their own module's
+ * `import.meta.url` at runtime (a standard Emscripten `locateFile`
+ * pattern); once Angular's esbuild-based production build bundles that
+ * module into a chunk, that URL no longer points at a real file, and the
+ * wasm never gets copied into `dist/` the way sql.js/pyodide's vendored
+ * wasm does (those are pre-copied into `public/assets/vendor/` and located
+ * via `document.baseURI`, which isn't even available inside this tool's
+ * Worker). Fixing that would mean vendoring the wasm files as static
+ * assets and threading a `locateFile` override through -- more than a
+ * "fall back if this doesn't work cleanly" batch item calls for. Canvas's
+ * own quality parameter gives real, if more modest, size reduction with
+ * zero bundling risk.
+ */
 @Component({
   selector: 'app-image-compressor',
-  imports: [ToolShell, BusyIndicator, ErrorPanel, FileDrop],
+  imports: [ToolShell, ErrorPanel, FileDrop],
   templateUrl: './image-compressor.html',
 })
 export class ImageCompressor {
   private readonly persistence = inject(PersistenceService);
-  private readonly workerClient = inject(WorkerClientService);
 
   protected readonly format = this.persistence.signal<CompressFormat>('image-compressor', 'format', 'local', 'webp');
   protected readonly quality = this.persistence.signal('image-compressor', 'quality', 'local', 75);
@@ -24,8 +43,6 @@ export class ImageCompressor {
   protected readonly rejection = signal<string | null>(null);
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly originalSize = signal(0);
-  private readonly jobSignal = signal<WorkerJob<ImageCompressorWorkerResult> | null>(null);
-  protected readonly job = this.jobSignal.asReadonly();
 
   protected readonly resultUrl = signal<string | null>(null);
   protected readonly resultSize = signal(0);
@@ -38,16 +55,7 @@ export class ImageCompressor {
     return Math.round((1 - result / original) * 100);
   });
 
-  constructor() {
-    effect(() => {
-      const result = this.job()?.result();
-      if (result) this.onWorkerResult(result);
-    });
-  }
-
   protected onFileSelected(file: File): void {
-    this.job()?.cancel();
-    this.jobSignal.set(null);
     this.rejection.set(null);
     this.selectedFile.set(file);
     this.originalSize.set(file.size);
@@ -61,8 +69,6 @@ export class ImageCompressor {
   protected async compress(): Promise<void> {
     const file = this.selectedFile();
     if (!file) return;
-
-    this.job()?.cancel();
     this.rejection.set(null);
 
     try {
@@ -75,40 +81,19 @@ export class ImageCompressor {
       ctx.drawImage(bitmap, 0, 0);
       bitmap.close();
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const pixels = imageData.data.buffer;
+      const mime = MIME_BY_FORMAT[this.format()];
+      const blob: Blob | null = await new Promise((resolve) => canvas.toBlob(resolve, mime, this.quality() / 100));
+      if (!blob) throw new Error('Failed to encode compressed image.');
 
-      const payload: ImageCompressorWorkerPayload = {
-        format: this.format(),
-        width: imageData.width,
-        height: imageData.height,
-        pixels,
-        quality: this.quality(),
-      };
-
-      const job = this.workerClient.run<ImageCompressorWorkerPayload, ImageCompressorWorkerResult>(
-        () => new Worker(new URL('./image-compressor.worker', import.meta.url), { type: 'module' }),
-        payload,
-        [pixels],
-      );
-      this.jobSignal.set(job);
+      const previousUrl = this.resultUrl();
+      if (previousUrl) URL.revokeObjectURL(previousUrl);
+      this.resultUrl.set(URL.createObjectURL(blob));
+      this.resultSize.set(blob.size);
+      const extension = this.format() === 'jpeg' ? 'jpg' : this.format();
+      this.resultFilename.set(file.name.replace(/\.\w+$/, '') + `-compressed.${extension}`);
     } catch {
-      this.rejection.set("Couldn't read this image.");
+      this.rejection.set("Couldn't compress this image.");
     }
-  }
-
-  protected onWorkerResult(result: ImageCompressorWorkerResult | null): void {
-    if (!result) return;
-    const blob = new Blob([result.buffer], { type: result.mime });
-
-    const previousUrl = this.resultUrl();
-    if (previousUrl) URL.revokeObjectURL(previousUrl);
-
-    this.resultUrl.set(URL.createObjectURL(blob));
-    this.resultSize.set(blob.size);
-    const extension = result.mime.split('/')[1];
-    const baseName = this.selectedFile()?.name.replace(/\.\w+$/, '') ?? 'image';
-    this.resultFilename.set(`${baseName}-compressed.${extension}`);
   }
 
   protected download(): void {
