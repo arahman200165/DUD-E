@@ -1,0 +1,37 @@
+<app-tool-shell title="Color Blindness Simulator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <app-file-drop
+        accept="image/*"
+        label="Drop an image here, or click to browse"
+        (fileSelected)="onFileSelected($event)"
+        (rejected)="onRejected($event)"
+      />
+
+      <select
+        class="rounded-sm border border-border bg-panel px-2 py-1 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="type()"
+        (change)="onTypeChange($event)"
+      >
+        @for (t of types; track t.id) {
+          <option [value]="t.id">{{ t.label }}</option>
+        }
+      </select>
+    </div>
+
+    @if (error(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <div class="flex flex-wrap gap-4" [class.hidden]="!hasImage()">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Original</span>
+        <canvas #originalCanvas class="max-w-full rounded-sm border border-border"></canvas>
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Simulated</span>
+        <canvas #simulatedCanvas class="max-w-full rounded-sm border border-border"></canvas>
+      </div>
+    </div>
+  </div>
+</app-tool-shell>
