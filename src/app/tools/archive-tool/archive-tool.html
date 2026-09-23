@@ -1,0 +1,81 @@
+<app-tool-shell title="Archive Creator / Extractor" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-2 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border px-2 py-0.5" [class.border-accent]="mode() === 'create'" [class.text-accent]="mode() === 'create'" [class.border-border]="mode() !== 'create'" (click)="setMode('create')">Create</button>
+      <button type="button" class="rounded-sm border px-2 py-0.5" [class.border-accent]="mode() === 'extract'" [class.text-accent]="mode() === 'extract'" [class.border-border]="mode() !== 'extract'" (click)="setMode('extract')">Extract</button>
+
+      <span class="mx-1 text-border">|</span>
+
+      <label class="flex items-center gap-1.5">
+        Format
+        <select class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="format()" (change)="onFormatChange($event)">
+          @for (entry of formats; track entry[0]) {
+            <option [value]="entry[0]">{{ entry[1] }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (mode() === 'create') {
+      <app-file-drop [multiple]="true" label="Drop files to archive here, or click to browse" (filesSelected)="onFilesToArchive($event)" (rejected)="onRejected($event)" />
+
+      @if (filesToArchive().length > 0) {
+        <p class="text-ui text-text-muted">{{ filesToArchive().length }} file(s) selected.</p>
+      }
+
+      <div>
+        <button type="button" class="rounded-sm border border-accent px-3 py-1 text-ui text-accent hover:bg-accent/10 disabled:opacity-50" [disabled]="running()" (click)="createArchive()">
+          {{ running() ? 'Working…' : 'Create archive' }}
+        </button>
+      </div>
+
+      @if (resultBytes(); as bytes) {
+        <div class="flex items-center gap-3 rounded-sm border border-border bg-panel p-2">
+          <span class="text-ui text-text-muted">{{ bytes.length }} bytes</span>
+          <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="downloadArchive()">
+            Download archive.{{ format() }}
+          </button>
+        </div>
+      }
+    } @else {
+      <app-file-drop label="Drop an archive here, or click to browse" (fileSelected)="onArchiveFile($event)" (rejected)="onRejected($event)" />
+
+      <div>
+        <button type="button" class="rounded-sm border border-accent px-3 py-1 text-ui text-accent hover:bg-accent/10 disabled:opacity-50" [disabled]="running()" (click)="extractArchive()">
+          {{ running() ? 'Working…' : 'Extract' }}
+        </button>
+      </div>
+
+      @if (extractedEntries(); as entries) {
+        <div class="overflow-auto rounded-sm border border-border">
+          <table class="w-full min-w-full border-collapse text-left text-xs">
+            <thead class="bg-panel-elevated text-text-muted">
+              <tr>
+                <th class="border-b border-border px-2 py-1 font-medium">Name</th>
+                <th class="border-b border-border px-2 py-1 font-medium">Size</th>
+                <th class="border-b border-border px-2 py-1 font-medium"></th>
+              </tr>
+            </thead>
+            <tbody class="text-text">
+              @for (entry of entries; track entry.name) {
+                <tr class="odd:bg-panel even:bg-panel-elevated/40">
+                  <td class="border-b border-border px-2 py-1 font-mono">{{ entry.name }}</td>
+                  <td class="whitespace-nowrap border-b border-border px-2 py-1">{{ entry.data.length }} bytes</td>
+                  <td class="border-b border-border px-2 py-1">
+                    <button type="button" class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="downloadEntry(entry)">
+                      Download
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+
+    @if (error() !== '') {
+      <app-error-panel [message]="error()" />
+    }
+  </div>
+</app-tool-shell>
