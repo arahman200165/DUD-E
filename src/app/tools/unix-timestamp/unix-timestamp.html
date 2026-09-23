@@ -38,7 +38,7 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <span class="text-ui text-text-muted">Timestamp → Date (integer epoch value, ISO 8601, or RFC 2822)</span>
+      <span class="text-ui text-text-muted">Timestamp → Date (integer epoch value, ISO 8601, HTTP-date, or RFC 2822)</span>
       <div class="flex gap-2">
         <input
           type="text"
@@ -56,6 +56,16 @@
               type="button"
               class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated"
               (click)="copy(formattedDate() ?? '')"
+            >
+              Copy
+            </button>
+          </div>
+          <div class="flex items-center justify-between rounded-sm border border-border bg-panel p-2 text-ui text-text">
+            <span class="font-mono">{{ httpDate() }} <span class="text-text-muted">(HTTP-date)</span></span>
+            <button
+              type="button"
+              class="rounded-sm border border-border px-2 py-0.5 text-text-muted hover:bg-panel-elevated"
+              (click)="copy(httpDate() ?? '')"
             >
               Copy
             </button>

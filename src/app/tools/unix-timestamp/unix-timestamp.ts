@@ -11,6 +11,7 @@ import {
   msToUnit,
   parseTimestamp,
   toDateTimeLocalValue,
+  toHttpDate,
 } from './timestamp-convert';
 
 @Component({
@@ -35,6 +36,11 @@ export class UnixTimestamp {
   protected readonly formattedDate = computed(() => {
     const result = this.timestampResult();
     return result.ok ? formatDate(result.date, this.tz()) : null;
+  });
+
+  protected readonly httpDate = computed(() => {
+    const result = this.timestampResult();
+    return result.ok ? toHttpDate(result.date) : null;
   });
 
   protected readonly dateResult = computed(() =>

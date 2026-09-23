@@ -1,4 +1,4 @@
-import { dateToTimestamp, formatDate, msToUnit, parseTimestamp, resolveUnit, toDateTimeLocalValue } from './timestamp-convert';
+import { dateToTimestamp, formatDate, msToUnit, parseTimestamp, resolveUnit, toDateTimeLocalValue, toHttpDate } from './timestamp-convert';
 
 describe('resolveUnit', () => {
   it('auto-detects seconds for a 10-digit value', () => {
@@ -87,16 +87,46 @@ describe('parseTimestamp', () => {
     expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
   });
 
-  it('parses an RFC 2822 date string', () => {
-    const result = parseTimestamp('Tue, 14 Nov 2023 22:13:20 GMT', 'auto');
+  it('parses an RFC 2822 date string with a numeric UTC offset', () => {
+    const result = parseTimestamp('Tue, 14 Nov 2023 22:13:20 +0000', 'auto');
 
     expect(result.ok).toBe(true);
     expect(result.ok && result.resolvedUnit).toBe('rfc2822');
     expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
   });
 
-  it('rejects a string that is neither an integer, ISO 8601, nor RFC 2822', () => {
+  it('resolves a GMT-suffixed IMF-fixdate string as an HTTP-date (valid RFC 2822 too, but HTTP-date is the more precise label)', () => {
+    const result = parseTimestamp('Tue, 14 Nov 2023 22:13:20 GMT', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('httpdate');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
+  });
+
+  it('parses the obsolete RFC 850 HTTP-date form', () => {
+    const result = parseTimestamp('Tuesday, 14-Nov-23 22:13:20 GMT', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('httpdate');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
+  });
+
+  it('parses the obsolete asctime HTTP-date form', () => {
+    const result = parseTimestamp('Tue Nov 14 22:13:20 2023', 'auto');
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.resolvedUnit).toBe('httpdate');
+    expect(result.ok && result.date.getTime()).toBe(1_700_000_000_000);
+  });
+
+  it('rejects a string that is neither an integer, ISO 8601, HTTP-date, nor RFC 2822', () => {
     expect(parseTimestamp('not-a-timestamp', 'auto').ok).toBe(false);
+  });
+});
+
+describe('toHttpDate', () => {
+  it('formats a date as RFC 7231 IMF-fixdate, always in GMT', () => {
+    expect(toHttpDate(new Date(1_700_000_000_000))).toBe('Tue, 14 Nov 2023 22:13:20 GMT');
   });
 });
 

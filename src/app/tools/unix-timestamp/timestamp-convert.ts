@@ -13,7 +13,7 @@ import { DateTime } from 'luxon';
 
 export type TimestampUnit = 'auto' | 'seconds' | 'milliseconds' | 'microseconds' | 'nanoseconds';
 export type NumericUnit = 'seconds' | 'milliseconds' | 'microseconds' | 'nanoseconds';
-export type ResolvedUnit = NumericUnit | 'iso8601' | 'rfc2822';
+export type ResolvedUnit = NumericUnit | 'iso8601' | 'rfc2822' | 'httpdate';
 export type DisplayTimezone = 'local' | 'utc';
 
 export type TimestampParseResult =
@@ -59,15 +59,29 @@ function parseNumericTimestamp(trimmed: string, unit: TimestampUnit): TimestampP
   return { ok: true, date, resolvedUnit };
 }
 
-/** ISO 8601 (which also covers RFC 3339, a stricter ISO 8601 profile) or RFC 2822. */
+/**
+ * ISO 8601 (which also covers RFC 3339, a stricter ISO 8601 profile), an HTTP-date
+ * (RFC 7231 §7.1.1.1 — IMF-fixdate, or the obsolete RFC 850/asctime forms it must
+ * still accept), or RFC 2822. HTTP-date is checked before RFC 2822 since a
+ * GMT-suffixed IMF-fixdate string is valid under both -- it's more precisely an
+ * HTTP-date, so that's the more useful label to resolve it to.
+ */
 function parseDateStringTimestamp(trimmed: string): TimestampParseResult {
   const iso = DateTime.fromISO(trimmed);
   if (iso.isValid) return { ok: true, date: iso.toJSDate(), resolvedUnit: 'iso8601' };
 
+  const httpDate = DateTime.fromHTTP(trimmed);
+  if (httpDate.isValid) return { ok: true, date: httpDate.toJSDate(), resolvedUnit: 'httpdate' };
+
   const rfc2822 = DateTime.fromRFC2822(trimmed);
   if (rfc2822.isValid) return { ok: true, date: rfc2822.toJSDate(), resolvedUnit: 'rfc2822' };
 
-  return { ok: false, error: `Could not parse "${trimmed}" as an integer timestamp, ISO 8601, or RFC 2822 date.` };
+  return { ok: false, error: `Could not parse "${trimmed}" as an integer timestamp, ISO 8601, HTTP-date, or RFC 2822.` };
+}
+
+/** RFC 7231's preferred HTTP-date format (IMF-fixdate), always in GMT/UTC regardless of display timezone. */
+export function toHttpDate(date: Date): string {
+  return DateTime.fromJSDate(date).toUTC().toHTTP() ?? '';
 }
 
 function numericUnitToMs(rawValue: string, unit: NumericUnit): number {
