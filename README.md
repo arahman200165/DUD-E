@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-186 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+187 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -222,6 +222,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [HTML Formatter / Minifier](https://arahman200165.github.io/DUDE/tools/html-formatter) | Developer | Pretty-prints or minifies HTML by walking the parsed DOM, preserving `<pre>`/`<script>`/`<style>` content verbatim. |
 | [DOM Tree Viewer](https://arahman200165.github.io/DUDE/tools/dom-tree-viewer) | Developer | Parses HTML and renders it as a collapsible DOM tree — elements, attributes, text nodes, and comments. |
 | [HTML Entity Explorer](https://arahman200165.github.io/DUDE/tools/html-entity-explorer) | Developer | Searchable reference of common named HTML character entities, with decimal and hex codepoints. |
+| [HTML ↔ JSX Converter](https://arahman200165.github.io/DUDE/tools/html-jsx-converter) | Developer | Converts HTML to JSX (className, htmlFor, style objects, self-closing void tags) or JSX back to HTML, best-effort. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |
