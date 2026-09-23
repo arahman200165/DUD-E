@@ -1,0 +1,78 @@
+<app-tool-shell title="Base64 Image Viewer" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'view'"
+          [class.text-bg]="direction() === 'view'"
+          [class.text-text-muted]="direction() !== 'view'"
+          (click)="setDirection('view')"
+        >
+          Base64 &rarr; Image
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'encode'"
+          [class.text-bg]="direction() === 'encode'"
+          [class.text-text-muted]="direction() !== 'encode'"
+          (click)="setDirection('encode')"
+        >
+          Image &rarr; Base64
+        </button>
+      </div>
+
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    @if (direction() === 'view') {
+      <textarea
+        rows="8"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste a Base64 string or a data:image/...;base64,... URI"
+        [value]="base64Input()"
+        (input)="onBase64InputChange($event)"
+      ></textarea>
+
+      @if (viewResult(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text-muted">
+            <span>Detected: {{ result.signature.mime }}</span>
+            <span>&middot;</span>
+            <span>{{ result.byteLength }} bytes</span>
+            <app-copy-button [text]="result.dataUri" label="Copy data URI" />
+          </div>
+          <img [src]="result.dataUri" alt="Decoded preview" class="max-h-96 max-w-full rounded-sm border border-border object-contain" />
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    } @else {
+      <app-file-drop accept="image/*" label="Drop an image here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+      @if (encodedResult(); as result) {
+        <div class="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text-muted">
+          @if (encodedFilename(); as name) {
+            <span>{{ name }}</span>
+            <span>&middot;</span>
+          }
+          <app-copy-button [text]="result.base64" label="Copy Base64" />
+          <app-copy-button [text]="result.dataUri" label="Copy data URI" />
+        </div>
+        <img [src]="result.dataUri" alt="Selected image preview" class="max-h-96 max-w-full rounded-sm border border-border object-contain" />
+        <textarea
+          rows="8"
+          readonly
+          class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text"
+          [value]="result.base64"
+        ></textarea>
+      }
+    }
+  </div>
+</app-tool-shell>
