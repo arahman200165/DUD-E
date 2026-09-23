@@ -2402,4 +2402,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'local', preferences: 'none' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'html-jsx-converter',
+    title: 'HTML ↔ JSX Converter',
+    description: 'Converts HTML to JSX (className, htmlFor, style objects, self-closing void tags) or JSX back to HTML, best-effort.',
+    category: 'developer',
+    keywords: ['html to jsx', 'jsx to html', 'react', 'className', 'htmlFor', 'jsx converter'],
+    route: '/tools/html-jsx-converter',
+    load: () => import('../../tools/html-jsx-converter/html-jsx-converter').then((m) => m.HtmlJsxConverter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
