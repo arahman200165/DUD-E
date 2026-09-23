@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-170 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+171 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -110,6 +110,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Color Converter](https://arahman200165.github.io/DUDE/tools/color-converter) | Encoding | Converts between HEX, RGB, HSL, HSV, CMYK, LAB, LCH, OKLAB, OKLCH, HWB, and named CSS colors. |
 | [Palette Generator](https://arahman200165.github.io/DUDE/tools/palette-generator) | Encoding | Generates complementary, analogous, triadic, tetradic, and monochromatic color palettes from a base color. |
 | [Gradient Generator](https://arahman200165.github.io/DUDE/tools/gradient-generator) | Encoding | Builds a CSS linear, radial, or conic gradient from editable color stops, with a live preview. |
+| [Contrast Checker / WCAG Compliance Checker](https://arahman200165.github.io/DUDE/tools/contrast-checker) | Encoding | Computes the WCAG contrast ratio between two colors and flags AA/AAA pass/fail for text and UI components. |
 | [Number Base Converter](https://arahman200165.github.io/DUDE/tools/number-base) | Encoding | Converts whole numbers between binary, octal, decimal, hex, or any base 2–36. |
 | [File Base64 Converter](https://arahman200165.github.io/DUDE/tools/file-base64) | Encoding | Converts a local file to Base64 text, or a Base64 string back into a downloadable file, with MIME sniffing and an image preview. |
 | [Hex ↔ Text Converter](https://arahman200165.github.io/DUDE/tools/hex-text-converter) | Encoding | Converts between raw hex bytes and ASCII, UTF-8, or UTF-16 (LE/BE) text. |
