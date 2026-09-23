@@ -1264,28 +1264,30 @@ Web Crypto API covers AES/RSA/EC/Ed25519 generation and SHA-family hashing/finge
 
 ---
 
-## Phase 13 — Auth & JWT Depth (Proposed — Track A: Browser-Extensible)
+## Phase 13 — Auth & JWT Depth (✅ Complete — Track A: Browser-Extensible)
 
 Goal: go beyond decode/sign/verify into the surrounding OAuth/OIDC tooling developers need, all operating on user-pasted tokens/URLs rather than live flows.
 
-1. JWKS Viewer (paste a JWKS document)
-2. JWKS → Public Keys
-3. JWT Claims Analyzer
-4. JWT Expiration Visualizer
-5. OAuth Token Inspector
-6. OAuth 2.0 Playground (construct/inspect requests and responses manually, not a live redirect flow)
-7. OpenID Connect Discovery Document Inspector (paste a discovery document)
-8. PKCE Generator
-9. PKCE Verifier
-10. OAuth Scope Parser
-11. Basic Auth Header Generator
-12. Bearer Token Builder
-13. AWS Signature V4 Inspector
-14. HTTP Digest Auth Helper
+**Achieved (Milestones 123-136):** all 14 items shipped as their own tool, one-to-one with the original list:
+
+1. JWKS Viewer (item 1; enumerates a pasted JWKS document's keys, flags missing/duplicate `kid`s and other structural issues)
+2. JWKS → Public Keys (item 2; converts each JWK to SPKI PEM via `jose`)
+3. JWT Claims Analyzer (item 3; claim-level lint — `alg:"none"`, expired/missing `exp`, missing recommended claims)
+4. JWT Expiration Visualizer (item 4; iat/nbf/exp timeline with a percent-elapsed bar)
+5. OAuth Token Inspector (item 5; auto-detects JWT-shaped vs opaque access/refresh/ID tokens)
+6. OAuth 2.0 Playground (item 6; every grant type — Authorization Code, PKCE, Client Credentials, Resource Owner Password, Device Authorization, Implicit, Refresh Token — as build/inspect request and response panels)
+7. OpenID Connect Discovery Document Inspector (item 7; validates a pasted discovery document against OIDC Discovery 1.0's required/recommended fields)
+8. PKCE Generator (item 8; RFC 7636 code_verifier/code_challenge, CSPRNG-generated)
+9. PKCE Verifier (item 9; round-trip verifier-to-challenge validation)
+10. OAuth Scope Parser (item 10; splits/dedupes a scope string, annotates well-known OIDC and vendor scopes)
+11. Basic Auth Header Generator (item 11; standard-Base64 `Authorization: Basic`, encode and decode)
+12. Bearer Token Builder (item 12; RFC 6750 `Authorization: Bearer` formatting with charset validation)
+13. AWS Signature V4 Inspector (item 13; hand-rolled canonical-request/string-to-sign/HMAC-SHA256 chain, both inspect-and-verify and build-from-scratch modes — shipped under `web`, not `security`, since it's fundamentally an HTTP request-signing protocol tool, matching the cURL/HTTP Header Inspector precedent)
+14. HTTP Digest Auth Helper (item 14; RFC 7616/2617 HA1/HA2/response chain, MD5 and SHA-256, `qop=auth`/`auth-int`/legacy and `-sess` variants — shipped under `web` for the same reason as item 13)
 
 ### Notes
 
-JWKS fetching-by-URL already ships on the JWT Signature Verifier (§20); these operate on pasted/uploaded material instead, so no new network policy is introduced.
+JWKS fetching-by-URL already ships on the JWT Signature Verifier (§20); every Phase 13 tool operates on pasted/uploaded material instead, so no new network policy was introduced. AWS SigV4 and HTTP Digest Auth were hand-rolled rather than adding a new dependency (no `aws4`/AWS SDK existed in the project), cross-validated in their unit tests against independently computed reference chains (an AWS-documented worked example for SigV4; the classic RFC 2617 example for Digest Auth) rather than only self-consistency round-trips — the same posture Phase 12 used for its hand-rolled SSH/crypto paths.
 
 ---
 
