@@ -21,6 +21,8 @@ import { computeSyncedScrollTop } from './markdown-scroll-sync';
 import { MarkdownPluginKind, MarkdownPluginManifest } from './plugins/plugin-manifest.model';
 import { BUILT_IN_PLUGINS } from './plugins/builtin-plugins';
 import { lintMarkdown } from './markdown-lint';
+import { extractMarkdownLinks } from './markdown-link-extract';
+import { LinkCheckOutcome, checkLinks } from './markdown-link-check';
 import { PluginRuntimeHost } from './plugins/plugin-runtime-host';
 import { CollabConnectionStatus, MarkdownCollabClient } from './collab/markdown-collab-client';
 
@@ -108,6 +110,11 @@ export class MarkdownWorkspace implements OnDestroy {
 
   protected readonly showLintPanel = signal(false);
   protected readonly lintFindings = computed(() => lintMarkdown(this.source()));
+
+  protected readonly showLinkCheckerPanel = signal(false);
+  protected readonly linkCheckStatus = signal<'idle' | 'checking'>('idle');
+  protected readonly linkCheckResults = signal<readonly LinkCheckOutcome[] | null>(null);
+  protected readonly documentLinks = computed(() => extractMarkdownLinks(this.source()));
 
   protected readonly newPluginName = signal('');
   protected readonly newPluginKind = signal<MarkdownPluginKind>('render-hook');
@@ -279,6 +286,18 @@ export class MarkdownWorkspace implements OnDestroy {
 
   protected toggleLintPanel(): void {
     this.showLintPanel.set(!this.showLintPanel());
+  }
+
+  protected toggleLinkCheckerPanel(): void {
+    this.showLinkCheckerPanel.set(!this.showLinkCheckerPanel());
+  }
+
+  /** Only ever runs from this explicit user action -- never automatically. See docs/SECURITY.md. */
+  protected async runLinkCheck(): Promise<void> {
+    this.linkCheckStatus.set('checking');
+    const results = await checkLinks(this.documentLinks());
+    this.linkCheckResults.set(results);
+    this.linkCheckStatus.set('idle');
   }
 
   /** Moves the textarea's cursor/selection to the start of the given 1-based line and focuses it. */
