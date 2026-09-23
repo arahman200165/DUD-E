@@ -1,0 +1,41 @@
+<app-tool-shell title="Content-Disposition Builder" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Content-Disposition header</span>
+        <app-copy-button [text]="raw()" />
+      </div>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="raw()"
+        (input)="onRawChange($event)"
+      />
+    </div>
+
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="disposition().type === 'attachment'" [class.text-bg]="disposition().type === 'attachment'" (click)="setType('attachment')">
+        attachment
+      </button>
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="disposition().type === 'inline'" [class.text-bg]="disposition().type === 'inline'" (click)="setType('inline')">
+        inline
+      </button>
+    </div>
+
+    <label class="flex flex-col gap-1 text-ui text-text-muted">
+      Filename
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="report été.pdf"
+        [value]="disposition().filename"
+        (input)="onFilenameInput($event)"
+      />
+    </label>
+
+    <p class="text-ui text-text-muted">
+      A non-ASCII filename gets an RFC 5987 <code class="font-mono">filename*=UTF-8''...</code> parameter alongside the ASCII fallback, for
+      clients that don't support it.
+    </p>
+  </div>
+</app-tool-shell>

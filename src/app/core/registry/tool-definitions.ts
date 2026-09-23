@@ -597,6 +597,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'content-disposition-builder',
+    title: 'Content-Disposition Builder',
+    description: "Builds a Content-Disposition header with an RFC 5987 filename* parameter for non-ASCII filenames, alongside the ASCII fallback.",
+    category: 'web',
+    keywords: ['content-disposition', 'header', 'attachment', 'inline', 'filename', 'rfc 5987'],
+    route: '/tools/content-disposition-builder',
+    load: () => import('../../tools/content-disposition-builder/content-disposition-builder').then((m) => m.ContentDispositionBuilder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',
