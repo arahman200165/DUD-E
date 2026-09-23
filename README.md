@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-183 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+184 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -219,6 +219,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [CSS Animation Builder](https://arahman200165.github.io/DUDE/tools/css-animation-builder) | Developer | Builds an @keyframes block and its animation shorthand from an ordered list of percentage stops, with a live preview. |
 | [Flexbox Playground](https://arahman200165.github.io/DUDE/tools/flexbox-playground) | Developer | Interactively builds flex container and item CSS with a live preview of editable, addable items. |
 | [CSS Grid Playground](https://arahman200165.github.io/DUDE/tools/css-grid-playground) | Developer | Interactively builds grid container and item-placement CSS with a live preview of editable, addable items. |
+| [HTML Formatter / Minifier](https://arahman200165.github.io/DUDE/tools/html-formatter) | Developer | Pretty-prints or minifies HTML by walking the parsed DOM, preserving `<pre>`/`<script>`/`<style>` content verbatim. |
 | [Markdown Preview](https://arahman200165.github.io/DUDE/tools/markdown) | Documents | Side-by-side Markdown editor with a sanitized, live-rendered preview, style presets, and custom CSS. |
 | [Rich Text Editor](https://arahman200165.github.io/DUDE/tools/rich-text-editor) | Documents | WYSIWYG editor, via TipTap, with sanitized HTML and Markdown export. |
 | [Advanced Markdown Workspace](https://arahman200165.github.io/DUDE/tools/markdown-workspace) | Documents | Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API. |
