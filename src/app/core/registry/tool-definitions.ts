@@ -623,6 +623,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['url'], produces: ['url', 'json'] },
   },
   {
+    id: 'url-safety-inspector',
+    title: 'URL Safety Inspector',
+    description: 'Heuristic URL safety checks — punycode homograph risk, userinfo tricks, IP-literal hosts, suspicious TLDs, and deep subdomain chains.',
+    category: 'web',
+    keywords: ['url', 'safety', 'phishing', 'homograph', 'punycode', 'idn', 'suspicious', 'tld', 'security'],
+    route: '/tools/url-safety-inspector',
+    load: () => import('../../tools/url-safety-inspector/url-safety-inspector').then((m) => m.UrlSafetyInspector),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['url'], produces: ['json'] },
+  },
+  {
     id: 'timezone-converter',
     title: 'Date / Timezone Converter',
     description: 'Convert a moment in time across a chosen set of IANA timezones.',
