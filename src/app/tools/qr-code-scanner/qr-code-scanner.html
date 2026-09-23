@@ -1,0 +1,29 @@
+<app-tool-shell title="QR Code Scanner" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+      <div class="flex flex-col gap-2">
+        <span class="text-ui text-text-muted">From an image</span>
+        <app-file-drop accept="image/*" label="Drop an image with a QR code, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <span class="text-ui text-text-muted">From your webcam</span>
+        <app-camera-capture #camera (streamReady)="onCameraStreamReady()" (streamStopped)="onCameraStopped()" />
+      </div>
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    @if (result(); as data) {
+      <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-2">
+        <div class="flex items-center justify-between">
+          <span class="text-ui text-text-muted">Decoded content</span>
+          <app-copy-button [text]="data" />
+        </div>
+        <p class="break-all font-mono text-xs text-text">{{ data }}</p>
+      </div>
+    }
+  </div>
+</app-tool-shell>

@@ -2584,4 +2584,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['file'] },
   },
+  {
+    id: 'qr-code-scanner',
+    title: 'QR Code Scanner',
+    description: 'Decodes a QR code from an uploaded image or a live webcam feed, entirely client-side.',
+    category: 'encoding',
+    keywords: ['qr', 'qr code', 'scan', 'decode', 'webcam', 'camera'],
+    route: '/tools/qr-code-scanner',
+    load: () => import('../../tools/qr-code-scanner/qr-code-scanner').then((m) => m.QrCodeScanner),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['text'] },
+  },
 ];

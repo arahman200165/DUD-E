@@ -1,0 +1,28 @@
+<div class="flex flex-col gap-2">
+  @switch (state()) {
+    @case ('idle') {
+      <button type="button" class="self-start rounded-sm border border-accent px-2 py-1 text-ui text-accent hover:bg-accent/10" (click)="start()">
+        Use webcam
+      </button>
+    }
+    @case ('requesting') {
+      <p class="text-ui text-text-muted">Requesting camera access&hellip;</p>
+    }
+    @case ('denied') {
+      <p class="text-ui text-error">Camera access was denied. Allow it in your browser's site settings, then try again.</p>
+    }
+    @default {
+      @if (errorMessage(); as message) {
+        <p class="text-ui text-error">{{ message }}</p>
+      }
+    }
+  }
+
+  <video #video class="max-w-full rounded-sm border border-border" [class.hidden]="state() !== 'active'" muted playsinline></video>
+
+  @if (state() === 'active') {
+    <button type="button" class="self-start rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated" (click)="stop()">
+      Stop camera
+    </button>
+  }
+</div>

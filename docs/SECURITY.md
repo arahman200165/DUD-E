@@ -14,6 +14,10 @@ Nothing, by default. Three tools are the only exceptions, and all three require 
 
 Every other tool — including ones that look network-adjacent, like cURL Command Inspector or HTTP Status Code Reference — only parses, formats, or looks up against data bundled in the app itself.
 
+## Camera access
+
+**QR Code Scanner** and **Barcode Reader** can decode from a live webcam feed as an alternative to uploading an image. Camera access is never requested automatically — it starts only when you click "Use webcam" in either tool's shared camera component (`src/app/shared/components/camera-capture/`), the browser's own permission prompt governs whether it's granted, and you can revoke it at any time through your browser's site settings. Every video frame is decoded entirely client-side (`jsqr` for QR codes, `@zxing/library` for barcodes) — no frame, image, or decoded result is ever sent anywhere. Stopping the camera (or navigating away) releases the media stream immediately.
+
 ## What gets stored, and where
 
 Every tool declares a persistence policy per piece of state (`ToolPersistencePolicy` on its `ToolDefinition`, enforced through `PersistenceService.signal()`), one of five tiers:
