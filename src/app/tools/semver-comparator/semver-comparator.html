@@ -162,5 +162,41 @@
         }
       </div>
     }
+
+    @if (tab() === 'visualize') {
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <span class="text-ui text-text-muted">Ranges (one per line)</span>
+          <textarea
+            rows="4"
+            class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="visualizeInput()"
+            (input)="onVisualizeInputChange($event)"
+          ></textarea>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="grid text-ui-xs text-text-muted" [style.grid-template-columns]="'8rem repeat(' + probeVersions.length + ', 1fr)'">
+            <span></span>
+            @for (version of probeVersions; track version) {
+              <span class="truncate text-center font-mono">{{ version }}</span>
+            }
+          </div>
+
+          @for (visualization of visualizeResult(); track visualization.range) {
+            @if (visualization.ok) {
+              <div class="grid items-center" [style.grid-template-columns]="'8rem repeat(' + probeVersions.length + ', 1fr)'">
+                <span class="truncate pr-2 font-mono text-ui-xs text-text">{{ visualization.range }}</span>
+                @for (match of visualization.matches; track $index) {
+                  <span class="mx-0.5 h-4 rounded-sm" [class.bg-accent]="match" [class.bg-panel-elevated]="!match"></span>
+                }
+              </div>
+            } @else {
+              <app-error-panel [message]="visualization.error" />
+            }
+          }
+        </div>
+      </div>
+    }
   </div>
 </app-tool-shell>

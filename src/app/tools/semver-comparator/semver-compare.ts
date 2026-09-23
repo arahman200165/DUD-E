@@ -74,6 +74,38 @@ export function checkRange(version: string, range: string): RangeCheckResult {
   return { ok: true, satisfies: satisfies(version, range), normalizedRange };
 }
 
+/** A small fixed axis of versions spanning several majors/minors, probed against each range to visualize what it covers. */
+export const RANGE_PROBE_VERSIONS: readonly string[] = [
+  '0.1.0',
+  '0.5.0',
+  '0.9.0',
+  '1.0.0',
+  '1.2.0',
+  '1.5.0',
+  '1.9.0',
+  '2.0.0',
+  '2.5.0',
+  '3.0.0',
+  '4.0.0',
+  '5.0.0',
+  '10.0.0',
+];
+
+export type RangeVisualization =
+  | { readonly range: string; readonly ok: true; readonly matches: readonly boolean[] }
+  | { readonly range: string; readonly ok: false; readonly error: string };
+
+/** Probes each of `RANGE_PROBE_VERSIONS` against every non-blank range line, for a visual "what does this range cover" view. */
+export function visualizeRanges(rangeLines: readonly string[]): readonly RangeVisualization[] {
+  return rangeLines
+    .map((line) => line.trim())
+    .filter((line) => line !== '')
+    .map((range) => {
+      if (validRange(range) === null) return { range, ok: false, error: `Not a valid semver range: "${range}"` };
+      return { range, ok: true, matches: RANGE_PROBE_VERSIONS.map((version) => satisfies(version, range)) };
+    });
+}
+
 function toParsedVersion(raw: string, parsed: NonNullable<ReturnType<typeof parse>>): ParsedVersion {
   return {
     raw,

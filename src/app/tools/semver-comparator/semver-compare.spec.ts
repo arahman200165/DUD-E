@@ -1,4 +1,4 @@
-import { checkRange, compareVersions, sortVersions } from './semver-compare';
+import { checkRange, compareVersions, RANGE_PROBE_VERSIONS, sortVersions, visualizeRanges } from './semver-compare';
 
 describe('compareVersions', () => {
   it('reports equal versions', () => {
@@ -69,5 +69,32 @@ describe('checkRange', () => {
   it('reports an error for an invalid range', () => {
     const result = checkRange('1.0.0', 'not-a-range');
     expect(result.ok).toBe(false);
+  });
+
+  it('supports a compound range', () => {
+    const result = checkRange('1.5.0', '>=1.2.0 <2.0.0');
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.satisfies).toBe(true);
+  });
+});
+
+describe('visualizeRanges', () => {
+  it('marks which probe versions a caret range covers', () => {
+    const [visualization] = visualizeRanges(['^1.2.0']);
+    expect(visualization.ok).toBe(true);
+    if (!visualization.ok) return;
+
+    const byVersion = Object.fromEntries(RANGE_PROBE_VERSIONS.map((v, i) => [v, visualization.matches[i]]));
+    expect(byVersion['1.2.0']).toBe(true);
+    expect(byVersion['1.9.0']).toBe(true);
+    expect(byVersion['2.0.0']).toBe(false);
+    expect(byVersion['1.0.0']).toBe(false);
+  });
+
+  it('skips blank lines and reports an error for an invalid range', () => {
+    const results = visualizeRanges(['^1.0.0', '', 'not-a-range']);
+    expect(results).toHaveLength(2);
+    expect(results[0].ok).toBe(true);
+    expect(results[1].ok).toBe(false);
   });
 });

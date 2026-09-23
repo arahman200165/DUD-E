@@ -3,9 +3,9 @@ import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { PersistenceService } from '../../core/persistence/persistence.service';
-import { checkRange, compareVersions, sortVersions } from './semver-compare';
+import { checkRange, compareVersions, RANGE_PROBE_VERSIONS, sortVersions, visualizeRanges } from './semver-compare';
 
-type Tab = 'compare' | 'sort' | 'range';
+type Tab = 'compare' | 'sort' | 'range' | 'visualize';
 type SortDirection = 'asc' | 'desc';
 
 @Component({
@@ -20,7 +20,10 @@ export class SemverComparator {
     { id: 'compare', label: 'Compare' },
     { id: 'sort', label: 'Sort' },
     { id: 'range', label: 'Range Check' },
+    { id: 'visualize', label: 'Visualize' },
   ];
+
+  protected readonly probeVersions = RANGE_PROBE_VERSIONS;
 
   protected readonly tab = this.persistence.signal<Tab>('semver-comparator', 'tab', 'local', 'compare');
 
@@ -45,6 +48,9 @@ export class SemverComparator {
   protected readonly rangeVersion = this.persistence.signal('semver-comparator', 'rangeVersion', 'session', '1.2.5');
   protected readonly range = this.persistence.signal('semver-comparator', 'range', 'session', '^1.2.0');
   protected readonly rangeResult = computed(() => checkRange(this.rangeVersion(), this.range()));
+
+  protected readonly visualizeInput = this.persistence.signal('semver-comparator', 'visualizeInput', 'session', '^1.2.0\n>=1.0.0 <2.0.0\n~2.5.0');
+  protected readonly visualizeResult = computed(() => visualizeRanges(this.visualizeInput().split('\n')));
 
   protected setTab(tab: Tab): void {
     this.tab.set(tab);
@@ -72,5 +78,9 @@ export class SemverComparator {
 
   protected onRangeChange(event: Event): void {
     this.range.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onVisualizeInputChange(event: Event): void {
+    this.visualizeInput.set((event.target as HTMLTextAreaElement).value);
   }
 }
