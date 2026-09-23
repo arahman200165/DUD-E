@@ -1238,40 +1238,29 @@ Base64/Base64URL, JSON Escape/Unescape, and Unicode Escape/Unescape already ship
 
 ---
 
-## Phase 12 — Security, Cryptography & Certificate Depth (Proposed — Track A: Browser-Extensible)
+## Phase 12 — Security, Cryptography & Certificate Depth (✅ Complete — Track A: Browser-Extensible)
 
 Goal: extend Security with the hashing/encryption/key-generation/certificate-inspection tools that don't require a live network fetch.
 
-1. Additional hash algorithms on Hash Generator: SHA-3, BLAKE2, BLAKE3, xxHash, CRC32 / CRC64
-2. HMAC Generator (HMAC-SHA256, HMAC-SHA512, custom key)
-3. Password Generator
-4. Passphrase Generator
-5. Password Entropy Calculator
-6. Password Strength Analyzer
-7. AES Encrypt / Decrypt (GCM, CBC)
-8. ChaCha20 / ChaCha20-Poly1305 Encrypt / Decrypt
-9. RSA Key Generator
-10. EC Key Generator
-11. Ed25519 Key Generator
-12. PEM Inspector
-13. DER Inspector
-14. CSR Generator
-15. CSR Inspector
-16. SSH Key Generator
-17. SSH Public Key Inspector
-18. SSH Fingerprint Calculator
-19. X.509 Certificate Inspector (uploaded cert)
-20. Certificate Chain Viewer (uploaded chain)
-21. Certificate Expiration Checker (uploaded cert, one-shot — an ongoing *monitor* is Track B)
-22. Certificate SAN Viewer
-23. Certificate Fingerprint Calculator
-24. PKCS#12 / PFX Inspector
-25. PEM ↔ DER Converter
-26. Certificate Chain Builder
+**Achieved (Milestones 110-122):** the original 26-item list was consolidated to 12 new tools plus one extension of the existing Hash Generator, merging items that are the same underlying operation shown different ways (e.g. PEM Inspector + DER Inspector + PEM ↔ DER Converter) into one tool with an internal mode/format selector:
+
+1. Hash Generator, extended (items 1: SHA-3/BLAKE2/BLAKE3 via `@noble/hashes`, xxHash32/64 via `xxhash-wasm`, hand-rolled CRC32/CRC64)
+2. HMAC Generator (item 2)
+3. Password / Passphrase Generator (items 3-4, one tool with a mode toggle)
+4. Password Strength & Entropy Analyzer (items 5-6; hand-rolled entropy/heuristics, not zxcvbn — its dictionary data is a worse lazy-chunk cost than node-forge for no reuse elsewhere)
+5. AES Encrypt / Decrypt (item 7; native Web Crypto AES-GCM/AES-CBC with a PBKDF2-derived key)
+6. ChaCha20-Poly1305 Encrypt / Decrypt (item 8; `@noble/ciphers`, since Web Crypto has no RFC 8439 support — defaults to XChaCha20-Poly1305)
+7. Asymmetric Key Generator (items 9-11: RSA/EC/Ed25519, one tool with a family/curve/modulus-length picker, native `crypto.subtle` via `jose`)
+8. PEM / DER Inspector & Converter (items 12-13, 25; introduces the shared `asn1-tree.ts` ASN.1-to-presentation-tree translator and the `node-forge` dependency)
+9. CSR Generator & Inspector (items 14-15; RSA-only — `node-forge` has no EC/Ed25519 CSR-signing support)
+10. SSH Key Generator & Inspector (items 16-18; hand-rolled OpenSSH wire-format encode/decode in `ssh-wire-format.ts`, no library — cross-validated against real `ssh-keygen` output)
+11. X.509 Certificate Inspector (items 19, 21-23, as tabs: Overview/validity, one-shot expiration status, SAN, extensions, SHA-1/SHA-256 fingerprints; introduces the shared `x509-fields.ts` extractor)
+12. Certificate Chain Viewer & Builder (items 20, 26; DN-matching as an ordering heuristic, `forge.pki.verifyCertificateChain` as the real verification; cross-validated against an `openssl`-built chain)
+13. PKCS#12 / PFX Inspector (item 24; the PKCS12 password is `'none'`-persistence, no exceptions — the phase's single most sensitive input)
 
 ### Notes
 
-Web Crypto API covers most of items 7-11 natively; `node-forge` or similar is the fallback for PKCS#12/CSR handling per the library-forward philosophy (§17). Live TLS handshake fetching (`TLS Certificate Fetcher`, cipher/ALPN/SNI inspection, expiration *monitoring* over time) needs a live socket and is Track B.
+Web Crypto API covers AES/RSA/EC/Ed25519 generation and SHA-family hashing/fingerprinting natively; `node-forge` is the fallback for ASN.1/PEM/DER/X.509/CSR/PKCS#12 handling per the library-forward philosophy (§17), added to `angular.json`'s `allowedCommonJsDependencies` in Milestone 117. Every hand-rolled or forge-based crypto path (SSH wire format, X.509 fingerprints, PKCS#12 decryption) was cross-validated in its unit tests against real, independent tool output (`ssh-keygen`, `openssl`) rather than only against itself. Live TLS handshake fetching (`TLS Certificate Fetcher`, cipher/ALPN/SNI inspection, expiration *monitoring* over time) needs a live socket and is Track B.
 
 ---
 
