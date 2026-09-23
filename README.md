@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-209 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+213 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -191,7 +191,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Regex Flavor Converter](https://arahman200165.github.io/DUDE/tools/regex-flavor-converter) | Developer | Translates a regex pattern between JavaScript, Python, Java, .NET, PCRE, and Go RE2 syntax, flagging constructs the target flavor cannot represent. |
 | [Regex Generator](https://arahman200165.github.io/DUDE/tools/regex-generator) | Developer | Generalizes a pattern from example strings (non-AI, heuristic), validated against every example and counter-example before being shown. |
 | [UUID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/uuid) | Developer | Generates v1/v4/v5/v7 UUIDs (with namespace support), inspects an existing UUID, and bulk-exports the generated list. |
-| [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, and range-checks versions against the Semantic Versioning spec. |
+| [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
 | [Git Repo Browser](https://arahman200165.github.io/DUDE/tools/git-diff) | Developer | Browses a local git repository's commit history and diffs any two commits, entirely client-side. |
@@ -248,6 +248,10 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [chmod / Unix Permissions Converter](https://arahman200165.github.io/DUDE/tools/chmod-converter) | Developer | Converts between symbolic (rwxr-xr--) and octal (754) Unix permissions, with a visual owner/group/other checkbox grid and setuid/setgid/sticky bits. |
 | [Stack Trace Formatter](https://arahman200165.github.io/DUDE/tools/stack-trace-formatter) | Developer | Auto-detects and cleans up a Java, .NET, JavaScript, or Python stack trace, tagging library frames and Caused-by/inner-exception chains. |
 | [Error Code Reference](https://arahman200165.github.io/DUDE/tools/error-code-reference) | Developer | Searchable reference of Windows/Win32/HRESULT, POSIX errno, Linux signals, SQL, TLS alert, and DNS response codes. |
+| [Compression Lab](https://arahman200165.github.io/DUDE/tools/compression-lab) | Encoding | Compresses or decompresses text or a file with gzip or deflate (native Compression Streams API), comparing before/after size and ratio. |
+| [Archive Creator / Extractor](https://arahman200165.github.io/DUDE/tools/archive-tool) | Encoding | Creates or extracts ZIP, TAR, and TAR.GZ archives entirely client-side. |
+| [Dependency Version Comparator](https://arahman200165.github.io/DUDE/tools/dependency-version-comparator) | Developer | Diffs two pasted dependency lists (package.json-style), classifying each change as added, removed, or a major/minor/patch upgrade or downgrade. |
+| [Lockfile Inspector](https://arahman200165.github.io/DUDE/tools/lockfile-inspector) | Developer | Parses a package-lock.json, pnpm-lock.yaml, or yarn.lock into a searchable table of resolved package versions and their dependencies. |
 
 ## Architecture
 
@@ -279,7 +283,7 @@ See [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md) for the full, step-by-step guide to a
 
 Angular 22 (standalone components, signals) · Tailwind CSS v4 · Vitest · Playwright · `@angular/service-worker` · TypeScript · Electron (Windows desktop build)
 
-Library-forward by design — Markdown rendering, diffing, sanitization, color-space math, slug transliteration, structured-data parsing, cron scheduling, and User-Agent parsing all lean on mature libraries (`markdown-it`, `diff-match-patch`, `dompurify`, `colord`, `@sindresorhus/slugify`, `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, `jmespath`, `cron-parser`, `cronstrue`, `ua-parser-js`) rather than reimplementing them. The desktop build's real-time collaboration (Phase 8 Stage 6/7) is the same story: `yjs`/`y-protocols`/`lib0` for CRDT sync/awareness, `ws` for the WebSocket transport, rather than hand-rolling a conflict-resolution protocol — as is its packaging and update pipeline (Stage 8): `electron-builder` for the NSIS/MSIX installers and `electron-updater` for the update check/download/install flow, rather than a hand-rolled installer or update mechanism.
+Library-forward by design — Markdown rendering, diffing, sanitization, color-space math, slug transliteration, structured-data parsing, cron scheduling, and User-Agent parsing all lean on mature libraries (`markdown-it`, `diff-match-patch`, `dompurify`, `colord`, `@sindresorhus/slugify`, `js-yaml`, `fast-xml-parser`, `papaparse`, `jsonpath-plus`, `jmespath`, `cron-parser`, `cronstrue`, `ua-parser-js`, `fflate` for ZIP's DEFLATE + central-directory format) rather than reimplementing them. Gzip/deflate in the Compression Lab and TAR/TAR.GZ's own layout lean on the native Compression Streams API and a small hand-rolled USTAR reader/writer instead, since neither is fiddly enough to justify a dependency. The desktop build's real-time collaboration (Phase 8 Stage 6/7) is the same story: `yjs`/`y-protocols`/`lib0` for CRDT sync/awareness, `ws` for the WebSocket transport, rather than hand-rolling a conflict-resolution protocol — as is its packaging and update pipeline (Stage 8): `electron-builder` for the NSIS/MSIX installers and `electron-updater` for the update check/download/install flow, rather than a hand-rolled installer or update mechanism.
 
 ## Getting started
 
