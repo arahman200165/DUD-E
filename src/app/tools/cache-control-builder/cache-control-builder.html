@@ -1,0 +1,53 @@
+<app-tool-shell title="Cache-Control Builder" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex w-fit overflow-hidden rounded-sm border border-border text-ui text-text-muted">
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="context() === 'response'" [class.text-bg]="context() === 'response'" (click)="setContext('response')">
+        Response
+      </button>
+      <button type="button" class="px-2 py-0.5" [class.bg-accent]="context() === 'request'" [class.text-bg]="context() === 'request'" (click)="setContext('request')">
+        Request
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center justify-between">
+        <span class="text-ui text-text-muted">Cache-Control header</span>
+        <app-copy-button [text]="raw()" />
+      </div>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="raw()"
+        (input)="onRawChange($event)"
+      />
+    </div>
+
+    @if (warnings().length > 0) {
+      <div class="flex flex-col gap-1 rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+        @for (warning of warnings(); track warning) {
+          <div>{{ warning }}</div>
+        }
+      </div>
+    }
+
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      @for (directive of directives(); track directive.name) {
+        <div class="flex items-center gap-2 text-ui text-text-muted">
+          <label class="flex items-center gap-1.5">
+            <input type="checkbox" [checked]="entryFor(directive.name) !== undefined" (change)="toggleDirective(directive.name, directive.hasValue, $event)" />
+            <span class="font-mono">{{ directive.name }}</span>
+          </label>
+          @if (directive.hasValue && entryFor(directive.name); as entry) {
+            <input
+              type="text"
+              class="w-20 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              placeholder="seconds"
+              [value]="entry.value"
+              (input)="setDirectiveValue(directive.name, $event)"
+            />
+          }
+        </div>
+      }
+    </div>
+  </div>
+</app-tool-shell>

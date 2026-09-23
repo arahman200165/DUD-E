@@ -561,6 +561,18 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
+    id: 'cache-control-builder',
+    title: 'Cache-Control Builder',
+    description: 'Builds or parses a Cache-Control header from its directives, for either a request or a response, flagging contradictory combinations.',
+    category: 'web',
+    keywords: ['cache-control', 'header', 'caching', 'max-age', 'no-store', 'no-cache'],
+    route: '/tools/cache-control-builder',
+    load: () => import('../../tools/cache-control-builder/cache-control-builder').then((m) => m.CacheControlBuilder),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
+  },
+  {
     id: 'curl-converter',
     title: 'cURL Command Inspector / Converter',
     description: 'Parse a cURL command into its parts, build one interactively, and export it as code.',

@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-158 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+159 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -163,6 +163,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [HTTP Header Inspector / Builder](https://arahman200165.github.io/DUDE/tools/http-header-inspector) | Web | Inspects pasted HTTP headers as key/value pairs, or builds a header set from scratch. |
 | [Cookie Tools](https://arahman200165.github.io/DUDE/tools/cookie-tools) | Web | Parses a request Cookie header into name/value pairs, or builds a response Set-Cookie header with its attributes, flagging common mistakes. |
 | [Accept Header Builder](https://arahman200165.github.io/DUDE/tools/accept-header-builder) | Web | Builds or parses an Accept header, weighting media types with q values and showing the resulting preference order. |
+| [Cache-Control Builder](https://arahman200165.github.io/DUDE/tools/cache-control-builder) | Web | Builds or parses a Cache-Control header from its directives, for either a request or a response, flagging contradictory combinations. |
 | [cURL Command Inspector / Converter](https://arahman200165.github.io/DUDE/tools/curl-converter) | Web | Parses a curl command into its parts, builds one interactively, and exports it as code in 8 languages. |
 | [HTTP Request Builder / Converter](https://arahman200165.github.io/DUDE/tools/http-request-builder) | Web | Builds an HTTP request from fields or a pasted raw HTTP/1.1 request, and exports it as cURL, raw HTTP, or any of the cURL converter's language targets. |
 | [User-Agent Parser](https://arahman200165.github.io/DUDE/tools/user-agent) | Web | Breaks a User-Agent string down into browser, engine, OS, and device details. |
