@@ -1847,4 +1847,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['text', 'json'], produces: ['json'] },
   },
+  {
+    id: 'basic-auth-generator',
+    title: 'Basic Auth Header Generator',
+    shortTitle: 'Basic Auth',
+    description: 'Builds (or decodes) an HTTP Basic Authorization header from a username and password.',
+    category: 'security',
+    keywords: ['basic auth', 'authorization header', 'base64', 'http auth', 'credentials', 'www-authenticate'],
+    route: '/tools/basic-auth-generator',
+    load: () => import('../../tools/basic-auth-generator/basic-auth-generator').then((m) => m.BasicAuthGenerator),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];

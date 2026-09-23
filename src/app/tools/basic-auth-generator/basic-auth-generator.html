@@ -1,0 +1,88 @@
+<app-tool-shell title="Basic Auth Header Generator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <div class="flex overflow-hidden rounded-sm border border-border">
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'encode'"
+          [class.text-bg]="mode() === 'encode'"
+          [class.text-text-muted]="mode() !== 'encode'"
+          (click)="setMode('encode')"
+        >
+          Encode
+        </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="mode() === 'decode'"
+          [class.text-bg]="mode() === 'decode'"
+          [class.text-text-muted]="mode() !== 'decode'"
+          (click)="setMode('decode')"
+        >
+          Decode
+        </button>
+      </div>
+
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">
+        Clear
+      </button>
+    </div>
+
+    @if (mode() === 'encode') {
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Username
+          <input class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="username()" (input)="onUsernameInput($event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Password
+          <input type="password" class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent" [value]="password()" (input)="onPasswordInput($event)" />
+        </label>
+      </div>
+
+      @if (encodeResult(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Authorization header</span>
+              <app-copy-button [text]="result.value" />
+            </div>
+            <div class="w-full overflow-auto rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text">{{ result.value }}</div>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    } @else {
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Authorization header (or bare Base64 payload)
+        <input
+          class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs break-all text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+          [value]="header()"
+          (input)="onHeaderInput($event)"
+        />
+      </label>
+
+      @if (header() !== '') {
+        @if (decodeResult(); as result) {
+          @if (result.ok) {
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div class="flex flex-col gap-1">
+                <span class="text-ui text-text-muted">Username</span>
+                <div class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ result.value.username }}</div>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-ui text-text-muted">Password</span>
+                <div class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ result.value.password }}</div>
+              </div>
+            </div>
+          } @else {
+            <app-error-panel [message]="result.error" />
+          }
+        }
+      }
+    }
+  </div>
+</app-tool-shell>
