@@ -2476,4 +2476,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'none' },
     io: { accepts: ['file'], produces: ['json'] },
   },
+  {
+    id: 'exif-viewer',
+    title: 'EXIF Viewer / Cleaner',
+    description: "Views an image's embedded EXIF metadata, or strips it entirely by re-encoding the image through canvas.",
+    category: 'documents',
+    keywords: ['exif', 'metadata', 'gps', 'camera', 'privacy', 'strip metadata', 'clean image'],
+    route: '/tools/exif-viewer',
+    load: () => import('../../tools/exif-viewer/exif-viewer').then((m) => m.ExifViewer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['file'], produces: ['json', 'file'] },
+  },
 ];
