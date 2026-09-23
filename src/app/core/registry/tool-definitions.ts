@@ -2270,4 +2270,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'none' },
     io: { accepts: ['text'], produces: ['json'] },
   },
+  {
+    id: 'css-formatter',
+    title: 'CSS Formatter / Minifier',
+    description: 'Pretty-prints or minifies CSS, comment- and string-aware, including nested at-rules like @media.',
+    category: 'developer',
+    keywords: ['css', 'formatter', 'minifier', 'pretty print', 'beautify', 'css minify'],
+    route: '/tools/css-formatter',
+    load: () => import('../../tools/css-formatter/css-formatter').then((m) => m.CssFormatter),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
