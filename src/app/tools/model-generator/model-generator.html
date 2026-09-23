@@ -1,0 +1,64 @@
+<app-tool-shell title="Model Generator (JSON → Code)" status="stable">
+  <div class="flex h-full flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-2 text-ui text-text-muted">
+      <label class="flex items-center gap-1.5">
+        Root type name
+        <input
+          type="text"
+          class="w-32 rounded-sm border border-border bg-panel px-1.5 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="rootName()"
+          (input)="onRootNameChange($event)"
+        />
+      </label>
+
+      <label class="flex items-center gap-1.5">
+        Language
+        <select
+          class="rounded-sm border border-border bg-panel px-1.5 py-0.5 text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="language()"
+          (change)="onLanguageChange($event)"
+        >
+          @for (entry of languages; track entry[0]) {
+            <option [value]="entry[0]">{{ entry[1] }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <p class="text-ui text-text-muted">
+      A top-level JSON array is treated as a list of records — the model describes one item. Fields present in only some array
+      elements are generated as nullable/optional.
+    </p>
+
+    <div class="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-2">
+      <textarea
+        class="min-h-40 flex-1 resize-none rounded-sm border border-border bg-panel p-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste sample JSON…"
+        spellcheck="false"
+        [value]="input()"
+        (input)="onInputChange($event)"
+      ></textarea>
+
+      @if (result(); as current) {
+        @if (current.ok) {
+          <div class="flex min-h-40 flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <span class="text-ui text-text-muted">Generated code</span>
+              <app-copy-button [text]="current.code" />
+            </div>
+            <pre class="flex-1 overflow-auto rounded-sm border border-border bg-panel p-2 font-mono text-xs whitespace-pre text-text">{{ current.code }}</pre>
+            @if (current.warnings.length > 0) {
+              <div class="flex flex-col gap-1 rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+                @for (warning of current.warnings; track warning) {
+                  <div>{{ warning }}</div>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <app-error-panel [message]="current.error" />
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
