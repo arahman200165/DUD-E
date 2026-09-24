@@ -1,0 +1,35 @@
+<app-tool-shell title=".env Validator" status="stable">
+  <div class="flex flex-col gap-4 md:flex-row">
+    <label class="flex flex-1 flex-col gap-1 text-ui text-text-muted">
+      .env to validate
+      <textarea
+        rows="10"
+        class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="envText()"
+        (input)="onEnvInput($event)"
+      ></textarea>
+    </label>
+
+    <label class="flex flex-1 flex-col gap-1 text-ui text-text-muted">
+      Rules — one per line, "KEY[:type][?]" (type: string/number/boolean/url, "?" = optional)
+      <textarea
+        rows="10"
+        class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="rulesText()"
+        (input)="onRulesInput($event)"
+      ></textarea>
+    </label>
+  </div>
+
+  @if (issues().length === 0) {
+    <div class="mt-4 rounded-sm border border-border bg-panel px-2 py-1.5 text-ui text-text">No issues found.</div>
+  } @else {
+    <ul class="mt-4 flex flex-col gap-1">
+      @for (issue of issues(); track issue.key + issue.message) {
+        <li class="rounded-sm border border-border bg-panel px-2 py-1 text-ui text-text">
+          <span class="font-mono text-xs text-text-muted">{{ issue.key }}</span> — {{ issue.message }}
+        </li>
+      }
+    </ul>
+  }
+</app-tool-shell>
