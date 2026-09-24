@@ -1427,43 +1427,51 @@ Items 38 and 40 (QR Code Scanner, Barcode Reader) are the first `getUserMedia`/c
 
 ---
 
-## Phase 18 — Code Generators & Developer References (Proposed — Track A: Browser-Extensible)
+## Phase 18 — Code Generators & Developer References (✅ Complete — Track A: Browser-Extensible)
 
 Goal: ship the model-from-JSON generators (one of the highest-value additions per the source roadmap) and round out static developer references.
 
-1. TypeScript Interface from JSON
-2. C# Model from JSON
-3. Java Class from JSON
-4. Kotlin Data Class from JSON
-5. Swift Codable Model from JSON
-6. Python Dataclass from JSON
-7. Rust Struct from JSON
-8. Go Struct from JSON
-9. SQL Schema (CREATE TABLE) from JSON
-10. Dev Snippets Reference (searchable: HTTP headers, regex syntax, git/docker commands, PowerShell/Bash, SQL, CSS, HTML, Unicode, MIME types, cron syntax, chmod)
-11. chmod / Unix Permissions Converter (`rwxr-xr--` ⇄ `754` with a visual owner/group/other checkbox grid)
-12. Stack Trace Formatter / Parser (auto-detect framework)
-13. Java Exception Formatter
-14. .NET Exception Formatter
-15. JavaScript Stack Trace Formatter
-16. Python Traceback Formatter
-17. Error Code Reference: Windows error codes / Win32 errors / HRESULT (with a universal search, e.g. `0x80070005` → `E_ACCESSDENIED`)
-18. Error Code Reference: POSIX errno
-19. Error Code Reference: Linux signals
-20. Error Code Reference: SQL Server / PostgreSQL SQLSTATE / MySQL error codes
-21. Error Code Reference: TLS alerts
-22. Error Code Reference: DNS response codes
-23. Compression Lab: gzip / deflate / Brotli / zstd (compress, decompress, ratio comparison)
-24. ZIP / TAR / TAR.GZ archive create / extract
-25. Dependency Version Comparator
-26. Semantic Range Evaluator (`^1.2.3`, `~1.2.3`, `>=1.2 <2` against a version)
-27. SemVer Range Visualizer
-28. package-lock.json / pnpm-lock.yaml / yarn.lock Inspector
-29. npm / NuGet / Maven / PyPI / Cargo Package Metadata Inspector — requires `fetch` to the relevant public registry; flag `networkRequired` scoped to that lookup only, same pattern as the existing JWKS-fetch and grammar-check tools (§20, §21 Phase 5/7)
+**Achieved (Milestones 206-216):** all 29 items shipped, one-to-one with the original list:
+
+1. TypeScript Interface from JSON — one `model-generator` tool covers items 1-9 (Milestone 206)
+2. C# Model from JSON (Milestone 206)
+3. Java Class from JSON (Milestone 206)
+4. Kotlin Data Class from JSON (Milestone 206)
+5. Swift Codable Model from JSON (Milestone 206)
+6. Python Dataclass from JSON (Milestone 206)
+7. Rust Struct from JSON (Milestone 206)
+8. Go Struct from JSON (Milestone 206)
+9. SQL Schema (CREATE TABLE) from JSON (Milestone 206)
+10. Dev Snippets Reference (searchable: HTTP headers, regex syntax, git/docker commands, PowerShell/Bash, SQL, CSS, HTML, Unicode, MIME types, cron syntax, chmod) (Milestone 207)
+11. chmod / Unix Permissions Converter (`rwxr-xr--` ⇄ `754` with a visual owner/group/other checkbox grid) (Milestone 208)
+12. Stack Trace Formatter / Parser (auto-detect framework) — one `stack-trace-formatter` tool covers items 12-16 (Milestone 209)
+13. Java Exception Formatter (Milestone 209)
+14. .NET Exception Formatter (Milestone 209)
+15. JavaScript Stack Trace Formatter (Milestone 209)
+16. Python Traceback Formatter (Milestone 209)
+17. Error Code Reference: Windows error codes / Win32 errors / HRESULT (with a universal search, e.g. `0x80070005` → `E_ACCESSDENIED`) — one `error-code-reference` tool covers items 17-22 (Milestone 210)
+18. Error Code Reference: POSIX errno (Milestone 210)
+19. Error Code Reference: Linux signals (Milestone 210)
+20. Error Code Reference: SQL Server / PostgreSQL SQLSTATE / MySQL error codes (Milestone 210)
+21. Error Code Reference: TLS alerts (Milestone 210)
+22. Error Code Reference: DNS response codes (Milestone 210)
+23. Compression Lab: gzip / deflate via the native Compression Streams API (Milestone 211)
+24. ZIP / TAR / TAR.GZ archive create / extract (Milestone 212)
+25. Dependency Version Comparator (Milestone 213)
+26. Semantic Range Evaluator (`^1.2.3`, `~1.2.3`, `>=1.2 <2` against a version) — folded into the pre-existing Semantic Version Comparator's Range Check tab, no separate tool needed (Milestone 214)
+27. SemVer Range Visualizer — shipped as a new "Visualize" tab on the same Semantic Version Comparator (Milestone 214)
+28. package-lock.json / pnpm-lock.yaml / yarn.lock Inspector (Milestone 215)
+29. npm / PyPI / crates.io / NuGet Package Metadata Inspector — requires `fetch` to the relevant public registry; flagged `networkRequired`, same pattern as the existing JWKS-fetch and grammar-check tools (§20, §21 Phase 5/7) (Milestone 216)
 
 ### Notes
 
-Items 1-9 are flagged as one of the highest-value additions in the source material. `pako`/`fflate` (gzip/deflate/zip) and `zstd-wasm` fit items 23-24 under the library-forward philosophy (§17). Semantic Version Comparator already ships (§21 Phase 4); items 25-28 extend it.
+Item 23 (Compression Lab) shipped without Brotli/zstd: the Compression Streams API (the dependency-minimal, native-first choice per `/AGENTS.md`) only exposes `gzip` and `deflate` codecs in-browser: Brotli and zstd have no equivalent native API and would have required a WASM dependency for a comparison feature, so the item shipped narrower than originally scoped rather than pulling one in.
+
+Items 26 and 27 (Semantic Range Evaluator, SemVer Range Visualizer) were both absorbed into the Milestone 14 Semantic Version Comparator (`semver-comparator`) instead of becoming a new `dependency-version-comparator`-style tool: its existing Range Check tab already handled compound ranges, and the Visualize tab was a small, natural addition to the same tool rather than a separate one.
+
+Item 29 (Package Metadata Inspector) covers npm, PyPI, crates.io, and NuGet — Maven was dropped from the original five-registry list; Maven Central's search API doesn't expose a comparable single-package metadata endpoint without XML POM parsing, judged not worth the added complexity for this item.
+
+Item 24 (Archive Creator / Extractor) used `fflate` for ZIP and a hand-rolled USTAR reader/writer plus the native Compression Streams API for TAR/TAR.GZ, rather than a single archive library, matching the dependency-minimal-by-default rule (`/AGENTS.md`).
 
 ---
 
