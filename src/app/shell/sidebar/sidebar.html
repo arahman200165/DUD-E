@@ -14,6 +14,14 @@
     <span class="font-mono text-ui-xs">Ctrl+K</span>
   </button>
 
+  <a
+    routerLink="/pipelines"
+    routerLinkActive="bg-panel-elevated text-text"
+    class="mx-2 mt-2 flex items-center gap-1.5 rounded-sm px-2 py-1 text-ui text-text-muted hover:bg-panel-elevated hover:text-text"
+  >
+    Pipelines
+  </a>
+
   <nav class="flex-1 overflow-y-auto py-1">
     @for (category of categories; track category) {
       <div class="mt-1.5 first:mt-0">
