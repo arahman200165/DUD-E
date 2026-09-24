@@ -22,9 +22,19 @@
         >
           SQL → CSV
         </button>
+        <button
+          type="button"
+          class="px-2 py-0.5"
+          [class.bg-accent]="direction() === 'json-to-sql'"
+          [class.text-bg]="direction() === 'json-to-sql'"
+          [class.text-text-muted]="direction() !== 'json-to-sql'"
+          (click)="setDirection('json-to-sql')"
+        >
+          JSON → SQL
+        </button>
       </div>
 
-      @if (direction() === 'csv-to-sql') {
+      @if (direction() === 'csv-to-sql' || direction() === 'json-to-sql') {
         <label class="flex items-center gap-1.5">
           Table
           <input
@@ -54,7 +64,13 @@
         <textarea
           slot="start"
           class="h-full w-full resize-none bg-panel px-2 py-1.5 font-mono text-xs text-text focus:outline-none"
-          [placeholder]="direction() === 'csv-to-sql' ? 'Paste CSV here…' : 'Paste INSERT statements here…'"
+          [placeholder]="
+            direction() === 'csv-to-sql'
+              ? 'Paste CSV here…'
+              : direction() === 'json-to-sql'
+                ? 'Paste a JSON array of objects here…'
+                : 'Paste INSERT statements here…'
+          "
           [value]="input()"
           (input)="onInputChange($event)"
         ></textarea>

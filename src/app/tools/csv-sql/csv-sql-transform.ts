@@ -6,7 +6,7 @@
 
 import Papa from 'papaparse';
 
-export type CsvSqlDirection = 'csv-to-sql' | 'sql-to-csv';
+export type CsvSqlDirection = 'csv-to-sql' | 'sql-to-csv' | 'json-to-sql';
 
 export interface CsvSqlError {
   readonly message: string;
@@ -99,6 +99,44 @@ function sqlToCsv(input: string): CsvSqlResult {
   return { ok: true, output };
 }
 
+function jsonValueToSql(value: unknown): string {
+  if (value === null || value === undefined) return 'NULL';
+  if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+  if (typeof value === 'number') return String(value);
+  return sqlValue(String(value));
+}
+
+function jsonToSql(input: string, tableName: string): CsvSqlResult {
+  if (input.trim() === '') return { ok: false, error: { message: 'Enter a JSON array of objects.' } };
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(input);
+  } catch (error) {
+    return { ok: false, error: { message: `Invalid JSON: ${error instanceof Error ? error.message : String(error)}` } };
+  }
+
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    return { ok: false, error: { message: 'JSON input must be a non-empty array of objects.' } };
+  }
+  if (!parsed.every((row) => row !== null && typeof row === 'object' && !Array.isArray(row))) {
+    return { ok: false, error: { message: 'Every array element must be a flat JSON object.' } };
+  }
+
+  const rows = parsed as Record<string, unknown>[];
+  const columns = Object.keys(rows[0]);
+  const columnList = columns.join(', ');
+
+  const statements = rows.map((row) => {
+    const values = columns.map((column) => jsonValueToSql(row[column]));
+    return `INSERT INTO ${tableName} (${columnList}) VALUES (${values.join(', ')});`;
+  });
+
+  return { ok: true, output: statements.join('\n') };
+}
+
 export function convertCsvSql(input: string, direction: CsvSqlDirection, tableName: string): CsvSqlResult {
-  return direction === 'csv-to-sql' ? csvToSql(input, tableName || 'table') : sqlToCsv(input);
+  if (direction === 'csv-to-sql') return csvToSql(input, tableName || 'table');
+  if (direction === 'json-to-sql') return jsonToSql(input, tableName || 'table');
+  return sqlToCsv(input);
 }

@@ -69,6 +69,38 @@ describe('convertCsvSql', () => {
     expect(convertCsvSql('', 'sql-to-csv', 't').ok).toBe(false);
   });
 
+  it('converts a JSON array of objects to INSERT statements', () => {
+    const json = JSON.stringify([
+      { id: 1, name: 'Alice', active: true },
+      { id: 2, name: 'Bob', active: false },
+    ]);
+    const result = convertCsvSql(json, 'json-to-sql', 'users');
+
+    expect(result).toEqual({
+      ok: true,
+      output:
+        "INSERT INTO users (id, name, active) VALUES (1, 'Alice', TRUE);\n" +
+        "INSERT INTO users (id, name, active) VALUES (2, 'Bob', FALSE);",
+    });
+  });
+
+  it('emits NULL for a null JSON value', () => {
+    const result = convertCsvSql(JSON.stringify([{ id: 1, note: null }]), 'json-to-sql', 't');
+    expect(result).toEqual({ ok: true, output: 'INSERT INTO t (id, note) VALUES (1, NULL);' });
+  });
+
+  it('rejects a JSON array of non-objects', () => {
+    expect(convertCsvSql('[1, 2, 3]', 'json-to-sql', 't').ok).toBe(false);
+  });
+
+  it('rejects invalid JSON', () => {
+    expect(convertCsvSql('not json', 'json-to-sql', 't').ok).toBe(false);
+  });
+
+  it('rejects empty JSON input', () => {
+    expect(convertCsvSql('', 'json-to-sql', 't').ok).toBe(false);
+  });
+
   it('round-trips CSV -> SQL -> CSV', () => {
     const csv = 'id,name\n1,Alice\n2,Bob\n';
     const toSql = convertCsvSql(csv, 'csv-to-sql', 'users');
