@@ -3328,4 +3328,17 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     execution: { worker: 'optional' },
     io: { accepts: ['file'], produces: ['json'] },
   },
+  {
+    id: 'byte-frequency-analyzer',
+    title: 'Byte Frequency Analyzer',
+    description: 'Charts how often each of the 256 byte values occurs in an uploaded file, and reports the most frequent byte and how many distinct values appear.',
+    category: 'developer',
+    keywords: ['byte frequency', 'histogram', 'byte distribution', 'forensics', 'binary analysis'],
+    route: '/tools/byte-frequency-analyzer',
+    load: () => import('../../tools/byte-frequency-analyzer/byte-frequency-analyzer').then((m) => m.ByteFrequencyAnalyzer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    execution: { worker: 'optional' },
+    io: { accepts: ['file'], produces: ['json'] },
+  },
 ];

@@ -1,4 +1,19 @@
-import { classifyEntropy, shannonEntropy, slidingWindowEntropy } from './byte-entropy';
+import { byteHistogram, classifyEntropy, shannonEntropy, slidingWindowEntropy } from './byte-entropy';
+
+describe('byteHistogram', () => {
+  it('counts occurrences of each byte value', () => {
+    const histogram = byteHistogram(new Uint8Array([0x00, 0x00, 0xff, 0x41]));
+    expect(histogram[0x00]).toBe(2);
+    expect(histogram[0xff]).toBe(1);
+    expect(histogram[0x41]).toBe(1);
+    expect(histogram.length).toBe(256);
+  });
+
+  it('returns an all-zero histogram for an empty buffer', () => {
+    const histogram = byteHistogram(new Uint8Array());
+    expect(histogram.every((count) => count === 0)).toBe(true);
+  });
+});
 
 describe('shannonEntropy', () => {
   it('returns 0 for an empty buffer', () => {

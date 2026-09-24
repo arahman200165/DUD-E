@@ -4,14 +4,17 @@
  * charset-size-based estimate for password/secret strength -- this operates
  * on the actual byte-value histogram of arbitrary binary data.
  */
+export function byteHistogram(bytes: Uint8Array): Uint32Array {
+  const counts = new Uint32Array(256);
+  for (const byte of bytes) counts[byte]++;
+  return counts;
+}
+
 export function shannonEntropy(bytes: Uint8Array): number {
   if (bytes.length === 0) return 0;
 
-  const counts = new Uint32Array(256);
-  for (const byte of bytes) counts[byte]++;
-
   let entropy = 0;
-  for (const count of counts) {
+  for (const count of byteHistogram(bytes)) {
     if (count === 0) continue;
     const p = count / bytes.length;
     entropy -= p * Math.log2(p);

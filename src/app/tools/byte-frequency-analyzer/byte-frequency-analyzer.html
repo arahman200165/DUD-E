@@ -1,0 +1,46 @@
+<app-tool-shell title="Byte Frequency Analyzer" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (job(); as j) {
+        <app-busy-indicator [status]="j.status()" [progress]="j.progress()" />
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+    @if (job()?.error(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop any file here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (report(); as data) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File</span><span class="font-mono text-text">{{ fileName() }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Size</span><span class="font-mono text-text">{{ data.byteLength }} bytes</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Distinct byte values</span><span class="font-mono text-text">{{ data.distinctByteValues }} / 256</span></div>
+        @if (data.mostFrequentByte !== null) {
+          <div class="flex justify-between gap-4">
+            <span class="text-text-muted">Most frequent byte</span>
+            <span class="font-mono text-text">0x{{ hex(data.mostFrequentByte) }} ({{ data.maxCount }} occurrences)</span>
+          </div>
+        }
+
+        <div class="mt-2 border-t border-border pt-2">
+          <div class="mb-1 text-text-muted">Frequency by byte value (0x00 -&gt; 0xff)</div>
+          <div class="flex h-24 items-end gap-px overflow-x-auto rounded-sm bg-panel-elevated p-1">
+            @for (count of data.histogram; track $index) {
+              <div
+                class="w-1 shrink-0 rounded-t-sm bg-accent"
+                [style.height.%]="data.maxCount > 0 ? (count / data.maxCount) * 100 : 0"
+                [title]="'0x' + hex($index) + ': ' + count"
+              ></div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</app-tool-shell>
