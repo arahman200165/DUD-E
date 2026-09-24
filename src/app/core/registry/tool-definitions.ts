@@ -3366,4 +3366,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'none' },
     io: { accepts: ['file'], produces: ['json'] },
   },
+  {
+    id: 'bom-detector',
+    title: 'BOM Detector / Remover',
+    description: 'Detects a UTF-8/16/32 byte-order mark at the start of an uploaded file and offers a one-click download of the file with it stripped.',
+    category: 'developer',
+    keywords: ['bom', 'byte order mark', 'utf-8 bom', 'strip bom', 'remove bom'],
+    route: '/tools/bom-detector',
+    load: () => import('../../tools/bom-detector/bom-detector').then((m) => m.BomDetector),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['json', 'file'] },
+  },
 ];
