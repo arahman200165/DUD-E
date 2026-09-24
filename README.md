@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-228 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+233 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -205,6 +205,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Conventional Commit Builder](https://arahman200165.github.io/DUDE/tools/conventional-commit-builder) | Developer | Builds a Conventional Commits formatted message from a type, scope, subject, body, and footers. |
 | [Commit Message Validator](https://arahman200165.github.io/DUDE/tools/commit-message-validator) | Developer | Validates a commit message against the Conventional Commits spec, flagging format, length, and style issues. |
 | [Git URL Parser](https://arahman200165.github.io/DUDE/tools/git-url-parser) | Developer | Parses a git remote URL (https, ssh://, git://, or the scp-like git@host:owner/repo form) into host, owner, and repo. |
+| [Git Remote Inspector](https://arahman200165.github.io/DUDE/tools/git-remote-inspector) | Developer | Parses pasted "git remote -v" output into a table of remote name, direction, and parsed URL. |
+| [SQL Formatter / Minifier](https://arahman200165.github.io/DUDE/tools/sql-formatter-tool) | Data | Pretty-prints or minifies SQL across PostgreSQL, MySQL, MariaDB, SQLite, SQL Server, and Oracle (PL/SQL) dialects. |
+| [SQL Syntax Checker](https://arahman200165.github.io/DUDE/tools/sql-syntax-checker) | Data | Checks SQL for syntax errors against a chosen dialect, reporting the error message and line/column. |
+| [SQL Parameterizer](https://arahman200165.github.io/DUDE/tools/sql-parameterizer) | Data | Replaces literal values in a SQL query with placeholders (?, $n, or :named), extracting the values as a parameter list. |
+| [SQL Dialect Converter](https://arahman200165.github.io/DUDE/tools/sql-dialect-converter) | Data | Converts SQL between PostgreSQL, MySQL, MariaDB, SQLite, and SQL Server, best-effort. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
