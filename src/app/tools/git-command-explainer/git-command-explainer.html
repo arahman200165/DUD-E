@@ -1,0 +1,24 @@
+<app-tool-shell title="Git Command Explainer" status="stable">
+  <div class="flex flex-col gap-4">
+    <label class="flex flex-col gap-1 text-ui text-text-muted">
+      Command
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="input()"
+        (input)="onInput($event)"
+      />
+    </label>
+
+    @if (tokens().length > 0) {
+      <ul class="flex flex-col gap-1">
+        @for (token of tokens(); track $index) {
+          <li class="flex items-baseline gap-3 rounded-sm border border-border bg-panel px-2 py-1">
+            <span class="w-40 shrink-0 font-mono text-xs text-text">{{ token.text }}</span>
+            <span class="text-ui text-text-muted">{{ token.description }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</app-tool-shell>
