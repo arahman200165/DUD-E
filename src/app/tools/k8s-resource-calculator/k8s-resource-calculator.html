@@ -1,0 +1,41 @@
+<app-tool-shell title="Kubernetes Resource Requests Calculator" status="stable">
+  <div class="flex flex-col gap-4">
+    <label class="flex flex-col gap-1 text-ui text-text-muted">
+      Paste a Pod, Deployment, or other workload manifest
+      <textarea
+        rows="12"
+        class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="input()"
+        (input)="onInput($event)"
+      ></textarea>
+    </label>
+
+    @if (result(); as current) {
+      @if (current.ok) {
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-sm border border-border bg-panel px-2 py-1.5 text-ui text-text">
+            <div class="text-text-muted">Total requests</div>
+            <div>CPU: {{ formatCpu(current.totals.requestsCpu) }}</div>
+            <div>Memory: {{ formatMemory(current.totals.requestsMemory) }}</div>
+          </div>
+          <div class="rounded-sm border border-border bg-panel px-2 py-1.5 text-ui text-text">
+            <div class="text-text-muted">Total limits</div>
+            <div>CPU: {{ formatCpu(current.totals.limitsCpu) }}</div>
+            <div>Memory: {{ formatMemory(current.totals.limitsMemory) }}</div>
+          </div>
+        </div>
+
+        <ul class="flex flex-col gap-1">
+          @for (container of current.totals.containers; track container.name) {
+            <li class="rounded-sm border border-border bg-panel px-2 py-1 text-ui text-text">
+              {{ container.name }} — requests: {{ container.requestsCpu ?? 0 }} cores / {{ container.requestsMemory ? formatMemory(container.requestsMemory) : '—' }},
+              limits: {{ container.limitsCpu ?? 0 }} cores / {{ container.limitsMemory ? formatMemory(container.limitsMemory) : '—' }}
+            </li>
+          }
+        </ul>
+      } @else {
+        <app-error-panel [message]="current.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
