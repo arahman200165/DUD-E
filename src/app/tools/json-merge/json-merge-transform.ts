@@ -12,15 +12,15 @@ export interface JsonMergeError {
 
 export type JsonMergeResult = { readonly ok: true; readonly output: string } | { readonly ok: false; readonly error: JsonMergeError };
 
-type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
+export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 type JsonObject = { [key: string]: JsonValue };
 
 function isPlainObject(value: unknown): value is JsonObject {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** Recursive merge: overlay keys win, nested objects merge, arrays/scalars are replaced wholesale. */
-function deepMerge(base: JsonValue, overlay: JsonValue): JsonValue {
+/** Recursive merge: overlay keys win, nested objects merge, arrays/scalars are replaced wholesale. Exported for reuse by the Configuration Merge Tool. */
+export function deepMerge(base: JsonValue, overlay: JsonValue): JsonValue {
   if (isPlainObject(base) && isPlainObject(overlay)) {
     const result: JsonObject = { ...base };
     for (const [key, value] of Object.entries(overlay)) {
