@@ -3474,4 +3474,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     io: { accepts: ['text'], produces: ['text'] },
   },
+  {
+    id: 'resolution-calculator',
+    title: 'Resolution Calculator',
+    description: 'Converts a pixel resolution (custom or a named preset like 1080p/4K) into megapixel count and simplified aspect ratio.',
+    category: 'documents',
+    keywords: ['resolution', 'megapixels', 'screen resolution', '1080p', '4k', 'pixel count'],
+    route: '/tools/resolution-calculator',
+    load: () => import('../../tools/resolution-calculator/resolution-calculator').then((m) => m.ResolutionCalculator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'none' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];

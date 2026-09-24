@@ -1,0 +1,31 @@
+<app-tool-shell title="Resolution Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <label class="flex items-center gap-2 text-ui text-text-muted">
+      Preset
+      <select class="rounded-sm border border-border bg-panel px-2 py-1 text-text" [value]="matchingPreset() ?? ''" (change)="applyPreset($event)">
+        <option value="" disabled>Custom</option>
+        @for (preset of presets; track preset.name) {
+          <option [value]="preset.name">{{ preset.name }} ({{ preset.width }} x {{ preset.height }})</option>
+        }
+      </select>
+    </label>
+
+    <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+      <div class="grid grid-cols-2 gap-3">
+        <label class="flex flex-col gap-1">
+          Width (px)
+          <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="width()" (change)="onNumberChange(width, $event)" />
+        </label>
+        <label class="flex flex-col gap-1">
+          Height (px)
+          <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="height()" (change)="onNumberChange(height, $event)" />
+        </label>
+      </div>
+
+      <div class="mt-2 flex flex-col gap-1 border-t border-border pt-2">
+        <div class="flex justify-between"><span class="text-text-muted">Megapixels</span><span class="font-mono text-text">{{ megapixelCount().toFixed(2) }} MP</span></div>
+        <div class="flex justify-between"><span class="text-text-muted">Aspect ratio</span><span class="font-mono text-text">{{ aspectRatio() }}</span></div>
+      </div>
+    </div>
+  </div>
+</app-tool-shell>
