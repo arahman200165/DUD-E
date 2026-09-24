@@ -1,0 +1,40 @@
+<app-tool-shell title="Encoding Detector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (loading()) {
+        <span>Reading...</span>
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop any file here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (report(); as data) {
+      <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File</span><span class="font-mono text-text">{{ data.fileName }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Size</span><span class="font-mono text-text">{{ data.byteLength }} bytes</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Detected encoding</span><span class="font-mono text-text">{{ data.guess }}</span></div>
+        <div class="flex justify-between gap-4">
+          <span class="text-text-muted">Confidence</span>
+          <span
+            class="font-mono"
+            [class.text-success]="data.confidence === 'high'"
+            [class.text-warning]="data.confidence === 'medium'"
+            [class.text-danger]="data.confidence === 'low'"
+          >
+            {{ data.confidence }}
+          </span>
+        </div>
+        @if (data.bom) {
+          <div class="flex justify-between gap-4"><span class="text-text-muted">Byte-order mark</span><span class="font-mono text-text">{{ data.bom.length }} bytes ({{ data.bom.encoding }})</span></div>
+        } @else {
+          <p class="text-text-muted">No byte-order mark present.</p>
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
