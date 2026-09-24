@@ -1,0 +1,48 @@
+<app-tool-shell title="File Signature & Type Detector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (loading()) {
+        <span>Reading...</span>
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop any file here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (report(); as data) {
+      <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File name</span><span class="font-mono text-text">{{ data.fileName }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File size</span><span class="font-mono text-text">{{ formattedSize() }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Declared MIME</span><span class="font-mono text-text">{{ data.declaredMime || 'unknown' }}</span></div>
+        <div class="flex justify-between gap-4">
+          <span class="text-text-muted">First {{ data.matchedBytesHex.split(' ').length }} bytes</span>
+          <span class="font-mono text-text">{{ data.matchedBytesHex || '(empty file)' }}</span>
+        </div>
+
+        <div class="mt-2 border-t border-border pt-2">
+          @if (data.detected; as sig) {
+            <div class="flex justify-between gap-4"><span class="text-text-muted">Detected signature</span><span class="font-mono text-text">{{ sig.mime }}</span></div>
+            @if (data.containerFormat) {
+              <div class="flex justify-between gap-4"><span class="text-text-muted">Container resolves to</span><span class="font-mono text-text">{{ data.containerFormat }}</span></div>
+            }
+            @if (sig.note) {
+              <p class="mt-1 text-ui text-text-muted">{{ sig.note }}</p>
+            }
+          } @else {
+            <p class="text-text-muted">No known magic-byte signature matched -- likely a plain-text or unrecognized format.</p>
+          }
+        </div>
+
+        @if (data.extensionMismatch) {
+          <div class="mt-2 rounded-sm border border-warning/40 bg-warning/10 px-2 py-1.5 text-ui text-warning">
+            Extension mismatch: ".{{ data.declaredExtension }}" doesn't match the detected format.
+          </div>
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
