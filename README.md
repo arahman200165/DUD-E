@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-251 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+256 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -228,6 +228,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [.env Diff](https://arahman200165.github.io/DUDE/tools/env-diff) | Developer | Diffs two .env files, reporting added, removed, and changed variables. |
 | [.env ↔ JSON](https://arahman200165.github.io/DUDE/tools/env-json-converter) | Developer | Converts a .env file to a flat JSON object, or the reverse. |
 | [Config File Comparator](https://arahman200165.github.io/DUDE/tools/config-file-comparator) | Developer | Diffs two config files as .env, INI, or Java .properties, reporting added, removed, and changed keys. |
+| [Secret Detector](https://arahman200165.github.io/DUDE/tools/secret-detector) | Developer | Flags likely credentials and keys in pasted text or config — AWS/GitHub/Slack tokens, PEM private keys, JWTs, generic key=value assignments, and high-entropy strings. |
+| [Missing Environment Variable Detector](https://arahman200165.github.io/DUDE/tools/missing-env-var-detector) | Developer | Cross-checks environment variables referenced in source code against a .env file's declared keys, in both directions. |
+| [Configuration Merge Tool](https://arahman200165.github.io/DUDE/tools/config-merge-tool) | Developer | Merges an ordered list of .env/INI/.properties/YAML/JSON config sources, later sources overriding earlier ones. |
+| [IP Address Inspector](https://arahman200165.github.io/DUDE/tools/ip-address-inspector) | Developer | Inspects an IPv4 or IPv6 address — canonical form, classification (private/loopback/multicast/etc.), and binary/expanded/integer view. |
+| [CIDR Calculator](https://arahman200165.github.io/DUDE/tools/cidr-calculator) | Developer | Computes the network/broadcast address, usable host range, and host count for an IPv4 CIDR block. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
