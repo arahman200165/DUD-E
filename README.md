@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-223 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+228 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -200,6 +200,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Git Command Builder](https://arahman200165.github.io/DUDE/tools/git-command-builder) | Developer | Builds a git command from a subcommand and its common flags — clone, commit, branch, merge, rebase, reset, tag, push, pull, log, and stash. |
 | [Git Command Explainer](https://arahman200165.github.io/DUDE/tools/git-command-explainer) | Developer | Breaks an arbitrary git command down token by token, explaining each subcommand, flag, and positional argument. |
 | [Gitignore Generator](https://arahman200165.github.io/DUDE/tools/gitignore-generator) | Developer | Combines curated .gitignore templates (Node, Python, Java, .NET, Go, Rust, macOS, Windows, JetBrains, VS Code) into one file. |
+| [Gitignore Tester](https://arahman200165.github.io/DUDE/tools/gitignore-tester) | Developer | Tests a list of paths against pasted .gitignore rules, honoring anchoring, trailing-slash directory-only patterns, and "!" negation. |
+| [Branch Name Generator](https://arahman200165.github.io/DUDE/tools/branch-name-generator) | Developer | Builds a slugified branch name from a type, optional ticket id, and description. |
+| [Conventional Commit Builder](https://arahman200165.github.io/DUDE/tools/conventional-commit-builder) | Developer | Builds a Conventional Commits formatted message from a type, scope, subject, body, and footers. |
+| [Commit Message Validator](https://arahman200165.github.io/DUDE/tools/commit-message-validator) | Developer | Validates a commit message against the Conventional Commits spec, flagging format, length, and style issues. |
+| [Git URL Parser](https://arahman200165.github.io/DUDE/tools/git-url-parser) | Developer | Parses a git remote URL (https, ssh://, git://, or the scp-like git@host:owner/repo form) into host, owner, and repo. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
