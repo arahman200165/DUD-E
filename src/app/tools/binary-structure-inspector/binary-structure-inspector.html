@@ -1,0 +1,93 @@
+<app-tool-shell title="Binary Structure Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear file</button>
+    </div>
+
+    <div class="flex flex-col gap-1 rounded-sm border border-border bg-panel p-2">
+      <div class="mb-1 text-ui text-text-muted">Define your struct's fields, in order:</div>
+      <table class="w-full text-left font-mono text-ui">
+        <thead class="text-text-muted">
+          <tr>
+            <th class="px-1 py-0.5">Name</th>
+            <th class="px-1 py-0.5">Type</th>
+            <th class="px-1 py-0.5">Length (char)</th>
+            <th class="px-1 py-0.5">Endianness</th>
+            <th class="px-1 py-0.5"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (f of fields(); track $index) {
+            <tr class="border-t border-border">
+              <td class="px-1 py-0.5">
+                <input class="w-28 rounded-sm border border-border bg-panel-elevated px-1 text-text" [value]="f.name" (change)="onNameChange($index, $event)" />
+              </td>
+              <td class="px-1 py-0.5">
+                <select class="rounded-sm border border-border bg-panel-elevated px-1 text-text" [value]="f.type" (change)="onTypeChange($index, $event)">
+                  @for (t of fieldTypes; track t) {
+                    <option [value]="t">{{ t }}</option>
+                  }
+                </select>
+              </td>
+              <td class="px-1 py-0.5">
+                @if (f.type === 'char') {
+                  <input type="number" min="0" class="w-16 rounded-sm border border-border bg-panel-elevated px-1 text-text" [value]="f.length" (change)="onLengthChange($index, $event)" />
+                }
+              </td>
+              <td class="px-1 py-0.5">
+                @if (f.type !== 'uint8' && f.type !== 'int8' && f.type !== 'char') {
+                  <select class="rounded-sm border border-border bg-panel-elevated px-1 text-text" [value]="f.endianness" (change)="onEndiannessChange($index, $event)">
+                    <option value="LE">LE</option>
+                    <option value="BE">BE</option>
+                  </select>
+                }
+              </td>
+              <td class="px-1 py-0.5">
+                <button type="button" class="text-text-muted hover:text-danger" (click)="removeField($index)">Remove</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <button type="button" class="mt-1 self-start rounded-sm border border-border px-2 py-0.5 text-ui hover:bg-panel-elevated" (click)="addField()">Add field</button>
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop the file to parse against your struct, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (result(); as data) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File</span><span class="font-mono text-text">{{ fileName() }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Bytes consumed</span><span class="font-mono text-text">{{ data.bytesConsumed }}</span></div>
+
+        @if (data.error) {
+          <app-error-panel [message]="data.error" />
+        }
+
+        <table class="w-full text-left font-mono text-ui">
+          <thead class="text-text-muted">
+            <tr>
+              <th class="px-1 py-0.5">Field</th>
+              <th class="px-1 py-0.5">Offset</th>
+              <th class="px-1 py-0.5">Size</th>
+              <th class="px-1 py-0.5">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (parsed of data.fields; track parsed.offset) {
+              <tr class="border-t border-border">
+                <td class="px-1 py-0.5 text-text">{{ parsed.name }}</td>
+                <td class="px-1 py-0.5 text-text-muted">0x{{ parsed.offset.toString(16) }}</td>
+                <td class="px-1 py-0.5 text-text-muted">{{ parsed.size }}</td>
+                <td class="px-1 py-0.5 text-text">{{ parsed.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</app-tool-shell>

@@ -3402,4 +3402,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'none' },
     io: { accepts: ['file'], produces: ['json'] },
   },
+  {
+    id: 'binary-structure-inspector',
+    title: 'Binary Structure Inspector',
+    description: 'Parses an uploaded file against a user-defined sequence of typed fields (integers, floats, fixed-length strings, chosen endianness) into a table of offsets and decoded values.',
+    category: 'developer',
+    keywords: ['struct', 'binary structure', 'c struct', 'kaitai', 'parse binary', 'field layout'],
+    route: '/tools/binary-structure-inspector',
+    load: () => import('../../tools/binary-structure-inspector/binary-structure-inspector').then((m) => m.BinaryStructureInspector),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'local' },
+    io: { accepts: ['file'], produces: ['table'] },
+  },
 ];
