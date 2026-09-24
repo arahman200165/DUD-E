@@ -1475,62 +1475,66 @@ Item 24 (Archive Creator / Extractor) used `fflate` for ZIP and a hand-rolled US
 
 ---
 
-## Phase 19 — IDs, Mock Data & Git/SQL/Container Config Tooling (Proposed — Track A: Browser-Extensible)
+## Phase 19 — IDs, Mock Data & Git/SQL/Container Config Tooling (✅ Complete — Track A: Browser-Extensible)
 
 Goal: broaden ID generation, turn Random Data Generator into a schema-driven mock-data studio, and add text/config-level Git, SQL, Docker/Kubernetes, and `.env` tooling that doesn't touch a live daemon, cluster, or database connection.
 
-1. UUID v1, v3, v6, v7 (v4 and v5 already ship) — inspect the embedded timestamp on time-based versions
-2. ULID Generator / Inspector
-3. NanoID Generator
-4. Snowflake ID Generator / Inspector
-5. CUID Generator
-6. KSUID Generator / Inspector
-7. Mock Data Studio: schema-driven generation (field → `@faker-js/faker` category mapping, e.g. `{"name": "person.fullName", "email": "internet.email"}`) with JSON / CSV / SQL / XML / YAML / NDJSON export
-8. Git Command Builder
-9. Git Command Explainer (break an arbitrary command like `git rebase --onto develop feature-old feature-new` into what each argument means)
-10. Gitignore Generator
-11. Gitignore Tester
-12. Branch Name Generator
-13. Conventional Commit Builder
-14. Commit Message Validator
-15. Git URL Parser
-16. Git Remote Inspector
-17. SQL Formatter / Minifier / Beautifier
-18. SQL Syntax Checker
-19. SQL Parameterizer
-20. SQL Dialect Converter (PostgreSQL / SQL Server / MySQL / MariaDB / SQLite / Oracle)
-21. SQL Query Explainer (static, pattern-based — not a live `EXPLAIN` against a running database)
-22. CREATE TABLE Generator
-23. SQL → CSV, CSV → INSERT statements, JSON → INSERT statements
-24. Schema Diff (comparing two schema definitions as text)
-25. Dockerfile Linter / Formatter
-26. Docker Compose Validator / Viewer
-27. Docker Run ↔ Compose Converter
-28. Kubernetes Manifest YAML Validator / Formatter
-29. Kubernetes Manifest Diff
-30. kubeconfig Inspector
-31. Kubernetes Quantity Converter
-32. Kubernetes CronJob Schedule Tester
-33. Kubernetes Resource Requests Calculator
-34. Kubernetes Base64 Secret Encoder / Decoder
-35. `.env` Editor
-36. `.env` Validator
-37. `.env` Diff
-38. `.env` ↔ JSON
-39. Config File Comparator
-40. Secret Detector (flag likely credentials/keys in pasted text or config)
-41. Missing Environment Variable Detector
-42. Configuration Merge Tool
-43. IP Address Inspector (pure computation)
-44. CIDR Calculator
-45. Subnet Calculator
-46. IPv4 ↔ Integer Converter
-47. IPv6 Explorer
-48. MAC Address Inspector
+**Achieved (Milestones 217-265):** all 48 items shipped, plus one framework-layer milestone (a shared `diff-view` primitive extracted to `src/app/shared/components/`, Milestone 240, consumed by items 24, 29, 37, and 39):
+
+1. UUID v1, v3, v6, v7 (v4 and v5 already ship) — inspect the embedded timestamp on time-based versions — extended the existing `uuid` tool rather than a new one; v1 and v7 already shipped pre-Phase-19, so only v3/v6 plus v6/v7 timestamp decoding were net-new (Milestone 217)
+2. ULID Generator / Inspector (Milestone 218)
+3. NanoID Generator (Milestone 219)
+4. Snowflake ID Generator / Inspector — hand-rolled bit-packing (no npm package fits every vendor's epoch/bit-width variant) (Milestone 220)
+5. CUID Generator (Milestone 221)
+6. KSUID Generator / Inspector — hand-rolled rather than depending on the `ksuid` npm package, which hard-requires Node's `crypto`/`Buffer` globals with no browser build (Milestone 222)
+7. Mock Data Studio: schema-driven generation (field → `@faker-js/faker` category mapping, e.g. `{"name": "person.fullName", "email": "internet.email"}`) with JSON / CSV / SQL / XML / YAML / NDJSON export — shipped as a new, separate tool; Random Data Generator's existing quick-pick field UI was left untouched (Milestone 223)
+8. Git Command Builder (Milestone 224)
+9. Git Command Explainer (break an arbitrary command like `git rebase --onto develop feature-old feature-new` into what each argument means) (Milestone 225)
+10. Gitignore Generator (Milestone 226)
+11. Gitignore Tester (Milestone 227)
+12. Branch Name Generator (Milestone 228)
+13. Conventional Commit Builder (Milestone 229)
+14. Commit Message Validator (Milestone 230)
+15. Git URL Parser (Milestone 231)
+16. Git Remote Inspector (Milestone 232)
+17. SQL Formatter / Minifier / Beautifier (Milestone 233)
+18. SQL Syntax Checker (Milestone 234)
+19. SQL Parameterizer (Milestone 235)
+20. SQL Dialect Converter (PostgreSQL / SQL Server / MySQL / MariaDB / SQLite / Oracle) — Oracle isn't offered here: `node-sql-parser` (this item's AST engine) has no Oracle grammar to parse from, only `sql-formatter` (item 17) can pretty-print PL/SQL (Milestone 236)
+21. SQL Query Explainer (static, pattern-based — not a live `EXPLAIN` against a running database) (Milestone 237)
+22. CREATE TABLE Generator — infers columns from a pasted JSON/CSV sample with per-dialect type mapping; distinct from the pre-existing Model Generator's SQL emit mode, which converts an arbitrary nested JSON shape to a model across nine languages rather than a tabular sample to dialect-specific DDL (Milestone 238)
+23. SQL → CSV, CSV → INSERT statements, JSON → INSERT statements — extended the existing `csv-sql` tool with a third `json-to-sql` direction rather than a new tool (Milestone 239)
+24. Schema Diff (comparing two schema definitions as text) (Milestone 241)
+25. Dockerfile Linter / Formatter (Milestone 242)
+26. Docker Compose Validator / Viewer (Milestone 243)
+27. Docker Run ↔ Compose Converter (Milestone 244)
+28. Kubernetes Manifest YAML Validator / Formatter (Milestone 245)
+29. Kubernetes Manifest Diff (Milestone 246)
+30. kubeconfig Inspector (Milestone 247)
+31. Kubernetes Quantity Converter (Milestone 248)
+32. Kubernetes CronJob Schedule Tester (Milestone 249)
+33. Kubernetes Resource Requests Calculator (Milestone 250)
+34. Kubernetes Base64 Secret Encoder / Decoder (Milestone 251)
+35. `.env` Editor (Milestone 252)
+36. `.env` Validator (Milestone 253)
+37. `.env` Diff (Milestone 254)
+38. `.env` ↔ JSON (Milestone 255)
+39. Config File Comparator (Milestone 256)
+40. Secret Detector (flag likely credentials/keys in pasted text or config) (Milestone 257)
+41. Missing Environment Variable Detector (Milestone 258)
+42. Configuration Merge Tool (Milestone 259)
+43. IP Address Inspector (pure computation) — introduced the shared `ip-math.ts` (IPv4 32-bit integer math, IPv6 128-bit `bigint` math) that items 44-48 build on (Milestone 260)
+44. CIDR Calculator (Milestone 261)
+45. Subnet Calculator (Milestone 262)
+46. IPv4 ↔ Integer Converter (Milestone 263)
+47. IPv6 Explorer (Milestone 264)
+48. MAC Address Inspector (Milestone 265)
 
 ### Notes
 
 Items 8-16 are distinct from the existing Git Repo Browser (§20), which already does commit-history browsing/diffing over a locally-selected `.git` folder via `isomorphic-git` — these are text/URL-level tools with no repository needed. Items 43-48 look like "Networking" but are pure math/string manipulation, so they stay Track A rather than joining the live Networking Toolkit in Track B. Live database connections (SQL Server/PostgreSQL/MySQL/Redis/MongoDB explorers) and live Docker/Kubernetes daemon/cluster access are Track B, not here.
+
+New dependencies added: `ulid`, `nanoid`, `@paralleldrive/cuid2` (item 2-5), `sql-formatter` and `node-sql-parser` (items 17-24). `ksuid` was deliberately **not** added — the published npm package hard-requires Node's `crypto`/`Buffer` globals with no browser build, so item 6 hand-rolls the same base62/epoch scheme instead (base62 encode/decode via the already-installed `base-x`, randomness via Web Crypto). Gitignore Generator (item 10) ships a curated, bundled template set rather than a live GitHub gitignore-API fetch, keeping every one of this phase's 48 tools fully offline — no `docs/SECURITY.md` changes were needed.
 
 ---
 
