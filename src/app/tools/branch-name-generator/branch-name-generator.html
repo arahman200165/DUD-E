@@ -1,0 +1,56 @@
+<app-tool-shell title="Branch Name Generator" status="stable">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap items-end gap-3">
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Type
+        <select
+          class="rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="type()"
+          (change)="onTypeChange($event)"
+        >
+          <option value="feature">feature</option>
+          <option value="bugfix">bugfix</option>
+          <option value="hotfix">hotfix</option>
+          <option value="chore">chore</option>
+          <option value="release">release</option>
+          <option value="none">(none)</option>
+        </select>
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Ticket (optional)
+        <input
+          type="text"
+          class="w-32 rounded-sm border border-border bg-panel px-2 py-0.5 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="JIRA-123"
+          [value]="ticket()"
+          (input)="onTicketInput($event)"
+        />
+      </label>
+      <label class="flex flex-1 flex-col gap-1 text-ui text-text-muted">
+        Description
+        <input
+          type="text"
+          class="w-full rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="Add login page"
+          [value]="description()"
+          (input)="onDescriptionInput($event)"
+        />
+      </label>
+      <label class="flex flex-col gap-1 text-ui text-text-muted">
+        Max length (0 = none)
+        <input
+          type="number"
+          min="0"
+          class="w-24 rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="maxLength()"
+          (input)="onMaxLengthInput($event)"
+        />
+      </label>
+    </div>
+
+    <div class="flex items-center justify-between gap-2 rounded-sm border border-border bg-panel px-2 py-1.5">
+      <span class="font-mono text-xs text-text">{{ branchName() }}</span>
+      <app-copy-button [text]="branchName()" />
+    </div>
+  </div>
+</app-tool-shell>
