@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-266 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+267 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -305,6 +305,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Binary Strings Extractor](https://arahman200165.github.io/DUDE/tools/binary-strings-extractor) | Developer | Extracts printable ASCII and little-endian UTF-16 text runs from an uploaded file, like the Unix `strings` utility, with an adjustable minimum length. |
 | [Encoding Detector](https://arahman200165.github.io/DUDE/tools/encoding-detector) | Developer | Guesses an uploaded file's text encoding from its byte-order mark, or from a UTF-8/ASCII validity check when there is none, with a confidence rating. |
 | [BOM Detector / Remover](https://arahman200165.github.io/DUDE/tools/bom-detector) | Developer | Detects a UTF-8/16/32 byte-order mark at the start of an uploaded file and offers a one-click download of the file with it stripped. |
+| [Hex Editor](https://arahman200165.github.io/DUDE/tools/hex-editor) | Developer | Interactively edits an uploaded file byte-by-byte in a hex grid with a live ASCII gutter, then downloads the modified bytes. Limited to 16 KB files to keep editing responsive. |
 
 ## Architecture
 

@@ -1,0 +1,60 @@
+<app-tool-shell title="Hex Editor" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (bytes()) {
+        <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="download()">Download</button>
+        @if (dirty()) {
+          <span class="text-warning">Modified</span>
+        }
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop a file here to edit (max 16 KB), or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (bytes(); as data) {
+      <p class="text-ui text-text-muted">{{ fileName() }} -- {{ data.length }} bytes. Click a byte to edit it in place.</p>
+
+      <div class="overflow-x-auto rounded-sm border border-border">
+        <table class="border-collapse font-mono text-ui">
+          <tbody>
+            @for (row of rows(); track row.offset) {
+              <tr class="border-t border-border first:border-t-0">
+                <td class="whitespace-nowrap bg-panel-elevated px-2 py-0.5 text-text-muted">{{ offsetHex(row.offset) }}</td>
+                @for (byte of row.bytes; track $index) {
+                  <td class="w-7 px-0.5 py-0.5 text-center">
+                    @if (editingIndex() === row.offset + $index) {
+                      <input
+                        class="w-6 rounded-sm border border-accent bg-panel px-0 text-center text-text"
+                        [value]="editingValue()"
+                        (input)="onEditingInput($event)"
+                        (blur)="commitEdit(row.offset + $index)"
+                        (keydown.enter)="commitEdit(row.offset + $index)"
+                        (keydown.escape)="cancelEdit()"
+                        maxlength="2"
+                        autofocus
+                      />
+                    } @else {
+                      <button type="button" class="w-6 rounded-sm text-text hover:bg-panel-elevated" (click)="startEdit(row.offset + $index, byte)">
+                        {{ hexByte(byte) }}
+                      </button>
+                    }
+                  </td>
+                }
+                <td class="whitespace-nowrap border-l border-border px-2 py-0.5 text-text-muted">
+                  @for (byte of row.bytes; track $index) {
+                    <span>{{ charFor(byte) }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</app-tool-shell>
