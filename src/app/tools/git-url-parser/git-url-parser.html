@@ -1,0 +1,32 @@
+<app-tool-shell title="Git URL Parser" status="stable">
+  <div class="flex flex-col gap-4">
+    <label class="flex flex-col gap-1 text-ui text-text-muted">
+      Git remote URL
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="input()"
+        (input)="onInput($event)"
+      />
+    </label>
+
+    @if (result(); as parsed) {
+      @if (parsed.ok) {
+        <div class="flex flex-wrap gap-3 rounded-sm border border-border bg-panel p-2 text-ui text-text">
+          <div><span class="text-text-muted">Protocol</span><br />{{ parsed.value.protocol }}</div>
+          @if (parsed.value.user) {
+            <div><span class="text-text-muted">User</span><br />{{ parsed.value.user }}</div>
+          }
+          <div><span class="text-text-muted">Host</span><br />{{ parsed.value.host }}</div>
+          @if (parsed.value.port) {
+            <div><span class="text-text-muted">Port</span><br />{{ parsed.value.port }}</div>
+          }
+          <div><span class="text-text-muted">Owner</span><br />{{ parsed.value.owner }}</div>
+          <div><span class="text-text-muted">Repo</span><br />{{ parsed.value.repo }}</div>
+        </div>
+      } @else {
+        <app-error-panel [message]="parsed.error" />
+      }
+    }
+  </div>
+</app-tool-shell>
