@@ -2,7 +2,8 @@
  * Fixed-width hex-row byte comparison for binary files — deliberately not
  * a Myers/LCS diff over bytes, since alignment-based diffing is the wrong
  * tool for noisy binary content (a single inserted byte would cascade into
- * "changed" for the rest of the file).
+ * "changed" for the rest of the file). Extracted from Directory Diff's
+ * binary drill-down on its second consumer, the standalone Hex Diff tool.
  */
 
 export interface ByteDiffChunk {
@@ -29,12 +30,6 @@ export function computeByteDiff(left: Uint8Array, right: Uint8Array, chunkSize =
   }
 
   return chunks;
-}
-
-export function bytesToHex(bytes: Uint8Array): string {
-  return Array.from(bytes)
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join(' ');
 }
 
 /** Heuristic text/binary detection: a NUL byte in the sampled prefix strongly indicates binary content. */

@@ -9,7 +9,8 @@ import { NativeFsService } from '../../core/platform/native-fs.service';
 import { computeLineDiff, DiffLineType, DiffResult } from '../diff/text-diff';
 import { scanFileList, scanNativeEntries, ScannedFile } from './directory-tree-scan';
 import { DirectoryDiffFileEntry, DirectoryDiffPayload, EntryStatus, TreeDiffEntry } from './directory-tree-diff';
-import { bytesToHex, ByteDiffChunk, computeByteDiff, looksLikeText } from './byte-diff';
+import { bytesToHexSpaced } from '../../shared/utils/byte-codec';
+import { ByteDiffChunk, computeByteDiff, looksLikeText } from '../../shared/utils/byte-diff';
 
 type Side = 'left' | 'right';
 
@@ -175,7 +176,7 @@ export class DirectoryDiff implements OnDestroy {
   }
 
   protected hex(bytes: Uint8Array | null): string {
-    return bytes ? bytesToHex(bytes) : '';
+    return bytes ? bytesToHexSpaced(bytes) : '';
   }
 
   protected lineClasses(type: DiffLineType): string {

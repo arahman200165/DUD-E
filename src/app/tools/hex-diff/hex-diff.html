@@ -1,0 +1,48 @@
+<app-tool-shell title="Hex Diff" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Left file</span>
+        <app-file-drop label="Drop the left/old file here" (fileSelected)="onLeftSelected($event)" (rejected)="onRejected($event)" />
+        @if (leftName()) {
+          <span class="font-mono text-ui text-text">{{ leftName() }}</span>
+        }
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-ui text-text-muted">Right file</span>
+        <app-file-drop label="Drop the right/new file here" (fileSelected)="onRightSelected($event)" (rejected)="onRejected($event)" />
+        @if (rightName()) {
+          <span class="font-mono text-ui text-text">{{ rightName() }}</span>
+        }
+      </div>
+    </div>
+
+    @if (summary(); as data) {
+      <div class="flex items-center gap-4 text-ui">
+        <span class="text-text-muted">{{ data.total }} rows compared</span>
+        <span [class.text-error]="data.differing > 0" [class.text-success]="data.differing === 0">{{ data.differing }} differing</span>
+      </div>
+
+      @if (bothLookLikeText()) {
+        <p class="text-ui text-text-muted">Both files look like plain text -- the Text Diff tool may give a more readable line-level comparison.</p>
+      }
+
+      <div class="max-h-96 overflow-auto rounded-sm border border-border font-mono text-ui-xs">
+        @for (chunk of chunks(); track chunk.offset) {
+          <div class="grid grid-cols-2 gap-2 px-1" [class]="chunk.equal ? '' : 'bg-error/10'">
+            <span>{{ offsetHex(chunk.offset) }}: {{ hex(chunk.leftBytes) }}</span>
+            <span>{{ hex(chunk.rightBytes) }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>

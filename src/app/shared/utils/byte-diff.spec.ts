@@ -1,4 +1,4 @@
-import { bytesToHex, computeByteDiff, looksLikeText } from './byte-diff';
+import { computeByteDiff, looksLikeText } from './byte-diff';
 
 describe('computeByteDiff', () => {
   it('marks identical chunks as equal', () => {
@@ -36,16 +36,6 @@ describe('computeByteDiff', () => {
 
   it('returns no chunks for two empty buffers', () => {
     expect(computeByteDiff(new Uint8Array(), new Uint8Array())).toEqual([]);
-  });
-});
-
-describe('bytesToHex', () => {
-  it('formats bytes as space-separated lowercase hex', () => {
-    expect(bytesToHex(new Uint8Array([0, 255, 16]))).toBe('00 ff 10');
-  });
-
-  it('returns an empty string for no bytes', () => {
-    expect(bytesToHex(new Uint8Array())).toBe('');
   });
 });
 

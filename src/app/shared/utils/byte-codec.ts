@@ -16,6 +16,11 @@ export function bytesToHex(bytes: Uint8Array): string {
   return out;
 }
 
+/** Space-separated byte-pair hex, e.g. "00 ff 10" -- for display, not round-tripping (see `hexToBytes` for that). */
+export function bytesToHexSpaced(bytes: Uint8Array): string {
+  return Array.from(bytes, (byte) => bytesToHex(new Uint8Array([byte]))).join(' ');
+}
+
 /** Accepts hex with optional whitespace/colon/dash separators between byte pairs. */
 export function hexToBytes(hex: string): BytesResult {
   const cleaned = hex.replace(/[\s:,-]+/g, '');

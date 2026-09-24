@@ -3,6 +3,7 @@ import {
   binaryStringToBytes,
   bytesToBinaryString,
   bytesToHex,
+  bytesToHexSpaced,
   bytesToTextAscii,
   bytesToTextUtf16,
   bytesToTextUtf8,
@@ -11,6 +12,16 @@ import {
   textToBytesUtf16,
   textToBytesUtf8,
 } from './byte-codec';
+
+describe('bytesToHexSpaced', () => {
+  it('formats bytes as space-separated lowercase hex', () => {
+    expect(bytesToHexSpaced(new Uint8Array([0, 255, 16]))).toBe('00 ff 10');
+  });
+
+  it('returns an empty string for no bytes', () => {
+    expect(bytesToHexSpaced(new Uint8Array())).toBe('');
+  });
+});
 
 describe('bytesToHex / hexToBytes', () => {
   it('round-trips arbitrary bytes', () => {

@@ -3390,4 +3390,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['file'], produces: ['file'] },
   },
+  {
+    id: 'hex-diff',
+    title: 'Hex Diff',
+    description: 'Compares two uploaded files byte-by-byte in fixed-width hex rows, highlighting which 16-byte chunks differ -- the standalone version of Directory Diff\'s binary drill-down.',
+    category: 'developer',
+    keywords: ['hex diff', 'binary diff', 'byte diff', 'compare files', 'file comparison'],
+    route: '/tools/hex-diff',
+    load: () => import('../../tools/hex-diff/hex-diff').then((m) => m.HexDiff),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['json'] },
+  },
 ];
