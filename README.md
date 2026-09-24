@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-246 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+251 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -223,6 +223,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Kubernetes CronJob Schedule Tester](https://arahman200165.github.io/DUDE/tools/k8s-cronjob-tester) | Developer | Extracts a CronJob's schedule from a pasted manifest (or accepts a bare cron expression) and shows its next run times. |
 | [Kubernetes Resource Requests Calculator](https://arahman200165.github.io/DUDE/tools/k8s-resource-calculator) | Developer | Sums container CPU/memory requests and limits across a Pod, Deployment, or other workload manifest. |
 | [Kubernetes Base64 Secret Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/k8s-secret-base64) | Developer | Encodes plaintext key/value pairs into a Secret data: block, or decodes an existing Secret's base64 values back to plaintext. |
+| [.env Editor](https://arahman200165.github.io/DUDE/tools/env-editor) | Developer | Edits a .env file as a key/value list or raw text, with quoting handled automatically. |
+| [.env Validator](https://arahman200165.github.io/DUDE/tools/env-validator) | Developer | Validates a .env file against a required-keys list with lightweight number/boolean/url type hints. |
+| [.env Diff](https://arahman200165.github.io/DUDE/tools/env-diff) | Developer | Diffs two .env files, reporting added, removed, and changed variables. |
+| [.env ↔ JSON](https://arahman200165.github.io/DUDE/tools/env-json-converter) | Developer | Converts a .env file to a flat JSON object, or the reverse. |
+| [Config File Comparator](https://arahman200165.github.io/DUDE/tools/config-file-comparator) | Developer | Diffs two config files as .env, INI, or Java .properties, reporting added, removed, and changed keys. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
