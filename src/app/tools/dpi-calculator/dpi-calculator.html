@@ -1,0 +1,111 @@
+<app-tool-shell title="DPI Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-2 text-ui">
+      <button
+        type="button"
+        class="rounded-sm border px-2 py-0.5"
+        [class.border-accent]="mode() === 'find-dpi'"
+        [class.border-border]="mode() !== 'find-dpi'"
+        (click)="setMode('find-dpi')"
+      >
+        Find DPI
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border px-2 py-0.5"
+        [class.border-accent]="mode() === 'find-pixels'"
+        [class.border-border]="mode() !== 'find-pixels'"
+        (click)="setMode('find-pixels')"
+      >
+        Find pixel size
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border px-2 py-0.5"
+        [class.border-accent]="mode() === 'find-physical-size'"
+        [class.border-border]="mode() !== 'find-physical-size'"
+        (click)="setMode('find-physical-size')"
+      >
+        Find physical size
+      </button>
+
+      <label class="ml-auto flex items-center gap-1 text-text-muted">
+        Unit
+        <select class="rounded-sm border border-border bg-panel px-1 py-0.5 text-text" [value]="unit()" (change)="setUnit($event)">
+          <option value="in">inches</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+      @if (mode() === 'find-dpi') {
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1">
+            Pixel width
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="pixelWidth()" (change)="onNumberChange(pixelWidth, $event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Pixel height
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="pixelHeight()" (change)="onNumberChange(pixelHeight, $event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Physical width ({{ unit() }})
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="physicalWidth()" (change)="onNumberChange(physicalWidth, $event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Physical height ({{ unit() }})
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="physicalHeight()" (change)="onNumberChange(physicalHeight, $event)" />
+          </label>
+        </div>
+        <div class="mt-2 flex justify-between border-t border-border pt-2">
+          <span class="text-text-muted">Horizontal / vertical DPI</span>
+          <span class="font-mono text-text">{{ dpiResult().horizontalDpi.toFixed(1) }} / {{ dpiResult().verticalDpi.toFixed(1) }}</span>
+        </div>
+      }
+
+      @if (mode() === 'find-pixels') {
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1">
+            Physical width ({{ unit() }})
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="physicalWidth()" (change)="onNumberChange(physicalWidth, $event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Physical height ({{ unit() }})
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="physicalHeight()" (change)="onNumberChange(physicalHeight, $event)" />
+          </label>
+          <label class="col-span-2 flex flex-col gap-1">
+            Target DPI
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="targetDpi()" (change)="onNumberChange(targetDpi, $event)" />
+          </label>
+        </div>
+        <div class="mt-2 flex justify-between border-t border-border pt-2">
+          <span class="text-text-muted">Required pixel size</span>
+          <span class="font-mono text-text">{{ pixelResult().width }} x {{ pixelResult().height }} px</span>
+        </div>
+      }
+
+      @if (mode() === 'find-physical-size') {
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1">
+            Pixel width
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="pixelWidth()" (change)="onNumberChange(pixelWidth, $event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Pixel height
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="pixelHeight()" (change)="onNumberChange(pixelHeight, $event)" />
+          </label>
+          <label class="col-span-2 flex flex-col gap-1">
+            Target DPI
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="targetDpi()" (change)="onNumberChange(targetDpi, $event)" />
+          </label>
+        </div>
+        <div class="mt-2 flex justify-between border-t border-border pt-2">
+          <span class="text-text-muted">Physical size ({{ unit() }})</span>
+          <span class="font-mono text-text">{{ physicalResult().width.toFixed(2) }} x {{ physicalResult().height.toFixed(2) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</app-tool-shell>

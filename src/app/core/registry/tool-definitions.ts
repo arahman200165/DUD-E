@@ -3450,4 +3450,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'none' },
     io: { accepts: ['file'], produces: ['json'] },
   },
+  {
+    id: 'dpi-calculator',
+    title: 'DPI Calculator',
+    description: 'Converts between pixel dimensions, physical print size, and DPI -- find the DPI of an image at a given print size, the pixels needed for a target DPI, or the print size a given pixel count supports.',
+    category: 'documents',
+    keywords: ['dpi', 'ppi', 'print resolution', 'pixel density', 'print size'],
+    route: '/tools/dpi-calculator',
+    load: () => import('../../tools/dpi-calculator/dpi-calculator').then((m) => m.DpiCalculator),
+    status: 'stable',
+    persistence: { input: 'session', preferences: 'local' },
+    io: { accepts: ['text'], produces: ['text'] },
+  },
 ];
