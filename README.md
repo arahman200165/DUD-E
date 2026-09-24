@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-256 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+260 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -233,6 +233,10 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Configuration Merge Tool](https://arahman200165.github.io/DUDE/tools/config-merge-tool) | Developer | Merges an ordered list of .env/INI/.properties/YAML/JSON config sources, later sources overriding earlier ones. |
 | [IP Address Inspector](https://arahman200165.github.io/DUDE/tools/ip-address-inspector) | Developer | Inspects an IPv4 or IPv6 address — canonical form, classification (private/loopback/multicast/etc.), and binary/expanded/integer view. |
 | [CIDR Calculator](https://arahman200165.github.io/DUDE/tools/cidr-calculator) | Developer | Computes the network/broadcast address, usable host range, and host count for an IPv4 CIDR block. |
+| [Subnet Calculator](https://arahman200165.github.io/DUDE/tools/subnet-calculator) | Developer | Splits an IPv4 network into a chosen number of equal subnets, or into subnets of a given prefix length. |
+| [IPv4 ↔ Integer Converter](https://arahman200165.github.io/DUDE/tools/ipv4-integer-converter) | Developer | Converts an IPv4 address to its 32-bit unsigned integer form, or the reverse. |
+| [IPv6 Explorer](https://arahman200165.github.io/DUDE/tools/ipv6-explorer) | Developer | Shows an IPv6 address's compressed and expanded forms, its classification, and any embedded IPv4 address. |
+| [MAC Address Inspector](https://arahman200165.github.io/DUDE/tools/mac-address-inspector) | Developer | Normalizes a MAC address across colon/hyphen/Cisco-dotted/plain formats, decodes its unicast/multicast and administration bits, and looks up its OUI vendor. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
