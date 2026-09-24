@@ -16,7 +16,8 @@ export type CsvSqlResult = { readonly ok: true; readonly output: string } | { re
 
 const NUMERIC = /^-?\d+(\.\d+)?$/;
 
-function sqlValue(value: string): string {
+/** Exported for reuse by Mock Data Studio's SQL export and CSV/JSON-to-INSERT conversion. */
+export function sqlValue(value: string): string {
   if (value === '') return 'NULL';
   if (NUMERIC.test(value)) return value;
   return `'${value.replace(/'/g, "''")}'`;
