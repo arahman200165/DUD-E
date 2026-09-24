@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
 import { parseColor } from './color-convert';
 
 @Component({
@@ -15,6 +16,12 @@ export class ColorConverter {
   protected readonly input = this.persistence.signal('color-converter', 'input', 'session', '#3b82f6');
 
   protected readonly result = computed(() => parseColor(this.input()));
+
+  constructor() {
+    // Smart Paste-Detection prefill (DUDE_PRD.md §21 Phase 21 Item 3) — see PasteHandoffService.
+    const handoff = inject(PasteHandoffService).consume('color-converter');
+    if (handoff !== undefined) this.input.set(handoff);
+  }
 
   protected readonly rows = computed(() => {
     const current = this.result();

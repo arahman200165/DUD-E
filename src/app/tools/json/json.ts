@@ -3,6 +3,7 @@ import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { BusyIndicator } from '../../shared/components/busy-indicator/busy-indicator';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
 import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
 import { indentString, JsonFormatResult, JsonIndent, JsonMode, processJson } from './json-format';
@@ -77,6 +78,10 @@ export class Json {
   );
 
   constructor() {
+    // Smart Paste-Detection prefill (DUDE_PRD.md §21 Phase 21 Item 3) — see PasteHandoffService.
+    const handoff = inject(PasteHandoffService).consume('json');
+    if (handoff !== undefined) this.input.set(handoff);
+
     effect((onCleanup) => {
       const input = this.input();
       const mode = this.mode();

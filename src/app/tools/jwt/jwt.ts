@@ -1,6 +1,7 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
+import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
 import { JwtExpiryStatus, decodeJwt, decodeTemporalClaim } from './jwt-decode';
 
 const EXPIRY_BADGE_CLASSES: Record<JwtExpiryStatus['kind'], string> = {
@@ -24,6 +25,13 @@ const EXPIRY_BADGE_CLASSES: Record<JwtExpiryStatus['kind'], string> = {
 export class Jwt {
   protected readonly token = signal('');
   protected readonly result = computed(() => decodeJwt(this.token()));
+
+  constructor() {
+    // Smart Paste-Detection prefill (DUDE_PRD.md §21 Phase 21 Item 3) — see PasteHandoffService.
+    // In-memory only, same as `token` above — never touches PersistenceService.
+    const handoff = inject(PasteHandoffService).consume('jwt');
+    if (handoff !== undefined) this.token.set(handoff);
+  }
 
   protected readonly issuedAt = computed(() => {
     const current = this.result();

@@ -5,6 +5,7 @@ import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { KeyValueEditor } from '../../shared/components/key-value-editor/key-value-editor';
 import { KeyValuePair } from '../../shared/models/key-value-pair.model';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
 import { UrlParts, buildUrl, parseUrl } from './url-parts';
 import { URI_COMPONENT_LEGEND, UriComponentKind, segmentUri } from './uri-component-visualizer';
 
@@ -37,6 +38,12 @@ export class UrlInspector {
   protected readonly parsed = computed(() => parseUrl(this.raw()));
   protected readonly segments = computed(() => segmentUri(this.raw()));
   protected readonly legend = URI_COMPONENT_LEGEND;
+
+  constructor() {
+    // Smart Paste-Detection prefill (DUDE_PRD.md §21 Phase 21 Item 3) — see PasteHandoffService.
+    const handoff = inject(PasteHandoffService).consume('url-inspector');
+    if (handoff !== undefined) this.raw.set(handoff);
+  }
 
   protected onRawChange(event: Event): void {
     this.raw.set((event.target as HTMLInputElement).value);

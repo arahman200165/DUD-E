@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
 import {
   DisplayTimezone,
   NumericUnit,
@@ -46,6 +47,12 @@ export class UnixTimestamp {
   protected readonly dateResult = computed(() =>
     dateToTimestamp(this.dateInput(), this.tz(), this.effectiveUnit()),
   );
+
+  constructor() {
+    // Smart Paste-Detection prefill (DUDE_PRD.md §21 Phase 21 Item 3) — see PasteHandoffService.
+    const handoff = inject(PasteHandoffService).consume('unix-timestamp');
+    if (handoff !== undefined) this.timestampInput.set(handoff);
+  }
 
   protected onUnitChange(event: Event): void {
     this.unit.set((event.target as HTMLSelectElement).value as TimestampUnit);

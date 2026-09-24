@@ -3,6 +3,7 @@ import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
 import {
   generateSnowflake,
   inspectSnowflake,
@@ -40,6 +41,12 @@ export class SnowflakeIdTools {
   protected readonly inspection = computed(() =>
     this.inspectInput() === '' ? null : inspectSnowflake(this.config(), this.inspectInput()),
   );
+
+  constructor() {
+    // Smart Paste-Detection prefill (DUDE_PRD.md §21 Phase 21 Item 3) — see PasteHandoffService.
+    const handoff = inject(PasteHandoffService).consume('snowflake-id-tools');
+    if (handoff !== undefined) this.inspectInput.set(handoff);
+  }
 
   protected generate(): void {
     const result = generateSnowflake(this.config(), this.workerId());

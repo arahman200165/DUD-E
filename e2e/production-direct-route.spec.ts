@@ -12,3 +12,14 @@ test('direct-navigating to a nested tool URL resolves the correct tool', async (
   await expect(page.getByRole('heading', { name: 'Dashboard' })).not.toBeVisible();
   await expect(page.locator('app-sidebar')).toBeVisible();
 });
+
+// Smart Paste-Detection (DUDE_PRD.md §21 Phase 21 Item 3) is a hand-wired shell route, like
+// Pipelines before it — confirms it isn't relying on client-side router state a fresh load
+// wouldn't have.
+test('direct-navigating to the Smart Paste route resolves correctly', async ({ page }) => {
+  await page.goto('/DUDE/smart-paste');
+
+  await expect(page).toHaveURL(/\/DUDE\/smart-paste$/);
+  await expect(page.getByRole('heading', { name: 'Smart Paste' })).toBeVisible();
+  await expect(page.locator('app-sidebar')).toBeVisible();
+});
