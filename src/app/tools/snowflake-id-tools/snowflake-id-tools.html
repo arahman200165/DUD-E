@@ -1,0 +1,121 @@
+<app-tool-shell title="Snowflake ID Generator / Inspector" status="stable">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-wrap items-end gap-3">
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Preset
+          <select
+            class="rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="preset()"
+            (change)="onPresetChange($event)"
+          >
+            <option value="twitter">Twitter / X</option>
+            <option value="discord">Discord</option>
+            <option value="instagram">Instagram</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </label>
+
+        @if (preset() === 'custom') {
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Epoch (ms)
+            <input
+              type="number"
+              class="w-36 rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="customEpoch()"
+              (input)="onCustomEpochInput($event)"
+            />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Worker bits
+            <input
+              type="number"
+              min="1"
+              max="22"
+              class="w-20 rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="customWorkerBits()"
+              (input)="onCustomWorkerBitsInput($event)"
+            />
+          </label>
+          <label class="flex flex-col gap-1 text-ui text-text-muted">
+            Sequence bits
+            <input
+              type="number"
+              min="1"
+              max="22"
+              class="w-20 rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+              [value]="customSequenceBits()"
+              (input)="onCustomSequenceBitsInput($event)"
+            />
+          </label>
+        }
+
+        <label class="flex flex-col gap-1 text-ui text-text-muted">
+          Worker id
+          <input
+            type="number"
+            min="0"
+            class="w-20 rounded-sm border border-border bg-panel px-2 py-0.5 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+            [value]="workerId()"
+            (input)="onWorkerIdInput($event)"
+          />
+        </label>
+
+        <button
+          type="button"
+          class="rounded-sm border border-border px-2 py-0.5 text-ui text-text hover:bg-panel-elevated"
+          (click)="generate()"
+        >
+          Generate
+        </button>
+        @if (generated().length > 0) {
+          <button
+            type="button"
+            class="rounded-sm border border-border px-2 py-0.5 text-ui text-text-muted hover:bg-panel-elevated"
+            (click)="clearGenerated()"
+          >
+            Clear
+          </button>
+        }
+      </div>
+
+      @if (generateError()) {
+        <app-error-panel [message]="generateError()" />
+      }
+
+      @if (generated().length > 0) {
+        <ul class="flex flex-col gap-1">
+          @for (value of generated(); track value) {
+            <li class="flex items-center justify-between rounded-sm border border-border bg-panel px-2 py-1">
+              <span class="font-mono text-xs text-text">{{ value }}</span>
+              <app-copy-button [text]="value" />
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-ui text-text-muted">Inspect</span>
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        placeholder="Paste a Snowflake id (decimal) to inspect, using the preset/config above…"
+        [value]="inspectInput()"
+        (input)="onInspectInput($event)"
+      />
+
+      @if (inspection(); as result) {
+        @if (result.ok) {
+          <div class="flex flex-wrap gap-3 rounded-sm border border-border bg-panel p-2 text-ui text-text">
+            <div><span class="text-text-muted">Timestamp</span><br />{{ result.value.timestamp.toISOString() }}</div>
+            <div><span class="text-text-muted">Worker id</span><br />{{ result.value.workerId }}</div>
+            <div><span class="text-text-muted">Sequence</span><br />{{ result.value.sequence }}</div>
+          </div>
+        } @else {
+          <app-error-panel [message]="result.error" />
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
