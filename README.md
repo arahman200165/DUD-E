@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-218 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+223 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -195,6 +195,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [NanoID Generator](https://arahman200165.github.io/DUDE/tools/nanoid-generator) | Developer | Generates NanoIDs with a configurable count, length, and alphabet. |
 | [Snowflake ID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/snowflake-id-tools) | Developer | Generates a Snowflake id (Twitter/X, Discord, Instagram, or custom epoch/bit layout), and inspects an existing id to decode its embedded timestamp, worker id, and sequence. |
 | [CUID Generator](https://arahman200165.github.io/DUDE/tools/cuid-generator) | Developer | Generates collision-resistant CUID2 identifiers with a configurable count and length. |
+| [KSUID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/ksuid-tools) | Developer | Generates a KSUID, and inspects an existing KSUID to decode its embedded timestamp and random payload. |
+| [Mock Data Studio](https://arahman200165.github.io/DUDE/tools/mock-data-studio) | Developer | Generates schema-driven mock data by mapping field names to faker methods, exported as JSON, NDJSON, CSV, SQL, XML, or YAML. |
+| [Git Command Builder](https://arahman200165.github.io/DUDE/tools/git-command-builder) | Developer | Builds a git command from a subcommand and its common flags — clone, commit, branch, merge, rebase, reset, tag, push, pull, log, and stash. |
+| [Git Command Explainer](https://arahman200165.github.io/DUDE/tools/git-command-explainer) | Developer | Breaks an arbitrary git command down token by token, explaining each subcommand, flag, and positional argument. |
+| [Gitignore Generator](https://arahman200165.github.io/DUDE/tools/gitignore-generator) | Developer | Combines curated .gitignore templates (Node, Python, Java, .NET, Go, Rust, macOS, Windows, JetBrains, VS Code) into one file. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
