@@ -1538,32 +1538,32 @@ New dependencies added: `ulid`, `nanoid`, `@paralleldrive/cuid2` (item 2-5), `sq
 
 ---
 
-## Phase 20 — File & Binary Format Inspection (Proposed — Track A: Browser-Extensible)
+## Phase 20 — File & Binary Format Inspection (✅ Complete — Track A: Browser-Extensible)
 
 Goal: add file-upload-based binary/executable/format inspection — parsing whatever bytes the user provides, no OS access needed.
 
-1. File Inspector (metadata, detected type, magic bytes, entropy — a "File Forensics" summary view)
-2. File Signature Inspector / Magic Byte Detector
-3. File Type Detector (deeper than the existing MIME-sniffing on File Base64 Converter, §21 Phase 7)
-4. File Entropy Analyzer
-5. Binary Strings Extractor
-6. Hex Editor / Viewer
-7. Hex Diff (extends the existing Directory Diff's binary hex-diff mode, §21 Phase 7, to a standalone single-file tool)
-8. Byte Frequency Analyzer
-9. Endianness Viewer
-10. Binary Structure Inspector
-11. PE (Windows executable) Header Viewer
-12. ELF Header Viewer
-13. Mach-O Header Viewer
-14. Encoding Detector
-15. BOM Detector / Remover
-16. DPI Calculator
-17. Aspect Ratio Calculator
-18. Resolution Calculator
+**Achieved (Milestones 266-281):** 16 tools shipped, three foundational shared utilities extracted along the way (`shared/utils/byte-entropy.ts`, `binary-strings.ts`, and `struct-reader.ts`, alongside the pre-existing `byte-codec.ts`), consumed in dependency-first order rather than the source list's original numbering:
+
+1. File Signature & Type Detector (Milestone 266) — merges the source list's items 2 (File Signature Inspector) and 3 (File Type Detector) into one tool: raw magic-byte match plus ZIP-container disambiguation (docx/xlsx/pptx/jar/apk/odt/ods/odp) and an extension-mismatch warning, on a much larger shared signature table (`shared/utils/file-signatures.ts`) than File Base64 Converter's original MIME-sniffing (§21 Phase 7)
+2. File Entropy Analyzer (Milestone 267) — introduced `shared/utils/byte-entropy.ts` (true Shannon byte-distribution entropy, distinct from Secret Detector's charset-based estimate, §19 item 40)
+3. Byte Frequency Analyzer (Milestone 268)
+4. Binary Strings Extractor (Milestone 269) — introduced `shared/utils/binary-strings.ts`
+5. Encoding Detector (Milestone 270)
+6. BOM Detector / Remover (Milestone 271)
+7. Hex Editor (Milestone 272) — a genuinely interactive click-to-edit byte grid, kept distinct from the pre-existing Hex Dump Viewer/Builder's paste-and-rebuild-from-text workflow (§21 Phase 11) rather than duplicating it
+8. Hex Diff (Milestone 273) — extends Directory Diff's binary hex-diff mode (§21 Phase 7) into a standalone single-file tool; extracted `computeByteDiff`/`looksLikeText` to `shared/utils/byte-diff.ts` on this second consumer
+9. Binary Structure Inspector (Milestone 274) — introduced `shared/utils/struct-reader.ts` (endianness-aware DataView primitives), the foundation items 10-12 build their fixed schemas on; a general user-defined field-list parser rather than a hardcoded set of known formats
+10. PE (Windows executable) Header Viewer (Milestone 275)
+11. ELF Header Viewer (Milestone 276)
+12. Mach-O Header Viewer (Milestone 277)
+13. DPI Calculator (Milestone 278)
+14. Aspect Ratio Calculator (Milestone 279) — extracted Image Metadata Inspector's local ratio-simplification helper to `shared/utils/aspect-ratio.ts` on this second consumer
+15. Resolution Calculator (Milestone 280)
+16. File Inspector (Milestone 281) — the "File Forensics" summary dashboard, built last since it composes the signature/entropy/strings utilities items 1, 2, and 4 introduced
 
 ### Notes
 
-Items 11-13 only need the uploaded binary's header bytes, not a running executable, so they stay Track A despite reading like "system" tools. Items 16-18 are pure math and were pulled out of the source doc's "Screen / Pixel Tools" section — the live-screen items in that section (screen ruler, live pixel picker) are Track B.
+The source list's item 9 (Endianness Viewer) was dropped outright rather than shipped: it would have duplicated the already-shipped Numeric Representation Inspector (§21 Phase 11), which covers byte-order/IEEE-754/integer representation across bit widths. PE/ELF/Mach-O header viewers (items 10-12 above) only need the uploaded binary's header bytes, not a running executable, so they stayed Track A despite reading like "system" tools; their import/export/dylib table parsing is basic (names and counts, not full symbol/relocation tables). Items 13-15 are pure math and were pulled out of the source doc's "Screen / Pixel Tools" section — the live-screen items in that section (screen ruler, live pixel picker) are Track B.
 
 ---
 
