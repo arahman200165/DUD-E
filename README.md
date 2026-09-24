@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-273 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+274 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -312,6 +312,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [ELF Header Viewer](https://arahman200165.github.io/DUDE/tools/elf-header-viewer) | Developer | Parses a Linux/Unix ELF binary's header, program headers, section headers, and dynamic symbol table (32-bit/64-bit, either endianness) into a browsable tree. |
 | [Mach-O Header Viewer](https://arahman200165.github.io/DUDE/tools/macho-header-viewer) | Developer | Parses a macOS/iOS Mach-O binary's mach_header, load commands, and linked dylibs (with versions) -- including fat/universal binaries, listing each architecture slice and drilling into the first. |
 | [DPI Calculator](https://arahman200165.github.io/DUDE/tools/dpi-calculator) | Documents | Converts between pixel dimensions, physical print size, and DPI -- find the DPI of an image at a given print size, the pixels needed for a target DPI, or the print size a given pixel count supports. |
+| [Aspect Ratio Calculator](https://arahman200165.github.io/DUDE/tools/aspect-ratio-calculator) | Documents | Simplifies a width/height pair to its lowest-terms ratio (e.g. 1920x1080 -> 16:9), or solves for a missing width/height given a target ratio. |
 
 ## Architecture
 

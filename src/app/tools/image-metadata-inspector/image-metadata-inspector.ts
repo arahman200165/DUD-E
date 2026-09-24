@@ -3,6 +3,7 @@ import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { FileDrop } from '../../shared/components/file-drop/file-drop';
 import { sniffImageType } from '../../shared/utils/image-signature';
+import { simplifyRatio } from '../../shared/utils/aspect-ratio';
 import { parsePngIhdr, PngIhdr } from './png-header';
 
 interface ImageMetadata {
@@ -14,13 +15,6 @@ interface ImageMetadata {
   readonly height: number;
   readonly aspectRatio: string;
   readonly pngIhdr: PngIhdr | null;
-}
-
-function simplifyRatio(width: number, height: number): string {
-  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-  if (width === 0 || height === 0) return `${width}:${height}`;
-  const divisor = gcd(width, height);
-  return `${width / divisor}:${height / divisor}`;
 }
 
 @Component({

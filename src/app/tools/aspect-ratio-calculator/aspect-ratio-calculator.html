@@ -1,0 +1,77 @@
+<app-tool-shell title="Aspect Ratio Calculator" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-2 text-ui">
+      <button
+        type="button"
+        class="rounded-sm border px-2 py-0.5"
+        [class.border-accent]="mode() === 'simplify'"
+        [class.border-border]="mode() !== 'simplify'"
+        (click)="setMode('simplify')"
+      >
+        Simplify a ratio
+      </button>
+      <button
+        type="button"
+        class="rounded-sm border px-2 py-0.5"
+        [class.border-accent]="mode() === 'solve'"
+        [class.border-border]="mode() !== 'solve'"
+        (click)="setMode('solve')"
+      >
+        Solve for a missing dimension
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+      @if (mode() === 'simplify') {
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1">
+            Width
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="width()" (change)="onNumberChange(width, $event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Height
+            <input type="number" min="0" class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="height()" (change)="onNumberChange(height, $event)" />
+          </label>
+        </div>
+        <div class="mt-2 flex justify-between border-t border-border pt-2">
+          <span class="text-text-muted">Simplified ratio</span>
+          <span class="font-mono text-text">{{ simplified() }}</span>
+        </div>
+      }
+
+      @if (mode() === 'solve') {
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1">
+            Target ratio (e.g. 16:9)
+            <input class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text" [value]="targetRatio()" (change)="onTargetRatioChange($event)" />
+          </label>
+          <label class="flex flex-col gap-1">
+            Known dimension ({{ solveFor() === 'height' ? 'width' : 'height' }})
+            <input
+              type="number"
+              min="0"
+              class="rounded-sm border border-border bg-panel-elevated px-2 py-1 text-text"
+              [value]="knownDimension()"
+              (change)="onNumberChange(knownDimension, $event)"
+            />
+          </label>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="text-text-muted">Solve for</span>
+          <label class="flex items-center gap-1"><input type="radio" name="solve-for" [checked]="solveFor() === 'height'" (change)="setSolveFor('height')" /> Height</label>
+          <label class="flex items-center gap-1"><input type="radio" name="solve-for" [checked]="solveFor() === 'width'" (change)="setSolveFor('width')" /> Width</label>
+        </div>
+
+        @if (parsedTargetRatio() === null) {
+          <app-error-panel message="Enter a ratio like &quot;16:9&quot; or &quot;1.85/1&quot;." />
+        } @else {
+          <div class="mt-2 flex justify-between border-t border-border pt-2">
+            <span class="text-text-muted">Computed {{ solveFor() }}</span>
+            <span class="font-mono text-text">{{ solveResult()?.toFixed(2) }}</span>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</app-tool-shell>
