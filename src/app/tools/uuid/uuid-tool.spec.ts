@@ -1,4 +1,12 @@
-import { decodeV1Timestamp, generateUuid, generateUuidV4, inspectUuid, PREDEFINED_NAMESPACES } from './uuid-tool';
+import {
+  decodeV1Timestamp,
+  decodeV6Timestamp,
+  decodeV7Timestamp,
+  generateUuid,
+  generateUuidV4,
+  inspectUuid,
+  PREDEFINED_NAMESPACES,
+} from './uuid-tool';
 
 describe('generateUuidV4', () => {
   it('generates a syntactically valid v4 UUID', () => {
@@ -40,6 +48,25 @@ describe('generateUuid', () => {
   it('rejects v5 generation without a name', () => {
     const result = generateUuid('v5', { namespace: PREDEFINED_NAMESPACES.DNS });
     expect(result).toEqual({ ok: false, error: 'Enter a name to hash.' });
+  });
+
+  it('generates a v6 UUID', () => {
+    const result = generateUuid('v6');
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(inspectUuid(result.value)).toEqual({ valid: true, version: 6, variant: 'RFC 4122' });
+  });
+
+  it('generates a deterministic v3 UUID from a namespace + name', () => {
+    const first = generateUuid('v3', { namespace: PREDEFINED_NAMESPACES.DNS, name: 'example.com' });
+    const second = generateUuid('v3', { namespace: PREDEFINED_NAMESPACES.DNS, name: 'example.com' });
+    expect(first).toEqual(second);
+    expect(first.ok).toBe(true);
+    if (first.ok) expect(inspectUuid(first.value)).toEqual({ valid: true, version: 3, variant: 'RFC 4122' });
+  });
+
+  it('rejects v3 generation without a valid namespace', () => {
+    const result = generateUuid('v3', { namespace: 'not-a-uuid', name: 'example.com' });
+    expect(result).toEqual({ ok: false, error: 'Enter a valid namespace UUID.' });
   });
 });
 
@@ -111,6 +138,44 @@ describe('decodeV1Timestamp', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     const decoded = decodeV1Timestamp(result.value);
+    expect(decoded).not.toBeNull();
+    expect(Math.abs((decoded as Date).getTime() - Date.now())).toBeLessThan(5000);
+  });
+});
+
+describe('decodeV6Timestamp', () => {
+  it('returns null for a non-v6 UUID', () => {
+    expect(decodeV6Timestamp('550e8400-e29b-41d4-a716-446655440000')).toBeNull();
+  });
+
+  it('returns null for malformed input', () => {
+    expect(decodeV6Timestamp('not-a-uuid')).toBeNull();
+  });
+
+  it('round-trips a freshly generated v6 UUID to roughly the current time', () => {
+    const result = generateUuid('v6');
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const decoded = decodeV6Timestamp(result.value);
+    expect(decoded).not.toBeNull();
+    expect(Math.abs((decoded as Date).getTime() - Date.now())).toBeLessThan(5000);
+  });
+});
+
+describe('decodeV7Timestamp', () => {
+  it('returns null for a non-v7 UUID', () => {
+    expect(decodeV7Timestamp('550e8400-e29b-41d4-a716-446655440000')).toBeNull();
+  });
+
+  it('returns null for malformed input', () => {
+    expect(decodeV7Timestamp('not-a-uuid')).toBeNull();
+  });
+
+  it('round-trips a freshly generated v7 UUID to roughly the current time', () => {
+    const result = generateUuid('v7');
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const decoded = decodeV7Timestamp(result.value);
     expect(decoded).not.toBeNull();
     expect(Math.abs((decoded as Date).getTime() - Date.now())).toBeLessThan(5000);
   });

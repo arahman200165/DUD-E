@@ -5,6 +5,8 @@ import { PersistenceService } from '../../core/persistence/persistence.service';
 import { downloadFile } from '../../shared/utils/download-file';
 import {
   decodeV1Timestamp,
+  decodeV6Timestamp,
+  decodeV7Timestamp,
   generateUuid,
   inspectUuid,
   PREDEFINED_NAMESPACES,
@@ -40,10 +42,13 @@ export class Uuid {
     this.inspectInput() === '' ? null : inspectUuid(this.inspectInput()),
   );
 
-  protected readonly inspectedV1Timestamp = computed(() => {
+  protected readonly inspectedTimestamp = computed(() => {
     const result = this.inspection();
-    if (!result?.valid || result.version !== 1) return null;
-    return decodeV1Timestamp(this.inspectInput());
+    if (!result?.valid) return null;
+    if (result.version === 1) return decodeV1Timestamp(this.inspectInput());
+    if (result.version === 6) return decodeV6Timestamp(this.inspectInput());
+    if (result.version === 7) return decodeV7Timestamp(this.inspectInput());
+    return null;
   });
 
   protected generate(): void {
