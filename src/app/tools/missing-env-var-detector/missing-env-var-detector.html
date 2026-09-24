@@ -1,0 +1,52 @@
+<app-tool-shell title="Missing Environment Variable Detector" status="stable">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <label class="flex flex-1 flex-col gap-1 text-ui text-text-muted">
+        Source code
+        <textarea
+          rows="10"
+          class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="sourceText()"
+          (input)="onSourceInput($event)"
+        ></textarea>
+      </label>
+      <label class="flex flex-1 flex-col gap-1 text-ui text-text-muted">
+        .env
+        <textarea
+          rows="10"
+          class="w-full resize-y rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+          [value]="envText()"
+          (input)="onEnvInput($event)"
+        ></textarea>
+      </label>
+    </div>
+
+    @if (report(); as current) {
+      <div>
+        <div class="mb-1 text-ui text-text-muted">Referenced in code but not declared in .env</div>
+        @if (current.referencedButNotDeclared.length === 0) {
+          <div class="rounded-sm border border-border bg-panel px-2 py-1.5 text-ui text-text">None.</div>
+        } @else {
+          <ul class="flex flex-col gap-1">
+            @for (name of current.referencedButNotDeclared; track name) {
+              <li class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ name }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div>
+        <div class="mb-1 text-ui text-text-muted">Declared in .env but never referenced</div>
+        @if (current.declaredButNotReferenced.length === 0) {
+          <div class="rounded-sm border border-border bg-panel px-2 py-1.5 text-ui text-text">None.</div>
+        } @else {
+          <ul class="flex flex-col gap-1">
+            @for (name of current.declaredButNotReferenced; track name) {
+              <li class="rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text">{{ name }}</li>
+            }
+          </ul>
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
