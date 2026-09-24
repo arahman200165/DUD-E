@@ -25,7 +25,7 @@ Everything runs client-side. There's no backend, no accounts, no telemetry — y
 - **Dense, not decorative** — bold, functional color-coding by category and status, built for daily use, not for demos.
 - **Framework-first** — the registry, shell, persistence, and worker layers were built before the tools, so new tools are cheap and safe to add.
 
-The tools are the proof, not the point: DUDE is a **local-first, extensible developer workbench** for transforming, inspecting, and composing developer data — not just a growing pile of independent utilities. Every tool declares what it accepts and produces in a small shared vocabulary (`DudeDataType` — see `src/app/shared/models/tool-io.model.ts`), the foundation a future cross-tool pipeline or Smart Paste-detection feature would build on. That composition layer isn't shipped yet — today, using two tools together still means copying output to input by hand — but the registry contract every tool already speaks is what makes building it later a framework change, not a rewrite.
+The tools are the proof, not the point: DUDE is a **local-first, extensible developer workbench** for transforming, inspecting, and composing developer data — not just a growing pile of independent utilities. Every tool declares what it accepts and produces in a small shared vocabulary (`DudeDataType` — see `src/app/shared/models/tool-io.model.ts`), and most tools can now be chained into a reusable **Transformation Pipeline** (`/pipelines`) instead of copying output to input by hand — including a user-defined script step, running in the same sandbox as the JS Playground, for a custom transform that isn't one of the built-in tools. Smart Paste-detection (recognizing pasted content and suggesting a tool) is the one still-unbuilt idea in this family.
 
 ## Screenshots
 
@@ -318,7 +318,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Architecture
 
-The shell is generated entirely from tool metadata — no file under `src/app/shell/` or `src/app/core/` contains a single hard-coded tool ID. Adding a tool means creating a folder under `src/app/tools/` and adding one entry to the registry; the sidebar, deck, search, command palette, and routes all update automatically.
+The shell is generated entirely from tool metadata — no file under `src/app/shell/` or `src/app/core/` contains a single hard-coded tool ID. Adding a tool means creating a folder under `src/app/tools/` and adding one entry to the registry; the sidebar, deck, search, command palette, and routes all update automatically. Transformation Pipelines (`src/app/shell/pipelines/`, `src/app/core/pipeline/`) is the one deliberate exception: composing tools into a chained workflow changes what a tool definition means, not just adds one, so it's the sole feature allowed to add its own routes and sidebar entry — a pipeline step's tool id is still just user-selected data resolved generically through the registry, never hard-coded.
 
 ```
 src/app/
@@ -328,7 +328,8 @@ src/app/
     workers/        the shared Worker request/result/cancel contract
     connectivity/   online/offline signal, update-available detection
     routing/        the one root route table (lazy-loads every tool)
-  shell/            sidebar, deck, command palette, root layout
+    pipeline/       Transformation Pipelines engine — step contract, resolution, validation, execution, saved pipelines/scripts
+  shell/            sidebar, deck, command palette, root layout, and pipelines/ (the one sanctioned exception — see below)
   shared/           tool-shell frame, error panel, split-pane, tree-view, data-table, copy-button, key-value-editor, and other cross-tool primitives
   tools/            one folder per tool — pure logic + component, isolated from every other tool
 ```
