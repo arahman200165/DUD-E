@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-271 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+272 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -310,6 +310,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Binary Structure Inspector](https://arahman200165.github.io/DUDE/tools/binary-structure-inspector) | Developer | Parses an uploaded file against a user-defined sequence of typed fields (integers, floats, fixed-length strings, chosen endianness) into a table of offsets and decoded values. |
 | [PE Header Viewer](https://arahman200165.github.io/DUDE/tools/pe-header-viewer) | Developer | Parses a Windows PE executable's DOS/COFF/Optional headers, section table, data directories, and basic import/export table into a browsable tree. |
 | [ELF Header Viewer](https://arahman200165.github.io/DUDE/tools/elf-header-viewer) | Developer | Parses a Linux/Unix ELF binary's header, program headers, section headers, and dynamic symbol table (32-bit/64-bit, either endianness) into a browsable tree. |
+| [Mach-O Header Viewer](https://arahman200165.github.io/DUDE/tools/macho-header-viewer) | Developer | Parses a macOS/iOS Mach-O binary's mach_header, load commands, and linked dylibs (with versions) -- including fat/universal binaries, listing each architecture slice and drilling into the first. |
 
 ## Architecture
 

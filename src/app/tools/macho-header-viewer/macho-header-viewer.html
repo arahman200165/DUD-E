@@ -1,0 +1,11 @@
+<app-tool-shell title="Mach-O Header Viewer" status="stable">
+  <app-binary-format-viewer
+    dropLabel="Drop a macOS/iOS Mach-O binary here, or click to browse"
+    [fileName]="fileName()"
+    [status]="status()"
+    [errorMessage]="errorMessage()"
+    [treeNodes]="treeNodes()"
+    (fileSelected)="onFileSelected($event)"
+    (rejected)="onRejected($event)"
+  />
+</app-tool-shell>
