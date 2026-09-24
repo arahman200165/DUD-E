@@ -1,8 +1,9 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
+import { CodeSandboxHost } from '../../../shared/code-sandbox/code-sandbox-host';
 import { ErrorPanel } from '../../../shared/components/error-panel/error-panel';
 import { ToolDefinition } from '../../../shared/models/tool-definition.model';
 import { DudeDataType } from '../../../shared/models/tool-io.model';
@@ -11,17 +12,26 @@ import { ToolRegistryService } from '../../../core/registry/tool-registry.servic
 import { searchTools } from '../../../core/registry/tool-search';
 import { PipelineStoreService } from '../../../core/pipeline/pipeline-store.service';
 import { PipelineStepRegistryService } from '../../../core/pipeline/pipeline-step-registry.service';
+import { UserScriptStoreService } from '../../../core/pipeline/user-script-store.service';
+import { runUserScriptStep } from '../../../core/pipeline/user-script-step';
 import { PipelineRunnerService } from '../../../core/pipeline/pipeline-runner.service';
 import { PipelineRun } from '../../../core/pipeline/pipeline-run';
 import { canChain } from '../../../core/pipeline/pipeline-compatibility';
 import { validatePipelineChain } from '../../../core/pipeline/pipeline-validation';
-import { Pipeline, PipelineStepRef, createPipeline, createToolStep } from '../../../core/pipeline/pipeline.model';
+import {
+  Pipeline,
+  PipelineStepRef,
+  UserScriptDefinition,
+  createPipeline,
+  createScriptStep,
+  createToolStep,
+} from '../../../core/pipeline/pipeline.model';
 
 const INITIAL_INPUT_TYPE = 'text' as const;
 
 @Component({
   selector: 'app-pipeline-builder',
-  imports: [ErrorPanel, NgTemplateOutlet, DecimalPipe],
+  imports: [ErrorPanel, NgTemplateOutlet, DecimalPipe, RouterLink, CodeSandboxHost],
   templateUrl: './pipeline-builder.html',
 })
 export class PipelineBuilder {
@@ -30,7 +40,9 @@ export class PipelineBuilder {
   private readonly store = inject(PipelineStoreService);
   private readonly registry = inject(ToolRegistryService);
   private readonly stepRegistry = inject(PipelineStepRegistryService);
+  private readonly scriptStore = inject(UserScriptStoreService);
   private readonly runner = inject(PipelineRunnerService);
+  private readonly sandboxHost = viewChild.required(CodeSandboxHost);
 
   protected readonly pipelineId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))), {
     initialValue: this.route.snapshot.paramMap.get('id'),
@@ -56,10 +68,12 @@ export class PipelineBuilder {
   protected readonly canRun = computed(() => this.registryReady() && this.validation().valid && this.pipeline().steps.length > 0);
 
   protected readonly pickerResults = computed(() => {
-    if (!this.registryReady()) return { compatible: [] as ToolDefinition[], incompatible: [] as ToolDefinition[] };
+    if (!this.registryReady()) {
+      return { compatible: [] as ToolDefinition[], incompatible: [] as ToolDefinition[], scripts: [] as UserScriptDefinition[] };
+    }
 
     const insertAt = this.pickerInsertAt();
-    if (insertAt === null) return { compatible: [], incompatible: [] };
+    if (insertAt === null) return { compatible: [], incompatible: [], scripts: [] };
 
     const upstreamProduces = this.upstreamProducesAt(insertAt);
     const candidates = searchTools(this.registry.getAll(), this.pickerQuery());
@@ -78,20 +92,42 @@ export class PipelineBuilder {
       }
     }
 
-    return { compatible: compatible.slice(0, 30), incompatible: incompatible.slice(0, 10) };
+    const scripts = this.scriptStore.scripts().filter((script) => {
+      const query = this.pickerQuery().trim().toLowerCase();
+      if (query && !script.name.toLowerCase().includes(query)) return false;
+      return upstreamProduces === null || canChain({ accepts: [], produces: upstreamProduces }, script);
+    });
+
+    return { compatible: compatible.slice(0, 30), incompatible: incompatible.slice(0, 10), scripts };
   });
+
+  /** Resolves a step reference to its callable `PipelineStep`, whether backed by a tool or a saved script. */
+  private resolveStepRef = async (ref: PipelineStepRef): Promise<PipelineStep | undefined> => {
+    if (ref.kind === 'tool') return this.stepRegistry.get(ref.toolId);
+
+    const scriptDef = this.scriptStore.getById(ref.scriptId);
+    if (!scriptDef) return undefined;
+
+    return {
+      accepts: scriptDef.accepts,
+      produces: scriptDef.produces,
+      run: (input: PipelineValue) => runUserScriptStep(this.sandboxHost(), scriptDef, input),
+    };
+  };
 
   constructor() {
     effect(() => {
       const steps = this.pipeline().steps;
-      void this.stepRegistry.ensureLoaded().then(() => {
+      const scriptsLoaded = this.scriptStore.scripts(); // read for reactivity: re-resolve when the script library changes
+      void this.stepRegistry.ensureLoaded().then(async () => {
         const resolved: Record<string, PipelineStep | undefined> = {};
         for (const step of steps) {
-          resolved[step.stepId] = step.kind === 'tool' ? this.stepRegistry.get(step.toolId) : undefined;
+          resolved[step.stepId] = await this.resolveStepRef(step);
         }
         this.resolvedSteps.set(resolved);
         this.registryReady.set(true);
       });
+      void scriptsLoaded;
     });
   }
 
@@ -139,6 +175,16 @@ export class PipelineBuilder {
     this.closePicker();
   }
 
+  protected addScriptStep(scriptId: string): void {
+    const insertAt = this.pickerInsertAt();
+    if (insertAt === null) return;
+
+    const steps = [...this.pipeline().steps];
+    steps.splice(insertAt, 0, createScriptStep(scriptId));
+    this.persist({ ...this.pipeline(), steps });
+    this.closePicker();
+  }
+
   protected removeStep(stepId: string): void {
     this.persist({ ...this.pipeline(), steps: this.pipeline().steps.filter((step) => step.stepId !== stepId) });
   }
@@ -154,15 +200,13 @@ export class PipelineBuilder {
   }
 
   protected stepLabel(ref: PipelineStepRef): string {
-    if (ref.kind === 'script') return ref.label ?? 'Script step';
+    if (ref.kind === 'script') return ref.label ?? this.scriptStore.getById(ref.scriptId)?.name ?? 'Script step (missing)';
     return ref.label ?? this.registry.getById(ref.toolId)?.title ?? ref.toolId;
   }
 
   protected runPipeline(): void {
     const initialInput: PipelineValue = { type: INITIAL_INPUT_TYPE, value: this.inputText() };
-    const run = this.runner.runPipeline(this.pipeline(), initialInput, async (ref) =>
-      ref.kind === 'tool' ? this.stepRegistry.get(ref.toolId) : undefined,
-    );
+    const run = this.runner.runPipeline(this.pipeline(), initialInput, this.resolveStepRef);
     this.run.set(run);
   }
 

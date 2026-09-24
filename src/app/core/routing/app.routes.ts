@@ -21,6 +21,20 @@ export const routes: Routes = [
         path: 'pipelines/new',
         loadComponent: () => import('../../shell/pipelines/pipeline-builder/pipeline-builder').then((m) => m.PipelineBuilder),
       },
+      // The static 'pipelines/scripts...' routes must come before the wildcard 'pipelines/:id'
+      // below, or Angular's first-match routing would treat "scripts" as a pipeline id.
+      {
+        path: 'pipelines/scripts',
+        loadComponent: () => import('../../shell/pipelines/script-list/script-list').then((m) => m.ScriptList),
+      },
+      {
+        path: 'pipelines/scripts/new',
+        loadComponent: () => import('../../shell/pipelines/script-editor/script-editor').then((m) => m.ScriptEditor),
+      },
+      {
+        path: 'pipelines/scripts/:id',
+        loadComponent: () => import('../../shell/pipelines/script-editor/script-editor').then((m) => m.ScriptEditor),
+      },
       {
         path: 'pipelines/:id',
         loadComponent: () => import('../../shell/pipelines/pipeline-builder/pipeline-builder').then((m) => m.PipelineBuilder),

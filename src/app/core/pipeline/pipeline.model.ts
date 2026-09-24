@@ -79,6 +79,11 @@ export interface UserScriptStore {
 
 export const EMPTY_USER_SCRIPT_STORE: UserScriptStore = { schemaVersion: 1, scripts: [] };
 
+export function createUserScript(name: string): UserScriptDefinition {
+  const now = new Date().toISOString();
+  return { id: crypto.randomUUID(), name, body: '', accepts: ['text'], produces: ['text'], timeoutMs: 3000, createdAt: now, updatedAt: now };
+}
+
 export function migrateUserScriptStore(raw: unknown): UserScriptStore {
   if (!raw || typeof raw !== 'object') return EMPTY_USER_SCRIPT_STORE;
   const candidate = raw as Partial<UserScriptStore>;

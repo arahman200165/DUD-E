@@ -18,3 +18,19 @@ test('direct-navigating to /pipelines/new resolves the pipeline builder', async 
   await expect(page.getByRole('button', { name: 'Run' })).toBeVisible();
   await expect(page.locator('app-sidebar')).toBeVisible();
 });
+
+test('direct-navigating to /pipelines/scripts resolves the script library', async ({ page }) => {
+  await page.goto('/DUDE/pipelines/scripts');
+
+  await expect(page).toHaveURL(/\/DUDE\/pipelines\/scripts$/);
+  await expect(page.getByRole('heading', { name: 'My Scripts' })).toBeVisible();
+  await expect(page.locator('app-sidebar')).toBeVisible();
+});
+
+test('direct-navigating to /pipelines/scripts/new resolves the script editor (not the pipeline id route)', async ({ page }) => {
+  await page.goto('/DUDE/pipelines/scripts/new');
+
+  await expect(page).toHaveURL(/\/DUDE\/pipelines\/scripts\/new$/);
+  await expect(page.getByRole('button', { name: 'Save' })).toBeVisible();
+  await expect(page.locator('app-sidebar')).toBeVisible();
+});

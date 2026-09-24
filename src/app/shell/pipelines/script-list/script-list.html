@@ -1,0 +1,35 @@
+<section class="flex h-full flex-col">
+  <header class="flex items-center justify-between border-b-2 border-border px-3 py-2">
+    <div class="flex items-center gap-3">
+      <a routerLink="/pipelines" class="text-ui-sm text-text-muted hover:text-text">&larr; Pipelines</a>
+      <h1 class="text-sm font-semibold tracking-wide text-text">My Scripts</h1>
+    </div>
+    <a
+      routerLink="/pipelines/scripts/new"
+      class="rounded-sm border border-accent/40 bg-accent/10 px-2 py-1 text-ui-sm text-accent hover:bg-accent/20"
+    >
+      + New script
+    </a>
+  </header>
+
+  <div class="flex-1 overflow-auto p-3">
+    @if (scripts().length === 0) {
+      <p class="text-ui text-text-muted">
+        No saved scripts yet. A script runs in the same sandbox as the JS Playground and can be used as a pipeline step —
+        <a routerLink="/pipelines/scripts/new" class="text-accent hover:underline">write your first one</a>.
+      </p>
+    } @else {
+      <ul class="flex flex-col gap-2">
+        @for (script of scripts(); track script.id) {
+          <li class="flex items-center justify-between rounded-sm border border-border bg-panel-elevated px-3 py-2">
+            <a [routerLink]="['/pipelines/scripts', script.id]" class="flex flex-col gap-0.5">
+              <span class="text-ui font-medium text-text">{{ script.name }}</span>
+              <span class="text-ui-xs text-text-muted">accepts [{{ script.accepts.join(', ') }}] · produces [{{ script.produces.join(', ') }}]</span>
+            </a>
+            <button type="button" class="text-ui-sm text-text-muted hover:text-error" (click)="remove(script.id, script.name)">Delete</button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

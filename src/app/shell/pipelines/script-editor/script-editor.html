@@ -1,0 +1,103 @@
+<section class="flex h-full flex-col">
+  <header class="flex items-center justify-between gap-3 border-b-2 border-border px-3 py-2">
+    <a routerLink="/pipelines/scripts" class="text-ui-sm text-text-muted hover:text-text">&larr; My Scripts</a>
+    <button
+      type="button"
+      class="rounded-sm border px-3 py-1 text-ui-sm"
+      [class]="canSave() ? 'border-accent/40 bg-accent/10 text-accent hover:bg-accent/20' : 'cursor-not-allowed border-border text-text-muted/50'"
+      [disabled]="!canSave()"
+      (click)="save()"
+    >
+      Save
+    </button>
+  </header>
+
+  <div class="flex-1 overflow-auto p-3">
+    <input
+      type="text"
+      [value]="script().name"
+      (change)="updateField('name', $any($event.target).value)"
+      placeholder="Script name"
+      class="mb-3 w-full max-w-md rounded-sm border border-border bg-panel-elevated px-2 py-1 text-sm font-semibold text-text"
+    />
+
+    <div class="mb-3 flex flex-wrap gap-4">
+      <div>
+        <p class="mb-1 text-ui-sm text-text-muted">Accepts</p>
+        <div class="flex flex-wrap gap-2">
+          @for (type of allTypes; track type) {
+            <label class="flex items-center gap-1 text-ui-sm text-text">
+              <input type="checkbox" [checked]="script().accepts.includes(type)" (change)="toggleAccepts(type)" />
+              {{ type }}
+            </label>
+          }
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-1 text-ui-sm text-text-muted">Produces</p>
+        <div class="flex flex-wrap gap-2">
+          @for (type of allTypes; track type) {
+            <label class="flex items-center gap-1 text-ui-sm text-text">
+              <input type="radio" name="produces" [checked]="script().produces[0] === type" (change)="setProduces(type)" />
+              {{ type }}
+            </label>
+          }
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-1 text-ui-sm text-text-muted">Timeout (ms)</p>
+        <input
+          type="number"
+          [value]="script().timeoutMs"
+          (change)="updateField('timeoutMs', +$any($event.target).value)"
+          class="w-24 rounded-sm border border-border bg-panel-elevated px-2 py-1 text-ui-sm text-text"
+        />
+      </div>
+    </div>
+
+    <p class="mb-1 text-ui-sm text-text-muted">
+      Script body — a function body, not a module. Read the incoming value from <code>input</code> (<code>input.type</code>/<code>input.value</code>) and end with an explicit <code>return</code> — there's no implicit "last expression" result.
+    </p>
+    <textarea
+      rows="10"
+      [value]="script().body"
+      (input)="updateField('body', $any($event.target).value)"
+      spellcheck="false"
+      class="mb-4 w-full rounded-sm border border-border bg-panel-elevated p-2 font-mono text-ui-sm text-text"
+      placeholder="return input.value.toUpperCase();"
+    ></textarea>
+
+    <div class="rounded-sm border border-border bg-panel-elevated p-2">
+      <p class="mb-1 text-ui-sm font-semibold text-text">Test</p>
+      <textarea
+        rows="3"
+        [value]="testInput()"
+        (input)="testInput.set($any($event.target).value)"
+        placeholder="Test input value (plain text, or JSON for json/table/file/http-response types)"
+        class="mb-2 w-full rounded-sm border border-border bg-panel p-2 font-mono text-ui-xs text-text"
+      ></textarea>
+      <button
+        type="button"
+        class="rounded-sm border border-border px-2 py-1 text-ui-sm text-text hover:bg-panel"
+        [disabled]="testRunning()"
+        (click)="runTest()"
+      >
+        {{ testRunning() ? 'Running…' : 'Run test' }}
+      </button>
+
+      @if (testResult(); as result) {
+        <div class="mt-2">
+          @if (result.ok) {
+            <pre class="max-h-40 overflow-auto rounded-sm bg-panel p-2 text-ui-xs text-text-muted">{{ formatTestOutput() }}</pre>
+          } @else {
+            <app-error-panel [message]="result.error.message" />
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <app-code-sandbox-host />
+</section>

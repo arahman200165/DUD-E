@@ -1,12 +1,15 @@
 <section class="flex h-full flex-col">
   <header class="flex items-center justify-between gap-3 border-b-2 border-border px-3 py-2">
-    <input
-      type="text"
-      [value]="pipeline().name"
-      (change)="rename($any($event.target).value)"
-      class="w-full max-w-md rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-sm font-semibold text-text hover:border-border focus:border-border focus:outline-none"
-      aria-label="Pipeline name"
-    />
+    <div class="flex items-center gap-3">
+      <a routerLink="/pipelines" class="text-ui-sm text-text-muted hover:text-text">&larr;</a>
+      <input
+        type="text"
+        [value]="pipeline().name"
+        (change)="rename($any($event.target).value)"
+        class="w-full max-w-md rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-sm font-semibold text-text hover:border-border focus:border-border focus:outline-none"
+        aria-label="Pipeline name"
+      />
+    </div>
     <button
       type="button"
       class="shrink-0 rounded-sm border px-3 py-1 text-ui-sm"
@@ -50,14 +53,22 @@
           @let result = run()?.stepResults()?.[index];
 
           <div
-            class="flex items-start gap-2 rounded-sm border px-3 py-2"
-            [class]="validation().issues[0]?.stepId === step.stepId ? 'border-error/50 bg-error/5' : 'border-border bg-panel-elevated'"
+            class="flex items-start gap-2 rounded-sm border-l-4 border px-3 py-2"
+            [class]="
+              (validation().issues[0]?.stepId === step.stepId ? 'border-error/50 bg-error/5 ' : 'border-border bg-panel-elevated ') +
+              (step.kind === 'script' ? 'border-l-warning' : 'border-l-accent')
+            "
           >
             <span class="mt-0.5 shrink-0 rounded-sm bg-panel px-1.5 py-0.5 font-mono text-ui-xs text-text-muted">{{ index + 1 }}</span>
 
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between gap-2">
-                <span class="truncate text-ui font-medium text-text">{{ stepLabel(step) }}</span>
+                <span class="truncate text-ui font-medium" [class]="step.kind === 'script' ? 'font-mono text-warning' : 'text-text'">
+                  {{ stepLabel(step) }}
+                  @if (step.kind === 'script') {
+                    <a [routerLink]="['/pipelines/scripts', step.scriptId]" class="ml-1 text-ui-xs text-text-muted hover:underline">edit</a>
+                  }
+                </span>
                 <div class="flex shrink-0 items-center gap-1">
                   <button type="button" class="text-ui-xs text-text-muted hover:text-text" (click)="moveStep(step.stepId, -1)" [disabled]="index === 0">↑</button>
                   <button type="button" class="text-ui-xs text-text-muted hover:text-text" (click)="moveStep(step.stepId, 1)" [disabled]="index === pipeline().steps.length - 1">↓</button>
@@ -117,6 +128,8 @@
       }
     }
   </div>
+
+  <app-code-sandbox-host />
 </section>
 
 <ng-template #picker>
@@ -126,21 +139,35 @@
         type="text"
         [value]="pickerQuery()"
         (input)="pickerQuery.set($any($event.target).value)"
-        placeholder="Search tools…"
+        placeholder="Search tools or scripts…"
         class="w-full rounded-sm border border-border bg-panel-elevated px-2 py-1 text-ui-sm text-text"
         autofocus
       />
+      <a routerLink="/pipelines/scripts/new" class="shrink-0 whitespace-nowrap text-ui-xs text-accent hover:underline">+ New script…</a>
       <button type="button" class="text-ui-sm text-text-muted hover:text-text" (click)="closePicker()">✕</button>
     </div>
 
-    @if (pickerResults().compatible.length === 0 && pickerResults().incompatible.length === 0) {
-      <p class="px-1 py-1 text-ui-sm text-text-muted">No matching pipeline-eligible tools.</p>
+    @if (pickerResults().compatible.length === 0 && pickerResults().incompatible.length === 0 && pickerResults().scripts.length === 0) {
+      <p class="px-1 py-1 text-ui-sm text-text-muted">No matching pipeline-eligible tools or scripts.</p>
     }
 
     @for (tool of pickerResults().compatible; track tool.id) {
       <button type="button" class="block w-full rounded-sm px-2 py-1 text-left text-ui-sm text-text hover:bg-panel-elevated" (click)="addStep(tool.id)">
         {{ tool.title }}
       </button>
+    }
+
+    @if (pickerResults().scripts.length > 0) {
+      <p class="mt-2 px-2 text-ui-xs uppercase tracking-wide text-text-muted">My Scripts</p>
+      @for (script of pickerResults().scripts; track script.id) {
+        <button
+          type="button"
+          class="block w-full rounded-sm px-2 py-1 text-left font-mono text-ui-sm text-warning hover:bg-panel-elevated"
+          (click)="addScriptStep(script.id)"
+        >
+          {{ script.name }}
+        </button>
+      }
     }
 
     @if (pickerResults().incompatible.length > 0) {
