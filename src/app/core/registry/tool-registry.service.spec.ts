@@ -52,8 +52,26 @@ describe('validateDefinitions', () => {
   it('logs an error for a duplicate id', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const duplicates: ToolDefinition[] = [
-      { id: 'a', title: 'A', description: '', category: 'data', keywords: [], route: '/tools/a', load: noop },
-      { id: 'a', title: 'A2', description: '', category: 'text', keywords: [], route: '/tools/a2', load: noop },
+      {
+        id: 'a',
+        title: 'A',
+        description: '',
+        category: 'data',
+        keywords: [],
+        route: '/tools/a',
+        load: noop,
+        io: { accepts: ['text'], produces: ['text'] },
+      },
+      {
+        id: 'a',
+        title: 'A2',
+        description: '',
+        category: 'text',
+        keywords: [],
+        route: '/tools/a2',
+        load: noop,
+        io: { accepts: ['text'], produces: ['text'] },
+      },
     ];
 
     validateDefinitions(duplicates);
@@ -65,8 +83,26 @@ describe('validateDefinitions', () => {
   it('logs an error for a duplicate route', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const duplicates: ToolDefinition[] = [
-      { id: 'a', title: 'A', description: '', category: 'data', keywords: [], route: '/tools/x', load: noop },
-      { id: 'b', title: 'B', description: '', category: 'text', keywords: [], route: '/tools/x', load: noop },
+      {
+        id: 'a',
+        title: 'A',
+        description: '',
+        category: 'data',
+        keywords: [],
+        route: '/tools/x',
+        load: noop,
+        io: { accepts: ['text'], produces: ['text'] },
+      },
+      {
+        id: 'b',
+        title: 'B',
+        description: '',
+        category: 'text',
+        keywords: [],
+        route: '/tools/x',
+        load: noop,
+        io: { accepts: ['text'], produces: ['text'] },
+      },
     ];
 
     validateDefinitions(duplicates);
@@ -78,7 +114,16 @@ describe('validateDefinitions', () => {
   it('does not log for a valid definition set', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const valid: ToolDefinition[] = [
-      { id: 'a', title: 'A', description: '', category: 'data', keywords: [], route: '/tools/a', load: noop },
+      {
+        id: 'a',
+        title: 'A',
+        description: '',
+        category: 'data',
+        keywords: [],
+        route: '/tools/a',
+        load: noop,
+        io: { accepts: ['text'], produces: ['text'] },
+      },
     ];
 
     validateDefinitions(valid);

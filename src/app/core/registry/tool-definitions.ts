@@ -191,7 +191,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/uuid/uuid').then((m) => m.Uuid),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json', 'file'] },
   },
   {
     id: 'ulid-tools',
@@ -204,7 +204,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/ulid-tools/ulid-tools').then((m) => m.UlidTools),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
     id: 'nanoid-generator',
@@ -216,7 +216,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/nanoid-generator/nanoid-generator').then((m) => m.NanoidGenerator),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['json'], produces: ['text'] },
   },
   {
     id: 'snowflake-id-tools',
@@ -229,7 +229,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/snowflake-id-tools/snowflake-id-tools').then((m) => m.SnowflakeIdTools),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
     id: 'cuid-generator',
@@ -241,7 +241,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/cuid-generator/cuid-generator').then((m) => m.CuidGenerator),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['json'], produces: ['text'] },
   },
   {
     id: 'ksuid-tools',
@@ -254,7 +254,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/ksuid-tools/ksuid-tools').then((m) => m.KsuidTools),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
     id: 'mock-data-studio',
@@ -266,7 +266,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/mock-data-studio/mock-data-studio').then((m) => m.MockDataStudio),
     status: 'stable',
     persistence: { input: 'local', preferences: 'local' },
-    io: { accepts: ['json'], produces: ['table', 'json', 'text'] },
+    io: { accepts: ['json'], produces: ['table', 'json', 'text', 'file'] },
   },
   {
     id: 'git-command-builder',
@@ -302,7 +302,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/gitignore-generator/gitignore-generator').then((m) => m.GitignoreGenerator),
     status: 'stable',
     persistence: { input: 'local', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['json'], produces: ['text', 'file'] },
   },
   {
     id: 'gitignore-tester',
@@ -362,7 +362,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/git-url-parser/git-url-parser').then((m) => m.GitUrlParser),
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
-    io: { accepts: ['text'], produces: ['json'] },
+    io: { accepts: ['text', 'url'], produces: ['json'] },
   },
   {
     id: 'git-remote-inspector',
@@ -596,7 +596,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/env-editor/env-editor').then((m) => m.EnvEditor),
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'file'] },
   },
   {
     id: 'env-validator',
@@ -656,7 +656,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/secret-detector/secret-detector').then((m) => m.SecretDetector),
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
     id: 'missing-env-var-detector',
@@ -680,7 +680,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/config-merge-tool/config-merge-tool').then((m) => m.ConfigMergeTool),
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
-    io: { accepts: ['text'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'ip-address-inspector',
@@ -849,7 +849,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/ascii-table/ascii-table').then((m) => m.AsciiTable),
     status: 'stable',
     persistence: { input: 'local' },
-    io: { accepts: ['text'], produces: ['json'] },
+    io: { accepts: ['text'], produces: ['table'] },
   },
   {
     id: 'unicode-table',
@@ -862,7 +862,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'experimental',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'required' },
-    io: { accepts: ['text'], produces: ['json'] },
+    io: { accepts: ['text'], produces: ['table'] },
   },
   {
     id: 'unicode-normalization',
@@ -1270,7 +1270,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/curl-converter/curl-converter').then((m) => m.CurlConverter),
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
-    io: { accepts: ['text', 'json'], produces: ['json', 'text'] },
+    io: { accepts: ['text', 'json', 'http-response'], produces: ['json', 'text'] },
   },
   {
     id: 'http-request-builder',
@@ -1282,7 +1282,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/http-request-builder/http-request-builder').then((m) => m.HttpRequestBuilder),
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
-    io: { accepts: ['text', 'json', 'url'], produces: ['json', 'text'] },
+    io: { accepts: ['text', 'json', 'url', 'http-response'], produces: ['json', 'text'] },
   },
   {
     id: 'cron',
@@ -1607,7 +1607,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
       ),
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
     id: 'aes-encrypt-decrypt',
@@ -1741,7 +1741,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'advanced-diff',
@@ -1755,7 +1755,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'experimental',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'required' },
-    io: { accepts: ['text', 'file'], produces: ['json', 'text'] },
+    io: { accepts: ['text', 'file'], produces: ['json', 'text', 'file'] },
   },
   {
     id: 'directory-diff',
@@ -1795,7 +1795,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'experimental',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'none' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'file'] },
   },
   {
     id: 'markdown-workspace',
@@ -1810,7 +1810,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
     network: { required: true, detail: 'Link Checker: HEAD/GET per link, manual "Check links" button only' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'file'] },
   },
   {
     id: 'js-playground',
@@ -1907,7 +1907,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'json-patch-generate',
@@ -1920,7 +1920,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'json-patch-test',
@@ -1933,7 +1933,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'json-pointer',
@@ -1946,7 +1946,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'json-sort-keys',
@@ -1959,7 +1959,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'jsonl-viewer',
@@ -2078,7 +2078,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['text', 'table'], produces: ['text', 'table'] },
+    io: { accepts: ['text', 'table', 'json'], produces: ['text', 'table'] },
   },
   {
     id: 'csv-delimiter-detector',
@@ -2117,7 +2117,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text', 'table'], produces: ['text', 'table'] },
   },
   {
     id: 'csv-dedupe',
@@ -2130,7 +2130,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['text', 'table'], produces: ['text'] },
+    io: { accepts: ['text', 'table'], produces: ['text', 'table'] },
   },
   {
     id: 'csv-join',
@@ -2327,7 +2327,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'none' },
-    io: { accepts: ['text', 'json', 'table'], produces: ['text', 'json', 'table'] },
+    io: { accepts: ['text', 'json'], produces: ['text', 'json'] },
   },
   {
     id: 'hex-text-converter',
@@ -2549,7 +2549,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     status: 'stable',
     persistence: { input: 'session', preferences: 'local' },
     execution: { worker: 'optional' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text', 'table'], produces: ['text', 'table'] },
   },
   {
     id: 'expression-evaluator',
@@ -2744,7 +2744,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/aws-sigv4-inspector/aws-sigv4-inspector').then((m) => m.AwsSigv4Inspector),
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
-    io: { accepts: ['text'], produces: ['text'] },
+    io: { accepts: ['text'], produces: ['text', 'json'] },
   },
   {
     id: 'palette-generator',
@@ -3011,7 +3011,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/json-ld-tester/json-ld-tester').then((m) => m.JsonLdTester),
     status: 'stable',
     persistence: { input: 'session', preferences: 'none' },
-    io: { accepts: ['json'], produces: ['json'] },
+    io: { accepts: ['text', 'json'], produces: ['json'] },
   },
   {
     id: 'base64-image-viewer',
@@ -3047,7 +3047,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     load: () => import('../../tools/exif-viewer/exif-viewer').then((m) => m.ExifViewer),
     status: 'stable',
     persistence: { input: 'none', preferences: 'local' },
-    io: { accepts: ['file'], produces: ['json', 'file'] },
+    io: { accepts: ['file'], produces: ['table', 'file'] },
   },
   {
     id: 'image-resizer',

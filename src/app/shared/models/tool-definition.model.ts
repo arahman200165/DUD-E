@@ -29,6 +29,6 @@ export interface ToolDefinition {
   readonly persistence?: ToolPersistencePolicy;
   readonly execution?: ToolExecutionPolicy;
   readonly network?: ToolNetworkPolicy;
-  readonly io?: ToolIOCapabilities;
+  readonly io: ToolIOCapabilities;
   readonly status?: 'stable' | 'experimental';
 }

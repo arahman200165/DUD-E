@@ -12,6 +12,7 @@ const FIXTURES: ToolDefinition[] = [
     keywords: ['json', 'pretty', 'minify'],
     route: '/tools/json',
     load: noop,
+    io: { accepts: ['text'], produces: ['text'] },
   },
   {
     id: 'regex',
@@ -21,6 +22,7 @@ const FIXTURES: ToolDefinition[] = [
     keywords: ['regex', 'pattern', 'json-like'],
     route: '/tools/regex',
     load: noop,
+    io: { accepts: ['text'], produces: ['text'] },
   },
 ];
 

@@ -12,6 +12,7 @@ describe('SecurityBadge', () => {
     keywords: [],
     route: '/tools/a',
     load: noop,
+    io: { accepts: ['text'], produces: ['text'] },
   };
 
   beforeEach(() => {

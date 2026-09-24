@@ -21,6 +21,7 @@ describe('buildToolRoutes', () => {
       keywords: ['json'],
       route: '/tools/json',
       load: () => Promise.resolve({}),
+      io: { accepts: ['text'], produces: ['text'] },
     },
   ];
 
