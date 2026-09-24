@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-263 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+264 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -302,6 +302,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [File Signature & Type Detector](https://arahman200165.github.io/DUDE/tools/file-type-detector) | Developer | Identifies an uploaded file's real format from its magic bytes, disambiguates ZIP-based containers like docx/xlsx/pptx/jar, and flags a mismatch against the declared file extension. |
 | [File Entropy Analyzer](https://arahman200165.github.io/DUDE/tools/file-entropy-analyzer) | Developer | Computes an uploaded file's Shannon byte-distribution entropy overall and in sliding windows, to spot packed, encrypted, or compressed regions. |
 | [Byte Frequency Analyzer](https://arahman200165.github.io/DUDE/tools/byte-frequency-analyzer) | Developer | Charts how often each of the 256 byte values occurs in an uploaded file, and reports the most frequent byte and how many distinct values appear. |
+| [Binary Strings Extractor](https://arahman200165.github.io/DUDE/tools/binary-strings-extractor) | Developer | Extracts printable ASCII and little-endian UTF-16 text runs from an uploaded file, like the Unix `strings` utility, with an adjustable minimum length. |
 
 ## Architecture
 
