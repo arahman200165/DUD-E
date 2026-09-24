@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-236 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+241 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -213,6 +213,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [SQL Query Explainer](https://arahman200165.github.io/DUDE/tools/sql-query-explainer) | Data | Breaks a SELECT statement down into a plain-English description of its columns, joins, filters, grouping, and ordering. Static and pattern-based — not a live EXPLAIN. |
 | [CREATE TABLE Generator](https://arahman200165.github.io/DUDE/tools/create-table-generator) | Data | Infers column types from a pasted JSON array or CSV sample and generates dialect-specific CREATE TABLE DDL. |
 | [Schema Diff](https://arahman200165.github.io/DUDE/tools/schema-diff) | Data | Diffs two CREATE TABLE statements, reporting added, removed, and changed columns. |
+| [Dockerfile Linter / Formatter](https://arahman200165.github.io/DUDE/tools/dockerfile-linter) | Developer | Lints a Dockerfile for common issues (unpinned base image, root user, apt-get cleanup, ADD vs COPY, bad EXPOSE ports) and normalizes instruction casing. |
+| [Docker Compose Validator / Viewer](https://arahman200165.github.io/DUDE/tools/docker-compose-validator) | Developer | Validates a docker-compose YAML file against a minimal Compose Specification shape and browses it as a tree. |
+| [Docker Run ↔ Compose Converter](https://arahman200165.github.io/DUDE/tools/docker-run-compose-converter) | Developer | Converts a docker run command into a docker-compose service block, or the reverse. |
+| [Kubernetes Manifest YAML Validator / Formatter](https://arahman200165.github.io/DUDE/tools/k8s-manifest-validator) | Developer | Validates a Kubernetes manifest for required fields (apiVersion, kind, metadata.name) against a curated common-Kind list, and reformats its YAML. |
+| [Kubernetes Manifest Diff](https://arahman200165.github.io/DUDE/tools/k8s-manifest-diff) | Developer | Diffs two Kubernetes manifests, reporting added, removed, and changed fields. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
