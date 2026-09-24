@@ -3414,4 +3414,16 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     persistence: { input: 'none', preferences: 'local' },
     io: { accepts: ['file'], produces: ['table'] },
   },
+  {
+    id: 'pe-header-viewer',
+    title: 'PE Header Viewer',
+    description: 'Parses a Windows PE executable\'s DOS/COFF/Optional headers, section table, data directories, and basic import/export table into a browsable tree.',
+    category: 'developer',
+    keywords: ['pe header', 'portable executable', 'exe', 'dll', 'coff header', 'windows executable', 'import table', 'export table'],
+    route: '/tools/pe-header-viewer',
+    load: () => import('../../tools/pe-header-viewer/pe-header-viewer').then((m) => m.PeHeaderViewer),
+    status: 'stable',
+    persistence: { input: 'none', preferences: 'none' },
+    io: { accepts: ['file'], produces: ['json'] },
+  },
 ];

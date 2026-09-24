@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-269 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+270 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -308,6 +308,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Hex Editor](https://arahman200165.github.io/DUDE/tools/hex-editor) | Developer | Interactively edits an uploaded file byte-by-byte in a hex grid with a live ASCII gutter, then downloads the modified bytes. Limited to 16 KB files to keep editing responsive. |
 | [Hex Diff](https://arahman200165.github.io/DUDE/tools/hex-diff) | Developer | Compares two uploaded files byte-by-byte in fixed-width hex rows, highlighting which 16-byte chunks differ -- the standalone version of Directory Diff's binary drill-down. |
 | [Binary Structure Inspector](https://arahman200165.github.io/DUDE/tools/binary-structure-inspector) | Developer | Parses an uploaded file against a user-defined sequence of typed fields (integers, floats, fixed-length strings, chosen endianness) into a table of offsets and decoded values. |
+| [PE Header Viewer](https://arahman200165.github.io/DUDE/tools/pe-header-viewer) | Developer | Parses a Windows PE executable's DOS/COFF/Optional headers, section table, data directories, and basic import/export table into a browsable tree. |
 
 ## Architecture
 
