@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-214 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+218 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -190,7 +190,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Regex Benchmark](https://arahman200165.github.io/DUDE/tools/regex-benchmark) | Developer | Flags catastrophic-backtracking risk shapes in a pattern, and times it against sample inputs in a worker with a per-sample timeout. |
 | [Regex Flavor Converter](https://arahman200165.github.io/DUDE/tools/regex-flavor-converter) | Developer | Translates a regex pattern between JavaScript, Python, Java, .NET, PCRE, and Go RE2 syntax, flagging constructs the target flavor cannot represent. |
 | [Regex Generator](https://arahman200165.github.io/DUDE/tools/regex-generator) | Developer | Generalizes a pattern from example strings (non-AI, heuristic), validated against every example and counter-example before being shown. |
-| [UUID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/uuid) | Developer | Generates v1/v4/v5/v7 UUIDs (with namespace support), inspects an existing UUID, and bulk-exports the generated list. |
+| [UUID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/uuid) | Developer | Generates v1/v3/v4/v5/v6/v7 UUIDs (with namespace support), inspects an existing UUID and its embedded timestamp, and bulk-exports the generated list. |
+| [ULID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/ulid-tools) | Developer | Generates a ULID (optionally monotonic), and inspects an existing ULID to decode its embedded timestamp and randomness component. |
+| [NanoID Generator](https://arahman200165.github.io/DUDE/tools/nanoid-generator) | Developer | Generates NanoIDs with a configurable count, length, and alphabet. |
+| [Snowflake ID Generator / Inspector](https://arahman200165.github.io/DUDE/tools/snowflake-id-tools) | Developer | Generates a Snowflake id (Twitter/X, Discord, Instagram, or custom epoch/bit layout), and inspects an existing id to decode its embedded timestamp, worker id, and sequence. |
+| [CUID Generator](https://arahman200165.github.io/DUDE/tools/cuid-generator) | Developer | Generates collision-resistant CUID2 identifiers with a configurable count and length. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
