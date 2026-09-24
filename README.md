@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-233 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+236 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -59,7 +59,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [YAML Merge](https://arahman200165.github.io/DUDE/tools/yaml-merge) | Data | Deep-merges two YAML documents into one. |
 | [YAML Anchor / Alias Visualizer](https://arahman200165.github.io/DUDE/tools/yaml-anchors) | Data | Visualizes a YAML document's anchors and aliases and where each one resolves. |
 | [YAML Path Tester](https://arahman200165.github.io/DUDE/tools/yaml-path) | Data | Queries a YAML document with a JSONPath or JMESPath expression. |
-| [CSV ↔ SQL Converter](https://arahman200165.github.io/DUDE/tools/csv-sql) | Data | Converts CSV rows to SQL INSERT statements, or parses INSERT statements back into CSV. |
+| [CSV ↔ SQL Converter](https://arahman200165.github.io/DUDE/tools/csv-sql) | Data | Converts CSV rows or a JSON array of objects to SQL INSERT statements, or parses INSERT statements back into CSV. |
 | [CSV Delimiter Detector](https://arahman200165.github.io/DUDE/tools/csv-delimiter-detector) | Data | Detects the most likely delimiter in a pasted CSV/TSV/PSV sample and previews it as a table. |
 | [CSV Column Statistics](https://arahman200165.github.io/DUDE/tools/csv-stats) | Data | Computes per-column count, empty, distinct, and numeric min/max/mean statistics for a CSV. |
 | [CSV Cleaner](https://arahman200165.github.io/DUDE/tools/csv-cleaner) | Data | Trims whitespace, drops empty rows, and normalizes a messy CSV. |
@@ -210,6 +210,9 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [SQL Syntax Checker](https://arahman200165.github.io/DUDE/tools/sql-syntax-checker) | Data | Checks SQL for syntax errors against a chosen dialect, reporting the error message and line/column. |
 | [SQL Parameterizer](https://arahman200165.github.io/DUDE/tools/sql-parameterizer) | Data | Replaces literal values in a SQL query with placeholders (?, $n, or :named), extracting the values as a parameter list. |
 | [SQL Dialect Converter](https://arahman200165.github.io/DUDE/tools/sql-dialect-converter) | Data | Converts SQL between PostgreSQL, MySQL, MariaDB, SQLite, and SQL Server, best-effort. |
+| [SQL Query Explainer](https://arahman200165.github.io/DUDE/tools/sql-query-explainer) | Data | Breaks a SELECT statement down into a plain-English description of its columns, joins, filters, grouping, and ordering. Static and pattern-based — not a live EXPLAIN. |
+| [CREATE TABLE Generator](https://arahman200165.github.io/DUDE/tools/create-table-generator) | Data | Infers column types from a pasted JSON array or CSV sample and generates dialect-specific CREATE TABLE DDL. |
+| [Schema Diff](https://arahman200165.github.io/DUDE/tools/schema-diff) | Data | Diffs two CREATE TABLE statements, reporting added, removed, and changed columns. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
