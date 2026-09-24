@@ -1,0 +1,32 @@
+<app-tool-shell title="IPv6 Explorer" status="stable">
+  <div class="flex flex-col gap-4">
+    <label class="flex flex-col gap-1 text-ui text-text-muted">
+      IPv6 address
+      <input
+        type="text"
+        class="w-full rounded-sm border border-border bg-panel px-2 py-1 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-accent"
+        [value]="input()"
+        (input)="onInput($event)"
+      />
+    </label>
+
+    @if (result(); as current) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-2 text-ui text-text">
+        <div class="flex items-center justify-between gap-2">
+          <span><span class="text-text-muted">Compressed</span> <span class="font-mono">{{ current.compressed }}</span></span>
+          <app-copy-button [text]="current.compressed" />
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span><span class="text-text-muted">Expanded</span> <span class="font-mono">{{ current.expanded }}</span></span>
+          <app-copy-button [text]="current.expanded" />
+        </div>
+        <div><span class="text-text-muted">Classification</span> {{ current.classification }}</div>
+        @if (current.embeddedIpv4) {
+          <div><span class="text-text-muted">Embedded IPv4</span> <span class="font-mono">{{ current.embeddedIpv4 }}</span></div>
+        }
+      </div>
+    } @else if (input().trim() !== '') {
+      <app-error-panel message="Not a valid IPv6 address." />
+    }
+  </div>
+</app-tool-shell>
