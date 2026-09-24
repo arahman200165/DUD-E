@@ -35,7 +35,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Tools
 
-241 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
+246 tools ship today, each self-registered in [`tool-definitions.ts`](src/app/core/registry/tool-definitions.ts) — nothing about the shell knows any tool by name.
 
 | Tool | Category | What it does |
 | --- | --- | --- |
@@ -218,6 +218,11 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 | [Docker Run ↔ Compose Converter](https://arahman200165.github.io/DUDE/tools/docker-run-compose-converter) | Developer | Converts a docker run command into a docker-compose service block, or the reverse. |
 | [Kubernetes Manifest YAML Validator / Formatter](https://arahman200165.github.io/DUDE/tools/k8s-manifest-validator) | Developer | Validates a Kubernetes manifest for required fields (apiVersion, kind, metadata.name) against a curated common-Kind list, and reformats its YAML. |
 | [Kubernetes Manifest Diff](https://arahman200165.github.io/DUDE/tools/k8s-manifest-diff) | Developer | Diffs two Kubernetes manifests, reporting added, removed, and changed fields. |
+| [kubeconfig Inspector](https://arahman200165.github.io/DUDE/tools/kubeconfig-inspector) | Developer | Summarizes a kubeconfig's clusters, contexts, and users, redacting credential fields (tokens, client certs/keys, passwords) behind a reveal toggle. |
+| [Kubernetes Quantity Converter](https://arahman200165.github.io/DUDE/tools/k8s-quantity-converter) | Developer | Converts a Kubernetes resource quantity (e.g. "500m", "1Gi") to its canonical value and every other common unit at once. |
+| [Kubernetes CronJob Schedule Tester](https://arahman200165.github.io/DUDE/tools/k8s-cronjob-tester) | Developer | Extracts a CronJob's schedule from a pasted manifest (or accepts a bare cron expression) and shows its next run times. |
+| [Kubernetes Resource Requests Calculator](https://arahman200165.github.io/DUDE/tools/k8s-resource-calculator) | Developer | Sums container CPU/memory requests and limits across a Pod, Deployment, or other workload manifest. |
+| [Kubernetes Base64 Secret Encoder / Decoder](https://arahman200165.github.io/DUDE/tools/k8s-secret-base64) | Developer | Encodes plaintext key/value pairs into a Secret data: block, or decodes an existing Secret's base64 values back to plaintext. |
 | [Semantic Version Comparator](https://arahman200165.github.io/DUDE/tools/semver-comparator) | Developer | Compares, sorts, range-checks, and visualizes versions and ranges against the Semantic Versioning spec. |
 | [Glob Pattern Tester](https://arahman200165.github.io/DUDE/tools/glob-tester) | Developer | Tests a glob pattern against a list of sample paths. |
 | [Random Data Generator](https://arahman200165.github.io/DUDE/tools/random-data-generator) | Developer | Generates realistic fake data — names, addresses, internet, finance, and more — as a table, CSV, or JSON. |
