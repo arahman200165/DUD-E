@@ -1,0 +1,61 @@
+<app-tool-shell title="File Inspector" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (job(); as j) {
+        <app-busy-indicator [status]="j.status()" [progress]="j.progress()" />
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+    @if (job()?.error(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop any file here for a forensics summary, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (report(); as data) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File name</span><span class="font-mono text-text">{{ data.fileName }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File size</span><span class="font-mono text-text">{{ formattedSize() }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Declared MIME</span><span class="font-mono text-text">{{ data.declaredMime || 'unknown' }}</span></div>
+
+        <div class="mt-2 border-t border-border pt-2">
+          @if (data.detectedSignature; as sig) {
+            <div class="flex justify-between gap-4"><span class="text-text-muted">Detected signature</span><span class="font-mono text-text">{{ sig.mime }}</span></div>
+            @if (data.containerFormat) {
+              <div class="flex justify-between gap-4"><span class="text-text-muted">Container resolves to</span><span class="font-mono text-text">{{ data.containerFormat }}</span></div>
+            }
+          } @else {
+            <p class="text-text-muted">No known magic-byte signature matched.</p>
+          }
+        </div>
+
+        <div class="mt-2 flex justify-between gap-4 border-t border-border pt-2">
+          <span class="text-text-muted">Entropy</span>
+          <span
+            class="font-mono"
+            [class.text-success]="data.entropyVerdict === 'low'"
+            [class.text-warning]="data.entropyVerdict === 'medium'"
+            [class.text-danger]="data.entropyVerdict === 'high'"
+          >
+            {{ data.entropy.toFixed(3) }} bits/byte ({{ data.entropyVerdict }})
+          </span>
+        </div>
+
+        @if (data.sampleStrings.length > 0) {
+          <div class="mt-2 border-t border-border pt-2">
+            <div class="mb-1 text-text-muted">Sample strings</div>
+            <ul class="flex flex-col gap-0.5 font-mono">
+              @for (s of data.sampleStrings; track $index) {
+                <li class="truncate text-text">{{ s }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
