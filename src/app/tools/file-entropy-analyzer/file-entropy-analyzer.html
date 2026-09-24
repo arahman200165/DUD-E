@@ -1,0 +1,59 @@
+<app-tool-shell title="File Entropy Analyzer" status="stable">
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3 text-ui text-text-muted">
+      <button type="button" class="rounded-sm border border-border px-2 py-0.5 hover:bg-panel-elevated" (click)="clear()">Clear</button>
+      @if (job(); as j) {
+        <app-busy-indicator [status]="j.status()" [progress]="j.progress()" />
+      }
+    </div>
+
+    @if (rejection(); as message) {
+      <app-error-panel [message]="message" />
+    }
+    @if (job()?.error(); as message) {
+      <app-error-panel [message]="message" />
+    }
+
+    <app-file-drop label="Drop any file here, or click to browse" (fileSelected)="onFileSelected($event)" (rejected)="onRejected($event)" />
+
+    @if (report(); as data) {
+      <div class="flex flex-col gap-2 rounded-sm border border-border bg-panel p-3 text-ui">
+        <div class="flex justify-between gap-4"><span class="text-text-muted">File</span><span class="font-mono text-text">{{ fileName() }}</span></div>
+        <div class="flex justify-between gap-4"><span class="text-text-muted">Size</span><span class="font-mono text-text">{{ data.byteLength }} bytes</span></div>
+        <div class="flex justify-between gap-4">
+          <span class="text-text-muted">Overall entropy</span>
+          <span class="font-mono text-text">{{ data.overallEntropy.toFixed(3) }} bits/byte</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span class="text-text-muted">Verdict</span>
+          <span
+            class="font-mono"
+            [class.text-success]="data.verdict === 'low'"
+            [class.text-warning]="data.verdict === 'medium'"
+            [class.text-danger]="data.verdict === 'high'"
+          >
+            {{ data.verdict === 'high' ? 'High -- likely compressed/encrypted/random' : data.verdict === 'medium' ? 'Medium -- typical program/document data' : 'Low -- structured/repetitive data' }}
+          </span>
+        </div>
+
+        @if (data.windows.length > 1) {
+          <div class="mt-2 border-t border-border pt-2">
+            <div class="mb-1 text-text-muted">Entropy by {{ data.windows[0].length }}-byte window (offset 0 -&gt; end)</div>
+            <div class="flex h-24 items-end gap-px overflow-x-auto rounded-sm bg-panel-elevated p-1">
+              @for (w of data.windows; track w.offset) {
+                <div
+                  class="w-1 shrink-0 rounded-t-sm"
+                  [class.bg-success]="w.entropy < 4"
+                  [class.bg-warning]="w.entropy >= 4 && w.entropy < 7.5"
+                  [class.bg-danger]="w.entropy >= 7.5"
+                  [style.height.%]="(w.entropy / maxWindowEntropy()) * 100"
+                  [title]="'offset ' + w.offset + ': ' + w.entropy.toFixed(2) + ' bits/byte'"
+                ></div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</app-tool-shell>
