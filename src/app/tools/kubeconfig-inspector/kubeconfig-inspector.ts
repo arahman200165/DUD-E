@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { consumeWorkspaceState } from '../../core/workspace/workspace-handoff';
 import { inspectKubeconfig, redactSecret, type KubeconfigUser } from './kubeconfig-inspector-logic';
 
 @Component({
@@ -14,6 +15,13 @@ export class KubeconfigInspector {
 
   protected readonly input = this.persistence.signal('kubeconfig-inspector', 'input', 'none', '');
   protected readonly revealed = signal(false);
+
+  constructor() {
+    // Workspace tab-restore hand-off (DUDE_PRD.md §21 Phase 21 Item 4) — see
+    // kubeconfig-inspector.workspace-step.ts. In-memory only, never touches storage.
+    const workspaceState = consumeWorkspaceState('kubeconfig-inspector');
+    if (typeof workspaceState?.['input'] === 'string') this.input.set(workspaceState['input']);
+  }
 
   protected readonly result = computed(() => (this.input().trim() === '' ? null : inspectKubeconfig(this.input())));
 

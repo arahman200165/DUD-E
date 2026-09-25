@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { consumeWorkspaceState } from '../../core/workspace/workspace-handoff';
 import { detectSecrets, redactMatch } from './secret-detector-logic';
 
 @Component({
@@ -13,6 +14,13 @@ export class SecretDetector {
 
   protected readonly input = this.persistence.signal('secret-detector', 'input', 'none', '');
   protected readonly revealed = signal(false);
+
+  constructor() {
+    // Workspace tab-restore hand-off (DUDE_PRD.md §21 Phase 21 Item 4) — see
+    // secret-detector.workspace-step.ts. In-memory only, never touches PersistenceService.
+    const workspaceState = consumeWorkspaceState('secret-detector');
+    if (typeof workspaceState?.['input'] === 'string') this.input.set(workspaceState['input']);
+  }
 
   protected readonly findings = computed(() => detectSecrets(this.input()));
 

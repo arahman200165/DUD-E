@@ -3,6 +3,7 @@ import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { HTTP_STATUS_CODES } from '../../shared/utils/http-status-codes';
+import { consumeWorkspaceState } from '../../core/workspace/workspace-handoff';
 import { parseHttpResponseText } from './http-response-parse';
 
 const SAMPLE_RESPONSE = [
@@ -26,6 +27,13 @@ const SAMPLE_RESPONSE = [
 export class HttpResponseViewer {
   protected readonly raw = signal(SAMPLE_RESPONSE);
   protected readonly result = computed(() => parseHttpResponseText(this.raw()));
+
+  constructor() {
+    // Workspace tab-restore hand-off (DUDE_PRD.md §21 Phase 21 Item 4) — see
+    // http-response-viewer.workspace-step.ts. In-memory only, never touches storage.
+    const workspaceState = consumeWorkspaceState('http-response-viewer');
+    if (typeof workspaceState?.['raw'] === 'string') this.raw.set(workspaceState['raw']);
+  }
 
   protected readonly statusInfo = computed(() => {
     const current = this.result();

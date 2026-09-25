@@ -4,6 +4,7 @@ import { SplitPane } from '../../shared/components/split-pane/split-pane';
 import { KeyValueEditor } from '../../shared/components/key-value-editor/key-value-editor';
 import { CopyButton } from '../../shared/components/copy-button/copy-button';
 import { KeyValuePair } from '../../shared/models/key-value-pair.model';
+import { consumeWorkspaceState } from '../../core/workspace/workspace-handoff';
 import { buildHeaders, parseHeaders } from './http-headers-codec';
 import { describeHeader } from './well-known-headers';
 
@@ -21,6 +22,13 @@ export class HttpHeaderInspector {
   protected readonly raw = signal('');
   protected readonly pairs = computed(() => parseHeaders(this.raw()));
   protected readonly describeHeader = describeHeader;
+
+  constructor() {
+    // Workspace tab-restore hand-off (DUDE_PRD.md §21 Phase 21 Item 4) — see
+    // http-header-inspector.workspace-step.ts. In-memory only, never touches storage.
+    const workspaceState = consumeWorkspaceState('http-header-inspector');
+    if (typeof workspaceState?.['raw'] === 'string') this.raw.set(workspaceState['raw']);
+  }
 
   protected onRawChange(event: Event): void {
     this.raw.set((event.target as HTMLTextAreaElement).value);
