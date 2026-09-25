@@ -3,10 +3,10 @@ import { ShellLayout } from '../../shell/layout/shell-layout';
 import { Deck } from '../../shell/deck/deck';
 import { buildToolRoutes } from '../registry/tool-routes';
 
-// The Pipelines, Smart Paste, and Workspace routes below are the deliberate exceptions to "never
-// edit this file to wire up a feature" (DUDE_PRD.md §21 Phase 21 Items 2, 3, and 4 explicitly
-// sanction them — see shell/AGENTS.md). Nothing here names a specific tool by id; all are
-// parallel, registry-adjacent features, never a 278th tool.
+// The Pipelines, Smart Paste, Workspace, and History routes below are the deliberate exceptions to
+// "never edit this file to wire up a feature" (DUDE_PRD.md §21 Phase 21 Items 2, 3, 4, and 5
+// explicitly sanction them — see shell/AGENTS.md). Nothing here names a specific tool by id; all
+// are parallel, registry-adjacent features, never a 278th tool.
 export const routes: Routes = [
   {
     path: '',
@@ -20,6 +20,10 @@ export const routes: Routes = [
       {
         path: 'workspace',
         loadComponent: () => import('../../shell/workspace/workspace-shell/workspace-shell').then((m) => m.WorkspaceShell),
+      },
+      {
+        path: 'history',
+        loadComponent: () => import('../../shell/history/history-page/history-page').then((m) => m.HistoryPage),
       },
       {
         path: 'pipelines',

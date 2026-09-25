@@ -1,0 +1,103 @@
+<div class="flex h-full flex-col gap-3 p-3">
+  <div class="flex flex-wrap items-center gap-2">
+    <input
+      type="text"
+      placeholder="Search history…"
+      class="min-w-48 flex-1 rounded-sm border border-border bg-panel px-2 py-1 text-ui text-text focus:outline-none focus:ring-1 focus:ring-accent"
+      [value]="query()"
+      (input)="onQueryInput($event)"
+    />
+
+    <select
+      class="rounded-sm border border-border bg-panel px-2 py-1 text-ui text-text"
+      [value]="toolFilter() ?? ''"
+      (change)="setToolFilter($any($event.target).value)"
+    >
+      <option value="">All tools</option>
+      @for (tool of toolOptions(); track tool.id) {
+        <option [value]="tool.id">{{ tool.title }}</option>
+      }
+    </select>
+
+    <button
+      type="button"
+      class="rounded-sm border px-2 py-1 text-ui-sm"
+      [class]="groupByTool() ? 'border-accent text-accent' : 'border-border text-text-muted hover:text-text'"
+      (click)="toggleGroupByTool()"
+    >
+      Group by tool
+    </button>
+
+    <button
+      type="button"
+      class="ml-auto rounded-sm border border-error/40 px-2 py-1 text-ui-sm text-error hover:bg-error/10"
+      (click)="clearAll()"
+    >
+      Clear all history
+    </button>
+  </div>
+
+  @if (history.lastError(); as error) {
+    <p class="text-ui text-warning">{{ error }}</p>
+  }
+
+  <div class="min-h-0 flex-1 overflow-y-auto">
+    @if (filtered().length === 0) {
+      <p class="text-ui text-text-muted">No history yet. Tools that support it record an entry here when you leave them.</p>
+    }
+
+    @if (!groupByTool()) {
+      <div class="flex flex-col gap-1">
+        @for (entry of filtered(); track entry.id) {
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded-sm border border-border bg-panel-elevated px-2 py-1.5 text-left hover:border-accent"
+            (click)="open(entry.id)"
+          >
+            @if (toolDefinition(entry.toolId); as tool) {
+              <app-category-icon [category]="tool.category" class="h-3.5 w-3.5 shrink-0" [class]="'text-' + meta[tool.category].colorToken" />
+              <span class="shrink-0 text-ui-sm text-text-muted">{{ tool.shortTitle ?? tool.title }}</span>
+            }
+            <span class="min-w-0 flex-1 truncate text-ui-sm text-text">{{ entry.summary }}</span>
+            @if (entry.truncated) {
+              <span class="shrink-0 text-ui-xs text-warning" title="Stored truncated — too large to keep in full">truncated</span>
+            }
+            <span class="shrink-0 text-ui-xs text-text-muted">{{ entry.createdAt | date: 'short' }}</span>
+            <span
+              class="shrink-0 rounded-sm px-1.5 py-0.5 text-ui-xs text-text-muted hover:bg-panel hover:text-error"
+              (click)="remove(entry.id, $event)"
+              >Delete</span
+            >
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="flex flex-col gap-3">
+        @for (group of grouped(); track group[0]) {
+          <div>
+            <h3 class="mb-1 text-ui-sm font-semibold text-text-muted">
+              {{ toolDefinition(group[0])?.title ?? group[0] }}
+            </h3>
+            <div class="flex flex-col gap-1">
+              @for (entry of group[1]; track entry.id) {
+                <button
+                  type="button"
+                  class="flex items-center gap-2 rounded-sm border border-border bg-panel-elevated px-2 py-1.5 text-left hover:border-accent"
+                  (click)="open(entry.id)"
+                >
+                  <span class="min-w-0 flex-1 truncate text-ui-sm text-text">{{ entry.summary }}</span>
+                  <span class="shrink-0 text-ui-xs text-text-muted">{{ entry.createdAt | date: 'short' }}</span>
+                  <span
+                    class="shrink-0 rounded-sm px-1.5 py-0.5 text-ui-xs text-text-muted hover:bg-panel hover:text-error"
+                    (click)="remove(entry.id, $event)"
+                    >Delete</span
+                  >
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

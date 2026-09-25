@@ -1,9 +1,11 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, computed, inject, input } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { ConnectivityService } from '../../../core/connectivity/connectivity.service';
 import { ToolRegistryService } from '../../../core/registry/tool-registry.service';
 import { WORKSPACE_HOST_CONTEXT } from '../../../core/workspace/workspace-host-context';
 import { ScratchpadService } from '../../../core/workspace/scratchpad.service';
+import { HistoryService } from '../../../core/history/history.service';
+import { recordHistoryOnDestroy } from '../../../core/history/history-recorder';
 import { CATEGORY_METADATA } from '../../models/tool-category.model';
 import { OfflineBadge } from '../offline-badge/offline-badge';
 import { CategoryIcon } from '../category-icon/category-icon';
@@ -11,15 +13,16 @@ import { SecurityBadge } from '../security-badge/security-badge';
 
 @Component({
   selector: 'app-tool-shell',
-  imports: [OfflineBadge, CategoryIcon, SecurityBadge],
+  imports: [OfflineBadge, CategoryIcon, SecurityBadge, RouterLink],
   templateUrl: './tool-shell.html',
 })
-export class ToolShell {
+export class ToolShell implements OnDestroy {
   private readonly connectivity = inject(ConnectivityService);
   private readonly router = inject(Router);
   private readonly registry = inject(ToolRegistryService);
   private readonly hostContext = inject(WORKSPACE_HOST_CONTEXT);
   private readonly scratchpad = inject(ScratchpadService);
+  private readonly history = inject(HistoryService);
 
   readonly title = input.required<string>();
   readonly status = input<'stable' | 'experimental'>('experimental');
@@ -57,5 +60,17 @@ export class ToolShell {
       selection && selection.length > 0 ? selection : (definition?.description ?? ''),
       definition?.id,
     );
+  }
+
+  /**
+   * The single History capture trigger (DUDE_PRD.md §21 Phase 21 Item 5) — fires identically
+   * whether the tool was torn down by leaving its own route or by the Workspace swapping a panel's
+   * tool, since `ToolShell` is nested inside every tool's own template either way. Fire-and-forget:
+   * Angular doesn't await `ngOnDestroy`, and the dynamic-import + IndexedDB write can safely finish
+   * after the component itself is gone.
+   */
+  ngOnDestroy(): void {
+    const definition = this.definition();
+    if (definition) void recordHistoryOnDestroy(definition.id, this.history);
   }
 }

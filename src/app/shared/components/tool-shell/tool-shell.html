@@ -18,6 +18,16 @@
       >
         + Scratchpad
       </button>
+      @if (definition(); as def) {
+        <a
+          [routerLink]="['/history']"
+          [queryParams]="{ tool: def.id }"
+          class="rounded border border-border px-1.5 py-0.5 text-ui-xs text-text-muted hover:border-accent hover:text-accent"
+          title="View history for this tool"
+        >
+          History
+        </a>
+      }
       <app-security-badge [definition]="definition()" />
       <app-offline-badge [show]="showOfflineBadge()" />
       <span
