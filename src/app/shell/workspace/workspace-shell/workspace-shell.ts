@@ -1,0 +1,24 @@
+import { Component, inject } from '@angular/core';
+import { WorkspaceLayoutService } from '../../../core/workspace/workspace-layout.service';
+import { CommandPaletteService } from '../../command-palette/command-palette.service';
+import { TabStrip } from '../tab-strip/tab-strip';
+import { PanelHost } from '../panel-host/panel-host';
+
+/**
+ * `/workspace` route root (DUDE_PRD.md §21 Phase 21 Item 4) — a sanctioned exception to
+ * "nothing in shell/ hard-codes a tool ID", the third after `pipelines/`/`smart-paste/`. See
+ * `shell/workspace/AGENTS.md`.
+ */
+@Component({
+  selector: 'app-workspace-shell',
+  imports: [TabStrip, PanelHost],
+  templateUrl: './workspace-shell.html',
+})
+export class WorkspaceShell {
+  protected readonly layout = inject(WorkspaceLayoutService);
+  private readonly paletteService = inject(CommandPaletteService);
+
+  protected openPicker(): void {
+    this.paletteService.open();
+  }
+}

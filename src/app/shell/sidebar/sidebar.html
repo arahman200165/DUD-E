@@ -23,6 +23,17 @@
   </a>
 
   <a
+    routerLink="/workspace"
+    routerLinkActive="bg-panel-elevated text-text"
+    class="mx-2 mt-2 flex items-center justify-between rounded-sm px-2 py-1 text-ui text-text-muted hover:bg-panel-elevated hover:text-text"
+  >
+    <span>Workspace</span>
+    @if (openTabCount() > 0) {
+      <span class="rounded-sm bg-panel-elevated px-1.5 text-ui-xs text-text-muted">{{ openTabCount() }}</span>
+    }
+  </a>
+
+  <a
     routerLink="/pipelines"
     routerLinkActive="bg-panel-elevated text-text"
     class="mx-2 mt-2 flex items-center gap-1.5 rounded-sm px-2 py-1 text-ui text-text-muted hover:bg-panel-elevated hover:text-text"

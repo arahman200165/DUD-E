@@ -1,0 +1,14 @@
+@if (node(); as n) {
+  @if (n.kind === 'leaf') {
+    <app-tool-host [toolId]="n.toolId" class="h-full w-full" />
+  } @else {
+    <app-split-pane [initialRatio]="n.ratio" (ratioChange)="onRatioChange(n.nodeId, $event)" class="h-full w-full">
+      <div slot="start" class="h-full w-full">
+        <app-panel-host [node]="n.a" />
+      </div>
+      <div slot="end" class="h-full w-full">
+        <app-panel-host [node]="n.b" />
+      </div>
+    </app-split-pane>
+  }
+}
