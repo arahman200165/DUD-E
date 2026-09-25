@@ -1,6 +1,36 @@
 <app-tool-shell title="Settings" status="experimental">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <h2 class="text-ui-sm font-semibold text-text">General</h2>
+      <p class="text-ui text-text-muted">Workspace (DUDE_PRD.md §21 Phase 21 Item 4) and local data preferences.</p>
+    </div>
+
+    <label class="flex items-center gap-2 text-ui text-text">
+      <input
+        type="checkbox"
+        class="accent-accent"
+        [checked]="workspaceLayout.reopenOnRestart()"
+        (change)="onReopenOnRestartToggle($event)"
+      />
+      Reopen my tabs on restart
+    </label>
+
+    <div class="flex items-center gap-3">
+      <button
+        type="button"
+        class="w-fit rounded-sm border border-error/40 px-2 py-0.5 text-ui text-error hover:bg-error/10"
+        (click)="onClearAllLocalData()"
+      >
+        Clear all local data
+      </button>
+      @if (clearAllStatus() === 'cleared') {
+        <span class="text-ui text-success">Cleared.</span>
+      }
+    </div>
+  </div>
+
   @if (!platform.isDesktop()) {
-    <p class="text-ui text-text-muted">Settings are only available in the desktop app.</p>
+    <p class="mt-4 border-t border-border pt-4 text-ui text-text-muted">The rest of Settings is only available in the desktop app.</p>
   } @else {
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">

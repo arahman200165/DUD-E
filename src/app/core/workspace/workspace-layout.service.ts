@@ -28,9 +28,19 @@ export class WorkspaceLayoutService {
     EMPTY_WORKSPACE_LAYOUT,
   );
 
+  /**
+   * "Reopen my tabs on restart" (Milestone 294) — a plain UI preference (`local`-policy, on by
+   * default), not a sensitivity gate: the layout store itself is always `local`-policy layout
+   * metadata regardless (§14.1's "layout preference" example), so this only controls whether a
+   * *fresh app bootstrap* discards a leftover layout rather than restoring it. It has no effect
+   * within a single already-running session.
+   */
+  readonly reopenOnRestart = this.persistence.signal('__workspace__', 'reopenOnRestart', 'local', true);
+
   constructor() {
     const migrated = migrateWorkspaceLayout(this.layout());
-    if (migrated !== this.layout()) this.layout.set(migrated);
+    const layout = this.reopenOnRestart() ? migrated : EMPTY_WORKSPACE_LAYOUT;
+    if (layout !== this.layout()) this.layout.set(layout);
   }
 
   readonly openTabs = computed(() => this.layout().openTabs);

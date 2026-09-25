@@ -1,3 +1,4 @@
+import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { WorkspaceLayoutService } from './workspace-layout.service';
@@ -98,6 +99,25 @@ describe('WorkspaceLayoutService', () => {
 
     expect(service.focusedToolId()).toBe('base64');
     expect(service.panelTree()).toEqual(treeBefore);
+  });
+
+  it('reopenOnRestart defaults to true and does not affect the current session', () => {
+    expect(service.reopenOnRestart()).toBe(true);
+    service.openTool('base64');
+    expect(service.openTabs()).toEqual(['base64']);
+  });
+
+  it('discards a leftover layout on a fresh bootstrap when reopenOnRestart is off', async () => {
+    service.openTool('base64');
+    service.reopenOnRestart.set(false);
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+    const fresh = TestBed.inject(WorkspaceLayoutService);
+
+    expect(fresh.openTabs()).toEqual([]);
+    expect(fresh.panelTree()).toBeNull();
   });
 
   it('setSplitRatio updates only the targeted split node', () => {

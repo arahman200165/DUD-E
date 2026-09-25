@@ -4,6 +4,8 @@ import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PlatformService } from '../../core/platform/platform.service';
 import { SecureLocalService } from '../../core/persistence/secure-local.service';
 import { PersistenceService } from '../../core/persistence/persistence.service';
+import { WorkspaceLayoutService } from '../../core/workspace/workspace-layout.service';
+import { ClearAllDataService } from '../../core/workspace/clear-all-data';
 import { ShellChromeService } from '../../core/platform/shell-chrome.service';
 import type { QuickActionInfo } from '../../core/platform/electron-bridge';
 
@@ -16,11 +18,12 @@ type LoadStatus = 'loading' | 'idle';
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 /**
- * Desktop-only settings: Stage 4's local LLM proxy (base URL + model + API
- * key) and Stage 5's desktop shell chrome (launch-on-login, clipboard
- * quick-action hotkeys). Registered normally like any other tool, but
- * self-gates its UI behind `PlatformService.isDesktop()` — the registry
- * stays platform-agnostic; individual tools decide what to show.
+ * Most of this tool is desktop-only: Stage 4's local LLM proxy (base URL + model + API key) and
+ * Stage 5's desktop shell chrome (launch-on-login, clipboard quick-action hotkeys) self-gate their
+ * UI behind `PlatformService.isDesktop()` — the registry stays platform-agnostic; individual tools
+ * decide what to show. The "General" section (Milestone 294) is the one exception: it must render
+ * on the web build too, since the Workspace's "reopen tabs on restart" preference and "clear all
+ * local data" apply equally there — DUDE_PRD.md §4.9's permanent zero-install default.
  *
  * The LLM fields go through `SecureLocalService`, not `PersistenceService`
  * — even though base URL/model aren't secret, keeping everything in the
@@ -38,7 +41,21 @@ export class Settings {
   private readonly secureLocal = inject(SecureLocalService);
   private readonly shellChrome = inject(ShellChromeService);
   private readonly persistence = inject(PersistenceService);
+  private readonly clearAllData = inject(ClearAllDataService);
+  protected readonly workspaceLayout = inject(WorkspaceLayoutService);
   protected readonly platform = inject(PlatformService);
+
+  protected readonly clearAllStatus = signal<'idle' | 'cleared'>('idle');
+
+  protected onReopenOnRestartToggle(event: Event): void {
+    this.workspaceLayout.reopenOnRestart.set((event.target as HTMLInputElement).checked);
+  }
+
+  protected async onClearAllLocalData(): Promise<void> {
+    if (!confirm('Clear all saved DUDE data from this browser? This cannot be undone.')) return;
+    await this.clearAllData.clearAll();
+    this.clearAllStatus.set('cleared');
+  }
 
   protected readonly loadStatus = signal<LoadStatus>('loading');
   protected readonly baseUrl = signal('');

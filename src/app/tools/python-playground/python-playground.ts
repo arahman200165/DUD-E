@@ -2,6 +2,7 @@ import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { BusyIndicator, BusyIndicatorStatus } from '../../shared/components/busy-indicator/busy-indicator';
+import { PersistenceOptIn } from '../../shared/components/persistence-opt-in/persistence-opt-in';
 import { PersistenceService } from '../../core/persistence/persistence.service';
 import { ConnectivityService } from '../../core/connectivity/connectivity.service';
 import { PythonSandboxHost } from './python-sandbox-host';
@@ -16,7 +17,7 @@ const TIMEOUT_MS = 30000;
 
 @Component({
   selector: 'app-python-playground',
-  imports: [ToolShell, ErrorPanel, BusyIndicator, PythonSandboxHost],
+  imports: [ToolShell, ErrorPanel, BusyIndicator, PythonSandboxHost, PersistenceOptIn],
   templateUrl: './python-playground.html',
 })
 export class PythonPlayground {
