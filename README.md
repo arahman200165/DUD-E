@@ -318,7 +318,7 @@ The tools are the proof, not the point: DUDE is a **local-first, extensible deve
 
 ## Architecture
 
-The shell is generated entirely from tool metadata — no file under `src/app/shell/` or `src/app/core/` contains a single hard-coded tool ID. Adding a tool means creating a folder under `src/app/tools/` and adding one entry to the registry; the sidebar, deck, search, command palette, and routes all update automatically. Transformation Pipelines (`src/app/shell/pipelines/`, `src/app/core/pipeline/`) and Smart Paste (`src/app/shell/smart-paste/`, `src/app/core/paste-detect/`) are the two deliberate exceptions: composing tools into a chained workflow, or recognizing pasted content and routing to the matching tool, both change what "using a tool" means rather than adding one, so these are the only features allowed to add their own routes and sidebar entries — in both cases, a tool id referenced is still just data resolved generically through the registry, never hard-coded.
+The shell is generated entirely from tool metadata — no file under `src/app/shell/` or `src/app/core/` contains a single hard-coded tool ID. Adding a tool means creating a folder under `src/app/tools/` and adding one entry to the registry; the sidebar, deck, search, command palette, and routes all update automatically. Transformation Pipelines (`src/app/shell/pipelines/`, `src/app/core/pipeline/`), Smart Paste (`src/app/shell/smart-paste/`, `src/app/core/paste-detect/`), the Workspace (`src/app/shell/workspace/`, `src/app/core/workspace/`), and Local History (`src/app/shell/history/`, `src/app/core/history/`) are the four deliberate exceptions: composing tools into a chained workflow, recognizing pasted content, mounting more than one tool at once in tabs/panels, and recording a cross-tool history all change what "using a tool" means rather than adding one, so these are the only features allowed to add their own routes and sidebar entries — in every case, a tool id referenced is still just data resolved generically through the registry, never hard-coded.
 
 ```
 src/app/
@@ -329,7 +329,10 @@ src/app/
     connectivity/   online/offline signal, update-available detection
     routing/        the one root route table (lazy-loads every tool)
     pipeline/       Transformation Pipelines engine — step contract, resolution, validation, execution, saved pipelines/scripts
-  shell/            sidebar, deck, command palette, root layout, and pipelines/ (the one sanctioned exception — see below)
+    workspace/      Persistent Workspace — the shared <id>.workspace-step.ts adapter, tab/panel layout, scratchpad
+    history/        Persistent Local History — IndexedDB store, retention, click-to-restore
+    storage/        generic Promise-wrapped native IndexedDB helpers, shared by history/
+  shell/            sidebar, deck, command palette, root layout, and pipelines/ + smart-paste/ + workspace/ + history/ (the four sanctioned exceptions — see below)
   shared/           tool-shell frame, error panel, split-pane, tree-view, data-table, copy-button, key-value-editor, and other cross-tool primitives
   tools/            one folder per tool — pure logic + component, isolated from every other tool
 ```
@@ -340,6 +343,7 @@ Key design choices:
 - **Shared worker layer** — heavy or unbounded work (hashing, regex, diffing, large JSON) can opt into a Web Worker without each tool reinventing message-passing, cancellation, or error handling.
 - **Failure isolation** — a worker crash or a tool bug stays inside that tool's route; the sidebar and navigation keep working.
 - **Lazy loading** — every tool is a separate `loadComponent` chunk, so visiting one tool never downloads another's code or libraries.
+- **Workspace/History never outlive a tool's own persistence policy** — tab/panel layout is metadata-only (which tools, in what arrangement) and always persists; a tool's actual content only ever reappears (across a tab switch, a full relaunch, or a History restore) because that tool's own `PersistenceService.signal(...)` policy already allowed it, never because either feature promoted or copied it.
 
 See [`ADDING_A_TOOL.md`](ADDING_A_TOOL.md) for the full, step-by-step guide to adding a new tool, written against the real `base64` tool as a worked example.
 

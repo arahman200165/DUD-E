@@ -119,15 +119,35 @@ Milestone 282 audited all 277 existing entries and fixed the drift it found; app
 - **A tool that decodes/analyzes input into itemized structured fields** (not just a pass/fail message) should include `json` in `produces` alongside any human-readable text — see the JWT/OAuth cluster (`jwt`, `oauth-token-inspector`) and the ID-inspector cluster (`uuid`, `ulid-tools`, `snowflake-id-tools`, `ksuid-tools`).
 - A tool whose declared `io` can't honestly represent something it does (e.g. a live webcam/camera input stream, as in `qr-code-scanner`) should still declare the closest reasonable fit rather than a wrong one — don't stretch an existing `DudeDataType` to cover a genuinely different capability. Vocabulary gaps like this are a known, accepted limitation of the current 7-type set (see `DUDE_PRD.md` §21's Phase 21 note), not something to work around per-tool.
 
-## 8. Expose the lazy route/component
+## 8. Choose your workspace/history participation
+
+Optional — a tool with no `<id>.workspace-step.ts` file simply isn't eligible for live tab/panel mirroring (§21 Phase 21 Item 4) or Local History (Item 5); that's a normal, common outcome, not an error (`core/workspace/workspace-coverage.spec.ts` tracks every tool's decision either way). If the tool has a real, restorable content field (not just a live-clock/interactive-only state, and not a File/Blob that never touches `PersistenceService`), add `src/app/tools/<id>/<id>.workspace-step.ts` exporting `workspaceStep: WorkspaceStep` (`src/app/shared/models/workspace-step.model.ts`):
+
+```ts
+export const workspaceStep: WorkspaceStep = {
+  historyEligible: true, // omit entirely for anything sensitive-by-design — see core/history/AGENTS.md
+  snapshot(): WorkspaceSnapshot | undefined {
+    const input = readStorageValue<string>('my-tool', 'input', 'session');
+    if (!input) return undefined;
+    return { state: { input }, summary: `My Tool: "${input.slice(0, 40)}"` };
+  },
+  restore(state): void {
+    if (typeof state['input'] === 'string') writeStorageValue('my-tool', 'input', 'session', state['input']);
+  },
+};
+```
+
+`readStorageValue`/`writeStorageValue` (`src/app/core/workspace/workspace-storage-bridge.ts`) read/write the *exact same* storage keys your step-4 `persistence.signal(...)` calls already use — never invent a new key or a different policy than what you chose in step 4. A `'none'`-policy field (nothing ever touches storage, e.g. `jwt`'s token) can't use the bridge at all; use the in-memory `offerWorkspaceState`/`consumeWorkspaceState` pair (`src/app/core/workspace/workspace-handoff.ts`) instead, and add one line to your own constructor consuming the hand-off — see `src/app/tools/jwt/jwt.ts` for the worked example. `historyEligible` defaults to excluded and must be a deliberate, explicit opt-in — see `core/history/AGENTS.md` for the exclusion categories (sensitive-by-design, pure reference/lookup, sandboxed execution needs source-only). Write a matching `<id>.workspace-step.spec.ts` mirroring `src/app/tools/base64/base64.workspace-step.spec.ts`.
+
+## 9. Expose the lazy route/component
 
 Nothing to do beyond step 2. `buildToolRoutes()` (`src/app/core/registry/tool-routes.ts`) automatically turns every `TOOL_DEFINITIONS` entry into a lazy `loadComponent` route nested under the root `ShellLayout` (`src/app/core/routing/app.routes.ts`). No route file edits needed — this is the "shell generated from tool metadata" promise (PRD §12.2) actually working.
 
-## 9. Add tests where appropriate
+## 10. Add tests where appropriate
 
 A framework-free `.spec.ts` for the pure transform is the highest-value test (fast, no TestBed) — see `base64-codec.spec.ts`. Only add a component-level spec if there's real branching logic in the component itself (e.g. json's worker-threshold test, `src/app/tools/json/json.spec.ts`). Don't chase coverage for its own sake (PRD §18 — "ship first").
 
-## 10. Verify search/sidebar/command palette discovery
+## 11. Verify search/sidebar/command palette discovery
 
 Run the app (`ng serve`) and confirm:
 - the tool appears in the sidebar under its category;
@@ -135,6 +155,6 @@ Run the app (`ng serve`) and confirm:
 
 Then run `npm test` — `tool-search.spec.ts` and `tool-registry.service.spec.ts` iterate the real `TOOL_DEFINITIONS` array, so a malformed new entry (duplicate id, duplicate route, etc.) will usually fail one of them immediately. Also update the "N tools ship today" line and the Tools table in `README.md` — `tool-count.spec.ts` fails the build if they drift from `TOOL_DEFINITIONS`.
 
-## 11. Verify the direct URL
+## 12. Verify the direct URL
 
 After `ng build`, confirm the lazy chunk loads and the route resolves correctly when hit directly (not just via in-app navigation) — this is what Milestone 9's `e2e/production-direct-route.spec.ts` automates for the `json` tool as a template if you want to extend it. At minimum, serve the production build locally and hard-navigate to `/DUDE/tools/<id>` to confirm it isn't relying on client-side router state that a fresh page load wouldn't have.

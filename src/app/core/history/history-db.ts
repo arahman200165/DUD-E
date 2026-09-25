@@ -24,7 +24,12 @@ function getDb(): Promise<IDBDatabase> {
       typeof indexedDB === 'undefined'
         ? Promise.reject(new Error('IndexedDB is not available in this environment.'))
         : openDatabase(DB_NAME, DB_VERSION, upgrade);
-    dbPromise.catch(() => {});
+    // Never cache a failure permanently — a transient failure (or, in tests, a polyfill that
+    // loads after this module was first evaluated) should be retried on the next call, not
+    // poison every future call for the lifetime of the page.
+    dbPromise.catch(() => {
+      dbPromise = null;
+    });
   }
   return dbPromise;
 }
