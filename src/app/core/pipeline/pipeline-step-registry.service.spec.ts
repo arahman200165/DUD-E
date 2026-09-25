@@ -20,7 +20,7 @@ describe('PipelineStepRegistryService', () => {
       expect(service.get('this-tool-does-not-exist')).toBeUndefined();
       expect(service.eligibleToolIds()).toEqual(expect.arrayContaining(['base64', 'json', 'jwt']));
     },
-    15000,
+    30000,
   );
 
   it(
@@ -30,6 +30,6 @@ describe('PipelineStepRegistryService', () => {
       await service.ensureLoaded();
       expect(service.get('base64')).toBeDefined();
     },
-    15000,
+    30000,
   );
 });

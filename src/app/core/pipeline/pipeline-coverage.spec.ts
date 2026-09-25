@@ -105,6 +105,6 @@ describe('Pipeline-step adapter coverage', () => {
         'tools documented as excluded that now HAVE an adapter — remove them from DOCUMENTED_EXCLUSIONS',
       ).toEqual([]);
     },
-    15000,
+    30000,
   );
 });

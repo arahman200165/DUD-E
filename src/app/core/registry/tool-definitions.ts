@@ -3,6 +3,7 @@ import { ToolDefinition } from '../../shared/models/tool-definition.model';
 export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     id: 'text-inspector',
+    desktopOpen: { extensions: ['.txt'], inputKey: 'text' },
     title: 'Text Inspector',
     description: 'Character, word, line, and byte metrics for any text, plus readability scoring, language detection, and grammar checking.',
     category: 'text',
@@ -170,6 +171,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'json',
+    desktopOpen: { extensions: ['.json'], inputKey: 'input' },
     title: 'JSON Formatter',
     description: 'Validate, format, and minify JSON, with an editable tree view, structural compare, and malformed-JSON repair.',
     category: 'data',
@@ -378,6 +380,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'sql-formatter-tool',
+    desktopOpen: { extensions: ['.sql'], inputKey: 'input' },
     title: 'SQL Formatter / Minifier',
     description: 'Pretty-prints or minifies SQL across PostgreSQL, MySQL, MariaDB, SQLite, SQL Server, and Oracle (PL/SQL) dialects.',
     category: 'data',
@@ -1077,6 +1080,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'yaml-json',
+    desktopOpen: { extensions: ['.yaml', '.yml'], inputKey: 'input' },
     title: 'YAML ↔ JSON Converter',
     description: 'Convert between YAML and JSON, in either direction.',
     category: 'data',
@@ -1090,6 +1094,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'xml-formatter',
+    desktopOpen: { extensions: ['.xml'], inputKey: 'input' },
     title: 'XML Formatter',
     description: 'Validate, format, and minify XML.',
     category: 'data',
@@ -1103,6 +1108,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'csv-viewer',
+    desktopOpen: { extensions: ['.csv'], inputKey: 'input' },
     title: 'CSV Viewer / Converter',
     description: 'View CSV as a table, and convert between CSV and JSON.',
     category: 'data',
@@ -1759,6 +1765,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'directory-diff',
+    desktopOpen: { directory: true },
     title: 'Directory Diff',
     description: 'Compare two folders for added/removed/changed files, with a line diff for text files and a hex byte diff for binary files.',
     category: 'text',
@@ -1799,6 +1806,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'markdown-workspace',
+    desktopOpen: { extensions: ['.md'], inputKey: 'source' },
     title: 'Advanced Markdown Workspace',
     shortTitle: 'Markdown Workspace',
     description: 'Markdown editor with GFM tables/task lists, front matter, table of contents, synced preview, style presets/custom CSS, and a sandboxed plugin API.',
@@ -1814,6 +1822,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'js-playground',
+    desktopOpen: { extensions: ['.js', '.ts'], inputKey: 'code' },
     title: 'JavaScript Playground',
     shortTitle: 'JS Playground',
     description: 'Run JavaScript snippets in a network-isolated sandbox with captured console output, uncaught errors, and a hard execution timeout.',
@@ -1829,6 +1838,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'html-preview',
+    desktopOpen: { extensions: ['.html'], inputKey: 'source' },
     title: 'HTML Preview',
     description: 'Live-render an HTML document — including its own inline <script>/<style> — inside a network-isolated sandbox with captured console output.',
     category: 'developer',
@@ -1977,6 +1987,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'toml-formatter',
+    desktopOpen: { extensions: ['.toml'], inputKey: 'input' },
     title: 'TOML Formatter / Validator',
     description: 'Validate and reformat TOML.',
     category: 'data',
@@ -1990,6 +2001,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'ini-formatter',
+    desktopOpen: { extensions: ['.ini'], inputKey: 'input' },
     title: 'INI Formatter / Parser',
     description: 'Convert between INI and JSON, in either direction.',
     category: 'data',
@@ -2834,6 +2846,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     id: 'css-formatter',
+    desktopOpen: { extensions: ['.css'], inputKey: 'input' },
     title: 'CSS Formatter / Minifier',
     description: 'Pretty-prints or minifies CSS, comment- and string-aware, including nested at-rules like @media.',
     category: 'developer',

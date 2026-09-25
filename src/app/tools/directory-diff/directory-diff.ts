@@ -6,6 +6,7 @@ import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
 import { PlatformService } from '../../core/platform/platform.service';
 import { NativeFsService } from '../../core/platform/native-fs.service';
+import { DesktopOpenService } from '../../core/platform/desktop-open.service';
 import { computeLineDiff, DiffLineType, DiffResult } from '../diff/text-diff';
 import { scanFileList, scanNativeEntries, ScannedFile } from './directory-tree-scan';
 import { DirectoryDiffFileEntry, DirectoryDiffPayload, EntryStatus, TreeDiffEntry } from './directory-tree-diff';
@@ -37,7 +38,15 @@ const LINE_PREFIX: Record<DiffLineType, string> = { add: '+ ', remove: '- ', equ
 export class DirectoryDiff implements OnDestroy {
   private readonly workerClient = inject(WorkerClientService);
   private readonly nativeFs = inject(NativeFsService);
+  private readonly desktopOpen = inject(DesktopOpenService);
   protected readonly platform = inject(PlatformService);
+
+  constructor() {
+    const incoming = this.desktopOpen.takeDirectory();
+    if (incoming) void this.loadNativeFolder('left', incoming.path, incoming.name).catch((error: unknown) => {
+      this.scanError.set(error instanceof Error ? error.message : 'Could not read this folder.');
+    });
+  }
 
   protected readonly statusOrder = STATUS_ORDER;
 

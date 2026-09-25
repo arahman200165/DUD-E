@@ -14,6 +14,9 @@ import { resolveWithinRoot } from './static-server';
 
 const grantedRoots = new Set<string>();
 
+/** Explorer's explicit Open with DUDE action grants this folder for this session. */
+export function grantExternalDirectory(rootPath: string): void { grantedRoots.add(rootPath); }
+
 interface NativeStatPayload {
   readonly isFile: boolean;
   readonly isDirectory: boolean;

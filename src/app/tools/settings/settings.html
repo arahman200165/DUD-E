@@ -106,7 +106,7 @@
       <div class="flex flex-col gap-1 border-t border-border pt-4">
         <h2 class="text-ui-sm font-semibold text-text">Desktop Shell</h2>
         <p class="text-ui text-text-muted">
-          Tray, launch on login, and global clipboard hotkeys — DUDE minimizes to the tray on close; use the
+          Tray, launch on login, and global clipboard hotkeys — you can choose whether DUDE minimizes to the tray on close; use the
           tray menu or "Quit DUDE" to fully exit.
         </p>
       </div>
@@ -118,6 +118,36 @@
       @if (launchOnLoginError()) {
         <app-error-panel [message]="launchOnLoginError()" />
       }
+
+      <div class="flex flex-col gap-3 border-t border-border pt-4">
+        <h2 class="text-ui-sm font-semibold text-text">Startup, Window &amp; Updates</h2>
+        <button type="button" class="w-fit rounded border border-accent px-3 py-1 text-accent" (click)="onboarding.open()">Run setup wizard again</button>
+        <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktopPrefs.current().closeToTray" (change)="setDesktopPreference('closeToTray', $any($event.target).checked)" /> Close to tray instead of quitting</label>
+        <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktopPrefs.current().launchMinimized" (change)="setDesktopPreference('launchMinimized', $any($event.target).checked)" /> Start minimized to tray</label>
+        <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktopPrefs.current().rememberWindowBounds" (change)="setDesktopPreference('rememberWindowBounds', $any($event.target).checked)" /> Remember window size and position</label>
+        <label class="flex flex-col gap-1">Startup destination
+          <select class="rounded border border-border bg-panel p-1" [value]="desktopPrefs.current().startupDestination" (change)="setDesktopPreference('startupDestination', $any($event.target).value)">
+            <option value="deck">Tool deck</option><option value="workspace">Restored workspace</option>
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">Preferred display
+          <select class="rounded border border-border bg-panel p-1" [value]="desktopPrefs.current().preferredDisplayId ?? ''" (change)="displayChanged($event)">
+            <option value="">Primary display</option>
+            @for (display of desktopPrefs.displays(); track display.id) { <option [value]="display.id">{{ display.label }}{{ display.primary ? ' (primary)' : '' }}</option> }
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">Updates
+          <select class="rounded border border-border bg-panel p-1" [value]="desktopPrefs.current().updateMode" (change)="setDesktopPreference('updateMode', $any($event.target).value)">
+            <option value="auto-download">Automatically check and download</option>
+            <option value="notify">Check and notify before download</option>
+            <option value="manual">Manual checks only</option>
+          </select>
+        </label>
+        <button type="button" class="w-fit rounded border border-border px-3 py-1" (click)="checkDesktopUpdates()">Check for updates now</button>
+        <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktopPrefs.current().notifyUpdates" (change)="setDesktopPreference('notifyUpdates', $any($event.target).checked)" /> Notify me about updates</label>
+        <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktopPrefs.current().notifyCollaboration" (change)="setDesktopPreference('notifyCollaboration', $any($event.target).checked)" /> Notify me when collaborators join or leave</label>
+        @if (desktopMessage()) { <span class="text-ui text-info">{{ desktopMessage() }}</span> }
+      </div>
 
       <div class="flex flex-col gap-2">
         <span class="text-ui text-text-muted">Clipboard quick-actions (global hotkeys)</span>

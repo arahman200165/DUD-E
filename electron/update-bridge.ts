@@ -1,5 +1,6 @@
-import { app, ipcMain, type BrowserWindow } from 'electron';
+import { app, ipcMain, Notification, type BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import { getDesktopPreferences } from './desktop-preferences';
 
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
@@ -18,12 +19,23 @@ const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
  * caught so dev runs just no-op instead of crashing.
  */
 export function registerUpdateHandlers(window: BrowserWindow): void {
-  autoUpdater.autoDownload = true;
+  autoUpdater.autoDownload = getDesktopPreferences().updateMode === 'auto-download';
+
+  autoUpdater.on('update-available', (info) => {
+    if (!window.isDestroyed()) window.webContents.send('dude:update:available', { version: info.version });
+    const prefs = getDesktopPreferences();
+    if (prefs.notifyUpdates && prefs.updateMode === 'notify' && Notification.isSupported()) {
+      new Notification({ title: 'DUDE update available', body: `Version ${info.version} is ready to download.` }).show();
+    }
+  });
   autoUpdater.autoInstallOnAppQuit = false;
 
   autoUpdater.on('update-downloaded', (info) => {
     if (!window.webContents.isDestroyed()) {
       window.webContents.send('dude:update:downloaded', { version: info.version });
+    }
+    if (getDesktopPreferences().notifyUpdates && Notification.isSupported()) {
+      new Notification({ title: 'DUDE update ready', body: `Version ${info.version} is ready to install.` }).show();
     }
   });
 
@@ -35,6 +47,7 @@ export function registerUpdateHandlers(window: BrowserWindow): void {
 
   ipcMain.handle('dude:update:check', async () => {
     try {
+      autoUpdater.autoDownload = getDesktopPreferences().updateMode === 'auto-download';
       await autoUpdater.checkForUpdates();
       return { ok: true };
     } catch (error) {
@@ -42,15 +55,27 @@ export function registerUpdateHandlers(window: BrowserWindow): void {
     }
   });
 
+  ipcMain.handle('dude:update:download', async () => {
+    try { await autoUpdater.downloadUpdate(); return { ok: true }; }
+    catch (error) { return { ok: false, error: error instanceof Error ? error.message : 'Download failed.' }; }
+  });
+
   ipcMain.handle('dude:update:quitAndInstall', () => {
     autoUpdater.quitAndInstall();
     return { ok: true };
   });
 
-  setInterval(() => void autoUpdater.checkForUpdates().catch(() => {}), CHECK_INTERVAL_MS);
+  setInterval(() => {
+    const prefs = getDesktopPreferences();
+    if (prefs.updateMode === 'manual') return;
+    autoUpdater.autoDownload = prefs.updateMode === 'auto-download';
+    void autoUpdater.checkForUpdates().catch(() => {});
+  }, CHECK_INTERVAL_MS);
 }
 
 export function checkForUpdatesOnStartup(): void {
+  if (getDesktopPreferences().updateMode === 'manual') return;
+  autoUpdater.autoDownload = getDesktopPreferences().updateMode === 'auto-download';
   if (!app.isPackaged) return;
   void autoUpdater.checkForUpdates().catch(() => {});
 }

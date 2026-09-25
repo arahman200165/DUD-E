@@ -18,7 +18,10 @@ export class UpdateBadge {
   private readonly desktopUpdate = inject(DesktopUpdateService);
 
   protected readonly updateReady = computed(() => (this.platform.isDesktop() ? this.desktopUpdate.updateReady() : this.webUpdate.updateReady()));
+  protected readonly updateAvailable = computed(() => this.platform.isDesktop() && this.desktopUpdate.updateAvailable());
   protected readonly actionLabel = computed(() => (this.platform.isDesktop() ? 'Restart & Install' : 'Reload'));
+
+  protected download(): void { void this.desktopUpdate.downloadUpdate(); }
 
   protected activate(): void {
     if (this.platform.isDesktop()) void this.desktopUpdate.restartAndInstall();

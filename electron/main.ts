@@ -10,6 +10,9 @@ import { registerNotificationHandlers } from './notifications-bridge';
 import { closeAllFileWatches, registerFileWatchHandlers } from './file-watch-bridge';
 import { registerCollabHandlers, stopCollabServerOnQuit } from './collab-bridge';
 import { checkForUpdatesOnStartup, registerUpdateHandlers } from './update-bridge';
+import { getDesktopPreferences, loadDesktopPreferences, registerDesktopPreferencesHandlers } from './desktop-preferences';
+import { initialWindowBounds, trackWindowBounds } from './window-state';
+import { enqueueCommandLine, registerOpenHandlers } from './open-bridge';
 
 const DEV_SERVER_URL = process.env['DUDE_ELECTRON_DEV_SERVER_URL'];
 
@@ -28,9 +31,11 @@ async function resolveWindowUrl(): Promise<string> {
 }
 
 async function createWindow(): Promise<void> {
+  const preferences = getDesktopPreferences();
+  const bounds = await initialWindowBounds();
   const window = new BrowserWindow({
-    width: 1280,
-    height: 800,
+    ...bounds,
+    show: !preferences.launchMinimized || process.argv.includes('--open-with-dude'),
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -42,20 +47,37 @@ async function createWindow(): Promise<void> {
   // Stage 5: closing the window hides it to the tray instead of quitting —
   // `isAppQuitting()` (set via `before-quit`) is what allows a real close.
   window.on('close', (event) => {
-    if (!isAppQuitting()) {
+    if (!isAppQuitting() && getDesktopPreferences().closeToTray) {
       event.preventDefault();
       window.hide();
     }
   });
 
   createTray(window);
+  trackWindowBounds(window);
+  registerDesktopPreferencesHandlers(window);
+  registerOpenHandlers(window);
   registerUpdateHandlers(window);
 
-  await window.loadURL(await resolveWindowUrl());
+  const baseUrl = await resolveWindowUrl();
+  const destination = preferences.startupDestination === 'workspace' ? 'workspace' : '';
+  await window.loadURL(new URL(destination, baseUrl).toString());
   checkForUpdatesOnStartup();
 }
 
-void app.whenReady().then(async () => {
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
+if (!hasSingleInstanceLock) app.quit();
+else {
+  app.on('second-instance', (_event, args) => {
+    enqueueCommandLine(args);
+    const window = BrowserWindow.getAllWindows()[0];
+    if (window) { if (window.isMinimized()) window.restore(); window.show(); window.focus(); }
+  });
+}
+
+if (hasSingleInstanceLock) void app.whenReady().then(async () => {
+  await loadDesktopPreferences();
+  enqueueCommandLine(process.argv);
   registerFsHandlers();
   registerSecretsHandlers();
   registerLlmHandlers();

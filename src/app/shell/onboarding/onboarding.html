@@ -1,0 +1,99 @@
+@if (flow.visible()) {
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 text-text" role="dialog" aria-modal="true" aria-label="Set up DUDE">
+    <div class="flex h-[min(760px,94vh)] w-[min(900px,96vw)] overflow-hidden rounded-lg border border-border bg-bg shadow-2xl">
+      <aside class="hidden w-56 shrink-0 border-r border-border bg-panel p-6 md:block">
+        <div class="mb-8 text-2xl font-black tracking-wide text-accent">DUDE<span class="text-text"> SETUP</span></div>
+        <ol class="space-y-3 text-ui-sm">
+          @for (page of pages; track page; let i = $index) {
+            <li [class.text-accent]="flow.step() === i" [class.text-text-muted]="flow.step() !== i">{{ i + 1 }}. {{ page }}</li>
+          }
+        </ol>
+      </aside>
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="border-b border-border p-6">
+          <p class="text-ui-xs uppercase tracking-widest text-accent">Step {{ flow.step() + 1 }} of {{ pages.length }}</p>
+          <h1 class="mt-1 text-2xl font-semibold">{{ pages[flow.step()] }}</h1>
+        </header>
+        <div class="flex-1 overflow-y-auto p-6 text-ui">
+          @switch (flow.step()) {
+            @case (0) {
+              <p class="max-w-xl text-text-muted">Set up your local developer workspace. Every choice can be changed later in Settings. Optional AI and collaboration fields can stay empty.</p>
+              <p class="mt-4 text-text-muted">Your tools work offline. Network features are enabled only when you use them.</p>
+            }
+            @case (1) {
+              <div class="grid gap-5">
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="workspace.reopenOnRestart()" (change)="workspace.reopenOnRestart.set($any($event.target).checked)" /> Reopen my tabs on restart</label>
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="launchOnLogin()" (change)="login($event)" /> Launch DUDE when I sign in</label>
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktop.current().closeToTray" (change)="preference('closeToTray', $any($event.target).checked)" /> Closing the window keeps DUDE in the tray</label>
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktop.current().launchMinimized" (change)="preference('launchMinimized', $any($event.target).checked)" /> Start minimized to the tray</label>
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktop.current().rememberWindowBounds" (change)="preference('rememberWindowBounds', $any($event.target).checked)" /> Remember window size and position</label>
+                <label class="grid gap-1">Startup destination
+                  <select class="rounded border border-border bg-panel p-2" [value]="desktop.current().startupDestination" (change)="preference('startupDestination', $any($event.target).value)">
+                    <option value="deck">Tool deck</option><option value="workspace">Restored workspace</option>
+                  </select>
+                </label>
+                <label class="grid gap-1">Preferred display
+                  <select class="rounded border border-border bg-panel p-2" [value]="desktop.current().preferredDisplayId ?? ''" (change)="displayChanged($event)">
+                    <option value="">Primary display</option>
+                    @for (display of desktop.displays(); track display.id) { <option [value]="display.id">{{ display.label }}{{ display.primary ? ' (primary)' : '' }}</option> }
+                  </select>
+                </label>
+              </div>
+            }
+            @case (2) {
+              <div class="grid gap-5">
+                <label class="grid gap-1">Update behavior
+                  <select class="rounded border border-border bg-panel p-2" [value]="desktop.current().updateMode" (change)="preference('updateMode', $any($event.target).value)">
+                    <option value="auto-download">Check and download automatically</option>
+                    <option value="notify">Check and notify me before download</option>
+                    <option value="manual">Only check when I ask</option>
+                  </select>
+                </label>
+                <p class="text-text-muted">Installing an update always requires your approval.</p>
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktop.current().notifyUpdates" (change)="preference('notifyUpdates', $any($event.target).checked)" /> Desktop notifications for updates</label>
+                <label class="flex items-center gap-2"><input type="checkbox" [checked]="desktop.current().notifyCollaboration" (change)="preference('notifyCollaboration', $any($event.target).checked)" /> Desktop notifications when collaborators join or leave</label>
+              </div>
+            }
+            @case (3) {
+              <p class="mb-4 text-text-muted">Global hotkeys act on your clipboard. Leave a field empty to keep it unbound.</p>
+              <div class="grid gap-3">
+                @for (action of hotkeys(); track action.id) {
+                  <div class="flex flex-wrap items-center gap-2"><label class="w-52">{{ action.label }}</label>
+                    <input class="rounded border border-border bg-panel p-2" placeholder="Ctrl+Alt+B" [value]="hotkeyDrafts()[action.id] ?? ''" (input)="hotkeyInput(action.id, $event)" />
+                    <button type="button" class="rounded border border-accent px-3 py-2 text-accent" (click)="saveHotkey(action.id)">Save</button>
+                  </div>
+                }
+              </div>
+            }
+            @case (4) {
+              <p class="mb-4 text-text-muted">Optional. These values power Regex Tester's AI features and are kept in the OS-backed secure store.</p>
+              <div class="grid gap-3">
+                <label class="grid gap-1">OpenAI-compatible base URL<input class="rounded border border-border bg-panel p-2" [value]="baseUrl()" (input)="baseUrl.set($any($event.target).value)" /></label>
+                <label class="grid gap-1">Model<input class="rounded border border-border bg-panel p-2" [value]="model()" (input)="model.set($any($event.target).value)" /></label>
+                <label class="grid gap-1">API key<input type="password" class="rounded border border-border bg-panel p-2" [value]="apiKey()" (input)="apiKey.set($any($event.target).value)" /></label>
+                <button type="button" class="w-fit rounded border border-accent px-3 py-2 text-accent" [disabled]="saving()" (click)="saveAi()">Save AI configuration</button>
+              </div>
+            }
+            @case (5) {
+              <p class="mb-4 text-text-muted">Optional. Enter the WebSocket URL of a relay you host to collaborate across networks.</p>
+              <label class="grid gap-1">Relay URL<input class="rounded border border-border bg-panel p-2" placeholder="ws://relay.example.com:8080" [value]="relayUrl()" (input)="relayUrl.set($any($event.target).value)" /></label>
+            }
+            @case (6) {
+              <p class="mb-4 text-text-muted">Your choices are saved as you leave each step. Finish to close setup, or go back to adjust them.</p>
+              <dl class="grid grid-cols-2 gap-3"><dt>Startup</dt><dd>{{ desktop.current().startupDestination }}</dd><dt>Updates</dt><dd>{{ desktop.current().updateMode }}</dd><dt>Close behavior</dt><dd>{{ desktop.current().closeToTray ? 'Keep in tray' : 'Quit' }}</dd><dt>AI provider</dt><dd>{{ baseUrl() ? 'Configured' : 'Not configured' }}</dd><dt>Relay</dt><dd>{{ relayUrl() || 'Not configured' }}</dd></dl>
+              <button type="button" class="mt-5 rounded border border-accent px-3 py-2 text-accent" (click)="openDefaultApps()">Open Windows Default Apps</button>
+              <p class="mt-3 text-text-muted">To choose Windows file defaults, open Windows Settings → Apps → Default apps and select DUDE for the extensions you registered during installation.</p>
+            }
+          }
+          @if (message()) { <p class="mt-5 rounded border border-info/40 p-2 text-info" role="status">{{ message() }}</p> }
+        </div>
+        <footer class="flex items-center gap-3 border-t border-border p-5">
+          <button type="button" class="rounded border border-border px-4 py-2" (click)="flow.skip()">Skip for now</button>
+          <div class="flex-1"></div>
+          <button type="button" class="rounded border border-border px-4 py-2" [disabled]="flow.step() === 0" (click)="back()">Back</button>
+          <button type="button" class="rounded bg-accent px-5 py-2 font-semibold text-bg" (click)="next()">{{ flow.step() === pages.length - 1 ? 'Finish' : 'Next' }}</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+}

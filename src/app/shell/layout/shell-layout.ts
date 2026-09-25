@@ -5,15 +5,22 @@ import { CommandPaletteService } from '../command-palette/command-palette.servic
 import { ConnectivityService } from '../../core/connectivity/connectivity.service';
 import { OfflineBadge } from '../../shared/components/offline-badge/offline-badge';
 import { UpdateBadge } from '../../shared/components/update-badge/update-badge';
+import { Onboarding } from '../onboarding/onboarding';
+import { OnboardingService } from '../../core/platform/onboarding.service';
+import { DesktopOpenService } from '../../core/platform/desktop-open.service';
 
 @Component({
   selector: 'app-shell-layout',
-  imports: [RouterOutlet, Sidebar, OfflineBadge, UpdateBadge],
+  imports: [RouterOutlet, Sidebar, OfflineBadge, UpdateBadge, Onboarding],
   templateUrl: './shell-layout.html',
 })
 export class ShellLayout {
   private readonly paletteService = inject(CommandPaletteService);
   private readonly connectivity = inject(ConnectivityService);
+  private readonly onboarding = inject(OnboardingService);
+  protected readonly desktopOpen = inject(DesktopOpenService);
+
+  constructor() { void this.onboarding.initialize(); }
 
   protected readonly offline = computed(() => !this.connectivity.online());
 

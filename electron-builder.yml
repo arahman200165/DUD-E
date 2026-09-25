@@ -36,6 +36,11 @@ nsis:
   # note in DUDE_PRD.md §21) — oneClick: false lets the user see and accept
   # the standard unsigned-installer SmartScreen "Run anyway" flow.
   oneClick: false
+  selectPerMachineByDefault: true
+  createDesktopShortcut: false
+  createStartMenuShortcut: false
+  include: build/installer.nsh
+  installerSidebar: build/installerSidebar.bmp
   artifactName: 'DUDE-Setup-${version}.${ext}'
 
 appx:

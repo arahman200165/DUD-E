@@ -30,5 +30,7 @@ export interface ToolDefinition {
   readonly execution?: ToolExecutionPolicy;
   readonly network?: ToolNetworkPolicy;
   readonly io: ToolIOCapabilities;
+  /** Desktop Explorer file/folder opening, interpreted generically by the platform bridge. */
+  readonly desktopOpen?: { readonly extensions?: readonly string[]; readonly inputKey?: string; readonly directory?: boolean };
   readonly status?: 'stable' | 'experimental';
 }

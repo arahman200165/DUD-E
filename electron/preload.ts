@@ -1,7 +1,21 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { DudeElectronBridge, FileWatchEvent } from '../src/app/core/platform/electron-bridge';
+import type { DudeElectronBridge, FileWatchEvent, DesktopOpenItem } from '../src/app/core/platform/electron-bridge';
 
 const bridge: DudeElectronBridge = {
+  preferences: {
+    get: () => ipcRenderer.invoke('dude:preferences:get'),
+    set: (patch) => ipcRenderer.invoke('dude:preferences:set', patch),
+    displays: () => ipcRenderer.invoke('dude:preferences:displays'),
+    setupRequest: () => ipcRenderer.invoke('dude:preferences:setupRequest'),
+  },
+  open: {
+    ready: () => ipcRenderer.send('dude:open:ready'),
+    onItem: (callback) => {
+      const listener = (_event: Electron.IpcRendererEvent, item: DesktopOpenItem) => callback(item);
+      ipcRenderer.on('dude:open:item', listener);
+      return () => ipcRenderer.removeListener('dude:open:item', listener);
+    },
+  },
   platform: { isDesktop: true },
   fs: {
     pickDirectory: () => ipcRenderer.invoke('dude:fs:pickDirectory'),
@@ -22,6 +36,7 @@ const bridge: DudeElectronBridge = {
   shell: {
     getLaunchOnLogin: () => ipcRenderer.invoke('dude:shell:getLaunchOnLogin'),
     setLaunchOnLogin: (enabled) => ipcRenderer.invoke('dude:shell:setLaunchOnLogin', enabled),
+    openDefaultApps: () => ipcRenderer.invoke('dude:shell:openDefaultApps'),
   },
   quickActions: {
     list: () => ipcRenderer.invoke('dude:quickActions:list'),
@@ -47,6 +62,12 @@ const bridge: DudeElectronBridge = {
   update: {
     checkForUpdates: () => ipcRenderer.invoke('dude:update:check'),
     quitAndInstall: () => ipcRenderer.invoke('dude:update:quitAndInstall'),
+    downloadUpdate: () => ipcRenderer.invoke('dude:update:download'),
+    onUpdateAvailable: (callback) => {
+      const listener = (_event: Electron.IpcRendererEvent, info: { version: string }) => callback(info);
+      ipcRenderer.on('dude:update:available', listener);
+      return () => ipcRenderer.removeListener('dude:update:available', listener);
+    },
     onUpdateDownloaded: (callback) => {
       const listener = (_event: Electron.IpcRendererEvent, info: { version: string }) => callback(info);
       ipcRenderer.on('dude:update:downloaded', listener);

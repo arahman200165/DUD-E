@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
 import { join } from 'node:path';
 
 /**
@@ -24,7 +24,7 @@ export function createTray(window: BrowserWindow): Tray {
   // `__dirname` is `dist/electron` (esbuild's outdir); the icon ships as a
   // source asset under the repo's `public/`, not a build output, so it's
   // reached the same way in both `electron:dev` and `electron:start`.
-  const iconPath = join(__dirname, '../../public/icons/icon-72x72.png');
+  const iconPath = join(__dirname, '../dude/browser/icons/icon-72x72.png');
   const icon = nativeImage.createFromPath(iconPath);
 
   const tray = new Tray(icon.isEmpty() ? icon : icon.resize({ width: 16, height: 16 }));
@@ -48,6 +48,10 @@ export function createTray(window: BrowserWindow): Tray {
 }
 
 export function registerShellChromeHandlers(): void {
+  ipcMain.handle('dude:shell:openDefaultApps', async () => {
+    try { await shell.openExternal('ms-settings:defaultapps'); return { ok: true }; }
+    catch (error) { return { ok: false, error: error instanceof Error ? error.message : 'Could not open Windows Settings.' }; }
+  });
   ipcMain.handle('dude:shell:getLaunchOnLogin', () => {
     return app.getLoginItemSettings().openAtLogin;
   });

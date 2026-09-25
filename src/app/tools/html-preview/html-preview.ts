@@ -28,7 +28,8 @@ export class HtmlPreview {
   private readonly persistence = inject(PersistenceService);
 
   protected readonly source = this.persistence.signal('html-preview', 'source', 'session', DEFAULT_SOURCE);
-  protected readonly debouncedSource = signal(this.source());
+  protected readonly importedNeedsApproval = signal(sessionStorage.getItem('dude:desktop:html-preview-manual') === 'true');
+  protected readonly debouncedSource = signal(this.importedNeedsApproval() ? '' : this.source());
   protected readonly timeoutMs = DEFAULT_TIMEOUT_MS;
 
   protected readonly logs = signal<readonly HtmlPreviewLogLine[]>([]);
@@ -38,6 +39,7 @@ export class HtmlPreview {
   constructor() {
     effect((onCleanup) => {
       const value = this.source();
+      if (this.importedNeedsApproval()) return;
       const handle = setTimeout(() => {
         this.logs.set([]);
         this.debouncedSource.set(value);
@@ -56,6 +58,12 @@ export class HtmlPreview {
     } else {
       this.logs.update((logs) => [...logs, { level: 'error', text: event.message }]);
     }
+  }
+
+  protected approveImportedPreview(): void {
+    this.importedNeedsApproval.set(false);
+    sessionStorage.removeItem('dude:desktop:html-preview-manual');
+    this.debouncedSource.set(this.source());
   }
 
   protected reload(): void {

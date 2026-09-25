@@ -7,7 +7,9 @@ import { PersistenceService } from '../../core/persistence/persistence.service';
 import { WorkspaceLayoutService } from '../../core/workspace/workspace-layout.service';
 import { ClearAllDataService } from '../../core/workspace/clear-all-data';
 import { ShellChromeService } from '../../core/platform/shell-chrome.service';
-import type { QuickActionInfo } from '../../core/platform/electron-bridge';
+import type { DesktopPreferences, QuickActionInfo } from '../../core/platform/electron-bridge';
+import { DesktopPreferencesService } from '../../core/platform/desktop-preferences.service';
+import { OnboardingService } from '../../core/platform/onboarding.service';
 
 const TOOL_ID = 'settings';
 const KEY_BASE_URL = 'llmBaseUrl';
@@ -40,6 +42,9 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 export class Settings {
   private readonly secureLocal = inject(SecureLocalService);
   private readonly shellChrome = inject(ShellChromeService);
+  protected readonly desktopPrefs = inject(DesktopPreferencesService);
+  protected readonly onboarding = inject(OnboardingService);
+  protected readonly desktopMessage = signal('');
   private readonly persistence = inject(PersistenceService);
   private readonly clearAllData = inject(ClearAllDataService);
   protected readonly workspaceLayout = inject(WorkspaceLayoutService);
@@ -81,6 +86,7 @@ export class Settings {
     if (this.platform.isDesktop()) {
       void this.loadConfig();
       void this.loadShellChrome();
+      void this.desktopPrefs.load();
     }
   }
 
@@ -89,6 +95,21 @@ export class Settings {
     this.launchOnLogin.set(launchOnLogin);
     this.quickActions.set(quickActions);
     this.hotkeyDrafts.set(Object.fromEntries(quickActions.map((a) => [a.id, a.hotkey ?? ''])));
+  }
+
+  protected async setDesktopPreference<K extends keyof DesktopPreferences>(key: K, value: DesktopPreferences[K]): Promise<void> {
+    const result = await this.desktopPrefs.set({ [key]: value });
+    this.desktopMessage.set(result.ok ? 'Saved.' : result.error);
+  }
+
+  protected displayChanged(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    void this.setDesktopPreference('preferredDisplayId', value === '' ? null : Number(value));
+  }
+
+  protected async checkDesktopUpdates(): Promise<void> {
+    const result = await window.dude!.update.checkForUpdates();
+    this.desktopMessage.set(result.ok ? 'Update check completed.' : result.error);
   }
 
   protected async toggleLaunchOnLogin(event: Event): Promise<void> {

@@ -52,6 +52,7 @@ describe('ShellChromeService', () => {
     const service = withBridge({
       shell: {
         getLaunchOnLogin: async () => true,
+        openDefaultApps: async () => ({ ok: true }),
         setLaunchOnLogin: async (enabled) => {
           calls.push(enabled);
           return { ok: true };

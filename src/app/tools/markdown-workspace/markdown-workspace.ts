@@ -11,6 +11,8 @@ import { WorkerClientService } from '../../core/workers/worker-client.service';
 import { WorkerJob } from '../../core/workers/worker-job';
 import { PlatformService } from '../../core/platform/platform.service';
 import { CollabService } from '../../core/platform/collab.service';
+import { DesktopPreferencesService } from '../../core/platform/desktop-preferences.service';
+import { ShellChromeService } from '../../core/platform/shell-chrome.service';
 import { downloadFile } from '../../shared/utils/download-file';
 import { MARKDOWN_BODY_STYLES } from '../../shared/styles/markdown-body.styles';
 import { markdownPresetStyleVars, MARKDOWN_STYLE_PRESETS, type MarkdownStylePreset } from '../../shared/models/markdown-theme.model';
@@ -53,6 +55,8 @@ export class MarkdownWorkspace implements OnDestroy {
   private readonly workerClient = inject(WorkerClientService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly collabApi = inject(CollabService);
+  private readonly desktopPrefs = inject(DesktopPreferencesService);
+  private readonly shellChrome = inject(ShellChromeService);
   protected readonly platform = inject(PlatformService);
 
   protected readonly source = this.persistence.signal('markdown-workspace', 'source', 'session', DEFAULT_SOURCE);
@@ -240,7 +244,13 @@ export class MarkdownWorkspace implements OnDestroy {
       initialText,
       onRemoteTextChange: (text) => this.source.set(text),
       onStatusChange: (status) => this.collabStatus.set(status),
-      onParticipantCountChange: (count) => this.collabParticipantCount.set(count),
+      onParticipantCountChange: (count) => {
+        const previous = this.collabParticipantCount();
+        this.collabParticipantCount.set(count);
+        if (this.platform.isDesktop() && this.desktopPrefs.current().notifyCollaboration && previous >= 1 && count >= 1 && previous !== count) {
+          void this.shellChrome.notify('DUDE collaboration', count > previous ? 'A collaborator joined.' : 'A collaborator left.');
+        }
+      },
     });
   }
 

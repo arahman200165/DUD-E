@@ -31,6 +31,8 @@ describe('DesktopUpdateService', () => {
       update: {
         checkForUpdates: async () => ({ ok: true }),
         quitAndInstall: async () => ({ ok: true }),
+        downloadUpdate: async () => ({ ok: true }),
+        onUpdateAvailable: () => () => {},
         onUpdateDownloaded: (callback) => {
           fireDownloaded = () => callback({ version: '0.0.2' });
           return () => {};
@@ -53,6 +55,8 @@ describe('DesktopUpdateService', () => {
           installed = true;
           return { ok: true };
         },
+        downloadUpdate: async () => ({ ok: true }),
+        onUpdateAvailable: () => () => {},
         onUpdateDownloaded: () => () => {},
         onUpdateError: () => () => {},
       },

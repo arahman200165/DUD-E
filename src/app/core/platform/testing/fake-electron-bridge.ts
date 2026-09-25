@@ -10,6 +10,8 @@ import type { DudeElectronBridge } from '../electron-bridge';
 export function fakeElectronBridge(overrides: Partial<DudeElectronBridge> = {}): DudeElectronBridge {
   return {
     platform: { isDesktop: true },
+    preferences: { get: async () => ({ closeToTray: true, launchMinimized: false, startupDestination: 'workspace', preferredDisplayId: null, rememberWindowBounds: true, updateMode: 'auto-download', notifyUpdates: true, notifyCollaboration: true }), set: async () => ({ ok: true, value: { closeToTray: true, launchMinimized: false, startupDestination: 'workspace', preferredDisplayId: null, rememberWindowBounds: true, updateMode: 'auto-download', notifyUpdates: true, notifyCollaboration: true } }), displays: async () => [], setupRequest: async () => null },
+    open: { ready: () => {}, onItem: () => () => {} },
     fs: {
       pickDirectory: async () => ({ canceled: true }),
       walk: async () => ({ ok: true, entries: [] }),
@@ -29,6 +31,7 @@ export function fakeElectronBridge(overrides: Partial<DudeElectronBridge> = {}):
     shell: {
       getLaunchOnLogin: async () => false,
       setLaunchOnLogin: async () => ({ ok: true }),
+      openDefaultApps: async () => ({ ok: true }),
     },
     quickActions: {
       list: async () => [],
@@ -50,6 +53,8 @@ export function fakeElectronBridge(overrides: Partial<DudeElectronBridge> = {}):
     update: {
       checkForUpdates: async () => ({ ok: true }),
       quitAndInstall: async () => ({ ok: true }),
+      downloadUpdate: async () => ({ ok: true }),
+      onUpdateAvailable: () => () => {},
       onUpdateDownloaded: () => () => {},
       onUpdateError: () => () => {},
     },

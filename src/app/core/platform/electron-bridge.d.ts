@@ -8,7 +8,33 @@ export interface NativeStat {
 
 export type NativeFsResult<T> = ({ readonly ok: true } & T) | { readonly ok: false; readonly error: { readonly code: string; readonly message: string } };
 
+export interface DesktopPreferences {
+  closeToTray: boolean;
+  launchMinimized: boolean;
+  startupDestination: 'deck' | 'workspace';
+  preferredDisplayId: number | null;
+  rememberWindowBounds: boolean;
+  updateMode: 'auto-download' | 'notify' | 'manual';
+  notifyUpdates: boolean;
+  notifyCollaboration: boolean;
+}
+
+export type DesktopOpenItem =
+  | { readonly kind: 'file'; readonly path: string; readonly name: string; readonly extension: string; readonly text: string }
+  | { readonly kind: 'directory'; readonly path: string; readonly name: string }
+  | { readonly kind: 'error'; readonly path: string; readonly message: string };
+
 export interface DudeElectronBridge {
+  readonly preferences: {
+    get(): Promise<DesktopPreferences>;
+    set(patch: Partial<DesktopPreferences>): Promise<{ readonly ok: true; readonly value: DesktopPreferences } | { readonly ok: false; readonly error: string }>;
+    displays(): Promise<readonly { readonly id: number; readonly label: string; readonly primary: boolean }[]>;
+    setupRequest(): Promise<string | null>;
+  };
+  readonly open: {
+    ready(): void;
+    onItem(callback: (item: DesktopOpenItem) => void): () => void;
+  };
   readonly platform: {
     readonly isDesktop: true;
   };
@@ -31,6 +57,7 @@ export interface DudeElectronBridge {
   readonly shell: {
     getLaunchOnLogin(): Promise<boolean>;
     setLaunchOnLogin(enabled: boolean): Promise<{ readonly ok: true }>;
+    openDefaultApps(): Promise<VoidResult>;
   };
   readonly quickActions: {
     list(): Promise<readonly QuickActionInfo[]>;
@@ -52,6 +79,8 @@ export interface DudeElectronBridge {
   readonly update: {
     checkForUpdates(): Promise<VoidResult>;
     quitAndInstall(): Promise<VoidResult>;
+    downloadUpdate(): Promise<VoidResult>;
+    onUpdateAvailable(callback: (info: { readonly version: string }) => void): () => void;
     onUpdateDownloaded(callback: (info: { readonly version: string }) => void): () => void;
     onUpdateError(callback: (message: string) => void): () => void;
   };

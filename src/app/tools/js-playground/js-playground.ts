@@ -17,6 +17,7 @@ const DEFAULT_TIMEOUT_MS = 3000;
 export class JsPlayground {
   private readonly persistence = inject(PersistenceService);
 
+  protected readonly importedTypeScript = signal(sessionStorage.getItem('dude:desktop:typescript-notice') === 'true');
   protected readonly code = this.persistence.signal('js-playground', 'code', 'session', DEFAULT_SNIPPET);
   protected readonly timeoutMs = this.persistence.signal('js-playground', 'timeoutMs', 'local', DEFAULT_TIMEOUT_MS);
 
