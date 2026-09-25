@@ -40,6 +40,26 @@ all — their `restore()` instead goes through `workspace-handoff.ts` (Milestone
 module-scoped hand-off (deliberately not an `@Injectable`, since `restore()` runs outside any Angular
 injection context) mirroring `core/paste-detect/paste-handoff.service.ts`'s one-shot in-memory shape.
 
+## Why there is no separate durable content tier
+
+The original design pass (see `DUDE_PRD.md`'s Phase 21 Item 4/5 amendment) anticipated a Milestone
+293 IndexedDB "durable content tier" for Saved Sessions, mirroring what History (`core/history/`)
+needs. Building it revealed it's unnecessary: a real browser relaunch clears every in-memory JS
+value (any snapshot cache would be wiped too) but leaves `localStorage` untouched. Since `ToolHost`
+remounts a tool by calling its own `ToolDefinition.load()` after Milestone 291's `'__workspace__'`/
+`layout` store (itself `local`-policy) restores which tools were open, the remounted tool's
+constructor runs its own already-existing `persistence.signal(toolId, key, policy, initialValue)`
+calls exactly as on any fresh navigation — a `local`-policy field reads its still-present
+`localStorage` value back automatically, a `session`-policy field reads a genuinely fresh (empty)
+`sessionStorage`, and a `'none'`-policy field starts empty because it was never in any storage to
+begin with. No capture, no restore call, no IndexedDB write is needed for any of these three cases
+— see `workspace-relaunch.spec.ts` for the test that proves it. The `<id>.workspace-step.ts`
+`snapshot()`/`restore()` pair therefore exists purely for **live tab-switching within one session**
+(the in-memory-only case for `'none'`-policy tools, via `workspace-handoff.ts`) and for **History**
+(`core/history/`, which genuinely needs its own IndexedDB store, since a History entry is a growing
+log of past snapshots, not a single current value) — not for Saved Sessions' relaunch case, which
+Milestone 291's layout store already covers completely.
+
 ## The governing privacy rule
 
 No part of this feature may cause a tool's content to outlive the `PersistencePolicy` that tool's own code
