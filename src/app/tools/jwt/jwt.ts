@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ToolShell } from '../../shared/components/tool-shell/tool-shell';
 import { ErrorPanel } from '../../shared/components/error-panel/error-panel';
 import { PasteHandoffService } from '../../core/paste-detect/paste-handoff.service';
+import { consumeWorkspaceState } from '../../core/workspace/workspace-handoff';
 import { JwtExpiryStatus, decodeJwt, decodeTemporalClaim } from './jwt-decode';
 
 const EXPIRY_BADGE_CLASSES: Record<JwtExpiryStatus['kind'], string> = {
@@ -31,6 +32,11 @@ export class Jwt {
     // In-memory only, same as `token` above — never touches PersistenceService.
     const handoff = inject(PasteHandoffService).consume('jwt');
     if (handoff !== undefined) this.token.set(handoff);
+
+    // Workspace tab-restore / History restore (DUDE_PRD.md §21 Phase 21 Items 4-5) — see
+    // jwt.workspace-step.ts. Same in-memory-only shape as the Smart Paste hand-off above.
+    const workspaceState = consumeWorkspaceState('jwt');
+    if (typeof workspaceState?.['token'] === 'string') this.token.set(workspaceState['token']);
   }
 
   protected readonly issuedAt = computed(() => {
