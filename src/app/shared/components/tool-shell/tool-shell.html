@@ -10,6 +10,14 @@
       <h1 class="text-sm font-semibold tracking-wide text-text">{{ title() }}</h1>
     </div>
     <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="rounded border border-border px-1.5 py-0.5 text-ui-xs text-text-muted hover:border-accent hover:text-accent"
+        title="Send to scratchpad"
+        (click)="sendToScratchpad()"
+      >
+        + Scratchpad
+      </button>
       <app-security-badge [definition]="definition()" />
       <app-offline-badge [show]="showOfflineBadge()" />
       <span

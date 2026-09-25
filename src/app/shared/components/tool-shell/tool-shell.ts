@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ConnectivityService } from '../../../core/connectivity/connectivity.service';
 import { ToolRegistryService } from '../../../core/registry/tool-registry.service';
 import { WORKSPACE_HOST_CONTEXT } from '../../../core/workspace/workspace-host-context';
+import { ScratchpadService } from '../../../core/workspace/scratchpad.service';
 import { CATEGORY_METADATA } from '../../models/tool-category.model';
 import { OfflineBadge } from '../offline-badge/offline-badge';
 import { CategoryIcon } from '../category-icon/category-icon';
@@ -18,6 +19,7 @@ export class ToolShell {
   private readonly router = inject(Router);
   private readonly registry = inject(ToolRegistryService);
   private readonly hostContext = inject(WORKSPACE_HOST_CONTEXT);
+  private readonly scratchpad = inject(ScratchpadService);
 
   readonly title = input.required<string>();
   readonly status = input<'stable' | 'experimental'>('experimental');
@@ -40,4 +42,20 @@ export class ToolShell {
     const category = this.category();
     return category ? CATEGORY_METADATA[category] : undefined;
   });
+
+  /**
+   * Manual scratchpad capture (DUDE_PRD.md §21 Phase 21 Item 4) — works on every tool, everywhere,
+   * independent of whether the Workspace tab/panel UI is in use at all. Sends the current text
+   * selection if there is one, falling back to the tool's own description so a note is never
+   * empty; the user renames/edits it from the drawer afterward.
+   */
+  protected sendToScratchpad(): void {
+    const definition = this.definition();
+    const selection = window.getSelection()?.toString().trim();
+    this.scratchpad.addSnippet(
+      definition?.title ?? 'Untitled',
+      selection && selection.length > 0 ? selection : (definition?.description ?? ''),
+      definition?.id,
+    );
+  }
 }

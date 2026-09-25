@@ -3,6 +3,7 @@ import { WorkspaceLayoutService } from '../../../core/workspace/workspace-layout
 import { CommandPaletteService } from '../../command-palette/command-palette.service';
 import { TabStrip } from '../tab-strip/tab-strip';
 import { PanelHost } from '../panel-host/panel-host';
+import { ScratchpadDrawer } from '../scratchpad-drawer/scratchpad-drawer';
 
 /**
  * `/workspace` route root (DUDE_PRD.md §21 Phase 21 Item 4) — a sanctioned exception to
@@ -11,7 +12,7 @@ import { PanelHost } from '../panel-host/panel-host';
  */
 @Component({
   selector: 'app-workspace-shell',
-  imports: [TabStrip, PanelHost],
+  imports: [TabStrip, PanelHost, ScratchpadDrawer],
   templateUrl: './workspace-shell.html',
 })
 export class WorkspaceShell {
