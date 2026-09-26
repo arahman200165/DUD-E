@@ -7,9 +7,9 @@ import { parseColor, type ColorFormats } from '../color-converter/color-convert'
 import { samplePixel } from './pixel-sample';
 
 /**
- * Upload-image mode only (Track A). The live-screen-capture variant is
- * Track B -- desktop-packaging-dependent, cross-referenced at PRD Phase 29
- * item 6 -- and deliberately not attempted here.
+ * Upload-image mode only. The live-screen-capture variant needs native screen
+ * access and is cross-referenced at PRD Phase 34 item 6 -- deliberately not
+ * attempted here.
  */
 @Component({
   selector: 'app-pixel-color-picker',

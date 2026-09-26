@@ -1,6 +1,6 @@
 # AGENTS.md — DUDE
 
-DUDE is a dark-mode-only Angular 22 PWA (standalone components, signals, Tailwind v4) bundling offline, client-side developer micro-tools, deployed statically to GitHub Pages. Read `README.md` for architecture/tech stack and `DUDE_PRD.md` for the full spec and tool roadmap before making non-trivial changes.
+DUDE is a dark-mode-only, dense developer workbench built with Angular 22 (standalone components, signals, Tailwind v4) bundling client-side developer micro-tools, shared between a canonical Windows Electron desktop app and a zero-install, offline-capable GitHub Pages/PWA web companion. Read `README.md` for architecture/tech stack and `DUDE_PRD.md` for the full spec and tool roadmap before making non-trivial changes.
 
 Nested `AGENTS.md` files exist under `src/app/` (`core/`, `shell/`, `shared/`, `tools/`) with directory-specific rules — read the one for whatever directory you're editing.
 

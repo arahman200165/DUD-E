@@ -415,7 +415,7 @@ Then open `http://localhost:8080`, let it load once, and use your browser DevToo
 
 ## Desktop app
 
-DUDE also ships as a Windows Electron build (`DUDE_PRD.md` §21 Phase 8) — the same Angular codebase, packaged as a standalone desktop app, strictly additive to the web app (never a replacement for it). All 8 stages of the roadmap are shipped:
+DUDE also ships as a Windows Electron build (`DUDE_PRD.md` §21 Phase 8) — the same Angular codebase, packaged as a standalone desktop app. Per `DUDE_PRD.md` §4.9, the desktop app is now the canonical DUDE workbench; the web build remains a zero-install companion covering every capability that's safe to run in a browser sandbox. All 8 stages of the desktop-packaging phase are shipped:
 
 - **Native file access** — Directory Diff and Git Repo Browser use a native folder picker + live, re-scannable filesystem access instead of `<input webkitdirectory>`, via a sandboxed preload/IPC bridge.
 - **OS-level secret storage** — a `secure-local` persistence tier backed by Electron `safeStorage` (OS keychain).

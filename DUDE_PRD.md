@@ -4,49 +4,61 @@
 
 **Project name:** DUDE  
 **Expanded name:** Developer Utility Dashboard Engine  
-**Product type:** Static, single-page developer utility deck  
-**Primary deployment target:** GitHub Pages free tier  
+**Product type:** Desktop-first local developer workbench with a companion static web application  
+**Primary deployment target:** Windows desktop application via Electron, GitHub Releases, and Microsoft Store packaging  
+**Secondary deployment target:** GitHub Pages / installable PWA containing every DUDE capability that can run safely inside a browser sandbox  
 **Primary frontend framework:** Angular  
 **Primary audience:** The developer building and using it first; later, other developers  
-**Delivery horizon:** Framework and first 10 tools delivered in one weekend; ongoing roadmap-driven development from here  
-**Status:** V1 (framework + 10 tools) shipped and deployed — ongoing roadmap-driven development
+**Delivery horizon:** Framework and first 10 tools delivered in one weekend; ongoing roadmap-driven development from there, now extending through a deliberately long-horizon Phase 100  
+**Status:** V1 and Phases 1–21 shipped; Windows desktop packaging is real and shipped; Phase 22 is the next proposed consolidation phase; Phases 22–100 are roadmap/horizon work rather than a fixed schedule
 
 ---
 
 # 1. Executive Summary
 
-DUDE is a dense, dark-mode-only, desktop-first Angular single-page application that consolidates frequently Googled developer micro-tools into one fast, self-contained deck.
+DUDE is a dense, colorful, local-first **desktop developer workbench** built with Angular and Electron, with a highly capable static web/PWA companion generated from the same shared core. The Windows desktop application is now the canonical product surface because DUDE has already shipped capabilities that a browser sandbox cannot reproduce: native filesystem access, OS-level secret storage, local backend processes, system integration, collaboration infrastructure, and future live networking/database/process tooling. The GitHub Pages build remains a permanent zero-install companion for every capability that can run safely in-browser.
 
-Visually, DUDE is dark but not monochrome or subdued. The UI is built on a dark base and uses a bright, bold, highly saturated accent-color system functionally — for categories, status, and structure — rather than decoratively. See Section 8 for the full visual direction.
+Visually, DUDE remains dark-first today, but not monochrome or subdued. The current UI uses a dark base and a bright, bold, highly saturated accent-color system functionally — for categories, status, and structure — rather than decoratively. The current shipped theme remains the authoritative present-state design; Phase 36 later revisits light mode, theme customization, density, font, contrast, and accessibility options. See Section 8 for the full visual direction.
 
-The weekend project was **not** to build 20–30 tools immediately.
+The original weekend project was **not** to build 20–30 tools immediately.
 
-The weekend project was to build the **framework that makes tools 10 through 30 cheap and safe to add later**, while shipping enough varied tools to prove that the framework is sound. That framework is now built, deployed, and proven — see §1.1.
+The weekend project was to build the **framework that makes tools 10 through 30 cheap and safe to add later**, while shipping enough varied tools to prove that the framework is sound. That framework was built, deployed, and proven, and the product has since grown far beyond the weekend scope.
 
-The product is:
+The product is now:
 
-- static-hostable on GitHub Pages free tier;
+- installable as a Windows desktop application through the Electron distribution track established in Phase 8;
+- distributed through GitHub Releases today, with Microsoft Store/MSIX packaging support prepared by the shipped desktop release pipeline;
+- backed by a local bundled backend only where native capabilities require one;
+- static-hostable on GitHub Pages as a companion web build;
 - installable as a PWA;
-- functional offline for local-only tools;
+- functional offline for local-only/shared-core tools after the required assets are available;
 - local-first by default;
-- capable of supporting public APIs and user-supplied API keys later;
+- capable of public APIs, user-supplied API keys, local AI proxies, and later explicit integrations without making remote infrastructure mandatory;
 - resilient so a heavy tool cannot freeze the whole application;
-- bookmarkable through clean per-tool URLs;
-- optimized for desktop Chromium;
+- bookmarkable through clean per-tool web URLs and, in the future, addressable through desktop deep links;
+- optimized today for Windows desktop plus desktop Chromium for the web companion;
 - extremely dense and utility-first;
-- easy to extend without changing the application shell.
+- easy to extend without changing the application shell;
+- increasingly centered on workflows, workspaces, pipelines, Smart Paste, local history, and native integrations rather than raw tool count alone;
+- governed by a shared-core rule: transformation and domain logic should remain platform-neutral whenever reasonably possible so desktop, web, CLI, IDE/browser extensions, tests, SDKs, and later integrations can reuse it.
 
 The weekend MVP shipped with **9 showcase tools** chosen to exercise different UI, state, persistence, worker, parsing, formatting, and rendering patterns, plus a 10th tool (UUID Generator / Inspector) added as a timed extension-speed proof.
 
----
+### 1.0.1 Product-positioning evolution record
+
+The original V1 PRD correctly described DUDE at that time as a **static, single-page developer utility deck** whose primary deployment target was the GitHub Pages free tier. That historical description remains relevant to the V1 Definition of Done and the web companion, but it is no longer the correct description of the product as a whole after Phase 8. The previous wording that desktop was merely an additive wrapper or a conceptual “strict superset of the web PWA” is superseded: **DUDE Desktop is the canonical workbench; DUDE Web is the zero-install, browser-safe companion; both reuse the same core wherever platform constraints allow.**
 
 ## 1.1 Current Status
 
-V1 is complete. The extensible framework, all core infrastructure (registry, persistence, workers, PWA, GitHub Pages routing/CI), and 10 tools (the original 9 showcase tools plus the UUID Generator / Inspector) are built, tested, deployed, and verified live at `https://arahman200165.github.io/DUDE/`. Every item in the §35 Definition of Done is checked and verified against the live deployment.
+V1 is complete. The extensible framework, all core infrastructure from the original weekend scope (registry, persistence, workers, PWA, GitHub Pages routing/CI), and the 10 initial tools (the original 9 showcase tools plus the UUID Generator / Inspector) were built, tested, deployed, and verified live at `https://arahman200165.github.io/DUDE/`. Every item in the historical §35 V1 Definition of Done remains checked and verified against that deployment.
 
-With V1 delivered, the old weekend scope gate no longer applies. New work — additional tools, enhancements to existing tools, or framework extensions — proceeds directly from the §21 Roadmap. The product principles, architecture, and shared conventions documented below remain the standing contract for any new work; only the temporary "hold the line until Sunday" constraints have been retired.
+The product then continued through **Phases 1–21, all of which are complete**. Those phases expanded DUDE from the original showcase into hundreds of browser-capable tools, sandboxed execution, richer editors, structured/binary inspection, a shipped Windows Electron application, a local bundled backend, OS-level secure storage, AI regex assistance, local/self-hosted collaboration infrastructure, a universal I/O contract, transformation pipelines, user-defined sandboxed pipeline scripts, Smart Paste, persistent multi-tool workspaces, Saved Sessions, and persistent local history.
 
-Phases 0–8 of that roadmap are complete: the original 10 showcase tools plus 40 further tools, spanning high-frequency utilities, structured data, web/API references, developer workflow, richer editors, sandboxed code execution, and the original showcase backlog's deferred items. **Phase 8 (Downloadable Desktop App with a Bundled Backend) is complete** — a framework-first phase, not a tool-adding one, that packages DUDE as a Windows Electron app with a local, bundled backend and establishes the desktop-packaging track. All 8 stages (Electron shell; native file access; OS-level secret storage; local LLM proxy + AI regex features; desktop shell chrome; local collab server; BYO relay server; auto-update + distribution) shipped as Milestones 21–28. §21 continues from there as one linear roadmap through Phase 33 — tool phases, the cross-cutting architectural directions (Phase 21), and the long-term/monetization horizon are no longer split across separate sections — organized into two tracks (a browser-only "Track A" buildable today, and a "Track B" gated on Phase 8's desktop-packaging track) plus several further, Track-independent phases. See §5.2 for how it revises the product's permanent non-goals.
+**Phase 8 (Downloadable Desktop App with a Bundled Backend) is complete** and is the turning point for the product hierarchy. Its eight shipped stages remain: Electron shell; native file access; OS-level secret storage; local LLM proxy + AI regex features; desktop shell chrome; local collab server; BYO relay server; auto-update + distribution. Those shipped details remain documented in §21 Phase 8.
+
+**Phase 21 (Cross-Tool Workflow Foundations) is also complete**. Phase 22 is therefore deliberately another framework-first phase: platform hardening, metadata/registry consolidation, trust, testing, cache/bundle control, and a formal desktop-first pivot before another large wave of native capability.
+
+The roadmap is now one linear product horizon through **Phase 100**. Phases 22–26 consolidate platform structure, trust, discovery, desktop UX, and web/PWA efficiency; Phases 27–38 then establish the first major native/integration expansion across networking, live DNS/TLS, filesystem workflows, Windows/process tooling, local API/server development, live databases, containers, OS integration, AI-assisted utilities, theming, VS Code integration, and browser-extension integration. Later phases extend into cross-platform desktop, automation, Git/SSH/package/build/log/proxy/database/container/Kubernetes workflows, secrets/PKI, collaboration/workspaces/pipelines, plugins/extensions, CLI/SDK/headless automation, AI, project/code/runtime tooling, and a deliberately distant platform/ecosystem horizon.
 
 ---
 
@@ -64,9 +76,11 @@ This makes DUDE a long-lived personal utility platform rather than a one-weekend
 
 ---
 
-# 3. V1 Success Criteria
+# 3. Historical V1 Success Criteria and Continuing Principles
 
-The weekend project was judged successful once all of the following were true. These bars remain the standing quality contract for any future roadmap work.
+The weekend project was judged successful once all of the following were true. These criteria are the **historical V1 baseline**, not the complete modern quality contract for the product DUDE has since become. Their underlying principles — extension speed, deployment reliability, performance/isolation, architecture clarity, and predictable recovery — continue to apply, but later capabilities may and often must carry stricter capability-specific requirements.
+
+The current product contract therefore layers the canonical Windows desktop application, shared-core web/desktop parity, native-security boundaries, platform/capability disclosure, and the stronger structural/correctness/release gates introduced from Phases 22–23 onward on top of this V1 baseline. Nothing in this section limits a later phase from establishing a higher bar for cryptography, authentication, native mutation, filesystem/process/database writes, network interception, code execution, plugins, automation, remote execution, or other high-consequence capabilities.
 
 ## 3.1 Hard pass/fail criteria
 
@@ -153,11 +167,15 @@ This ordering was validated by the actual delivery sequence: shell → tool regi
 
 ## 4.2 Local first
 
-If a tool can run entirely in the browser, it should.
+If a capability can run entirely on the user's machine, it should. If the same capability can run safely inside a browser sandbox, the shared implementation should remain browser-capable as well.
 
-Network access should not be introduced merely because it is convenient.
+The original rule — **“if a tool can run entirely in the browser, it should”** — still governs the web companion. The desktop-first pivot does not justify moving deterministic browser-safe work into a backend merely because Electron makes that convenient. Desktop-native services exist for capabilities the browser cannot provide: raw sockets, arbitrary/background filesystem access, processes, OS integration, local servers, secure keychain access, and similar native operations.
 
-This is also a product feature, not just an architecture choice: DUDE should make it visible, in the UI, when a tool is processing entirely on-device — "processed locally, your data never leaves your machine" — since this matters most for exactly the inputs users are most guarded about (JWTs, API responses, logs, configs, company data). See §14 and §30 for how this is enforced technically.
+Network access should not be introduced merely because it is convenient. Any transmission outside the machine must be explicit in capability metadata and visible to the user.
+
+This is also a product feature, not just an architecture choice: DUDE should make it visible in the UI when a tool is processing entirely on-device — “processed locally, your data never leaves your machine” — since this matters most for exactly the inputs users are most guarded about (JWTs, API responses, logs, configs, company data). See §14, §30, §31, and the Phase 22 metadata/security work for how this is enforced technically.
+
+---
 
 ## 4.3 Dense over decorative
 
@@ -203,11 +221,17 @@ DUDE's moat is not the number of tools it has.
 
 As the roadmap grows into the hundreds of tools (§21), the differentiator is meant to stay excellent UX, privacy, interoperability between tools, and depth on the tools that already exist — not simply adding more of them. Concretely: prefer enriching an existing tool (tree views, search, exports, validation, related-tool hand-offs) over shipping a shallow new one when both are on the table, and treat DUDE as a single cohesive workbench that tools connect within (see §21 Phase 21), not an unrelated pile of pages that happen to share a shell.
 
-## 4.9 Desktop extends, doesn't replace, the web app
+## 4.9 Desktop is canonical; web preserves zero-install reach
 
-The GitHub Pages web app (§1, §10) remains the permanent, zero-install way to use DUDE, and stays the recommended default even after the desktop packaging track (§21 Phase 8) exists. The desktop app's job is to add genuinely native capability — OS/network/filesystem access, drag-and-drop, system tray, global shortcuts, local servers (Track B, §21) — not to re-wrap the same web experience for its own sake.
+The Windows desktop application is the canonical, complete DUDE workbench. The GitHub Pages/PWA build remains a permanent, zero-install companion and should contain **every DUDE capability that can run safely inside a browser sandbox**, but web-platform constraints no longer define the ceiling of the product.
 
-This implies a shared-core architecture: tool logic lives in a platform-independent core, with the browser, desktop, and any future backend each sitting behind their own thin adapter (see §23). It also implies a hard constraint on future monetization (§21's Monetization subsection): the basic utilities that work today in the browser must never be paywalled behind the desktop app or any paid tier — they are the on-ramp into the rest of the product, not an upsell surface.
+Desktop is not conceptually defined as “the web app plus a few extra permissions.” It is the primary product surface for native workflows: OS/network/filesystem/process access, drag-and-drop, system tray and global shortcuts, local servers, live database connections, native file watching, secure keychain storage, multi-window workflows, desktop automation, and later integrations that cannot be reproduced faithfully in a browser.
+
+This still implies a strict shared-core architecture. Transformation/domain logic should live in platform-neutral modules whenever reasonably possible, with thin adapters for Angular/browser APIs, Electron/native APIs, CLI, VS Code/IDE integrations, browser extensions, tests, SDKs, and future surfaces. The desktop and web builds must not fork the same deterministic tool logic into unrelated implementations.
+
+The web companion remains strategically important because a URL is the lowest-friction entry point into DUDE: no install, bookmarkable tool routes, PWA support, offline-safe local utilities, and easy sharing of tool locations. Phase 26 explicitly hardens that companion rather than treating it as a legacy build.
+
+Basic local developer utilities must never be paywalled behind the desktop app, an account, or a paid tier. They are the product's on-ramp, not an upsell surface.
 
 ---
 
@@ -246,47 +270,60 @@ The weekend implementation delivered:
 
 ---
 
-## 5.2 Permanent Non-Goals
+## 5.2 Durable Product Boundaries
 
-These are durable product and architecture decisions, not temporary weekend cuts. They stay out of scope regardless of roadmap progress unless a future decision explicitly revisits them:
+§5.2 now separates genuine durable principles from features that were merely premature. Desktop packaging, collaboration, multi-window workflows, snippets, secrets, extensions, and theming demonstrated that many weekend-era exclusions were really “not yet,” not “never.” The authoritative scope is therefore a smaller set of durable constraints.
 
-- user accounts;
-- cloud synchronization;
-- custom backend (a **cloud-hosted** backend — see the note below for the desktop track's local backend, which is a distinct, now-permitted thing);
-- database (a DUDE-operated, always-on datastore for the product itself — this does not block Track B tools that connect to a user's own local/live databases, since those are the tool's job, not DUDE's infrastructure);
-- telemetry platform;
-- analytics dashboard;
-- collaborative editing;
-- DUDE-operated hosted snippet service;
-- extension marketplace;
-- plugin installation from remote sources;
-- third-party authentication;
-- multi-device preferences;
-- mobile-first layout;
-- Firefox-specific optimization;
-- Safari-specific optimization;
-- Monaco-style full IDE workspace;
-- cloud-hosted API proxy;
-- cloud-hosted secret storage service;
-- elaborate onboarding;
-- tutorial tours;
-- social sharing;
-- SEO-heavy content pages;
-- public API documentation portal;
-- design system extraction;
-- component package publishing;
-- broad accessibility certification;
-- exhaustive cross-browser testing;
-- exhaustive end-to-end tests;
-- exhaustive unit-test coverage;
-- bundle-size optimization project;
-- localization/i18n.
+These constraints survive roadmap growth unless the owner makes an explicit future PRD decision to reverse one:
+
+1. **No silent transmission of user data.** Any feature that sends user input, files, secrets, logs, code, telemetry, or derived content off-machine must disclose that behavior and require an appropriate explicit action/opt-in.
+2. **No mandatory cloud dependency for functionality that can reasonably stay local.** Deterministic utilities, local workspaces, local history, local automation, and other local-capable workflows must remain useful without a hosted account/service.
+3. **No DUDE-operated hosted cloud is part of the current product direction.** Local bundled backends, LAN services, BYO/self-hosted relays, user-owned remote machines/runners, and self-hosted/on-prem infrastructure are allowed. Roadmap phases that describe optional DUDE-hosted accounts/sync/collaboration/compute are retained for completeness as a *conditional alternative horizon*, but they are not authorized while this boundary stands.
+4. **No destructive or privileged operation without explicit confirmation.** Opening, importing, inspecting, or detecting data must never itself trigger destructive system changes. Mutating process/registry/service/filesystem/database/container/Kubernetes/remote-system operations require clear intent, previews/dry runs where practical, and confirmation proportional to risk.
+5. **No untrusted remote code executing with DUDE/Desktop privileges.** Sandboxed user scripts and future plugins/extensions may exist, but untrusted code must be isolated/capability-scoped. Native privileges may only be granted through explicit, reviewable permission boundaries.
+6. **No private credentials compiled into distributions.** Service credentials are user-supplied, locally generated, retrieved from approved local secret stores, or configured by the operator of a self-hosted deployment.
+7. **Basic local developer utilities never become paywalled.** A future commercial model may charge for optional services or advanced organizational capabilities, but must not remove or artificially cripple formerly-local utility functionality to manufacture a paid tier.
+8. **DUDE does not become a conventional VS Code clone or source-code-IDE-first product.** Later editor, LSP, terminal, Git, project, and code-intelligence surfaces are allowed only in service of the broader developer-workbench model. The product identity remains “give this development problem/artifact/system to DUDE,” not “rebuild VS Code feature-for-feature.”
+
+## 5.3 Historical Exclusions Now Treated as Roadmap Territory
+
+The original exclusions are preserved here so none of their rationale disappears. Their status changes from “permanently impossible” to one of: shipped, proposed, conditionally gated, or unscheduled.
+
+- **User accounts** — no longer philosophically impossible, but any DUDE-hosted identity is conditional and gated by the no-DUDE-hosted-cloud boundary; the source suggestion is retained as Phase 81.
+- **Cloud synchronization / multi-device preferences** — conditional Phase 82–83 concepts; local-only mode must remain first-class, and current no-hosted-cloud direction means self-hosted/user-owned alternatives are the viable path unless explicitly reversed.
+- **Custom backend** — a *local bundled backend* shipped in Phase 8. A mandatory remote/cloud backend remains disallowed; self-hosted/on-prem backends are allowed later.
+- **DUDE-operated product database** — still unnecessary for the local product. This does not block Phase 32/48 tools connecting to user databases or future self-hosted platform infrastructure.
+- **Telemetry platform / analytics dashboard** — not silently enabled. Phase 93 preserves the idea only as explicit opt-in diagnostics/product insights with payload transparency and no user-payload collection.
+- **Collaborative editing** — already partially reopened and shipped through same-machine/LAN collaboration plus a BYO relay in Phase 8. Phase 53 expands self-hosted/accountless collaboration; Phase 84's DUDE-hosted service is conditional and blocked while the current hosted-cloud boundary stands.
+- **DUDE-operated hosted snippet service** — a user-operated/self-hosted snippet-sharing service is in Phase 31; a DUDE-hosted service is not part of the current direction.
+- **Extension marketplace / plugin installation from remote sources** — Phase 56 introduces a Local Plugin SDK; Phase 57 proposes signed, permission-declared extensions. Remote extension code must never become arbitrary native-code execution. A DUDE-hosted marketplace backend remains conditional; local/self-hosted catalogs are compatible with the current boundary.
+- **Third-party authentication** — only relevant to distant team/enterprise or source-hosting integrations; any hosted identity use is conditional.
+- **Mobile-first layout** — still not the core UX. Phase 91 preserves a mobile *companion* concept rather than redesigning the full workbench around a phone.
+- **Firefox-specific / Safari-specific optimization** — moved to distant Phase 92 Universal Web Platform rather than being permanently excluded.
+- **Monaco-style full IDE workspace** — the literal permanent exclusion is retired, but replaced by the stronger identity boundary in §5.2: Phase 77–80 may add editor/LSP/terminal/project surfaces without turning DUDE into a conventional IDE clone.
+- **Cloud-hosted API proxy / cloud-hosted secret storage** — not part of the current product direction. Local proxies, local OS-keychain storage, self-hosted services, user-owned runners, and enterprise/on-prem infrastructure are allowed.
+- **Elaborate onboarding / tutorial tours** — no longer permanently banned, but remain unscheduled and must not displace fast direct access for experienced developers.
+- **Social sharing** — unscheduled; workflow/template sharing may exist through explicit exports, galleries, or self-hosted collaboration rather than social-network mechanics.
+- **SEO-heavy content pages** — unscheduled and non-core; the workbench remains the product.
+- **Public API documentation portal** — no longer impossible if Phase 97 turns internal seams into supported public SDK contracts.
+- **Design system extraction / component package publishing** — no longer permanent exclusions; Phase 56/97/98 may require supported shared UI/component packages once there is a real external consumer.
+- **Broad accessibility certification** — current baseline remains pragmatic, while Phase 36 and especially Phase 94 make accessibility maturity a real roadmap direction.
+- **Exhaustive cross-browser testing** — not a current requirement; Phase 92 may establish a deliberate cross-browser CI matrix.
+- **Exhaustive end-to-end/unit-test coverage** — still not a raw percentage goal, but Phase 23 materially raises verification standards for high-consequence tools through vectors, reference cross-checks, fuzzing, property tests, golden corpora, release gates, and performance regression fixtures.
+- **Bundle-size optimization project** — superseded by a more useful Phase 22 model: chunk budgets, cache budgets, service-worker strategy audits, and dependency-boundary validation tied to actual product risk.
+- **Localization/i18n** — no longer a permanent “never”; retained at the very distant Phase 94 horizon.
+
+### 5.3.1 Historical amendments preserved
+
+These three amendments are reproduced verbatim from the pre-2026-09-25 PRD (only inline `§21 Phase N` pointers are updated, to the phase's current number after the roadmap renumbering — the wording, bullet structure, and terminology in use at the time, including "Track A"/"Track B", are otherwise untouched). Each is followed by a dated **Superseded** note stating explicitly which specific claims this rewrite has since changed, so the historical record stays legible without silently contradicting the current doc.
 
 **Amendment (2026-09-20):** Electron/Tauri/native desktop packaging is **no longer a permanent non-goal**. §21 (the Roadmap's Phase 8 and its Track B rationale) adopts desktop packaging as a real future direction, since a large class of genuinely useful tools (§21, Track B) needs native OS/network/filesystem access a browser tab cannot get. This is a narrow, deliberate carve-out, not a general reopening of the list above:
 
 - a desktop build's **local, bundled backend** — used only to give Track B tools OS/network/filesystem access on the user's own machine — is now in scope;
-- a **cloud-hosted** backend, a DUDE-operated database, user accounts, and cloud sync remain permanent non-goals for the product as a whole, desktop included, unless a future decision explicitly revisits them (§21's Monetization subsection flags this exact tension and does not resolve it);
+- a **cloud-hosted** backend, a DUDE-operated database, user accounts, and cloud sync remain permanent non-goals for the product as a whole, desktop included, unless a future decision explicitly revisits them (Appendix D §D.1 flags this exact tension and does not resolve it);
 - the web/GitHub Pages build remains the permanent zero-install default (§4.9) — desktop is additive, not a replacement.
+
+**Superseded 2026-09-25:** the third bullet's "desktop is additive, not a replacement" is reversed by the current §4.9 — desktop is now the canonical workbench and the web/GitHub Pages build is the zero-install companion, not the default. The first two bullets' substance still stands: the local bundled backend remains in scope, and a cloud-hosted backend/database/accounts/sync remain outside the current product direction, now stated as durable boundaries in §5.2 and tracked as conditional roadmap territory in §5.3.
 
 **Amendment (2026-09-20):** "collaborative editing" above is narrowed by the same carve-out, not reopened wholesale. §21 Phase 8 Stages 6–7 ship real-time collaborative editing for Advanced Markdown Workspace, entirely within the scope the desktop-packaging amendment already grants:
 
@@ -294,27 +331,30 @@ These are durable product and architecture decisions, not temporary weekend cuts
 - a DUDE-operated, cloud-hosted collaboration service — hosted rooms, accounts, server-stored documents — remains a permanent non-goal, unchanged from the list above;
 - the web/GitHub Pages build has no collaboration feature and isn't gaining one — this is desktop-only, additive, consistent with §4.9.
 
+**Superseded 2026-09-25:** the closing "consistent with §4.9" reads differently under the current §4.9 (desktop is canonical, not merely additive), though the underlying fact is unchanged — collaboration is still desktop-only and the web build still has none. The second bullet's "permanent non-goal" is restated as conditional, gated territory at §5.3 (Phase 84, DUDE-hosted collaboration), not reopened.
+
 **Amendment (2026-09-21):** the product has grown well past the original weekend MVP this list was written to protect, and several further items are revisited — each a narrow, deliberate carve-out, not a reopening of anything else on the list:
 
 - **multi-tool tabs, resizable workbench panels, user-defined tool scripting** are no longer permanent non-goals — see §21 Phase 21, whose ceiling is explicitly "a multi-tool workbench, not a source-code IDE." Draggable panel rearrangement and a Monaco-style full IDE remain out of scope, unchanged above.
-- **multi-window workflows** is no longer a permanent non-goal — see §21 Phase 29. This is OS/window-management territory, distinct from Phase 21's single-window workbench above.
-- **"shareable server-stored snippets"** is narrowed, not removed — reworded above to **"DUDE-operated hosted snippet service"**, since a self-hosted/BYO snippet-sharing service is now in scope (§21 Phase 26), on the same BYO-deployment precedent as collaborative editing above; a DUDE-run one remains out of scope.
-- **"secret storage service"** is narrowed, not removed — reworded above to **"cloud-hosted secret storage service"**, since a local-only secrets vault built on the desktop track's `secure-local`/OS-keychain tier is now in scope (§21 Phase 29); a cloud-hosted one remains out of scope.
-- **VS Code extension, browser extension packaging** are no longer permanent non-goals — see §21 Phase 32 and Phase 33, both new, unscheduled distribution/integration targets needing their own scoping pass.
-- **theme customization, light mode** are no longer permanent non-goals — see §21 Phase 31. This reverses an explicit, still-current design decision (§8.1, §8.5, `AGENTS.md`, Appendix A Q12) that will need its own amendments if and when that phase is actually adopted; nothing about those living specs changes now.
+- **multi-window workflows** is no longer a permanent non-goal — see §21 Phase 34. This is OS/window-management territory, distinct from Phase 21's single-window workbench above.
+- **"shareable server-stored snippets"** is narrowed, not removed — reworded above to **"DUDE-operated hosted snippet service"**, since a self-hosted/BYO snippet-sharing service is now in scope (§21 Phase 31), on the same BYO-deployment precedent as collaborative editing above; a DUDE-run one remains out of scope.
+- **"secret storage service"** is narrowed, not removed — reworded above to **"cloud-hosted secret storage service"**, since a local-only secrets vault built on the desktop track's `secure-local`/OS-keychain tier is now in scope (§21 Phase 34, with deeper work in Phase 51); a cloud-hosted one remains out of scope.
+- **VS Code extension, browser extension packaging** are no longer permanent non-goals — see §21 Phase 37 and Phase 38, both distribution/integration targets needing their own scoping pass.
+- **theme customization, light mode** are no longer permanent non-goals — see §21 Phase 36. This reverses an explicit, still-current design decision (§8.1, §8.5, `AGENTS.md`, Appendix A Q12) that will need its own amendments if and when that phase is actually adopted; nothing about those living specs changes now.
 - localization/i18n was also considered and is **not** revisited — it stays a permanent non-goal, unchanged above.
 
----
+**Superseded 2026-09-25:** two of the seven bullets above no longer hold as written. §8.1 is itself amended by this rewrite — theme customization/light mode is no longer described elsewhere in the doc as "an explicit, still-current design decision," so that bullet's closing "nothing about those living specs changes now" is no longer accurate; see the current §8.1 and Appendix A Q12 directly. Localization/i18n's "stays a permanent non-goal, unchanged" is also reversed — §5.3 now retains it as a distant, unscheduled Phase 94 possibility rather than a permanent exclusion. The other carve-outs and their stated ceilings (multi-tool workbench not an IDE; Monaco-style IDE and draggable panels out of scope; BYO-only snippet/secrets deployment) remain the current, accurate boundary. `AGENTS.md`'s top-of-file product description has also been updated as part of this rewrite to describe desktop-canonical/web-companion positioning instead of the old "static PWA deployed to GitHub Pages" framing, so it no longer contradicts this section; its dark-mode-only line is unaffected until Phase 36 actually ships.
 
-## 5.3 Deferred to Roadmap
+## 5.4 Deferred / Roadmap-Tracked Scope
 
-These items are not permanent non-goals — they are later phases already tracked in §21:
+These items are not failures of the original product and are handled by the roadmap:
 
 - WYSIWYG rich-text editor (§21 Phase 5, #36) — ✅ shipped.
-
-Phase 6 (executable JavaScript playground, arbitrary HTML execution, arbitrary template execution, sandboxed code runner) has since shipped too — see §21 Phase 6 and the amended standing rule at §31.
-
-The full future roadmap — everything not yet built, spanning both what's buildable in the browser today (Track A) and what waits on the desktop packaging track (Track B) — is organized in §21 from Phase 8 onward, with the cross-cutting architectural ideas it depends on (pipelines, a shared input/output contract, smart paste-detection, a persistent workspace, local history) covered in §21 Phase 21.
+- Executable JavaScript playground, arbitrary HTML execution, arbitrary template execution, and sandboxed code runner (Phase 6) — ✅ shipped; see the amended standing security rule at §31.
+- Cross-tool I/O, pipelines, Smart Paste, workspace/Saved Sessions, and local history (Phase 21) — ✅ shipped.
+- Platform hardening/correctness/discovery/desktop shell/web efficiency (Phases 22–26) — next proposed consolidation wave.
+- Native networking, TLS, filesystem, Windows/process, API/server, database, container, OS-integration, AI, theming, and editor/browser integration work is tracked authoritatively in Phases 27–38.
+- Long-horizon additions through Phase 100 are roadmap directions, not a fixed commitment or schedule.
 
 ---
 
@@ -353,21 +393,36 @@ The application should optimize for repeated daily use rather than onboarding fi
 
 # 7. Supported Platform
 
-## 7.1 Required
+## 7.1 Primary Supported Platform
+
+- **Windows desktop application via Electron** — the canonical DUDE product surface.
+- Distribution through the shipped GitHub Releases installer/update path, with MSIX/Microsoft Store packaging support as established by Phase 8 Stage 8.
+- Local/offline operation where the selected capability permits it.
+- Native capability through sandboxed preload/IPC boundaries rather than direct Node access in the renderer.
+
+Acceptance for new native features is primarily against the Windows desktop product unless a phase explicitly targets another platform.
+
+## 7.2 Secondary Supported Platform — Web Companion
 
 - Desktop Chromium-based browsers.
 - GitHub Pages free-tier static hosting.
+- Installable PWA behavior.
 - Online and offline operation where applicable.
+- Every shared capability that can run safely within browser constraints should remain available here rather than being made desktop-only without a technical reason.
 
-## 7.2 Not Currently Required
+## 7.3 Not Currently Required / Future Roadmap
 
-- Firefox parity.
-- Safari parity.
-- mobile optimization.
-- touch-first interactions.
-- narrow-screen layout quality.
+The application should not intentionally break elsewhere, but current acceptance does not require:
 
-The application should not intentionally break elsewhere, but acceptance is based on desktop Chromium.
+- Firefox parity — revisited in Phase 92;
+- Safari parity — revisited in Phase 92;
+- mobile optimization — a mobile companion appears only at Phase 91 and is not a mobile-first redesign;
+- touch-first interactions — revisited as part of later universal-web work;
+- narrow-screen layout quality — likewise later universal-web work;
+- macOS desktop parity — Phase 39;
+- Linux desktop parity — Phase 39.
+
+Windows remains the desktop reference platform even if Phase 39 later makes desktop cross-platform.
 
 ---
 
@@ -375,13 +430,11 @@ The application should not intentionally break elsewhere, but acceptance is base
 
 ## 8.1 Theme
 
-Dark mode only.
+**Current shipped state:** dark mode only, with no light-theme toggle.
 
-No light theme toggle.
+The dark theme is not muted or monochrome. DUDE currently uses a single, fixed, highly colorful theme: a dark base (background/panel surfaces) paired with a bright, bold, highly saturated accent-color palette used throughout the shell and every tool. Color is a primary structural and functional device, not an afterthought layered on top of a gray UI.
 
-The dark theme is not muted or monochrome. DUDE uses a single, fixed, highly colorful theme: a dark base (background/panel surfaces) paired with a bright, bold, highly saturated accent-color palette used throughout the shell and every tool. Color is a primary structural and functional device, not an afterthought layered on top of a gray UI.
-
-This is one fixed theme, not a customizable one. See Section 5.2 (theme customization and light mode remain out of scope) and Section 8.5.
+This remains the authoritative present-state theme until a theming phase is actually implemented. It is no longer a permanent product prohibition: Phase 36 explicitly revisits light mode, theme customization, accent palettes, density, fonts, reduced motion, high contrast, color-blind-safe semantics, and theme import/export.
 
 ## 8.2 Density
 
@@ -453,7 +506,7 @@ Required elements:
 
 Constraints:
 
-- exactly one theme is defined; it is not user-configurable (Section 5.2);
+- exactly one theme is defined in the **current shipped implementation**; Phase 36 may introduce controlled user configuration without invalidating the historical V1 design;
 - every color combination used for text or status meaning must still meet the contrast baseline in Section 19 — "bright and bold" must not come at the cost of legibility;
 - new tools reuse the shared palette/tokens rather than inventing tool-specific colors, so the deck and sidebar stay visually coherent as tools are added.
 
@@ -470,12 +523,10 @@ The home route should show:
 - global search entry;
 - compact category sections;
 - tool list or dense tool grid;
-- recent tools if trivial to implement;
-- pinned/favorite tools only if trivial to implement.
+- recent tools if trivial to implement in the historical/current shell;
+- pinned/favorite tools only if trivial to implement in the historical/current shell.
 
-Favorites and recents remain optional.
-
-They must not delay core work.
+For the original MVP these were optional and were not allowed to delay core work. That historical constraint remains true for V1, but Phase 24 deliberately promotes Recently Used Tools, Favorites/Pinned Tools, pinned pipelines, unified recents, local usage frequency, and related-tool suggestions into first-class product features.
 
 ## 9.2 Sidebar
 
@@ -527,9 +578,9 @@ The exact route convention may change during implementation, but all tools must 
 
 ---
 
-# 10. GitHub Pages Routing Strategy
+# 10. Web Companion / GitHub Pages Routing Strategy
 
-Use clean routes with a GitHub Pages SPA fallback.
+The web companion keeps clean, bookmarkable routes with a GitHub Pages SPA fallback. These requirements apply to the secondary web/PWA surface even though desktop is now canonical.
 
 Requirements:
 
@@ -540,23 +591,32 @@ Requirements:
 - fallback script/strategy that restores the intended SPA route;
 - direct refresh on a tool URL works;
 - back/forward browser navigation works;
-- PWA service worker does not break route recovery.
+- PWA service worker does not break route recovery;
+- desktop-only tools/routes degrade to a clear explanatory capability state rather than a broken page;
+- shareable web routes remain stable wherever the underlying capability is browser-safe;
+- browser-to-desktop handoff through `dude://` or another explicit protocol must enhance, not replace, the corresponding web route — a browser-safe route must remain independently usable when its capability exists on the web companion.
 
 Hash routing is explicitly not the chosen approach.
 
 ---
 
-# 11. PWA and Offline Model
+# 11. Web Companion PWA and Offline Model
 
-DUDE should be installable.
+The web companion should remain installable as a PWA. Desktop installation is handled separately by the Electron distribution path; this section governs only browser/PWA behavior.
 
 ## 11.1 Required PWA Behavior
 
+The original V1 requirement was simply to cache the application shell/static assets and keep local-only tools available offline after first load. As DUDE grows, the **standing PWA contract** is more selective; Phases 22 and 26 implement and harden this model rather than leaving it only as roadmap prose.
+
 - web app manifest;
 - service worker;
-- application shell cached;
-- static assets cached;
-- local-only tools available offline after first successful load;
+- a **minimal initial application shell** cached eagerly;
+- shell-critical static assets cached eagerly;
+- browser-safe local tools available offline after the assets they require have been loaded;
+- large lazy tool families cached on demand rather than blindly prefetched;
+- optional WASM/language/runtime payloads cached on demand rather than treated as shell-critical assets;
+- Cache Storage footprint is measurable and, as the platform grows, subject to explicit budgets/inspection;
+- users can clear/repair optional cached runtimes without destroying unrelated local state where practical;
 - update strategy documented;
 - application can detect online/offline state.
 
@@ -567,10 +627,12 @@ Future tools may depend on public APIs.
 Such tools must:
 
 - clearly declare that network access is required;
+- identify the external service, user-directed endpoint, local proxy, or user-owned infrastructure involved where practical;
 - not break the rest of the app offline;
 - display a compact offline state;
 - degrade gracefully;
-- avoid blocking application startup.
+- avoid blocking application startup;
+- keep network, persistence, platform/native-capability, and external-data-boundary metadata available to the shared shell so disclosure UI can explain **what will leave the machine, where it goes, and which platform capability is being used** before or while the action runs.
 
 ## 11.3 API-key tools
 
@@ -579,9 +641,11 @@ User-supplied API keys are allowed.
 Rules:
 
 - no private API key may be compiled into DUDE;
-- session-only storage is the default;
-- persistent local storage requires explicit user opt-in;
-- API-key storage is handled through the shared persistence abstraction;
+- session-only storage is the browser default;
+- persistent browser storage requires explicit user opt-in and is appropriate only for integrations/payloads whose sensitivity permits it;
+- desktop secrets should use the applicable `secure-local` / OS-keychain-backed credential tier when persistence is requested and available;
+- **never downgrade a secret into ordinary local storage merely for implementation convenience**; if the secure storage path cannot satisfy a requirement, the feature must stay session-only/nonpersistent or receive an explicit architecture change rather than silently weakening the credential boundary;
+- API-key storage is handled through shared credential/persistence abstractions rather than ad hoc tool code;
 - API-backed tools should isolate key usage to the specific integration;
 - the app should make it clear when a tool sends data to an external service.
 
@@ -611,13 +675,17 @@ interface ToolDefinition {
   persistence?: ToolPersistencePolicy;
   execution?: ToolExecutionPolicy;
   network?: ToolNetworkPolicy;
-  status?: 'stable' | 'experimental';
+  status?: 'experimental' | 'stable' | 'verified';
+  io?: ToolIOContract;
+  platforms?: ToolPlatformAvailability;
+  capabilities?: ToolCapabilityDeclaration[];
+  documentation?: ToolDocumentationMetadata;
 }
 ```
 
 This is conceptual.
 
-The implementation can adjust names and exact typing.
+The implementation can adjust names and exact typing. `io` is already real and required after Phase 21. Phase 22 is expected to make platform availability, capabilities, documentation metadata, and registry validation mechanically enforceable; Phase 23 adds the `verified` confidence tier. The direction is one canonical definition per tool, colocated in a tool/category manifest rather than metadata duplicated between registry, route, ToolShell, documentation, and component call sites.
 
 ## 12.2 Registry responsibilities
 
@@ -631,7 +699,10 @@ The registry should drive:
 - category grouping;
 - tool status;
 - persistence declarations;
-- online/offline hints.
+- online/offline hints;
+- desktop/web availability and capability indicators;
+- network/external-service disclosure metadata;
+- shell-visible privacy/native-capability disclosures so the shared UI does not depend on tool-local hard-coded warnings.
 
 The shell must not contain hard-coded conditionals for individual tools.
 
@@ -800,7 +871,7 @@ Tools should offer simple recovery where useful:
 - cancel;
 - return to deck.
 
-No elaborate crash-reporting platform is required.
+The original V1 did not require an elaborate crash-reporting platform, and crash reporting remains nonessential to the local utility baseline. Any later diagnostics/telemetry capability must remain opt-in, privacy-explicit, and consistent with the no-silent-transmission boundary; Phase 93 is a conditional long-horizon proposal rather than a retroactive V1 requirement.
 
 ---
 
@@ -827,10 +898,12 @@ Examples of acceptable library use:
 A dependency is acceptable when:
 
 - it solves a real problem;
-- it works in the browser;
-- it does not require a server;
+- it runs on every platform where the capability is declared available, with browser-compatible dependencies required for web-companion/shared-core paths;
+- it does not introduce a mandatory remote server or hosted-cloud dependency for functionality that can reasonably remain local; local bundled services, user-controlled self-hosted services, and capability-specific native dependencies are allowed where the roadmap explicitly calls for them;
 - it is reasonably maintained;
 - it does not introduce a fundamentally conflicting architecture.
+
+**Historical V1 rule preserved:** when DUDE was browser-first, this was expressed more narrowly as “it works in the browser” and “it does not require a server.” The desktop-first product keeps the intent—portable, local-first dependencies—while allowing native and local-service dependencies for capabilities the browser cannot provide.
 
 ## 17.2 Not a Priority
 
@@ -871,7 +944,13 @@ At minimum verify:
 - offline shell behavior works at a basic level;
 - at least one worker-backed tool completes successfully.
 
-## 18.2 Deferred
+### Post-V1 hardening direction
+
+The original test bar intentionally optimized for shipping. Phase 23 does not erase that history; it raises the bar specifically where DUDE has become high-consequence: published vectors, independent reference cross-checks, property tests, fuzzing, golden corpora, destructive-action tests, sandbox regressions, deterministic fixtures, performance corpora, and capability-specific release gates.
+
+## 18.2 Historical V1 Deferrals / Later-Roadmap Candidates
+
+The following were deliberately deferred from the original V1 quality bar and remain preserved as such; later phases may adopt them selectively where they create real confidence rather than treating “exhaustive” coverage as a goal by itself:
 
 - E2E tests for every tool;
 - exhaustive accessibility automation;
@@ -927,7 +1006,9 @@ Every feature and every originally-deferred capability across these 10 tools was
 
 The roadmap deliberately extends beyond what any single delivery phase covers.
 
-Phase 0 was the weekend commitment; it is complete. Phases 1–7 are also complete. Everything from Phase 8 onward is future work, taken up as decided rather than on any fixed schedule — see below for how that future work is organized.
+Phase 0 was the weekend commitment; it is complete. **Phases 1–21 are also complete.** Phase 8 established the Windows desktop track, and Phase 21 established the cross-tool workflow foundations. Everything from Phase 22 onward is proposed/horizon work, taken up as decided rather than on any fixed schedule.
+
+From Phase 22 onward, the roadmap deliberately stops treating raw tool count as the primary measure of progress. Platform trust, correctness, composition, native capability, local/offline strength, automation safety, discoverability, and reuse across surfaces matter more.
 
 ---
 
@@ -1049,8 +1130,8 @@ Every item explicitly deferred in the original showcase tools' write-ups (§20),
 
 **Explicitly out of scope at the time, now revisited:**
 
-- **AI-based regex generation/explanation** needed either a hosted LLM proxy or local-model support DUDE didn't have at the time — ✅ shipped since, as part of §21 Phase 8 Stage 4's local LLM proxy (natural-language → regex generation and an "AI Explain" panel on Regex Tester). The rest of the source material's "Local AI Utilities" family that Stage 4 didn't cover is now Phase 30 (Desktop-Enabled, not Track A — see §21 Phase 30).
-- **Collaborative real-time editing** (Markdown) over the open internet via DUDE-operated hosted rooms/documents/auth remains a permanent non-goal (§5.2) — DUDE will never run shared cloud infrastructure for this. A narrower form — a same-machine/LAN session, or a user's own self-hosted relay — is a different, in-scope thing; see §5.2's amendment and §21 Phase 8 Stages 6–7 below, which ship exactly that.
+- **AI-based regex generation/explanation** needed either a hosted LLM proxy or local-model support DUDE didn't have at the time — ✅ shipped since, as part of §21 Phase 8 Stage 4's local LLM proxy (natural-language → regex generation and an "AI Explain" panel on Regex Tester). The rest of the source material's "Local AI Utilities" family that Stage 4 didn't cover is now expanded in Phase 35 (AI-Assisted Utilities), with deeper on-device AI in Phase 69 and AI workflow/agent work in Phases 70–71.
+- **Collaborative real-time editing** (Markdown) over the open internet via DUDE-operated hosted rooms/documents/auth remains outside the current hosted-cloud boundary. The shipped, in-scope model is narrower: same-machine/LAN collaboration and a user's own self-hosted relay; see §5.2 and §21 Phase 8 Stages 6–7.
 
 ### Notes
 
@@ -1064,14 +1145,16 @@ Git Repo Browser and Directory Diff both read an entire local folder into browse
 
 Like Phase 0, this is a framework-first phase: it adds a new deployment target and a bundled backend, not new tools with registry entries. Tool-level enhancements that land as part of this phase (Regex Tester, Advanced Markdown Workspace, Directory Diff, Git Repo Browser) stay documented inside their own §20 sections rather than incrementing the shipped-tool count, the same way Phase 7's enhancements did.
 
-**Goal:** ship a Windows Electron build of DUDE that is a strict superset of the web PWA — every existing tool works identically — while unlocking backend-dependent features that are impossible on static GitHub Pages hosting: an AI-assisted regex workflow and real-time collaborative Markdown editing.
+**Original Phase 8 implementation goal (historical):** ship a Windows Electron build in which every existing web tool still works identically while unlocking backend-dependent features impossible on static GitHub Pages hosting: an AI-assisted regex workflow and real-time collaborative Markdown editing. The Phase 8 design was originally described as a “strict superset of the web PWA.”
+
+**Current product interpretation:** that “strict superset” phrase is retained only as Phase 8 history, not as the conceptual definition of desktop. DUDE Desktop is now the canonical workbench; the web/PWA build is the browser-safe companion generated from the same shared core.
 
 **Approved direction**, decided directly with the user:
 
 - **Packaging:** Electron.
 - **Backend:** a localhost-only LLM proxy process, provider-agnostic (a configured OpenAI-compatible base URL + API key, so it works with OpenAI, Anthropic-compatible gateways, local Ollama, OpenRouter, etc.) — plus a local collab server for same-machine/LAN sessions, extended by a **BYO relay server** for cross-network collaboration.
-- **BYO relay, not a DUDE-run service:** DUDE ships the relay server's code (e.g. as a Dockerfile/small deployable unit in this repo); each user self-hosts their own instance and points their desktop app at it. DUDE itself never operates shared infrastructure — see the amended §5.2 non-goals note.
-- **Tool surface:** superset — same Angular codebase, all existing tools unchanged; desktop-only features are additive and feature-detected.
+- **BYO relay, not a DUDE-run service:** DUDE ships the relay server's code (e.g. as a Dockerfile/small deployable unit in this repo); each user self-hosts their own instance and points their desktop app at it. DUDE itself never operates shared infrastructure — see the durable hosted-cloud boundary in §5.2.
+- **Tool surface (Phase 8 implementation fact):** the same Angular codebase kept all existing tools unchanged while desktop-only features were additive and feature-detected. Future phases may design desktop-first shell experiences, but shared tools still reuse the same core.
 - **Distribution:** Windows only for now, via the Microsoft Store (free Microsoft-signed) and/or an unsigned installer on the GitHub Releases page.
 
 ### Staged roadmap
@@ -1121,9 +1204,11 @@ Two bugs surfaced only through live app testing, not the unit suite or code revi
 
 ---
 
-Everything below is organized into two tracks. **Track A — Browser-Extensible** covers tool ideas that are fully implementable client-side today — parsing, formatting, computation, encoding, generation, and "upload a file and inspect it" tools — with no dependency on the desktop-packaging track established in Phase 8. **Track B** (below, after Track A) covers ideas that genuinely need live OS/network/filesystem/socket access a browser sandbox cannot provide, and are explicitly gated on that desktop track (§21 Phase 8). The split is deliberate: it lets the large majority of the roadmap doc's ideas stay on the current architecture's committed near-term path, while keeping the smaller, genuinely native-only subset clearly separate and non-committed until Phase 8 is picked up.
+**Platform note for Phases 9–20:** these shipped phases are dominated by parsing, formatting, computation, encoding, generation, and upload/inspect workflows that fit the browser sandbox and therefore remain available through the web companion wherever their dependencies permit it. Phase 8 established the native desktop foundation, and Phase 21 established the shared workflow foundations. From Phase 22 onward, each capability simply declares the platforms it supports: DUDE Desktop is canonical, DUDE Web is the zero-install browser-safe companion, and shared logic is reused wherever the platform allows it.
 
-## Phase 9 — Structured Data Depth (✅ Complete — Track A: Browser-Extensible)
+References inside Phases 9–20 to browser-safe versus native-only variants are therefore historical implementation context, not present-tense roadmap gates. Where those references describe later live/native work, they point to the corresponding unified roadmap phase instead.
+
+## Phase 9 — Structured Data Depth (✅ Complete)
 
 Goal: extend the Data category with power-tools and additional format support beyond the core JSON/YAML/XML/CSV converters already shipped. **Achieved** — all 34 items shipped as Milestones 39–72, each its own tool commit. Notable deviations from the plan as originally written: the Avro Viewer (#31) hand-rolls the Object Container File decoder instead of using `avsc` — `avsc`'s own "browser" build still requires Node built-ins (`stream`/`util`/`path`) that fail to bundle without extra polyfill configuration this repo doesn't otherwise carry, so it's kept only as a devDependency for cross-checking the wire format during development. The Universal Structured Data Converter (#1) ended up calling the same underlying libraries (`js-yaml`, `fast-xml-parser`, `papaparse`, `smol-toml`) directly rather than importing sibling tools' logic as originally envisioned, since TOML Formatter/XML Formatter/YAML ↔ JSON Converter's actual exports (reformat-only, or direction-keyed rather than parse/stringify) weren't a clean fit to reuse as-is. The seven binary-format viewers (#27–33) share one new shared primitive, `app-binary-format-viewer` (file drop + tree/table result view).
 
@@ -1159,7 +1244,7 @@ Goal: extend the Data category with power-tools and additional format support be
 30. CBOR Viewer
 31. Avro Viewer
 32. Parquet Viewer
-33. SQLite File Viewer (read-only, uploaded `.sqlite` file — distinct from a *live* database connection, which is Track B)
+33. SQLite File Viewer (read-only, uploaded `.sqlite` file — distinct from a *live* database connection, which is covered by the later Database Toolkit in Phase 32)
 34. Resx file parser / viewer / diff / merge / token extractor
 
 ### Notes
@@ -1168,7 +1253,7 @@ Large JSON Streaming Viewer and JSON Table Viewer extend the existing JSON Forma
 
 ---
 
-## Phase 10 — Text Processing Depth (✅ Complete — Track A: Browser-Extensible)
+## Phase 10 — Text Processing Depth (✅ Complete)
 
 Goal: extend the Text category with a full Unicode/line-manipulation toolkit and deeper text analysis than Text Inspector currently covers.
 
@@ -1194,7 +1279,7 @@ Goal: extend the Text category with a full Unicode/line-manipulation toolkit and
 18. Soundex / Metaphone
 19. Text Tokenizer & N-Gram Generator
 
-**Dropped:** the original roadmap's Regex Find/Replace item — already covered by the existing Regex Tester's replace mode (§20).
+**Dropped from this phase:** Regex Find/Replace — already covered by the existing Regex Tester's replace mode (§20).
 
 **Advanced Diff / Merge enhancements (items 35-40 of the original list)** all shipped as 4 incremental milestones enhancing the existing tool (§20) rather than new tools:
 
@@ -1209,7 +1294,7 @@ Language Detector and Readability Analyzer already shipped (§21 Phase 7); Text 
 
 ---
 
-## Phase 11 — Encoding & Numeric Representation Lab (✅ Complete — Track A: Browser-Extensible)
+## Phase 11 — Encoding & Numeric Representation Lab (✅ Complete)
 
 Goal: turn Encoding into a full representation/conversion laboratory and give Developer a programmer-calculator suite.
 
@@ -1240,7 +1325,7 @@ Base64/Base64URL, JSON Escape/Unescape, and Unicode Escape/Unescape already ship
 
 ---
 
-## Phase 12 — Security, Cryptography & Certificate Depth (✅ Complete — Track A: Browser-Extensible)
+## Phase 12 — Security, Cryptography & Certificate Depth (✅ Complete)
 
 Goal: extend Security with the hashing/encryption/key-generation/certificate-inspection tools that don't require a live network fetch.
 
@@ -1262,11 +1347,11 @@ Goal: extend Security with the hashing/encryption/key-generation/certificate-ins
 
 ### Notes
 
-Web Crypto API covers AES/RSA/EC/Ed25519 generation and SHA-family hashing/fingerprinting natively; `node-forge` is the fallback for ASN.1/PEM/DER/X.509/CSR/PKCS#12 handling per the library-forward philosophy (§17), added to `angular.json`'s `allowedCommonJsDependencies` in Milestone 117. Every hand-rolled or forge-based crypto path (SSH wire format, X.509 fingerprints, PKCS#12 decryption) was cross-validated in its unit tests against real, independent tool output (`ssh-keygen`, `openssl`) rather than only against itself. Live TLS handshake fetching (`TLS Certificate Fetcher`, cipher/ALPN/SNI inspection, expiration *monitoring* over time) needs a live socket and is Track B.
+Web Crypto API covers AES/RSA/EC/Ed25519 generation and SHA-family hashing/fingerprinting natively; `node-forge` is the fallback for ASN.1/PEM/DER/X.509/CSR/PKCS#12 handling per the library-forward philosophy (§17), added to `angular.json`'s `allowedCommonJsDependencies` in Milestone 117. Every hand-rolled or forge-based crypto path (SSH wire format, X.509 fingerprints, PKCS#12 decryption) was cross-validated in its unit tests against real, independent tool output (`ssh-keygen`, `openssl`) rather than only against itself. Live TLS handshake fetching (`TLS Certificate Fetcher`, cipher/ALPN/SNI inspection, expiration *monitoring* over time) needs live socket/network access and is covered by the later DNS & Live TLS / Certificate Tools in Phase 28.
 
 ---
 
-## Phase 13 — Auth & JWT Depth (✅ Complete — Track A: Browser-Extensible)
+## Phase 13 — Auth & JWT Depth (✅ Complete)
 
 Goal: go beyond decode/sign/verify into the surrounding OAuth/OIDC tooling developers need, all operating on user-pasted tokens/URLs rather than live flows.
 
@@ -1293,7 +1378,7 @@ JWKS fetching-by-URL already ships on the JWT Signature Verifier (§20); every P
 
 ---
 
-## Phase 14 — Date & Time Depth (✅ Complete — Track A: Browser-Extensible)
+## Phase 14 — Date & Time Depth (✅ Complete)
 
 Goal: round out Date & Time with additional parsers and time-math utilities beyond timestamp conversion, timezones, duration, and cron.
 
@@ -1315,7 +1400,7 @@ Item 10 (Duration → ISO 8601) needed no work: the existing Duration Parser/For
 
 ---
 
-## Phase 15 — Web & HTTP Depth (✅ Complete — Track A: Browser-Extensible)
+## Phase 15 — Web & HTTP Depth (✅ Complete)
 
 Goal: deepen the Web category's URL/header/request tooling and broaden cURL's language coverage, all construct-and-display rather than send-a-real-request.
 
@@ -1351,7 +1436,7 @@ CORS Header Builder was planned to extract CSP Builder's directive/source-list r
 
 ---
 
-## Phase 16 — Regex Depth (✅ Complete — Track A: Browser-Extensible)
+## Phase 16 — Regex Depth (✅ Complete)
 
 Goal: extend Regex Tester with visualization and benchmarking beyond the existing explainer/flavor-notes/replace features (§21 Phase 7).
 
@@ -1372,7 +1457,7 @@ The Benchmark tool's live-timing design changed from the plan's original one-wor
 
 ---
 
-## Phase 17 — Design, Markup & Media Tools (✅ Complete — Track A: Browser-Extensible)
+## Phase 17 — Design, Markup & Media Tools (✅ Complete)
 
 Goal: grow Color Converter into a full design toolkit and add CSS/HTML/image/QR tools, all File-API/canvas-based with no OS access required.
 
@@ -1413,7 +1498,7 @@ Goal: grow Color Converter into a full design toolkit and add CSS/HTML/image/QR 
 33. Base64 Image Viewer (Milestone 192)
 34. SVG Viewer / Formatter / Optimizer — via `svgo`'s browser build (Milestone 199)
 35. SVG ↔ Data URI (Milestone 200)
-36. Pixel Color Picker — upload-image mode only (Track A); the live-screen variant stays Track B, tracked at Phase 29 item 6 (Milestone 201)
+36. Pixel Color Picker — upload-image mode only (historically browser-extensible); the live-screen variant requires native screen access and is tracked at Phase 34 item 6 (Milestone 201)
 37. QR Code Generator (URL, Wi-Fi, contact, TOTP presets) — via `qrcode` (Milestone 202)
 38. QR Code Scanner (from an uploaded image or webcam frame) — via `jsqr`, introducing the shared `camera-capture` primitive (Milestone 203)
 39. Barcode Generator — via `jsbarcode`, with GS1 check-digit validation for EAN-13/EAN-8/UPC-A (Milestone 204)
@@ -1429,7 +1514,7 @@ Items 38 and 40 (QR Code Scanner, Barcode Reader) are the first `getUserMedia`/c
 
 ---
 
-## Phase 18 — Code Generators & Developer References (✅ Complete — Track A: Browser-Extensible)
+## Phase 18 — Code Generators & Developer References (✅ Complete)
 
 Goal: ship the model-from-JSON generators (one of the highest-value additions per the source roadmap) and round out static developer references.
 
@@ -1477,7 +1562,7 @@ Item 24 (Archive Creator / Extractor) used `fflate` for ZIP and a hand-rolled US
 
 ---
 
-## Phase 19 — IDs, Mock Data & Git/SQL/Container Config Tooling (✅ Complete — Track A: Browser-Extensible)
+## Phase 19 — IDs, Mock Data & Git/SQL/Container Config Tooling (✅ Complete)
 
 Goal: broaden ID generation, turn Random Data Generator into a schema-driven mock-data studio, and add text/config-level Git, SQL, Docker/Kubernetes, and `.env` tooling that doesn't touch a live daemon, cluster, or database connection.
 
@@ -1534,13 +1619,13 @@ Goal: broaden ID generation, turn Random Data Generator into a schema-driven moc
 
 ### Notes
 
-Items 8-16 are distinct from the existing Git Repo Browser (§20), which already does commit-history browsing/diffing over a locally-selected `.git` folder via `isomorphic-git` — these are text/URL-level tools with no repository needed. Items 43-48 look like "Networking" but are pure math/string manipulation, so they stay Track A rather than joining the live Networking Toolkit in Track B. Live database connections (SQL Server/PostgreSQL/MySQL/Redis/MongoDB explorers) and live Docker/Kubernetes daemon/cluster access are Track B, not here.
+Items 8-16 are distinct from the existing Git Repo Browser (§20), which already does commit-history browsing/diffing over a locally-selected `.git` folder via `isomorphic-git` — these are text/URL-level tools with no repository needed. Items 43-48 look like "Networking" but are pure math/string manipulation and therefore remained browser-safe. Live database connections (SQL Server/PostgreSQL/MySQL/Redis/MongoDB explorers) are covered by Phase 32, while live Docker/Kubernetes daemon/cluster access is covered by Phases 33 and 50.
 
 New dependencies added: `ulid`, `nanoid`, `@paralleldrive/cuid2` (item 2-5), `sql-formatter` and `node-sql-parser` (items 17-24). `ksuid` was deliberately **not** added — the published npm package hard-requires Node's `crypto`/`Buffer` globals with no browser build, so item 6 hand-rolls the same base62/epoch scheme instead (base62 encode/decode via the already-installed `base-x`, randomness via Web Crypto). Gitignore Generator (item 10) ships a curated, bundled template set rather than a live GitHub gitignore-API fetch, keeping every one of this phase's 48 tools fully offline — no `docs/SECURITY.md` changes were needed.
 
 ---
 
-## Phase 20 — File & Binary Format Inspection (✅ Complete — Track A: Browser-Extensible)
+## Phase 20 — File & Binary Format Inspection (✅ Complete)
 
 Goal: add file-upload-based binary/executable/format inspection — parsing whatever bytes the user provides, no OS access needed.
 
@@ -1565,7 +1650,7 @@ Goal: add file-upload-based binary/executable/format inspection — parsing what
 
 ### Notes
 
-The source list's item 9 (Endianness Viewer) was dropped outright rather than shipped: it would have duplicated the already-shipped Numeric Representation Inspector (§21 Phase 11), which covers byte-order/IEEE-754/integer representation across bit widths. PE/ELF/Mach-O header viewers (items 10-12 above) only need the uploaded binary's header bytes, not a running executable, so they stayed Track A despite reading like "system" tools; their import/export/dylib table parsing is basic (names and counts, not full symbol/relocation tables). Items 13-15 are pure math and were pulled out of the source doc's "Screen / Pixel Tools" section — the live-screen items in that section (screen ruler, live pixel picker) are Track B.
+The source list's item 9 (Endianness Viewer) was dropped outright rather than shipped: it would have duplicated the already-shipped Numeric Representation Inspector (§21 Phase 11), which covers byte-order/IEEE-754/integer representation across bit widths. PE/ELF/Mach-O header viewers (items 10-12 above) only need the uploaded binary's header bytes, not a running executable, so they remained browser-safe despite reading like "system" tools; their import/export/dylib table parsing is basic (names and counts, not full symbol/relocation tables). Items 13-15 are pure math and were pulled out of the source doc's "Screen / Pixel Tools" section — the native live-screen variants (screen ruler, live pixel picker) are covered by Phase 34.
 
 ---
 
@@ -1576,7 +1661,7 @@ Unlike every other phase in this roadmap, this one was never "pick an item, buil
 1. **Universal Input/Output Contract** — ✅ shipped as Milestone 31. Pipelines are only "almost automatic" if tools already agree on what they consume and produce: every tool declares its inputs/outputs in a small shared vocabulary — `Text`, `Bytes`, `File`, `JSON`, `Table`, `HTTPResponse` — instead of inventing its own ad hoc shape. `DudeDataType` (`src/app/shared/models/tool-io.model.ts`) is `text | json | bytes | file | table | url | http-response`; `ToolDefinition.io: { accepts, produces }` is populated on every registry entry. This is declarative documentation only, following the same soft-launch precedent as `persistence`/`execution`/`network` — items 2–5 below still each need their own design pass before being scheduled; only the shared vocabulary itself is done.
    - **Milestone 282 audit:** with all 277 tools declaring `io`, a read-only audit checked accuracy (does the declared `io` match what each tool's component actually does) rather than just presence. It found real drift across ~33 tools — mostly `produces` omitting `file` despite a working download/export button, plus several tool-cluster inconsistencies with no documented rule (generator `accepts` conventions, decoder-family `produces`, CSV/JSON-family type pairing). Milestone 282 corrected those, made `io` a required field on `ToolDefinition` (was `io?:`) so a future tool can't omit it, and wired the previously-unused `http-response` type into `curl-converter`/`http-request-builder`'s `accepts`. Two things were deliberately left for a future pass rather than decided unilaterally here: (1) a larger, unresolved split between a "text-report" and a "json-structured-findings" convention across ~20 config/git-linter vs. binary-forensics tools, and (2) vocabulary gaps the current 7-type set can't cleanly express — no arity concept for two-input tools (diff/merge/join), no distinct type for a directory/multi-file bundle (`directory-diff`, `archive-tool`) or a live camera stream (`qr-code-scanner`'s webcam mode) vs. a single `file`.
 2. **Transformation Pipelines** — ✅ shipped as Milestones 283–286. Chains existing tools into a single reusable workflow (e.g. `Base64 Decode → JSON Formatter → …`) instead of visiting separate tools and manually copying output to input each time, via a new `PipelineStep` contract (`src/app/shared/models/pipeline-step.model.ts`) that 225 of 277 tools were mechanically retrofitted with — a thin `<id>.pipeline-step.ts` adapter per tool, resolved purely by naming convention (`core/pipeline/pipeline-step-loader.ts`'s convention-derived dynamic import), never a hand-maintained field on `ToolDefinition` or a parallel id-keyed map. The remaining 52 tools are deliberately excluded and individually documented (`core/pipeline/pipeline-coverage.spec.ts`): genuine multi-input tools (diff/merge/join-shaped, or a document+schema pair — the vocabulary gap Milestone 282 already flagged), network-required tools, crypto tools needing a caller-supplied key with no honest zero-config mode, interactive/stateful UIs with no real transform, and tools with no pure-logic file to adapt without a rewrite. Chaining is sequential-only (no branching/fan-out) with no automatic type coercion between steps — a mismatch must be bridged by inserting another compatible tool (or a script, below), never silently converted. This was, as anticipated, the one roadmap item allowed to touch `shell/`/`core/`: a new `/pipelines` route tree and sidebar entry (`src/app/shell/pipelines/`), kept registry-adjacent rather than a 278th tool (no category, no `TOOL_DEFINITIONS` entry).
-   - **User-defined tool scripting** — ✅ shipped alongside Transformation Pipelines as Milestone 286, as a dependent extension of it: a user writes and locally saves their own custom transformation step (`/pipelines/scripts`), reusing the sandbox already shipped in Phase 6 (an opaque-origin iframe plus a nested, force-terminable Worker) unmodified rather than needing new execution infrastructure — locally-saved, user-authored scripting, distinct from and not to be confused with the still-banned "plugin installation from remote sources" (§5.2): a user's own script never leaves their machine or gets distributed to anyone else. A script is a first-class step type validated exactly like a built-in tool step (it declares its own `accepts`/`produces`), and a hung/errored/malformed-output script halts the pipeline the same way a failed built-in step would.
+   - **User-defined tool scripting** — ✅ shipped alongside Transformation Pipelines as Milestone 286, as a dependent extension of it: a user writes and locally saves their own custom transformation step (`/pipelines/scripts`), reusing the sandbox already shipped in Phase 6 (an opaque-origin iframe plus a nested, force-terminable Worker) unmodified rather than needing new execution infrastructure. At the time this shipped, it was explicitly distinguished from the then-banned “plugin installation from remote sources” (§5.2): a user's own script never leaves their machine or gets distributed to anyone else. That distinction remains important even though Phases 56–57 later revisit extensions under a separate signed, capability-declared, sandboxed model. A script is a first-class step type validated exactly like a built-in tool step (it declares its own `accepts`/`produces`), and a hung/errored/malformed-output script halts the pipeline the same way a failed built-in step would.
 3. **Smart Paste-Detection** — ✅ shipped as Milestone 288. A dedicated `/smart-paste` page (`src/app/shell/smart-paste/`) that inspects pasted content and suggests the tool that understands it. This matters for discoverability the way the command palette (§9.3/§26) already helps when a user knows what they want but not where it lives — this helps when they don't yet know what they want to do with what they're holding. A curated, hand-maintained `PASTE_DETECTORS` registry (`src/app/core/paste-detect/`, 11 shapes for v1: JSON, JWT, UUID, ULID, KSUID, Snowflake id, hex color, IPv4/IPv6, URL, Base64, Unix timestamp) ranks candidate matches by confidence, reusing each tool's existing pure-logic export rather than reimplementing shape recognition. Deliberately **not** the same per-tool `<id>.pipeline-step.ts` convention Item 2 uses — detection has to run every detector against the same input on every keystroke, which the per-paste dynamic-import cost of that convention doesn't suit at this curated scale (see `src/app/core/paste-detect/AGENTS.md`). Picking a suggestion navigates to the matching tool and prefills its input via a one-shot, in-memory-only hand-off (`PasteHandoffService`) — never persisted, consistent with §14.1's sensitive-payload default. Ambient/global paste capture (detecting a paste anywhere in the app, not just on this dedicated page) was considered and deliberately deferred to a future pass; NanoID was excluded from the v1 shape set for having no fixed structural signature to detect against.
 4. **Persistent Workspace / Scratchpad** — ✅ shipped as Milestones 289–294. A multi-tool workbench (not a source-code IDE, per the ceiling below): a tab strip and a recursive panel tree let more than one tool be open — and, via "split right," visible side by side — at once, mounted through a new `ToolHost` (`src/app/shell/workspace/tool-host/`) that dynamically loads a tool's existing lazy `ToolDefinition.load()` via `NgComponentOutlet`, rather than named router outlets (rejected — panel count is open-ended, which would mean either a multiplicative blow-up of the route table per outlet slot or an ever-growing URL segment nothing else in DUDE does). Panels reuse the existing `SplitPane` primitive (§13) unmodified. A collapsible scratchpad drawer holds manually-saved snippets/notes, independent of the automatic per-tool mirroring. The shared `<id>.workspace-step.ts` adapter convention (`src/app/shared/models/workspace-step.model.ts`, resolved by the same naming-convention dynamic import as Item 2's `<id>.pipeline-step.ts`) is what both this item and Item 5 build on. **The governing rule, resolving the hardest design tension:** no part of this feature may ever cause a tool's content to outlive the `PersistencePolicy` that tool's own code already declares (§14.1) — tab/panel *layout* is treated as the "layout preference" §14.1 already names as safe to persist and restores unconditionally via a `local`-policy pseudo-tool store (`'__workspace__'`, the same synthetic-toolId trick `PipelineStoreService` uses for `'__pipelines__'`), but tool *content* is never separately copied or promoted — restoring a tab just remounts that tool's component, which re-reads its own already-existing `persistence.signal` values exactly as on any ordinary navigation. This is also why the originally-anticipated IndexedDB "durable content tier" for Saved Sessions turned out to be unnecessary (a real relaunch wipes all in-memory JS state anyway, leaving only `localStorage`/`sessionStorage`, which the tool's own code already reads correctly) — see `core/workspace/AGENTS.md`.
    - **Saved Sessions** — restoring open tools/inputs on relaunch — shipped as part of this (Milestone 293), exactly as the governing rule above describes: layout always restores; content restores only insofar as each tool's own policy already allowed it.
@@ -1586,332 +1671,1935 @@ Unlike every other phase in this roadmap, this one was never "pick an item, buil
 
 This phase intentionally breaks from §4.7's "any single unit of work should be scoped and finished on its own terms" — these items are listed together because they're interdependent, not because they're meant to ship as one unit.
 
-**Amendment (2026-09-21):** Appendix A's Q11 (Navigation) originally read "no IDE-style persistent tabs." That boundary narrows, not reverses, now that item 4 above is a real (if unscheduled) roadmap item: the standing boundary becomes "a multi-tool workbench, not a source-code IDE." A Monaco-style full IDE remains explicitly out of scope — see Q11's own amendment note in Appendix A.
+**Amendment (2026-09-21):** Appendix A's Q11 (Navigation) originally read “no IDE-style persistent tabs.” That boundary narrowed, rather than reversed, when item 4 became a real roadmap item: the Phase 21 standing ceiling was “a multi-tool workbench, not a source-code IDE,” and a Monaco-style full IDE was explicitly out of scope at that point. Later Phases 77–80 deliberately revisit editor/LSP/terminal/project surfaces, but the durable §5.2 identity boundary still prevents DUDE from becoming a conventional VS Code clone; see the Workbench Identity Gate before Phase 77.
 
 **Amendment (2026-09-25):** Items 4–5 complete their design pass and ship. The one rule that resolved the hardest tension between them and §14.1/§30: **neither feature may ever cause a tool's content to outlive the `PersistencePolicy` that tool's own code already declares.** Tab/panel *layout* is treated as the "layout preference" §14.1 already names as safe to persist, and restores unconditionally via a `local`-policy pseudo-tool store (`'__workspace__'`, the same synthetic-toolId pattern `PipelineStoreService` uses for `'__pipelines__'`). Tool *content* is never separately copied or promoted — restoring a tab remounts that tool's component, which re-reads its own already-existing `persistence.signal` values exactly as on any ordinary navigation, so a `'none'`/`'session'`-policy tool's content reappearing across a full relaunch remains exactly as impossible as it is today. The shared `<id>.workspace-step.ts` adapter (used by both Workspace mirroring and History, via the same convention-based-loader pattern `<id>.pipeline-step.ts` established in Milestone 283) deliberately carries no independent "relaunch-safe" flag, to avoid a second, driftable sensitivity judgment alongside the tool's real one. History's IndexedDB store, being `local`-equivalent in durability, inherits the identical rule, and defaults every tool to History-*ineligible* until it explicitly opts in via `historyEligible: true`. Item 4's core (Milestones 289–294: contract, proof-of-concept, tabs/panels, scratchpad, Saved Sessions, and wiring the long-dormant `PersistenceOptIn` component into `python-playground`) shipped as a complete, standalone unit before Item 5's mechanical retrofit (Milestones 295–297) began — Saved Sessions' actual relaunch value never depended on the retrofit at all, since layout restore only needs route ids every tool already has via the registry.
 
 ---
 
-**Why Track B needs desktop.** A large and genuinely useful category of developer tools — live networking, live DNS/TLS, arbitrary filesystem operations, Windows-native system tools, local listening servers, and live database connections — is simply unreachable from a sandboxed browser tab, no matter how the web app evolves. The desktop track (Phase 8) is what unlocks all of it: not "the website wrapped in an EXE," but the thing that makes this entire tier of tools possible at all. Every phase below (22–29) is gated on it.
+**Browser/native capability boundary.** A large and genuinely useful category of developer tools — live networking, live DNS/TLS, arbitrary filesystem operations, Windows-native system tools, local listening servers, and live database connections — is simply unreachable from a sandboxed browser tab. Phase 8 provides the shipped desktop foundation for those capabilities. Phases 27–34 are the authoritative native-capability roadmap, with per-capability web/desktop availability and shared-core reuse instead of a separate product hierarchy.
 
 ---
 
-## Phase 22 — Networking Toolkit (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 22 — Platform Hardening, Trust & Desktop-First Pivot
 
-Give DUDE a native network-diagnostics surface that a browser tab cannot provide on its own.
+This is deliberately another framework-first phase. DUDE has already proven that it can add tools quickly; the next architectural risk is no longer insufficient breadth, but accumulated registry complexity, metadata drift, correctness confidence, bundle/cache growth, and the increasing consequences of native desktop capabilities.
 
-1. Ping — ICMP echo against a host, with round-trip timing
-2. Traceroute — hop-by-hop path to a host
-3. DNS Lookup — live resolution against system or custom resolvers
-4. Reverse DNS Lookup
-5. MX / TXT / SRV / NS / CNAME Lookup
-6. DNS Propagation Tester — compare a record across multiple public resolvers
-7. TCP Port Tester
-8. UDP Port Tester
-9. Port Scanner — a range of ports against a host
-10. Local Port Viewer — ports currently bound on this machine
-11. Active Connections Viewer
-12. Listening Process Viewer
-13. ARP Table Viewer
-14. Route Table Viewer
-15. Network Interface Viewer
-16. Public IP Detector
-17. Local IP Detector
-18. Hostname Resolver
-19. WHOIS Lookup
-20. TCP/HTTP Connectivity Tester
+The goal is to make the platform capable of safely supporting the next several hundred tools and workflows before continuing aggressive feature expansion.
+
+1. Distributed Tool Manifests — break the monolithic "TOOL_DEFINITIONS" registry into tool-local or category-local manifests composed at build time. A new tool should own its metadata beside its implementation rather than requiring edits to a multi-thousand-line central file.
+
+2. Single Source of Truth for Tool Metadata — "ToolShell", routing, network indicators, persistence indicators, status badges, titles, categories, I/O capabilities, and future confidence indicators all resolve directly from the registered tool definition rather than duplicating metadata at component call sites.
+
+3. Registry Structural Validation — CI validates unique IDs/routes, valid categories, valid I/O declarations, persistence compatibility, pipeline adapters, lazy-loader existence, status fields, desktop/web availability, and documentation metadata.
+
+4. Generated Tool Catalog Documentation — README tool lists, tool counts, category indexes, supported-platform tables, network/privacy disclosures, and similar mechanical documentation are generated from registry metadata rather than manually maintained.
+
+5. Shared-Logic Boundary Audit — transformation logic that can be platform-neutral is moved behind reusable modules so Angular, Electron, CLI, VS Code, browser extensions, tests, and future SDKs do not reimplement it.
+
+6. ToolShell Metadata Context — every mounted tool receives its canonical "ToolDefinition" through shared route/tool context, eliminating repeated title/status/network/persistence declarations.
+
+7. Chunk Budgeting — establish warning/error budgets for individual lazy tool chunks, major shared chunks, startup code, desktop preload code, and large WASM/runtime payloads.
+
+8. Offline Cache Budgeting — measure and constrain total Cache Storage footprint instead of only the initial JS bundle.
+
+9. Service-Worker Cache Strategy Audit — stop broadly prefetching lazy JavaScript merely because it matches a generic "*.js" asset pattern; shell-critical resources remain prefetched while large tool families, optional runtimes, and infrequently-used chunks become lazy/on-demand cached.
+
+10. Dependency Boundary Validation — prevent browser-only code, Electron-only code, Node built-ins, large runtime dependencies, or security-sensitive APIs from accidentally crossing platform boundaries.
+
+11. Tool Conformance Harness — every registered tool can be mechanically checked for route loading, shell mounting, metadata completeness, reset behavior, and basic failure isolation.
+
+12. Architecture Documentation Refresh — update "ADDING_A_TOOL.md", "AGENTS.md", security documentation, platform documentation, and the PRD so they describe the actual post-Phase-21/post-desktop architecture rather than accumulating historical amendments.
+
+Goal: make tool #500 no more structurally dangerous to add than tool #50, while retiring the architectural debt created by the platform's rapid expansion.
+
+---
+
+## Phase 23 — Correctness, Verification & High-Consequence Tool Hardening
+
+DUDE now handles cryptography, authentication material, certificates, binary formats, SQL, config files, archives, executable formats, arbitrary code, filesystem operations, and eventually live system state. Those tools need a stronger definition of “stable” than “the UI appears to work.”
+
+1. Tool Confidence Model — expand the current "stable" / "experimental" distinction into an explicit confidence model such as "experimental", "stable", and "verified", without implying formal certification.
+
+2. Published Test Vectors — cryptography, encodings, JWT/JWS/JWK, UUID variants, certificates, checksums, protocol codecs, compression formats, and standardized binary formats should use official or widely accepted test vectors where available.
+
+3. Reference-Implementation Cross-Checking — selected converters/parsers are tested against independent mature implementations so DUDE is not merely proving that its encoder and decoder agree with each other.
+
+4. Property-Based Testing — round-trip-capable transformations receive generated tests such as decode(encode(x)) = x and parse(serialize(x)) preserving the documented semantics.
+
+5. Parser Fuzzing — structured-data, archive, binary, certificate, URL, expression, and config parsers receive fuzz/property testing for malformed and adversarial input.
+
+6. Golden Corpus Tests — maintain representative real-world samples for PE, ELF, Mach-O, certificates, JSON/YAML/XML, SQL, logs, Git data, archives, images, and other complex formats.
+
+7. High-Consequence Tool Matrix — explicitly identify crypto, authentication, code-execution, filesystem-write, process-management, registry, network-scanning, database-write, and secret-management tools as requiring stronger review.
+
+8. Destructive-Action Harness — verify that every destructive desktop action has an explicit confirmation boundary and cannot be triggered merely by opening/importing data.
+
+9. Sandbox Regression Suite — continuously verify the Phase 6 arbitrary-code isolation assumptions and Electron "contextIsolation"/preload boundaries.
+
+10. Performance Regression Corpus — retain large-input fixtures and performance baselines for expensive parsers, diffs, hashing, directory operations, archive tools, and binary viewers.
+
+11. Deterministic Test Fixtures — remove unnecessary time/network/randomness from correctness tests so failures remain reproducible.
+
+12. Capability-Specific Release Gates — a failure in security-critical infrastructure blocks release even if unrelated utility tests still pass.
+
+13. Security Documentation Generation — derive tool network capability, persistence policy, native privileges, and external-service usage from metadata where possible.
+
+14. Verified Tool Badge — optionally expose the highest-confidence status to users, with a compact explanation of what was tested rather than making vague security claims.
+
+Goal: transform “vibe coded” from a correctness caveat into merely the way the first implementation happened to be produced.
+
+---
+
+## Phase 24 — Smart Entry, Discovery & Personal DUDE
+
+Phase 21 shipped Smart Paste, pipelines, workspaces, Saved Sessions, and local history. This phase turns those capabilities into the primary user experience rather than advanced features hidden behind navigation.
+
+1. Paste-First Home Surface — the fastest path into DUDE becomes “paste/drop something,” with tool/category navigation remaining available for users who already know what they want.
+
+2. Ambient Smart Paste — optionally detect pasted content from appropriate shared input surfaces rather than requiring navigation to "/smart-paste".
+
+3. Desktop Global Smart Paste Hotkey — a system-wide shortcut opens DUDE with clipboard contents already classified, without permanently storing them.
+
+4. Smart File Drop — dropping a file into the desktop shell identifies likely applicable tools from extension, MIME type, signature bytes, and registered I/O capabilities.
+
+5. Local Usage Frequency — maintain private local usage counts to improve local ranking.
+
+6. Recently Used Tools — first-class shell surface.
+
+7. Favorites / Pinned Tools — first-class shell surface rather than an optional MVP enhancement.
+
+8. Pinned Pipelines — frequently-used workflows appear beside tools.
+
+9. Related-Tool Suggestions — output types and registry metadata drive contextual “next useful action” recommendations.
+
+10. Pipeline Suggestions — after common sequential tool use, DUDE may locally suggest turning the repeated sequence into a saved pipeline.
+
+11. Workspace Templates — named arrangements such as “API Debugging,” “JWT/Auth,” “Data Cleanup,” “Certificate Inspection,” and user-defined templates.
+
+12. Quick Actions — common transformations can run without navigating into the full tool workspace.
+
+13. Unified Recents — tools, pipelines, workspaces, local files where permissible, and sessions share one local recent-activity surface.
+
+14. Private-by-Construction Usage Signals — none of the above requires analytics or server telemetry.
+
+Goal: the user should increasingly think “give this to DUDE” rather than “which one of DUDE's hundreds of tools should I manually find?”
+
+---
+
+## Phase 25 — Desktop-First Shell & Native Product Experience
+
+Finish the product-positioning change technically: desktop DUDE becomes the primary experience rather than merely the web app inside Electron plus extra capabilities.
+
+1. Desktop-Native Home — prioritize recent workspaces, dropped files, clipboard actions, native capabilities, pipelines, and projects rather than presenting only the web deck.
+
+2. "dude://" Deep Links — tools, pipelines, workspace templates, and safe actions can be addressed through application deep links.
+
+3. Native Menu System — File/Edit/View/Tools/Window/Help commands map cleanly onto DUDE concepts.
+
+4. Command Palette Expansion — tools, pipelines, workspace/session commands, native operations, preferences, recent files, and extension commands share one launcher.
+
+5. Native File Recent List — only for files explicitly opened with desktop DUDE and subject to clear privacy controls.
+
+6. Crash/Restart Workspace Recovery — restore safe workspace layout without extending any individual tool beyond its declared persistence policy.
+
+7. Desktop Quick Launcher — a minimal global launcher can execute common safe operations without opening the entire main window first.
+
+8. Native Drag-and-Drop Routing — dropped files/directories are offered directly to compatible tools according to registry I/O capabilities.
+
+9. File Association Framework — tools can declare file types they can inspect while Windows remains in control of final default-app selection.
+
+10. Desktop Capability Indicators — tools visibly communicate when desktop mode unlocks additional capabilities over the web companion.
+
+11. Desktop-First Documentation — download/install/use-native-capability documentation becomes primary; GitHub Pages remains prominently linked as the zero-install option.
+
+12. Desktop Performance Pass — optimize cold start, warm start, tray restore, IPC initialization, and local backend startup.
+
+Goal: make installing DUDE produce a qualitatively better developer workflow, not simply a larger permission envelope.
+
+---
+
+## Phase 26 — Web Companion & PWA Efficiency
+
+The web build remains important, but is now explicitly the portable, zero-install companion to the canonical desktop application.
+
+1. Minimal Initial Shell Cache
+2. On-Demand Tool Chunk Caching
+3. On-Demand WASM Runtime Caching
+4. Cache Storage Budget / Inspector
+5. Clear Cached Runtimes / Repair Installation
+6. Web Capability Matrix
+7. Desktop-Only Feature Badges
+8. Open in Desktop DUDE Deep Link
+9. Install-as-PWA Support
+10. Offline Local Utility Support
+11. GitHub Pages Direct-Route Recovery
+12. Shareable Tool Routes
+13. Browser-Safe Pipeline Execution
+14. Browser-Safe Workspace Support
+15. Web/Desktop Parity Tests for Shared Tools
+
+Goal: preserve the exceptional convenience of a URL without allowing web-platform constraints to define the ceiling of the product.
+
+---
+
+## Phase 27 — Networking Toolkit
+
+Give DUDE a native network-diagnostics surface that a sandboxed browser cannot provide on its own. The emphasis is local diagnostics and explicit, user-directed checks against hosts/services rather than broad or autonomous scanning.
+
+1. **Ping** — ICMP echo against a host, with round-trip timing
+2. **Traceroute** — hop-by-hop path to a host
+3. **DNS Lookup** — live resolution against system or custom resolvers
+4. **Reverse DNS Lookup**
+5. **MX / TXT / SRV / NS / CNAME Lookup**
+6. **DNS Propagation Tester** — compare a record across multiple public resolvers
+7. **TCP Port Tester**
+8. **UDP Port Tester**
+9. **Port Scanner** — a user-specified range of ports against an explicit target
+10. **Local Port Viewer** — ports currently bound on this machine
+11. **Active Connections Viewer**
+12. **Listening Process Viewer**
+13. **ARP Table Viewer**
+14. **Route Table Viewer**
+15. **Network Interface Viewer**
+16. **Public IP Detector**
+17. **Local IP Detector**
+18. **Hostname Resolver**
+19. **WHOIS Lookup**
+20. **TCP/HTTP Connectivity Tester**
+21. **Continuous Ping / Latency Graph**
+22. **Packet-Loss Measurement**
+23. **MTU Discovery**
+24. **Route Comparison**
+25. **Network Diagnostic Bundle Export**
 
 ### Notes
 
-IP/CIDR/subnet math, MAC-address inspection, and IPv4↔integer conversion are pure computation and were placed in the browser-extensible track instead, despite reading as "networking" — see Track A.
+IP/CIDR/subnet math, MAC-address inspection, and IPv4↔integer conversion are pure computation and remain browser-safe capabilities; Phase 19 already contains those kinds of text/math networking utilities. This phase is specifically for live diagnostics that require native socket, interface, routing-table, process, or ICMP access.
+
+Scanning operations need explicit target/range controls, conservative defaults, cancellation, and clear progress. DUDE is intended for local diagnostics and user-directed remote checks; it is not intended to become an offensive network-scanning platform.
+
+**Goal:** make DUDE the first application opened when a developer asks “is this host/service/network path actually reachable?”
 
 ---
 
-## Phase 23 — DNS & Live TLS / Certificate Tools (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 28 — DNS & Live TLS / Certificate Tools
 
-Extend the existing (file-upload-based) certificate inspection tools with live, socket-level checks against a running service.
+Extend DUDE's existing file-based certificate inspection capabilities with **live, socket-level checks against running services**. Static certificate parsing and inspection remain useful browser-safe workflows; this phase adds active endpoint/resolver inspection that requires real network connections.
 
-1. DNS Record Explorer (live)
-2. DNSSEC Inspector
-3. CAA Inspector
-4. DKIM Inspector
-5. SPF Inspector
-6. DMARC Inspector
-7. DNS-over-HTTPS Tester
-8. DNS-over-TLS Tester
-9. Multiple Resolver Comparator (Cloudflare / Google / Quad9 / system / custom)
-10. TLS Connection Inspector
-11. Cipher Suite Inspector
-12. TLS Version Tester
-13. ALPN Inspector
-14. SNI Tester
-15. HTTPS Configuration Analyzer
-16. Live Certificate Chain Fetcher (host:port → full chain)
-17. Certificate Expiration Monitor — background-checked, not just one-shot
+1. **DNS Record Explorer (live)**
+2. **DNSSEC Inspector**
+3. **CAA Inspector**
+4. **DKIM Inspector**
+5. **SPF Inspector**
+6. **DMARC Inspector**
+7. **DNS-over-HTTPS Tester**
+8. **DNS-over-TLS Tester**
+9. **Multiple Resolver Comparator** — Cloudflare / Google / Quad9 / system / custom resolvers
+10. **TLS Connection Inspector**
+11. **Cipher Suite Inspector**
+12. **TLS Version Tester**
+13. **ALPN Inspector**
+14. **SNI Tester**
+15. **HTTPS Configuration Analyzer**
+16. **Live Certificate Chain Fetcher** — `host:port` → full presented chain
+17. **Certificate Expiration Monitor** — background-checked/watchable, not only one-shot inspection
+18. **OCSP Inspector**
+19. **CRL Inspector**
+20. **Certificate Transparency Lookup**
+21. **STARTTLS Inspector** for supported protocols
+22. **TLS Handshake Timeline**
+23. **Certificate/Hostname Mismatch Analyzer**
+24. **Local Certificate Watch List**
 
 ### Notes
 
-The existing/Track-A certificate tools (§21 Phase 12) work entirely from a user-supplied PEM/DER/PFX file; this phase is specifically the live-socket variants that need a real TCP connection to a remote host, which a browser sandbox cannot open.
+The certificate tools in Phase 12 operate from user-supplied PEM/DER/PFX material and can remain entirely local/browser-safe. Phase 28 is specifically the **live endpoint** layer: DNS queries, resolver comparison, TCP/TLS negotiation, chain retrieval, revocation/status checks, STARTTLS, monitoring, and other behavior that depends on contacting a running service.
+
+Live checks must expose the exact host/resolver/service being contacted and inherit the standing network-disclosure rules in §11 and §22.
+
+**Goal:** unify static certificate inspection and real live-endpoint troubleshooting.
 
 ---
 
-## Phase 24 — Filesystem & Binary Forensics at Scale (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 29 — Filesystem & Binary Forensics at Scale
 
-Cover the filesystem operations that need arbitrary or background access beyond a single user-picked file or folder.
+Cover filesystem operations that need arbitrary, persistent, background, recursive, watch, or write access beyond a single user-picked file/folder snapshot. This phase also consumes the native file-watch infrastructure established in Phase 8.
 
-1. Folder Size Analyzer — recursive, across an arbitrary directory tree
-2. Duplicate File Finder — across a drive or arbitrary tree
-3. Batch Rename — pattern-based, across a selected tree
-4. Directory Tree Generator — for an arbitrary path, not just a one-shot picked folder
-5. File Splitter
-6. File Joiner
-7. Line-Ending Batch Converter — across a folder of files
-8. File Encoding Converter — batch, across a folder
-9. Directory Hash — a whole-folder content hash for tree comparison
+1. **Folder Size Analyzer** — recursive, across an arbitrary directory tree
+2. **Duplicate File Finder** — across a drive or arbitrary tree
+3. **Batch Rename** — pattern-based, across a selected tree
+4. **Directory Tree Generator** — for an arbitrary path, not only a one-shot picked folder
+5. **File Splitter**
+6. **File Joiner**
+7. **Line-Ending Batch Converter** — across a folder of files
+8. **File Encoding Batch Converter** — across a folder/tree
+9. **Directory Hash** — whole-folder content hash for tree comparison
+10. **Watched Folder Workspace**
+11. **Auto-Rescan Directory Diff**
+12. **Git Repo Browser Auto-Refresh**
+13. **File Change Timeline**
+14. **Large-File Streaming Inspector**
+15. **Bulk Hash/Manifest Generator**
+16. **Folder Snapshot / Snapshot Diff**
+17. **Duplicate Content Groups**
+18. **Content Search Across Selected Tree**
+19. **Structured File Search**
+20. **Safe Batch Operation Preview / Dry Run**
 
 ### Notes
 
-Single-file inspection (hex viewer, signature/entropy analysis, MIME/magic-byte detection, BOM handling, PE/ELF/Mach-O header viewers) is upload-based and already covered in Track A. Directory Diff and Git Repo Browser already ship today using `<input webkitdirectory>` for a one-shot folder snapshot — this phase is for operations that need to write back to, or watch, an arbitrary part of the filesystem, which that API doesn't support.
+Single-file inspection — hex viewing, signature/entropy analysis, MIME/magic-byte detection, BOM handling, and PE/ELF/Mach-O header viewing — remains a browser-safe/upload-driven concern and is covered by the file/binary tooling in Phase 20.
+
+Directory Diff and Git Repo Browser already gained native re-scannable folder access in Phase 8. The distinction here is deeper **filesystem lifecycle access**: watching, streaming, searching, scanning large trees, generating manifests, and performing explicit write-back/batch mutations.
+
+Any mutating batch operation must provide a preview/dry run where practical, surface the exact affected paths, respect ignore/exclusion rules, and require explicit confirmation before writes.
+
+**Goal:** graduate DUDE's file tools from “open a snapshot” into persistent native filesystem workflows.
 
 ---
 
-## Phase 25 — Windows & Process Tools (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 30 — Windows & Process Tools
 
-Make DUDE genuinely useful for day-to-day Windows systems work, once it has a native process.
+Make DUDE genuinely useful for day-to-day Windows developer/system troubleshooting now that it has a native process and a controlled preload/IPC boundary.
 
-1. Environment Variable Viewer
-2. PATH Editor
-3. Registry Viewer
-4. Registry Diff
-5. Services Viewer
-6. Process Viewer — CPU, memory, threads, command line, environment, loaded modules, open ports, open files, parent/child relationships
-7. Process Tree
-8. Kill Process
-9. Restart Process
-10. Port → Process Lookup
-11. Windows Event Log Viewer
-12. Scheduled Tasks Viewer
-13. Startup Programs Viewer
-14. Installed Software Viewer
-15. Windows Feature Viewer
-16. DLL Inspector
-17. Executable Dependency Viewer
-18. Windows SID Inspector / Account Resolver
-19. PowerShell Command Builder — building *and executing* a constructed command
+1. **Environment Variable Viewer**
+2. **PATH Editor**
+3. **Registry Viewer**
+4. **Registry Diff**
+5. **Services Viewer**
+6. **Process Viewer** — CPU, memory, threads, command line, environment, loaded modules, open ports, open files, parent/child relationships
+7. **Process Tree**
+8. **Kill Process**
+9. **Restart Process**
+10. **Port → Process Lookup**
+11. **Windows Event Log Viewer**
+12. **Scheduled Tasks Viewer**
+13. **Startup Programs Viewer**
+14. **Installed Software Viewer**
+15. **Windows Feature Viewer**
+16. **DLL Inspector**
+17. **Executable Dependency Viewer**
+18. **Windows SID Inspector / Account Resolver**
+19. **PowerShell Command Builder + explicit execution**
+20. **Environment Variable Diff**
+21. **PATH Conflict Detector**
+22. **Runtime Installation Detector**
+23. **Process Environment Diff**
+24. **Service Dependency Viewer**
+25. **Event Log Filters / Saved Queries**
+26. **Windows Permission / ACL Inspector**
+27. **File Lock / “Who Has This Open?” Inspector**
+28. **Process Diagnostic Bundle**
 
 ### Notes
 
-HRESULT decoding against a static lookup table is pure reference data and lives in Track A; a *live* HRESULT-from-running-process lookup, if ever built, would belong here instead. Per §31 Security Boundaries, any tool in this phase that can modify system state (kill/restart process, registry writes, services) must default to read-only with an explicit, unambiguous confirmation step before a destructive action — this is a hard requirement carried over from the existing security posture, not optional polish.
+Static Windows error/HRESULT decoding is reference data and remains covered by the Error Code Reference in Phase 18; a hypothetical value captured directly from a running process would be a native/runtime concern here.
+
+Tools in this phase should be **read-first**. Any operation that changes system state — process termination/restart, PATH/environment edits, registry writes, service changes, scheduled-task changes, permission changes, or PowerShell execution — must satisfy §31's security boundaries: explicit intent, clear target, preview where practical, and an unambiguous confirmation step proportional to risk.
+
+**Goal:** make DUDE genuinely useful for routine Windows developer/system troubleshooting without becoming a general-purpose system-administration suite.
 
 ---
 
-## Phase 26 — Local API & Server Toolkit (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 31 — Local API & Server Toolkit
 
-The single biggest "why would I install the desktop app" argument: a lightweight, local Postman/webhook.site/websocket-client alternative that never leaves the machine.
+Build a serious **local-first API development surface**: a lightweight Postman/webhook.site/WebSocket-client-style toolkit plus localhost servers/listeners that work without requiring a hosted DUDE account.
 
-1. REST Client — request builder, collections, environment variables, request variables, secret variables, request history, authentication helpers, pre-request scripts, post-request tests, request timing
-2. Local Mock HTTP Server — static and dynamic responses, configurable delay, error simulation (500 / timeout / rate limit / malformed response), route variables, request logging
-3. Local Webhook Listener — inspector, request history, replay, modify-and-replay, generate test webhook, signature verification
-4. WebSocket Client — message history, JSON formatting, binary message inspector, auto-reconnect, ping/pong inspector
-5. Local Static HTTP Server — serve a folder over HTTP with one click
-6. Local HTTPS Static Server
-7. CORS Proxy
-8. OpenAPI Live Introspection / Mock-Server-from-Spec — spin up a mock server directly from an OpenAPI document
-9. GraphQL Playground — live query execution against a running endpoint
-10. Self-Hosted/BYO Snippet Sharing Service — a user-operated snippet-sharing server (never DUDE-run, same carve-out shape as §21 Phase 8's collaborative-editing relay — see the amended §5.2), reusing that BYO-deployment philosophy rather than the collaborative-editing relay's own implementation: that relay is ephemeral (a room disappears once its last participant leaves), while shareable snippets need durable storage, retention/expiry semantics, share-token/access semantics, and deletion — a materially different trust model needing its own scoping pass
+1. **REST Client** — request builder, collections, environment variables, request variables, secret variables, request history, authentication helpers, pre-request scripts, post-request tests, and request timing
+2. **Local Mock HTTP Server** — static/dynamic responses, configurable delay, error simulation (`500`, timeout, rate limit, malformed response), route variables, and request logging
+3. **Local Webhook Listener** — request inspector/history, replay, modify-and-replay, test-webhook generation, and signature verification
+4. **WebSocket Client** — message history, JSON formatting, binary-message inspection, auto-reconnect, and ping/pong inspection
+5. **Local Static HTTP Server** — serve a selected folder over HTTP with one click
+6. **Local HTTPS Static Server**
+7. **CORS Proxy**
+8. **OpenAPI Live Introspection / Mock Server** — including mock-server-from-spec
+9. **GraphQL Playground** — live query execution against a running endpoint
+10. **Self-Hosted/BYO Snippet Sharing Service** — user-operated, never DUDE-hosted under the current §5.2 boundary; unlike the ephemeral collaboration relay, snippets require durable storage, retention/expiry rules, share-token/access semantics, and deletion semantics
+11. **Server-Sent Events Client**
+12. **gRPC Client**
+13. **gRPC-Web Client**
+14. **MQTT Client**
+15. **Raw TCP Client**
+16. **Raw UDP Client**
+17. **Request Collections**
+18. **Environment / Variable Sets**
+19. **Request Chaining**
+20. **Test Assertions**
+21. **Import Postman Collections** where practical
+22. **HAR Import / Export**
+23. **Authentication Profiles**
+24. **mTLS Client Support**
+25. **Proxy Configuration**
+26. **Network Timing Breakdown**
+27. **Request Comparison**
+28. **Response Snapshot / Diff**
+29. **Local OAuth Callback Catcher**
+30. **Local Redirect Inspector**
 
 ### Notes
 
-Static OpenAPI/Swagger viewing, validation, diffing, and doc/client-code generation from an already-downloaded spec file is pure parsing and lives in Track A; only *live* introspection and *running* a mock server need this phase's local listening-socket capability.
+Static OpenAPI/Swagger viewing, validation, diffing, and client/doc generation from an already-downloaded specification are browser-safe parsing/generation concerns. Phase 31 is specifically where **live endpoint interaction, local listening sockets, protocol clients, callback listeners, and running mock/static servers** belong.
+
+Local servers should bind conservatively by default, clearly display bind address/port and exposure state, and require explicit user action before becoming reachable beyond loopback. Secret variables/authentication profiles inherit the secure-storage rules in §11, §22, and §30.
+
+The snippet-sharing service follows the same self-hosted/BYO philosophy as collaboration but is **not** the same implementation or trust model as the ephemeral Yjs relay: durable snippets require persistence, deletion, retention/expiry, and access-token semantics that need their own design/security pass.
+
+**Goal:** become a serious local-first API development surface without requiring a hosted account.
 
 ---
 
-## Phase 27 — Database Toolkit (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 32 — Database Toolkit
 
-Lightweight, read-leaning database browsing for local development — not a DBeaver replacement.
+Provide lightweight, read-leaning database browsing for development — the repeated 80% of inspection/query workflows developers need, without attempting to become a full DBA/DBeaver-class suite.
 
-1. PostgreSQL Explorer
-2. SQL Server Explorer
-3. MySQL / MariaDB Explorer
-4. Oracle Explorer
-5. Redis Explorer
-6. MongoDB Explorer
-7. Live SQLite Explorer — connecting to a running/locked database file, as distinct from the static file viewer below
+1. **PostgreSQL Explorer**
+2. **SQL Server Explorer**
+3. **MySQL / MariaDB Explorer**
+4. **Oracle Explorer**
+5. **Redis Explorer**
+6. **MongoDB Explorer**
+7. **Live SQLite Explorer** — connects to an actively used/locked database file, distinct from the static uploaded-file viewer in Phase 9
+8. **Connection Profiles** stored through appropriate secret tiers
+9. **Schema Search**
+10. **Schema Diff**
+11. **Table Data Diff**
+12. **Query History**
+13. **Saved Queries**
+14. **Explain Plan Viewer**
+15. **Transaction Controls**
+16. **Safe Read-Only Mode**
+17. **Parameterized Query Runner**
+18. **CSV/JSON Export**
+19. **CSV/JSON Import with preview**
+20. **Database Metadata Inspector**
+21. **Index Inspector**
+22. **Foreign-Key Graph**
+23. **Query Timing / Basic Profiling**
+24. **Data Generator Integration**
+25. **Database Snapshot Metadata Comparison**
 
-Each: connect → browse schemas/tables → preview rows → execute query → export results.
+### Common explorer workflow
+
+For relational/document database explorers where the database supports the concept: **connect → browse schemas/databases/tables/collections → inspect metadata → preview rows/documents → execute an explicit query/command → export results**.
 
 ### Notes
 
-A *static* SQLite file viewer (open a `.sqlite` file and browse it read-only, no live connection) needs no raw socket and belongs in Track A instead; this phase is specifically for live connections to a running database process, which requires a TCP client a browser can't open. SQL text tooling (formatting, dialect conversion, explain-plan narration, CREATE TABLE generation) is also Track A — it never touches a live connection.
+The read-only SQLite File Viewer in Phase 9 opens a user-selected `.sqlite` file as static content and requires no live database connection. Phase 32 is for **live database sessions** and connection profiles, including network/database drivers and transaction state.
+
+SQL text-only operations — formatting, dialect conversion, CREATE TABLE generation, query explanation from pasted text, and similar deterministic transforms — remain separate browser-safe tools and should not require a live connection.
+
+Write-capable actions must clearly distinguish read-only vs. mutable sessions. Import, DDL/DML, transaction commit/rollback, and other mutating operations require explicit user intent and should provide previews/row counts/transaction boundaries where practical.
+
+**Goal:** provide the 80% of database inspection developers repeatedly need while deliberately avoiding becoming a full DBA suite.
 
 ---
 
-## Phase 28 — Containers (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 33 — Containers & Local Orchestration
 
-Stay lightweight — a diagnostics companion, not a Docker Desktop replacement.
+Stay lightweight: a developer diagnostics/orchestration companion that talks to explicitly configured local/connected container and Kubernetes environments rather than competing directly with Docker Desktop or a full Kubernetes management platform.
 
-1. Live Docker Image/Container Inspector — size, ports, environment variables, of a running daemon
-2. Docker Command Builder that executes against the local daemon
-3. Live Kubernetes Resource Viewer — against a real, connected cluster
-4. kubectl Command Builder that executes
+1. **Live Docker Image/Container Inspector** — size, ports, environment variables, state, and other runtime metadata from a running daemon
+2. **Docker Command Builder + Execution** — execute deliberately constructed commands against the selected local/connected daemon
+3. **Live Kubernetes Resource Viewer** — against a real, connected cluster
+4. **kubectl Command Builder + Execution**
+5. **Container Logs**
+6. **Container Stats**
+7. **Container Environment Inspector**
+8. **Port Mapping Viewer**
+9. **Volume Viewer**
+10. **Network Viewer**
+11. **Image Layer Explorer**
+12. **Container Diff / Configuration Comparison**
+13. **Compose Project Viewer**
+14. **Start/Stop/Restart selected local resources**
+15. **Kubernetes Pod Log Viewer**
+16. **Kubernetes Events Viewer**
+17. **Resource YAML → structured tree**
+18. **Context/Namespace Switcher**
+19. **Port-Forward Manager**
+20. **Local Cluster Diagnostics**
 
 ### Notes
 
-Dockerfile/Compose linting, formatting, validation, and `docker run`↔Compose conversion, plus Kubernetes manifest validation/formatting/diffing and kubeconfig inspection, are all static-file parsing and already live in Track A — this phase only covers the pieces that need a live daemon or cluster socket.
+Phase 19 already covers static Dockerfile/Compose linting, formatting, validation, `docker run`↔Compose conversion, Kubernetes manifest validation/formatting/diffing, and kubeconfig inspection. Phase 33 is specifically the **live daemon/cluster** layer: querying runtime state, reading logs/stats/events, changing selected resource state, and managing port forwards/contexts.
+
+Mutating daemon/cluster operations must display the target context/namespace/resource prominently and require explicit confirmation for destructive or state-changing actions.
+
+**Goal:** stay a lightweight developer diagnostics companion rather than competing directly with Docker Desktop or dedicated Kubernetes platforms.
 
 ---
 
-## Phase 29 — System Diagnostics, Clipboard & OS Integration (Proposed — Track B: Desktop-Enabled, requires the desktop-packaging track — §21 Phase 8)
+## Phase 34 — System Diagnostics, Clipboard & OS Integration
 
-The "why doesn't this work on my machine" page, plus the native conveniences that make a desktop app feel like part of the OS instead of a website in a window.
+Create the “why doesn't this work on my machine?” surface and the native conveniences that make DUDE feel like part of the operating system rather than a website contained in one window.
 
-1. System Information Dashboard — OS, architecture, CPU, RAM, GPU, disk, network adapters, monitors, installed runtimes, hostname, logged-in user, uptime, virtualization status
-2. Export Diagnostic Bundle — one click, packages the above for a bug report
-3. Clipboard History
-4. Clipboard Monitor — continuous, e.g. auto-formatting copied JSON
-5. Screen Ruler
-6. Live Pixel Color Picker — screen-coordinate based, distinct from the File-API-based picker in Track A
-7. Context-Menu Actions — "Hash file," "Format JSON," "Open with DUDE," from the OS shell
-8. Global Keyboard Shortcuts — system-wide, not just in-app
-9. System Tray Presence and Actions
-10. Drag-and-Drop File Handling / "Open With" File Association
-11. Batch Processing Across Dropped Files
-12. Multi-Window Workflows — running more than one DUDE window/OS process at once, genuinely OS/window-management territory rather than in-app workbench UI (see the narrowed §5.2 carve-out; contrast with Phase 21's tabs/panels, which stay single-window)
-13. Local Secrets Vault — a general-purpose secrets manager tool built on the `secure-local`/OS-keychain tier already shipped in §21 Phase 8 Stage 3, distinct from the cloud-hosted secret storage service that remains a non-goal (§5.2)
+1. **System Information Dashboard** — OS, architecture, CPU, RAM, GPU, disks, network adapters, monitors, installed runtimes, hostname, logged-in user, uptime, and virtualization status
+2. **Export Diagnostic Bundle** — one explicit action packages the selected diagnostic information for a bug/support report
+3. **Clipboard History**
+4. **Clipboard Monitor** — continuous monitoring, for example detecting/optionally offering to format copied JSON
+5. **Screen Ruler**
+6. **Live Pixel Color Picker** — screen-coordinate based, distinct from Phase 17's upload-image Pixel Color Picker
+7. **Context-Menu Actions** — e.g. “Hash file,” “Format JSON,” “Open with DUDE” from the OS shell
+8. **Global Keyboard Shortcuts** — system-wide, not merely in-app
+9. **System Tray Presence and Actions**
+10. **Drag-and-Drop File Handling / “Open With” Integration**
+11. **Batch Processing Across Dropped Files**
+12. **Multi-Window Workflows** — multiple DUDE windows/process-backed windows as genuine OS/window-management behavior, distinct from Phase 21's in-app tabs/panels
+13. **Local Secrets Vault** — general-purpose local secrets management built on the `secure-local`/OS-keychain tier shipped in Phase 8 Stage 3; not a hosted secret-storage service
+14. **Developer Environment Inspector** — installed Git/Node/Python/Java/.NET/Docker/PowerShell/Go/Rust versions and other relevant developer-runtime state
+15. **Runtime Version Conflict Detector** — including multiple-runtime/PATH conflicts
+16. **Disk Space / Mount Inspector**
+17. **Monitor/DPI Inspector**
+18. **Default Application Inspector**
+19. **Clipboard Rules**
+20. **Global Quick Transform Palette**
+21. **Native Notification Center**
+22. **User-configurable native action bindings**
 
 ### Notes
 
-One-shot clipboard read/write (e.g. a tool's own Copy button) already works fine in-browser today and needed nothing new; only *history* and *continuous monitoring* require a native background process, which is why they're here. A Developer-Environment-Inspector idea from the source doc (detecting installed Git/Node/Python/Java/.NET/Docker/PowerShell/Go/Rust versions, PATH conflicts, multiple-runtime detection) is a natural addition to the System Information Dashboard above rather than its own phase. Saved Sessions (restoring open tools/inputs on relaunch) moved to Phase 21 — it's workspace/session persistence, not OS/tray integration.
+One-shot clipboard read/write — such as a tool's Copy button — already works in the web companion. Clipboard **history** and **continuous background monitoring** require native/background capability and belong here.
+
+Saved Sessions remain a Phase 21 workspace/session-persistence capability; they are not OS/tray integration. Likewise, native file-watch automation is developed further in Phase 40 rather than being hidden inside this phase.
+
+The Local Secrets Vault must reuse the secure credential boundary rather than inventing plaintext/localStorage persistence. Native quick actions and clipboard rules must remain explicit about whether they merely inspect/transform clipboard content or perform a system action.
+
+**Goal:** make DUDE feel integrated into the operating system rather than contained inside a single application window.
 
 ---
 
-### Remaining Desktop-Platform Backlog
+## Phase 35 — AI-Assisted Utilities
 
-Phase 8's own write-up (above) already lists what's still explicitly deferred within the desktop track: macOS/Linux builds, code-signed non-Store distribution, named-but-accountless relay/collab participants, any provider-specific (non-OpenAI-compatible) LLM integration, and wiring Stage 5's file-watch capability into any tool's auto-reload UX. None of these get their own phase here — they stay consciously deferred, not forgotten, now that the roadmap runs considerably further out than it did when Phase 8 shipped.
+Phase 8 Stage 4 already shipped the localhost-only, provider-agnostic LLM proxy plus AI regex generation/explanation. Phase 35 uses that established explicit AI path for interpretation/debugging tasks where an LLM materially reduces effort, without turning deterministic utilities into LLM wrappers.
 
----
-
-## Phase 30 — AI-Assisted Utilities (Proposed — Desktop-Enabled; requires Phase 8 Stage 4)
-
-Phase 8 Stage 4 shipped a localhost-only, provider-agnostic LLM proxy plus AI-based regex generation/explanation on Regex Tester — the exact infrastructure the source roadmap's "Local AI Utilities" family was originally deferred for not having. That deferral is now stale; the rest of that family can be scheduled:
-
-1. Stack Trace Explainer
-2. SQL Explainer
-3. Git Command Explainer
-4. Cron Expression Explainer (AI-based, alongside the existing rule-based Cron Expression Parser / Next-Run Preview)
-5. JSON Schema Explainer
-6. Mock Data Schema Explainer
-7. Log Analyzer
-8. Error Diagnosis Assistant
-9. Code Conversion Assistant
+1. **Stack Trace Explainer**
+2. **SQL Explainer**
+3. **Git Command Explainer**
+4. **Cron Expression Explainer (AI-based)** — alongside the existing rule-based Cron Expression Parser / Next-Run Preview
+5. **JSON Schema Explainer**
+6. **Mock Data Schema Explainer**
+7. **Log Analyzer**
+8. **Error Diagnosis Assistant**
+9. **Code Conversion Assistant**
+10. **Regex Repair Assistant**
+11. **Config Explanation Assistant**
+12. **Dockerfile/Compose Explanation**
+13. **Kubernetes Manifest Explanation**
+14. **HTTP Failure Explanation**
+15. **Certificate/TLS Explanation**
+16. **Query Optimization Suggestions**
+17. **Diff Summary**
+18. **Structured Data Transformation Generator**
+19. **Pipeline-from-Natural-Language Drafting**
+20. **Explicit AI data-boundary disclosures** — every AI action states what context leaves the machine and which configured model/provider/runtime receives it
 
 ### Notes
 
-"Desktop-Enabled" here is a platform dependency, not the same architectural family as Track B (native OS/network/filesystem/socket access): these tools need desktop only because that's where the local LLM proxy lives, the same reason Regex Tester's existing AI features need it. Every item needs either this local proxy or on-device inference DUDE doesn't have; the non-AI heuristic alternatives that don't need this infrastructure stay covered where they already exist (e.g. Phase 16's heuristic Regex Generator, Phase 18's static Stack Trace Formatters, the rule-based Cron Expression Parser above).
+Desktop dependency here is about the currently shipped **local LLM proxy/credential boundary**, not about native sockets/filesystem/process access. Where a capability can later run through Phase 69's on-device model runtime, the same AI feature should be able to stay fully local.
+
+Non-AI deterministic/heuristic alternatives remain valuable and should coexist where they already exist: e.g. the heuristic Regex Generator in Phase 16, static Stack Trace Formatters in Phase 18, and the rule-based Cron parser.
+
+AI actions must be user-initiated or explicitly configured, must respect the no-silent-transmission boundary, and must never silently replace a deterministic implementation that can provide an exact answer.
+
+**Goal:** apply AI where it meaningfully reduces interpretation/debugging effort without turning every deterministic utility into an LLM wrapper.
 
 ---
 
-## Phase 31 — Theming & Light Mode (Proposed — Track A, needs a design pass)
+## Phase 36 — Theming, Appearance & Accessibility Expansion
 
-Promotes light mode and theme customization from permanent non-goals (§5.2) to a real, if unscheduled, roadmap item — the product's growth beyond the original weekend MVP means "dark-mode-only" is no longer an obviously permanent constraint, the same way "no native desktop packaging" wasn't.
+Evolve the currently fixed dark-only visual implementation into a controlled theming system without losing DUDE's dense workstation identity or allowing per-tool visual drift.
 
-1. Light Mode — a second, fully contrast-checked theme
-2. Theme Customization — user-selectable accent/density preferences on top of the fixed dark/light bases
+1. **Light Mode** — a second, fully contrast-checked first-party theme
+2. **Theme Customization** — controlled user customization on top of shared design tokens
+3. **Accent Palette Selection**
+4. **Density Presets**
+5. **Font Preferences**
+6. **Editor/Data Font Selection**
+7. **Reduced Motion Support**
+8. **High-Contrast Mode**
+9. **Better color-blind-safe semantic alternatives**
+10. **User theme export/import**
 
 ### Notes
 
-This reverses an explicit, still-current design decision, not just a scope boundary. When this phase is actually adopted — not now; nothing here is scheduled — it will require explicit amendments to every "living spec" location that currently states dark-mode-only as fixed: §8.1 (Theme), §8.5's "exactly one theme is defined; it is not user-configurable," `AGENTS.md`'s "dark-mode-only" framing, and Appendix A Q12 ("dark-only stays fixed"). The V1 Definition of Done section (§35) doesn't need amending — it's explicitly historical, describing what V1 shipped, not a standing constraint.
+This phase intentionally changes the current design contract described in §8: today DUDE ships one dark, highly colorful theme. When Phase 36 is implemented, the change must be applied consistently to §8, shared design tokens, `AGENTS.md`, contrast/accessibility guidance, and any other living specification that still assumes one fixed theme.
+
+Customization must remain token/system driven. Individual tools should not invent private palettes/themes that fragment category, status, focus, error, or accessibility semantics.
+
+**Goal:** move appearance from a fixed implementation choice into a controlled platform capability without sacrificing the dense workstation identity.
 
 ---
 
-## Phase 32 — VS Code Integration (Proposed — needs its own scoping pass)
+## Phase 37 — VS Code Integration
 
-A VS Code extension surfacing DUDE's pure, framework-free transform logic (the `*-codec.ts` pattern from `ADDING_A_TOOL.md`) directly inside the editor — format/validate JSON, decode a JWT, generate a UUID, hash a selection, and so on, without leaving VS Code.
+Ship a VS Code extension that surfaces DUDE's pure, framework-neutral transform/workflow logic directly inside the editor, reducing context switching without turning DUDE itself into a VS Code clone.
+
+1. **Format/transform current selection**
+2. **Decode/inspect selected JWT**
+3. **Hash current selection/file**
+4. **Generate identifiers**
+5. **Open selection in DUDE**
+6. **Run saved DUDE pipeline on selection**
+7. **Smart Paste / Smart Selection recommendations**
+8. **Sidebar DUDE tool launcher**
+9. **Command Palette commands**
+10. **Desktop hand-off for native-only actions**
+11. **Shared-core implementation/tests** — use the same framework-free transform logic and semantic tests as the main application
 
 ### Notes
 
-This is a new distribution/integration target, not a simple tool, and needs its own scoping pass before scheduling — the same way the desktop track (Phase 8) got one before it started. It's well-supported by existing precedent: most tools' transform logic is already framework-free and unit-testable outside Angular, and Phase 8 Stage 5 already set the precedent of extracting shared logic (`src/shared-logic/`) for reuse outside the main Angular app.
+This is a separate distribution/integration target, not merely another Angular tool. It needs its own packaging, permissions, lifecycle, compatibility, and release design.
+
+The architecture is supported by existing precedent: most deterministic tool logic is framework-free/unit-testable, and Phase 8 Stage 5 established `src/shared-logic/` specifically so non-Angular runtimes can reuse transforms. Phase 22 expands that boundary, and the parity invariant in §33 requires shared semantics not to fork.
+
+**Goal:** bring DUDE's most useful deterministic transformations to where developers already spend much of their time.
 
 ---
 
-## Phase 33 — Browser Extension (Proposed — needs its own scoping pass)
+## Phase 38 — Browser Extension
 
-A browser extension surfacing quick-action DUDE tools (clipboard quick-actions, context-menu actions like "hash this," a popup for common conversions) directly in the browser, without opening the full web app.
+Ship a browser extension for quick DUDE actions directly in browser workflows without requiring the full web application to be opened first.
+
+1. **Selection/context-menu transformations**
+2. **Clipboard quick actions**
+3. **Compact popup utilities**
+4. **Smart page/selection detection**
+5. **Open selected data in DUDE Web**
+6. **Open selected data in DUDE Desktop**
+7. **URL/header/cookie inspection helpers** subject to browser permissions
+8. **Saved pipeline quick actions**
+9. **Explicit permissions model**
+10. **Minimal-permission defaults**
 
 ### Notes
 
-Also a new distribution/integration target needing its own scoping pass, gated the same way the desktop track was — not scheduled, not designed yet. Kept as its own phase rather than folded into Phase 32, since a browser extension and a VS Code extension have almost nothing in common technically (a manifest/permissions model vs. an editor extension API) beyond both reusing the same pure transform logic.
+The browser extension is intentionally separate from the VS Code extension because their host APIs, lifecycle, packaging, permission models, and security boundaries are materially different. Their commonality should be the shared DUDE transform/workflow core, not a forced shared host implementation.
+
+Permissions must be requested narrowly and justified by a concrete feature. Page content, headers, cookies, clipboard data, or selections must not be collected or transmitted silently.
+
+**Goal:** reduce the friction between browser debugging and the full DUDE workbench.
 
 ---
 
-## Monetization (Speculative)
+## Phase 39 — Cross-Platform Desktop
 
-The roadmap material raises a free/pro/team tier structure as one way DUDE could eventually be positioned if shared more broadly. This subsection is included for completeness, but it is explicitly **not a committed roadmap item** — nothing here is scheduled, and nothing else in this PRD depends on it happening.
+The Windows-first decision should establish the product, not permanently limit it.
 
-A rough sketch, if it were ever pursued: a free tier covering every local-first utility (all of Track A, plus the basic desktop conveniences in Phase 29 like drag-and-drop and context-menu actions); a pro tier covering advanced workspace features once they exist (transformation pipelines, persistent history, saved sessions, batch automation — see Phase 21 above); and a team tier covering anything that requires genuinely shared or cloud-backed state (sync, collaboration).
+1. macOS Electron build
+2. Linux Electron build
+3. Platform adapter layer cleanup
+4. macOS keychain integration
+5. Linux secret-service/keyring integration
+6. Native file dialogs per platform
+7. Platform-specific context menus
+8. Platform-specific autostart
+9. Platform-specific notifications
+10. Platform-specific protocol/file associations
+11. Signed macOS distribution
+12. Signed Windows non-Store distribution
+13. Linux packaging: AppImage/deb/rpm where practical
+14. Cross-platform native CI
 
-Pursuing this seriously would require revisiting the user-accounts and cloud-synchronization permanent non-goals (§5.2), which this PRD is explicitly **not** doing here — those remain non-goals until a separate, deliberate decision changes them. The one constraint that is not speculative: basic developer utilities must never be paywalled. That is a hard requirement on any future tier design, not a preference to be traded off — it is the entry point that makes the rest of the product worth using in the first place.
+Goal: make “desktop-first” mean desktop generally while retaining Windows as the initial reference platform.
+
+---
+
+## Phase 40 — Filesystem Automation & Watch Rules
+
+1. Watched file/folder rules
+2. Auto-format on safe file changes
+3. Auto-validate configuration
+4. Auto-run pipelines
+5. Output-to-file actions
+6. Debounce/coalescing
+7. Conflict detection
+8. Dry-run mode
+9. Ignore patterns
+10. Rule history
+11. Desktop notifications
+12. Per-rule permissions
+
+Goal: turn the file-watch infrastructure into useful automation without surprising users or overwriting work silently.
+
+---
+
+## Phase 41 — Git Workstation
+
+Build substantially beyond the existing read-oriented Git Repo Browser.
+
+1. Working tree status
+2. Branch browser
+3. Commit graph
+4. Commit search
+5. File history
+6. Blame viewer
+7. Staging inspector
+8. Structured diff/stage chunks
+9. Branch comparison
+10. Tag explorer
+11. Remote inspector
+12. Reflog viewer
+13. Merge conflict workspace
+14. Commit-message helper
+15. Git command preview
+16. Explicit execution for mutating operations
+17. Repository diagnostics
+18. Repository size/object analysis
+
+Goal: make DUDE excellent at Git inspection and troubleshooting without immediately attempting to replace dedicated Git clients.
+
+---
+
+## Phase 42 — SSH & Remote Systems
+
+1. SSH connection profiles
+2. Host-key inspection
+3. SSH config editor
+4. Known-hosts inspector
+5. Secure terminal session
+6. Remote command runner
+7. SFTP file browser
+8. Remote file inspector
+9. Port forwarding manager
+10. SSH tunnel builder
+11. Remote environment inspector
+12. Remote process snapshot
+13. Jump-host support
+14. Agent/keychain integration
+
+Goal: extend DUDE's local troubleshooting model to machines developers explicitly connect to.
+
+---
+
+## Phase 43 — Local Development Services Manager
+
+1. Define local service profiles
+2. Start/stop commands
+3. Health checks
+4. Port availability checks
+5. Log capture
+6. Environment-variable profiles
+7. Dependency ordering
+8. Restart policies
+9. Workspace-linked service groups
+10. Browser/open-endpoint actions
+11. One-click development stack diagnostics
+
+Goal: manage development-time services without turning DUDE into a general service supervisor.
+
+---
+
+## Phase 44 — Package & Dependency Workbench
+
+1. npm/package.json explorer
+2. NuGet project/package explorer
+3. Python/pip/pyproject explorer
+4. Maven/Gradle dependency explorer
+5. Cargo dependency explorer
+6. Go module explorer
+7. Dependency-tree visualization
+8. Version conflict detection
+9. Duplicate dependency detection
+10. License inventory
+11. Update candidate inspection
+12. Lockfile diff
+13. Package metadata lookup
+14. Dependency-size analysis where available
+
+Goal: make dependency troubleshooting a first-class DUDE workflow.
+
+---
+
+## Phase 45 — Build & Test Intelligence
+
+1. Parse common compiler output
+2. Test-result viewers
+3. JUnit/TRX/etc. result inspection
+4. Build log summarization
+5. Failure clustering
+6. Flaky-test history from local imported results
+7. Coverage-file viewers
+8. Benchmark-result comparison
+9. Build artifact inspection
+10. Saved diagnostic pipelines
+
+Goal: help developers understand build/test output rather than replacing their build systems.
+
+---
+
+## Phase 46 — Logs & Observability Workbench
+
+1. Large log viewer
+2. Streaming local log tail
+3. Multi-file log merge
+4. Timestamp normalization
+5. Structured log detection
+6. Filtering/query language
+7. Correlation-ID tracking
+8. Severity visualization
+9. Pattern extraction
+10. Log diff
+11. Timeline view
+12. JSON log expansion
+13. Regex extraction
+14. Saved filters
+15. Optional AI explanation
+
+Goal: make DUDE useful when the problem is hidden inside thousands or millions of lines of logs.
+
+---
+
+## Phase 47 — HTTP Debugging Proxy
+
+1. Explicit local HTTP proxy
+2. Request/response capture
+3. Timing view
+4. Header/body inspection
+5. Search/filter
+6. Replay
+7. Modify and replay
+8. HAR export
+9. WebSocket capture where feasible
+10. Local certificate setup workflow for HTTPS debugging
+11. Domain allowlists
+12. Session-scoped interception
+13. Prominent security state while interception is enabled
+
+Goal: provide an opt-in developer debugging proxy with much stricter safety boundaries than silently intercepting traffic.
+
+---
+
+## Phase 48 — Advanced Database Workflows
+
+1. Cross-database schema diff
+2. Migration preview
+3. Query-plan comparison
+4. Data profiling
+5. Referential-integrity inspection
+6. Table relationship visualization
+7. Sample-data generation
+8. Redaction/anonymization pipeline
+9. Data export workflows
+10. Database health snapshot
+11. Slow-query import/analyzer
+12. Reusable database workspaces
+
+Goal: extend the read-leaning database toolkit into deeper development/debugging workflows.
+
+---
+
+## Phase 49 — Advanced Containers
+
+1. Image vulnerability metadata integration where explicitly configured
+2. Layer-size analysis
+3. Build history viewer
+4. Registry image metadata
+5. Compose dependency graph
+6. Container filesystem diff
+7. Resource-usage history
+8. Docker event stream
+9. Container-to-process correlation
+10. Saved local container dashboards
+
+Goal: deepen diagnostics without trying to become the runtime itself.
+
+---
+
+## Phase 50 — Kubernetes & Cloud-Native Workbench
+
+1. Resource relationship graph
+2. Deployment rollout viewer
+3. Pod restart/error analysis
+4. Events timeline
+5. ConfigMap/Secret metadata inspection
+6. RBAC explorer
+7. Service/Ingress relationship viewer
+8. Resource diff
+9. Namespace health dashboard
+10. Port-forward manager
+11. Manifest → live-resource comparison
+12. Helm values inspection
+13. Kustomize preview
+14. CRD explorer
+
+Goal: make cluster debugging coherent enough that developers do not need to assemble every answer from multiple CLI invocations.
+
+---
+
+## Phase 51 — Secrets & Credential Workbench
+
+1. Expand Local Secrets Vault
+2. Named secret collections
+3. Environment-variable injection
+4. Secret references in API profiles
+5. Pipeline secret parameters
+6. SSH key references
+7. Database credential references
+8. Certificate/private-key pairing
+9. Clipboard timeout/auto-clear
+10. Secret rotation reminders
+11. Export only through explicitly encrypted mechanisms
+12. No plaintext automatic synchronization
+
+Goal: give native workflows access to credentials without normalizing unsafe plaintext storage.
+
+---
+
+## Phase 52 — PKI & Certificate Workbench
+
+1. Certificate/key inventory
+2. Key-pair matching
+3. CSR workflows
+4. Certificate-chain construction
+5. Trust-chain analysis
+6. Local trust-store inspection
+7. Certificate expiration dashboard
+8. Keystore conversion
+9. PKCS formats
+10. SSH certificate inspection
+11. mTLS profile builder
+12. Certificate renewal workflow hooks
+13. Self-signed local-development certificate workflow
+
+Goal: consolidate DUDE's scattered certificate utilities into a coherent PKI troubleshooting surface.
+
+---
+
+## Phase 53 — Collaboration 2.0
+
+1. Named accountless participants
+2. Presence
+3. Cursor/selection awareness
+4. Collaborative pipelines
+5. Collaborative scratchpads
+6. Collaborative structured-data inspection
+7. Session permissions
+8. Read-only participants
+9. Session export
+10. Self-hosted relay persistence options
+11. Optional end-to-end encrypted session payloads
+12. Explicitly separate user-hosted relay from any later DUDE-operated service.
+
+Goal: generalize the successful Markdown collaboration foundation into workbench-level collaboration.
+
+---
+
+## Phase 54 — Workspace 2.0
+
+1. Arbitrary multi-tool layouts
+2. Named workspace templates
+3. Linked inputs/outputs between panels
+4. Shared scratch variables
+5. Workspace-level files
+6. Workspace command palette
+7. Per-workspace pipelines
+8. Per-workspace secrets references
+9. Workspace export/import
+10. Workspace cloning
+11. Recovery snapshots
+12. Project-linked workspaces
+
+Goal: make the workspace the primary unit of serious DUDE usage rather than an individual tool page.
+
+---
+
+## Phase 55 — Pipeline 2.0: Graph Workflows
+
+Phase 21 intentionally shipped sequential pipelines only. This phase removes that ceiling.
+
+1. Branching
+2. Fan-out
+3. Fan-in
+4. Conditional steps
+5. Loops with explicit bounds
+6. Error branches
+7. Retry policies
+8. Parallel execution
+9. Typed variables
+10. File/directory values
+11. Multi-input steps
+12. Human confirmation steps
+13. Native desktop steps
+14. Secret parameters
+15. Sub-pipelines
+16. Pipeline debugging
+17. Intermediate-value inspection
+18. Versioning
+19. Import/export
+
+Goal: evolve pipelines from convenient transformation chains into a safe local automation engine.
+
+---
+
+## Phase 56 — Local Plugin SDK
+
+1. Formal plugin manifest
+2. Tool registration API
+3. Pipeline-step API
+4. Command registration
+5. Workspace panel API
+6. Shared UI component API
+7. Capability declarations
+8. Permission declarations
+9. Sandboxed plugin runtime where possible
+10. Local developer mode
+11. Plugin packaging
+12. Compatibility/version contract
+13. Plugin test harness
+14. Documentation and examples
+
+Goal: make DUDE extensible by people other than the original repository author without giving arbitrary plugins unrestricted native power.
+
+---
+
+## Phase 57 — Signed Extension Marketplace
+
+A major expansion of scope and no longer a permanent non-goal.
+
+1. Extension catalog
+2. Signed packages
+3. Publisher identity
+4. Capability/permission display
+5. Version compatibility
+6. Updates
+7. Rollback
+8. Disable/uninstall
+9. Security review metadata
+10. Report mechanism
+11. Local sideloading for development
+12. Strict distinction between sandboxed and native-capability extensions
+
+Goal: build an ecosystem without turning remote plugin installation into arbitrary-code roulette.
+
+---
+
+## Phase 58 — Workflow & Template Gallery
+
+1. Share pipeline templates
+2. Share workspace templates
+3. Share tool presets
+4. Share regex/test fixtures
+5. Share request collections
+6. Share mock server definitions
+7. Version templates
+8. Import preview
+9. Required-capability disclosure
+10. Fully local template files first
+11. Optional hosted gallery later
+
+Goal: let users share reusable DUDE workflows without requiring full plugins.
+
+---
+
+## Phase 59 — Browser ↔ Desktop Handoff
+
+1. Open web tool state in desktop
+2. Open selected browser content in desktop
+3. Safe ephemeral handoff tokens
+4. File handoff where browser permissions allow
+5. URL handoff
+6. Pipeline handoff
+7. Workspace-template handoff
+8. Return generated result to invoking browser extension where explicitly authorized
+
+Goal: make web, extension, and desktop surfaces feel like one product.
+
+---
+
+## Phase 60 — DUDE CLI
+
+1. "dude json format"
+2. "dude jwt inspect"
+3. "dude hash"
+4. "dude pipeline run"
+5. File/stdin/stdout support
+6. Structured JSON output mode
+7. Shared transform logic
+8. Pipeline invocation
+9. Desktop handoff commands
+10. Shell completion
+11. Explicit exit-code contract
+
+Goal: expose deterministic DUDE capabilities to terminals and scripts with zero duplicated transformation logic.
+
+---
+
+## Phase 61 — Headless Automation
+
+1. Scheduled local pipelines
+2. File-triggered pipelines
+3. Clipboard-triggered workflows
+4. Process-exit triggers
+5. Local HTTP-triggered workflows
+6. Cron-like scheduling
+7. Retry policies
+8. Execution history
+9. Desktop notifications
+10. Resource limits
+11. Explicit permissions per automation
+
+Goal: make DUDE useful even when the main window is closed.
+
+---
+
+## Phase 62 — Local SDK & Automation API
+
+1. Versioned local API
+2. Tool invocation
+3. Pipeline invocation
+4. Workspace opening
+5. Smart detection
+6. Health/status endpoint
+7. Event stream
+8. Capability querying
+9. Permission tokens
+10. SDKs beginning with TypeScript
+11. API version compatibility policy
+
+Goal: make DUDE scriptable by local developer tooling without exposing an unauthenticated general-purpose control surface.
+
+---
+
+## Phase 63 — IDE Ecosystem
+
+Expand beyond VS Code.
+
+1. JetBrains integration
+2. Visual Studio integration
+3. Neovim integration
+4. Sublime Text integration where practical
+5. Shared CLI/SDK transport
+6. Selection transformations
+7. Smart selection
+8. Pipeline execution
+9. Desktop handoff
+10. Project workspace handoff
+
+Goal: make DUDE editor-agnostic.
+
+---
+
+## Phase 64 — Source Hosting Integrations
+
+1. GitHub repositories
+2. GitLab repositories
+3. Azure DevOps repositories
+4. Pull-request diff handoff
+5. CI log import
+6. Workflow/pipeline metadata inspection
+7. Issue/commit linkage
+8. Release artifact inspection
+9. User-supplied credentials only
+10. Network activity explicitly shown
+
+Goal: bring remote development artifacts into DUDE without making remote hosting services mandatory.
+
+---
+
+## Phase 65 — Developer Task Context
+
+1. Link workspace to issue/task URL
+2. Attach notes
+3. Attach local files by reference
+4. Relevant Git branch
+5. Relevant logs
+6. Relevant requests
+7. Saved pipeline set
+8. Session timeline
+9. Exportable debugging bundle
+
+Goal: preserve debugging context across interruptions without trying to replace issue trackers.
+
+---
+
+## Phase 66 — Monitoring & Watchers
+
+1. Certificate expiration watches
+2. Endpoint health watches
+3. Local service watches
+4. File change watches
+5. Port availability watches
+6. Local database availability
+7. Container health
+8. Configurable desktop notifications
+9. Quiet hours
+10. Watch history
+11. Local-only execution by default
+
+Goal: extend one-shot diagnostics into low-overhead developer monitoring.
+
+---
+
+## Phase 67 — Unified Local Search & Index
+
+1. Search tools
+2. Search commands
+3. Search pipelines
+4. Search workspaces
+5. Search history metadata
+6. Search notes
+7. Search explicitly indexed project files
+8. Search Git metadata
+9. Search logs
+10. Search documentation
+11. Permission-scoped local indexing
+12. Index exclusion rules
+
+Goal: make hundreds of capabilities and accumulated local context discoverable through one search model.
+
+---
+
+## Phase 68 — Developer Knowledge Workbench
+
+1. Local Markdown knowledge base
+2. Snippet library
+3. Command cookbook
+4. Saved explanations
+5. Architecture notes
+6. Link notes to projects/tools
+7. Full-text search
+8. Exportable standard formats
+9. Optional Git-backed storage
+10. No proprietary lock-in
+
+Goal: capture the durable knowledge produced while debugging, not just the transient transformations.
+
+---
+
+## Phase 69 — On-Device AI
+
+Reduce dependence on external LLM providers.
+
+1. Local model runtime abstraction
+2. Hardware capability detection
+3. Download/manage local models
+4. Small-model task routing
+5. Offline explanations
+6. Local log analysis
+7. Local code explanation
+8. Embeddings for local search
+9. Local semantic retrieval
+10. Clear model/storage/resource controls
+
+Goal: let privacy-sensitive AI workflows remain entirely on-device where hardware makes that practical.
+
+---
+
+## Phase 70 — AI Workflow Assistant
+
+1. Suggest tools from intent
+2. Suggest pipeline steps
+3. Draft pipelines
+4. Explain pipeline failures
+5. Choose deterministic tools rather than generating transformations when possible
+6. Ask permission before external network/native/destructive actions
+7. Show proposed actions before execution
+8. Prefer registered DUDE capabilities over arbitrary shell execution
+9. Maintain explicit audit trail
+
+Goal: use AI as an orchestrator over trusted deterministic tools rather than replacing trusted tools with probabilistic answers.
+
+---
+
+## Phase 71 — Agentic Developer Workflows
+
+1. Multi-step goal execution
+2. Tool planning
+3. Local file inspection
+4. API/database/container diagnostics
+5. Iterative validation
+6. Human approval checkpoints
+7. Sandboxed command execution
+8. Rollback-aware operations where practical
+9. Recorded execution trace
+10. Workspace-scoped context
+
+Goal: move from “assistant recommends what to do” to “assistant can safely perform a bounded debugging workflow.”
+
+---
+
+## Phase 72 — Project Workspaces
+
+1. Open project directory
+2. Detect languages/frameworks
+3. Detect Git repository
+4. Detect package managers
+5. Detect local services
+6. Detect containers
+7. Detect configuration
+8. Project-specific tools
+9. Project-specific pipelines
+10. Project-specific notes/history
+11. Project-specific secrets references
+12. Saved project dashboard
+
+Goal: make DUDE understand the working context around utilities rather than treating every invocation as isolated.
+
+---
+
+## Phase 73 — Static Code Intelligence
+
+1. Language-aware file inspection
+2. AST explorers
+3. Symbol indexes
+4. Dependency graphs
+5. Import analysis
+6. Dead-code hints where reliable
+7. Complexity inspection
+8. Code search
+9. Structural diff
+10. Rule-driven diagnostics
+
+Goal: expand into source-code understanding without yet becoming a full editor.
+
+---
+
+## Phase 74 — Refactoring & Code Transformation Workbench
+
+1. AST-based transformations
+2. Bulk import changes
+3. Structured rename previews
+4. Config migrations
+5. Framework migration helpers
+6. API migration recipes
+7. Codemod runner
+8. Dry-run diff
+9. Per-change approval
+10. Pipeline integration
+
+Goal: reuse DUDE's transformation philosophy at project scale.
+
+---
+
+## Phase 75 — Profiling & Runtime Diagnostics
+
+1. CPU profile viewers
+2. Heap snapshot viewers
+3. Chrome trace viewer
+4. Node diagnostic report viewer
+5. .NET diagnostic import
+6. JVM diagnostic import where practical
+7. Memory comparison
+8. Timeline visualization
+9. Performance regression comparison
+10. Runtime-specific adapters
+
+Goal: bring common profiler artifacts into the same diagnostic workbench.
+
+---
+
+## Phase 76 — Integrated Terminal & Shell Workflows
+
+1. Desktop terminal panel
+2. Multiple shells
+3. Working-directory integration
+4. Command history scoped appropriately
+5. Generated command preview
+6. Send command from tool
+7. Capture command output into tool
+8. Pipeline terminal steps with explicit permissions
+9. SSH terminal integration
+10. Safe paste protections
+
+Goal: reduce context switching while preserving a very explicit boundary between displayed commands and executed commands.
+
+---
+
+### Workbench identity gate before editor/IDE-like phases
+
+Phases 77–80 are preserved exactly as a long-horizon expansion of DUDE, but they do **not** authorize turning the product into a conventional VS Code clone. Editor/LSP/terminal/project surfaces must remain subordinate to DUDE's broader artifact/problem/workflow model and its deterministic utility core.
+
+## Phase 77 — Code Editor Surface
+
+This introduces a code-editor surface under the workbench-identity gate above; it does not authorize a conventional VS Code clone.
+
+1. Monaco-based editor
+2. Multi-file tabs
+3. Syntax highlighting
+4. Search/replace
+5. Diff editor
+6. File tree
+7. Tool handoffs
+8. Formatter integration
+9. Linter integration
+10. Workspace integration
+
+Goal: provide a real editing surface for developer-workbench workflows, while still not yet claiming to replace a full IDE.
+
+---
+
+## Phase 78 — Language Services
+
+1. LSP client infrastructure
+2. Diagnostics
+3. Hover information
+4. Go-to-definition
+5. References
+6. Symbol search
+7. Completion
+8. Rename
+9. Per-language service adapters
+10. Project-aware configuration
+
+Goal: establish the architecture required for editor intelligence without reimplementing language tooling.
+
+---
+
+## Phase 79 — Development Environment Manager
+
+1. Runtime discovery
+2. Version-manager integration
+3. Environment comparison
+4. PATH repair assistance
+5. SDK inventory
+6. Toolchain health checks
+7. Project runtime requirements
+8. Missing dependency detection
+9. Environment export
+10. Reproducibility diagnostics
+
+Goal: answer “why does this project work on one machine but not another?”
+
+---
+
+## Phase 80 — Integrated Developer Workspace
+
+A genuinely large change in product scope.
+
+Combine:
+
+1. Project workspaces
+2. Code editor
+3. Language services
+4. Terminal
+5. Git
+6. Logs
+7. API client
+8. Databases
+9. Containers
+10. Pipelines
+11. AI assistant
+12. Diagnostics
+13. Notes
+14. Search
+15. Multiple windows
+
+Goal: DUDE becomes a developer workbench broad enough to perform substantial engineering tasks end-to-end, while retaining the utility-first design that differentiates it from conventional IDEs.
+
+---
+
+### Conditional hosted-cloud / account horizon gate
+
+The source suggestions intentionally explore optional accounts, sync, hosted collaboration, hosted extension infrastructure, and paid hosted services in Phases 81–95. Those details are preserved below, but under the current durable boundary in §5.2 they are **conditional alternative-horizon concepts, not authorized product direction**. They may proceed only if a later explicit PRD decision reverses the “no DUDE-operated hosted cloud” boundary. Self-hosted, BYO, user-owned remote infrastructure, and on-prem equivalents remain compatible with the current direction.
+
+## Phase 81 — Optional Account & Identity Foundation
+
+The original “no user accounts” decision is no longer permanent at this horizon.
+
+1. DUDE remains fully usable locally without login.
+2. Account creation is optional.
+3. Device identity
+4. Session management
+5. Recovery strategy
+6. No account requirement for basic tools
+7. Local-only mode remains first-class
+
+Goal: create the minimum identity layer needed for optional cross-device services without converting DUDE into an account-first SaaS product.
+
+---
+
+## Phase 82 — End-to-End Encrypted Sync
+
+1. Preferences
+2. Themes
+3. Favorites
+4. Pipelines
+5. Workspace templates
+6. Notes
+7. Snippets
+8. Selected history
+9. Explicitly selected project metadata
+10. Client-side encryption
+11. Per-category sync controls
+12. Conflict resolution
+13. Export/delete capability
+
+Goal: enable multi-device continuity while preserving DUDE's privacy model as far as technically possible.
+
+---
+
+## Phase 83 — Cross-Device Workspace Continuity
+
+1. Resume workspace on another device
+2. Synced layouts
+3. Synced pipeline definitions
+4. Synced project references where meaningful
+5. Missing-file handling
+6. Platform-capability adaptation
+7. Desktop/web handoff
+8. Device presence
+
+Goal: allow the workbench to follow the developer without pretending every device exposes identical capabilities.
+
+---
+
+## Phase 84 — Hosted Collaboration Service
+
+Only after the self-hosted collaboration model has matured.
+
+1. Hosted rooms
+2. Optional accounts
+3. End-to-end encrypted documents where practical
+4. Presence
+5. Session permissions
+6. Expiring rooms
+7. Shared workspaces
+8. Shared pipelines
+9. Explicit retention controls
+10. Self-hosted relay remains supported
+
+Goal: remove infrastructure friction for collaboration without taking away local/BYO deployment.
+
+---
+
+## Phase 85 — Teams & Organizations
+
+1. Organizations
+2. Team workspaces
+3. Shared templates
+4. Shared pipeline libraries
+5. Shared extension allowlists
+6. Shared environment definitions
+7. Roles
+8. Audit events
+9. Project collections
+10. Administrative policies
+
+Goal: support groups that want DUDE as shared developer infrastructure.
+
+---
+
+## Phase 86 — Enterprise Security & Policy
+
+1. SSO/OIDC/SAML
+2. Managed configuration
+3. Extension allow/block policy
+4. Network integration policy
+5. Local AI/provider policy
+6. Data retention controls
+7. Audit logging
+8. Secret-storage integrations
+9. Proxy configuration
+10. Offline/air-gapped mode
+11. Signed deployment artifacts
+12. Administrative update rings
+
+Goal: make organizational adoption possible without weakening the standalone local product.
+
+---
+
+## Phase 87 — Hosted Extension Ecosystem
+
+1. Publisher portal
+2. Signing infrastructure
+3. Automated security scanning
+4. Compatibility testing
+5. Reviews/ratings if useful
+6. Version channels
+7. Private organization extensions
+8. Paid extension support if ever appropriate
+9. Revocation
+10. Emergency disable mechanism
+
+Goal: mature the plugin marketplace into trustworthy infrastructure.
+
+---
+
+## Phase 88 — Secure Remote Execution
+
+1. User-owned remote runners
+2. Sandboxed execution
+3. Capability-limited jobs
+4. Ephemeral environments
+5. Uploaded-input controls
+6. Secret injection
+7. Artifact return
+8. Resource limits
+9. Execution logs
+10. Local approval
+
+Goal: permit workflows that need more compute or a different environment without assuming DUDE should silently ship data to a general cloud backend.
+
+---
+
+## Phase 89 — Remote Development Workspaces
+
+1. Connect to remote machine/project
+2. Remote filesystem adapter
+3. Remote terminal
+4. Remote language services
+5. Remote tool execution
+6. Remote containers
+7. Remote database access
+8. Remote logs
+9. Local UI / remote computation separation
+10. Reconnect/session recovery
+
+Goal: allow the desktop workbench to operate against explicit user-controlled remote environments.
+
+---
+
+## Phase 90 — Hybrid Local/Cloud Execution Planner
+
+1. Capability-aware execution
+2. Local-by-default placement
+3. User-owned remote runner support
+4. Optional hosted execution
+5. Privacy labels
+6. Cost/resource labels
+7. Explicit data movement visualization
+8. Offline fallback
+9. Per-workflow placement policies
+10. Reproducible execution metadata
+
+Goal: choose where work runs without obscuring where user data goes.
+
+---
+
+## Phase 91 — Mobile Companion
+
+Not a mobile-first redesign of every tool.
+
+1. View synced notes
+2. View monitoring alerts
+3. Inspect simple data
+4. Run safe pipelines
+5. Approve pending actions
+6. Receive collaboration notifications
+7. Scan QR/barcodes into a desktop workspace
+8. Secure device handoff
+
+Goal: make mobile useful as a companion without pretending a phone is the ideal interface for the full DUDE workstation.
+
+---
+
+## Phase 92 — Universal Web Platform
+
+At this horizon, browser compatibility can become a deliberate product investment.
+
+1. Firefox parity
+2. Safari parity
+3. Responsive tablet layout
+4. Better touch interactions
+5. Mobile web companion
+6. Web capability fallbacks
+7. Broader accessibility testing
+8. Cross-browser CI matrix
+
+Goal: extend the zero-install companion well beyond its original Chromium-first constraint.
+
+---
+
+## Phase 93 — Privacy-Preserving Product Insights
+
+Telemetry remains opt-in rather than assumed.
+
+1. Explicit opt-in diagnostics
+2. Crash reports
+3. Performance metrics
+4. Anonymous feature-use counters
+5. Local preview of exactly what will be sent
+6. No user payload collection
+7. Disable permanently
+8. Enterprise-disable policy
+9. Separate operational metrics from product analytics
+
+Goal: learn where the product fails without undermining the privacy posture that made DUDE attractive.
+
+---
+
+## Phase 94 — Internationalization & Accessibility Maturity
+
+The original permanent i18n exclusion is finally revisited at a very distant horizon.
+
+1. Externalized UI strings
+2. Locale-aware formatting
+3. Initial translated UI
+4. RTL capability
+5. WCAG-focused audit
+6. Screen-reader regression testing
+7. Keyboard-navigation test suite
+8. High-contrast validation
+9. Accessible charts/visualizations
+10. Accessibility documentation
+
+Goal: make DUDE genuinely usable by a broader global developer population.
+
+---
+
+## Phase 95 — Sustainable Commercial Model
+
+Only after product value clearly justifies it.
+
+1. Local utilities remain free.
+2. Desktop core remains useful without subscription.
+3. Optional paid hosted services
+4. Optional team features
+5. Optional enterprise management
+6. Possibly paid hosted compute
+7. Possibly paid collaboration/storage
+8. Transparent limits
+9. No privacy-hostile advertising model
+10. No artificial removal of formerly-local capabilities to manufacture a paid tier
+
+Goal: fund long-term development without damaging the local-first product.
+
+---
+
+## Phase 96 — Self-Hosted / On-Premises DUDE Platform
+
+1. Self-hosted sync
+2. Self-hosted collaboration
+3. Self-hosted marketplace mirror
+4. Self-hosted update channel
+5. Self-hosted remote runners
+6. Organization identity integration
+7. Air-gapped installation
+8. Offline extension bundles
+9. Administrative policies
+10. Backup/restore
+
+Goal: let organizations operate the complete DUDE platform under their own infrastructure.
+
+---
+
+## Phase 97 — Public DUDE Platform SDK
+
+1. Stable transformation SDK
+2. Tool SDK
+3. Pipeline SDK
+4. Workspace SDK
+5. Plugin SDK
+6. Automation SDK
+7. CLI protocol
+8. Local service protocol
+9. Remote-runner protocol
+10. Versioned public documentation
+11. Compatibility guarantees
+
+Goal: formally transform internal seams that proved useful into supported public platform contracts.
+
+---
+
+## Phase 98 — Third-Party DUDE Applications
+
+1. Build standalone apps using DUDE core
+2. Embed DUDE tool surfaces
+3. Embed pipeline runtime
+4. Custom enterprise distributions
+5. Domain-specific DUDE workbenches
+6. Branded/self-hosted deployments
+7. Shared component packages
+8. Shared transform packages
+
+Goal: let DUDE's architecture become infrastructure other software can build upon rather than only an application.
+
+---
+
+## Phase 99 — Federated Developer Workbench Ecosystem
+
+1. Multiple DUDE-compatible runtimes
+2. Discoverable capability providers
+3. User-owned remote execution nodes
+4. Organization tool registries
+5. Portable workspace definitions
+6. Portable pipelines
+7. Portable plugin manifests
+8. Cross-instance handoff
+9. Standardized capability/security metadata
+10. Local, self-hosted, and hosted installations interoperating where explicitly authorized
+
+Goal: make a DUDE workflow portable across machines, organizations, and execution environments without requiring one central service to own the entire ecosystem.
+
+---
+
+## Phase 100 — DUDE Developer Operating Environment
+
+Extremely beyond current scope. Not a commitment, schedule, or near-term architectural requirement.
+
+At this point DUDE is no longer adequately described as a developer utility dashboard. It has become a programmable developer operating environment built around the principles established by the original weekend project: local-first execution, explicit capabilities, reusable transformations, dense interfaces, interoperability, failure isolation, and tools that compose rather than live as isolated pages.
+
+Potential scope:
+
+1. Utilities
+2. Workspaces
+3. Code editing
+4. Language services
+5. Terminals
+6. Git/source control
+7. API development
+8. Databases
+9. Containers
+10. Kubernetes
+11. Local and remote environments
+12. Networking
+13. System diagnostics
+14. Filesystem automation
+15. Secrets
+16. Collaboration
+17. Knowledge management
+18. Pipelines
+19. Extensions
+20. CLI/API/SDK surfaces
+21. Local AI
+22. Agentic workflows
+23. Remote runners
+24. Optional encrypted sync
+25. Team/enterprise capabilities
+26. Self-hosted infrastructure
+27. A third-party extension/application ecosystem
+28. Portable developer workflows capable of moving between desktop, browser, terminal, editor, and user-controlled remote infrastructure.
+
+The defining experience should be:
+
+«Give DUDE data, code, a file, a directory, a URL, a service, a repository, a database, a container, a machine, or a development problem. DUDE identifies what it is, exposes the right deterministic tools, connects those tools into a reusable workflow, and—only with explicit permission—can carry that workflow through local or remote systems.»
+
+Goal: evolve the original “developer utility deck” into a cohesive developer environment without losing the speed, privacy, explicitness, and composability that justified building DUDE in the first place.
+
+---
+
+## Roadmap Rule Beyond Phase 21
+
+From Phase 22 onward, raw tool count is not itself a success metric.
+
+Every phase should be evaluated against one or more of:
+
+- greater correctness or trust;
+- deeper workflows;
+- better composition between existing capabilities;
+- native capability that the web companion cannot provide;
+- less repeated developer context switching;
+- stronger local/offline capability;
+- more reusable platform infrastructure;
+- safer automation;
+- improved discoverability;
+- extension of DUDE into another developer surface without duplicating core logic.
+
+A phase that adds five deeply-integrated capabilities may therefore be more valuable than one that adds fifty isolated tools.
+
+The GitHub Pages build remains important throughout this roadmap, but from Phase 22 forward the product hierarchy is explicit:
+
+«DUDE Desktop is the canonical, complete developer workbench. DUDE Web is its zero-install, browser-safe companion. Shared capabilities use the same core implementation wherever the platform allows it.»
+
+## Roadmap Sequencing Rationale
+
+The progression is deliberate. Phases 22–26 slow raw feature accumulation to decompose registry/metadata debt, strengthen correctness and release confidence, improve discovery, mature the desktop shell, and harden the web companion before DUDE adds significantly more native power.
+
+Phases 27–38 then form a coherent native/integration expansion. Their authoritative text is intentionally self-contained: each phase states the static/browser-safe capabilities it complements, the live/native boundary it crosses, the relevant safety rules, and the full feature scope. No phase in this range depends on an obsolete numbering scheme or an archived roadmap definition to explain what it means.
+
+The longer progression remains: 39–55 deepen the interconnected workbench; 56–68 turn DUDE into an extensible automation platform; 69–80 move into AI/project/IDE-adjacent territory under the workbench-identity gate; 81–96 preserve a conditional cloud/team/commercial horizon behind explicit product-boundary gates; and 97–100 describe DUDE as a platform/ecosystem.
+
+Phase 100 provides the intentionally extreme long-horizon endpoint without allowing distant architecture to contaminate the concrete decisions that should be made in Phase 22.
+
+### Desktop-platform continuity
+
+The remaining desktop-platform work is explicitly assigned within the current roadmap rather than left in an unnumbered backlog:
+
+- macOS/Linux desktop builds, platform keychains, native packaging, and signed non-Store Windows distribution — **Phase 39**;
+- file-watch-driven automation and safe auto-reload/write workflows — **Phase 40**;
+- named/accountless collaboration and richer self-hosted relay behavior — **Phase 53**;
+- broader local/on-device model support and AI routing — **Phases 69–71**.
+
+## Commercialization Policy and Historical Context
+
+Basic local utilities remain free under §5.2. Phase 95 contains the commercial horizon, but under the current no-DUDE-hosted-cloud direction only local, self-hosted, on-premises, support, packaging, or other non-hosted commercial models are presently compatible without another explicit product decision. No future business model may remove formerly-local functionality merely to manufacture a subscription.
+
+Appendix D records the non-authoritative monetization sketch without changing these standing boundaries.
 
 ---
 
 # 22. API Integration Architecture
 
-Network integrations are allowed later.
+Network integrations are allowed when they are integral to a tool or workflow, but local execution remains the default whenever practical.
 
-User-supplied API keys are the chosen credential model.
+User-supplied API keys are the default credential model for external services. Desktop DUDE may also use OS-level secure storage, local provider configuration, or self-hosted/on-prem credentials where appropriate.
 
 ## 22.1 Rules
 
-No static private secrets in source control.
-
-No server proxy is part of the current architecture.
+- No static private secrets in source control or compiled distributions.
+- No DUDE-operated cloud proxy is part of the current architecture/product direction.
+- A **local bundled proxy/backend** is allowed and already shipped where browser restrictions or credential isolation make it necessary (for example Phase 8 Stage 4's localhost-only LLM proxy).
+- User-owned/self-hosted relays, servers, and remote runners are allowed when the user explicitly configures them.
+- Network activity, persistence behavior, platform/native capabilities, and external-data boundaries must be represented in canonical tool/capability metadata and remain consumable by shell-level disclosure UI rather than being buried only inside individual tool implementations.
 
 Each API-backed tool should declare:
 
 - external service name;
 - whether network is required;
-- whether an API key is required;
-- how the key is stored;
+- whether an API key/credential is required;
+- how the credential is stored;
 - what user input is transmitted;
-- what happens offline.
+- whether data leaves the machine directly, through a local proxy, or through explicitly configured user-owned infrastructure;
+- what happens offline;
+- desktop/web availability;
+- any destructive or privileged actions exposed by the integration.
 
 ## 22.2 Default key storage
 
-Default:
+Default for browser-capable API tools:
 
 - session-only.
 
 Optional:
 
-- explicit user opt-in to local persistence.
+- explicit user opt-in to local persistence for non-sensitive configuration;
+- desktop `secure-local` / OS-keychain-backed storage for secrets;
+- named local secret references once Phase 51 expands the secrets workbench.
 
 Never:
 
 - hard-coded secret;
-- silent persistent secret storage.
+- silent persistent secret storage;
+- **downgrading a secret from `secure-local` / OS-backed storage into ordinary local storage merely for implementation convenience**;
+- silent transmission to a third-party service;
+- plaintext automatic synchronization of secrets.
 
 ---
 
 # 23. Suggested Repository Architecture
 
-Exact naming may evolve, but keep the separation of responsibilities.
+Exact naming may evolve, but keep the separation of responsibilities and the **shared-core rule**. The repository should not fork into unrelated web and desktop implementations.
+
+A directionally appropriate post-Phase-22 shape is:
 
 ```text
 src/
   app/
     core/
       registry/
+        manifests/
+        validation/
       persistence/
       workers/
       network/
       routing/
       errors/
+      history/
+      workspace/
+      pipelines/
+      paste-detect/
+      platform/
     shell/
       layout/
       sidebar/
       deck/
       command-palette/
       search/
+      smart-paste/
+      workspace/
+      history/
+      pipelines/
     shared/
       components/
       directives/
@@ -1919,41 +3607,52 @@ src/
       utilities/
       models/
     tools/
-      json/
-      regex/
-      timestamp/
-      base64/
-      markdown/
-      jwt/
-      text-inspector/
-      hash/
-      diff/
+      <category-or-tool>/
+        <tool>.tool.ts
+        <tool>.component.ts
+        <tool>.component.html
+        <tool>.component.css
+        <tool>.logic.ts
+        <tool>.pipeline-step.ts
+        <tool>.workspace-step.ts
+        <tool>.worker.ts
+        <tool>.spec.ts
+  shared-logic/
+    # framework-neutral transforms/codecs reused by Angular, Electron,
+    # CLI, extensions, tests, SDKs, and later integrations
+
+electron/
+  # main process, preload, native adapters, local services
+
+relay/
+  # user-self-hosted collaboration relay shipped in Phase 8
+
+cli/                 # future Phase 60+
+sdk/                 # future Phase 62/97+
+extensions/          # future VS Code/browser/IDE/plugin work
 ```
 
-Possible per-tool structure:
+The original V1 architectural shape — `core/`, `shell/`, `shared/`, and `tools/` under Angular — remains valid and is preserved by this expansion. Not every tool needs every file. Avoid ceremony for small utilities.
 
-```text
-tools/json/
-  json.tool.ts
-  json.component.ts
-  json.component.html
-  json.component.css
-  json.logic.ts
-  json.worker.ts
-  json.spec.ts
-```
+### 23.1 Distributed manifests and metadata ownership
 
-Not every tool needs every file.
+Phase 22 should retire the multi-thousand-line monolithic `TOOL_DEFINITIONS` maintenance pattern in favor of tool-local or category-local manifests composed at build time. A tool owns its metadata beside its implementation. The registry remains the runtime authority, but it is assembled rather than hand-edited as one giant file.
 
-Avoid ceremony for small utilities.
+### 23.2 Platform adapters
 
-A future desktop build (§21 Phase 8) would sit alongside this structure behind a platform adapter — e.g. a sibling `platform/` layer exposing the same interface over browser APIs (today) and native/OS APIs (once the desktop track starts) — rather than forking `src/app` into separate web and desktop copies (§4.9). This is a direction, not a design to implement now.
+Phase 8 already proved the platform-adapter direction. Browser APIs and Electron/native APIs should implement narrow interfaces behind `PlatformService`/native bridges rather than causing duplicated tool implementations.
+
+The renderer keeps `contextIsolation`; no direct Node access is introduced for convenience. Native behavior goes through preload/IPC or other explicitly reviewed adapters.
+
+### 23.3 Shared logic
+
+`src/shared-logic/` was established in Phase 8 Stage 5 when Base64/hash logic needed reuse by Electron shell actions. Phase 22 broadens that precedent: if logic can reasonably be framework-neutral, it should be extractable and testable outside Angular so CLI, IDE extensions, browser extensions, SDKs, workers, Electron, and tests can reuse the same implementation.
 
 ---
 
 # 24. Suggested Tool Definition Pattern
 
-A tool should be close to self-registering.
+A tool should be close to self-registering and should own its canonical metadata beside its implementation.
 
 Conceptual example:
 
@@ -1975,11 +3674,22 @@ export const JSON_TOOL: ToolDefinition = {
   },
   network: {
     required: false
-  }
+  },
+  io: {
+    accepts: ['text', 'json'],
+    produces: ['text', 'json', 'file']
+  },
+  platforms: {
+    web: true,
+    desktop: true
+  },
+  status: 'stable'
 };
 ```
 
-The shell should consume tool metadata rather than importing tool-specific behavior.
+The shell, routes, ToolShell, search, command palette, platform-capability indicators, generated documentation, pipeline/workspace adapters, privacy/network disclosures, and confidence badges should consume this canonical metadata rather than importing tool-specific behavior or repeating titles/status fields at call sites.
+
+Phase 22 adds structural validation and distributed manifests. Phase 23 expands the status model from the historical `stable | experimental` distinction to include a carefully-defined `verified` tier without implying external certification.
 
 ---
 
@@ -2048,6 +3758,24 @@ Added in §21 Phase 8 Stage 1 as the seam every desktop-only stage conditions on
 
 ---
 
+## 25.7 Metadata / Manifest Validation
+
+Phase 22 adds build/CI validation for unique IDs/routes, valid categories, I/O declarations, persistence compatibility, pipeline/workspace adapters, lazy-loader existence, confidence/status values, platform availability, capability declarations, and documentation metadata.
+
+## 25.8 Capability / Permission Service
+
+As native, remote, plugin, automation, and destructive operations grow, capabilities should be declared and checked through shared infrastructure rather than ad hoc booleans. This service should expose what a tool *can request*; execution still requires the appropriate user intent/confirmation.
+
+## 25.9 Local Usage / Recents Service
+
+Phase 24 may record private local usage frequency, recents, favorites, pinned tools/pipelines, and related-tool signals. This must not require analytics or remote telemetry.
+
+## 25.10 Desktop Native-Service Boundary
+
+Electron preload/main-process services expose narrowly-scoped native primitives. Tool code should not gain broad Node/native access simply because it runs in the desktop product. The permission/capability surface should remain inspectable and testable.
+
+---
+
 # 26. Command Palette Requirements
 
 The command palette currently supports navigation only.
@@ -2061,13 +3789,17 @@ The command palette currently supports navigation only.
 - Escape to close;
 - auto-focus search input.
 
-## Deferred
+## Historical V1 Deferred Items / Later Roadmap
+
+The V1 palette was navigation-only. The following were deliberately deferred then:
 
 - tool actions;
 - configurable shortcuts;
 - nested commands;
 - command aliases managed by users;
 - macros.
+
+Phase 25 now proposes a major palette expansion: tools, pipelines, workspaces/sessions, native operations, preferences, recent files, extension commands, and desktop quick actions in one launcher. Later plugin/IDE/automation phases may add commands through declared APIs rather than hard-coded shell branches.
 
 ---
 
@@ -2083,13 +3815,13 @@ Required:
 - keyboard-compatible links;
 - quick route access.
 
-Optional only if trivial:
+Historically optional for V1 unless trivial:
 
 - recently used;
 - favorites;
 - pinned tools.
 
-Do not build personalization infrastructure for these without a specific roadmap decision to do so.
+That original scope rule prevented personalization work from delaying V1. A specific roadmap decision now exists: Phase 24 promotes recent tools, favorites/pins, local frequency, pinned pipelines, unified recents, quick actions, and workspace templates into first-class behavior.
 
 ---
 
@@ -2117,7 +3849,7 @@ Large inputs are allowed.
 
 The app should not impose arbitrary small text limits.
 
-However, extreme-scale optimization is not currently required.
+The original V1 explicitly did not require extreme-scale optimization. That baseline is preserved, but later desktop phases intentionally add streaming/large-file/log/filesystem scale where a specific workflow benefits from it; there is still no blanket requirement to optimize every tool for extreme inputs.
 
 Expected behavior:
 
@@ -2144,7 +3876,7 @@ The framework should instead behave responsibly:
 - API-backed tools make transmission explicit;
 - sensitive tools choose safer persistence defaults.
 
-No enterprise secret-management system is in scope.
+No enterprise secret-management system was in the original V1 scope. Desktop `secure-local` storage has since shipped, Phase 34/51 expands the local secrets experience, and distant enterprise/on-prem integrations may exist later. None of those changes the rule against silent persistence/transmission or plaintext automatic sync.
 
 ---
 
@@ -2152,58 +3884,120 @@ No enterprise secret-management system is in scope.
 
 ## Standing rules
 
-- no arbitrary code execution **in DUDE's own realm/origin** — arbitrary execution is permitted only inside the opaque-origin sandboxed iframe/worker in `src/app/shared/code-sandbox/` (§21 Phase 6: JS Playground, HTML Preview, Template Renderer, Python Playground), which has no cookie/storage/host-DOM access into the app itself;
-- no remote plugin execution;
-- no untrusted HTML execution without sanitization, **outside that same sandbox**;
+- no arbitrary code execution **in DUDE's own renderer/app realm** — arbitrary execution is permitted only inside an explicitly sandboxed environment such as the opaque-origin iframe/worker infrastructure from Phase 6, a future constrained plugin runtime, or another reviewed isolation boundary;
+- no untrusted remote plugin/extension code receives DUDE/Desktop/native privileges merely because it was installed — future plugin/marketplace work requires manifests, capability declarations, permission display, signing/review metadata where applicable, sandboxing where possible, and a strict distinction between sandboxed vs. native-capability extensions;
+- no untrusted HTML execution without sanitization outside an explicit sandbox;
 - no embedded private service credentials;
-- no server-side secret assumptions;
-- no claims that JWT decoding verifies authenticity.
+- no silent user-data transmission;
+- no destructive or privileged operation triggered merely by opening/importing content;
+- no native operation bypassing Electron's preload/IPC boundary for convenience;
+- no unauthenticated general-purpose local automation/control endpoint;
+- no claims that JWT decoding verifies authenticity;
+- network interception, proxies, remote commands, registry/service/process/database/container/Kubernetes mutations, automation triggers, and agentic actions must expose conspicuous state/permission/confirmation boundaries appropriate to their risk.
 
-Phase 6's sandbox design (iframe isolation, network egress blocked via CSP, hard execution timeouts) is documented in `src/app/shared/code-sandbox/code-sandbox-doc.ts` and each Phase 6 tool's own sandbox file — see §21 Phase 6 for what shipped and why.
+Phase 6's sandbox design (iframe isolation, network egress blocked via CSP, hard execution timeouts) is documented in `src/app/shared/code-sandbox/code-sandbox-doc.ts` and each Phase 6 tool's own sandbox file.
 
-Phase 8 Stage 1 applies these same standing rules to the Electron renderer (`contextIsolation` on, no `nodeIntegration`, all native access preload-mediated) and extends the "never an external interface" rule to the bundled local static server (`127.0.0.1` only, OS-assigned port) — documented in `electron/AGENTS.md` and `electron/static-server.ts`.
+Phase 8 Stage 1 applies these standing rules to the Electron renderer (`contextIsolation` on, no `nodeIntegration`, all native access preload-mediated) and to the bundled local static server (`127.0.0.1` only, OS-assigned port). Stage 6's LAN collaboration server is the deliberate exception to loopback-only binding and is protected by session-code semantics documented in the Phase 8 record.
+
+Phase 22 adds dependency-boundary validation and conformance checks. Phase 23 adds destructive-action and sandbox regression suites plus security-sensitive release gates. Later plugin, automation, HTTP proxy, SSH/remote, and agentic phases inherit these boundaries rather than weakening them.
 
 ---
 
 # 32. Performance Strategy
 
-Performance work should be pragmatic.
+Performance work should remain pragmatic, but desktop scale, hundreds of tools, large runtimes, and PWA cache growth now justify explicit budgets.
 
 ## Required
 
 - route-level lazy loading;
-- worker abstraction;
+- reusable worker abstraction;
 - avoid loading heavy tool libraries before the tool is visited;
 - avoid re-rendering the entire shell during tool-local state changes where practical;
-- keep navigation responsive.
+- keep navigation responsive;
+- measure cold/warm desktop startup where native services are involved;
+- stream or lazily inspect large files/directories where practical instead of eagerly buffering by default;
+- keep optional runtimes (WASM, Pyodide, local models, language services, etc.) out of the critical startup path.
 
-## Deferred
+## Phase 22 hardening requirements
 
-- micro-benchmark suite;
-- strict bundle budget;
-- advanced prefetch prediction;
-- manual tree-shaking project;
-- custom virtualized editors unless a tool needs them.
+- warning/error budgets for individual lazy chunks, major shared chunks, startup code, desktop preload code, and large WASM/runtime payloads;
+- total offline Cache Storage budgeting, not merely initial JS size;
+- service-worker strategy audit so generic `*.js` matching does not accidentally prefetch every lazy tool/runtime;
+- dependency-boundary validation to stop large or platform-specific packages leaking into shared startup bundles;
+- explicit web-cache repair/clear tooling in Phase 26.
+
+## Still pragmatic / not raw-goal driven
+
+- no requirement to minimize every byte at the expense of maintainability;
+- no micro-benchmark for every simple tool;
+- no manual tree-shaking campaign without evidence;
+- no custom virtualized editor unless a concrete tool/workload needs it.
+
+Phase 23 adds performance regression corpora for expensive parsers, diffs, hashing, directory operations, archives, and binary viewers where regressions would be user-visible.
 
 ---
 
 # 33. Build and Deployment
 
-## Production build
+DUDE now has two first-class distribution pipelines with an explicit hierarchy: **desktop is canonical; web is the zero-install companion.**
 
-A single documented command should create production-ready static assets.
+## 33.1 Shared build requirements
 
-## CI
+- framework-critical tests run before release artifacts are accepted;
+- shared transformation/core logic is built once per target rather than reimplemented;
+- platform boundaries prevent Electron/Node-only dependencies from contaminating browser bundles;
+- capability/security-critical release gates may become stricter than general utility-tool gates under Phase 23.
 
-On the primary branch:
+## 33.2 Windows desktop production build and release
+
+Phase 8 Stage 8 already established:
+
+1. Angular desktop-target build with service worker disabled for Electron;
+2. Electron main/preload compilation;
+3. `electron-builder` packaging;
+4. NSIS installer publication to GitHub Releases;
+5. MSIX/appx packaging for Microsoft Store submission once real Partner Center identity values replace placeholders;
+6. patch-version/tag automation on pushes to `master`;
+7. a separate Windows release workflow with its own test gate;
+8. `electron-updater` for the NSIS path, with download in the background but install only after explicit “Restart & Install”; Store/App Installer infrastructure handles the MSIX path when used.
+
+The Windows setup amendment dated 2026-09-25 remains part of the shipped behavior: Express/Custom installer choices, resumable in-app setup, saved preferences across manual reinstalls/updates, Windows-managed default-app confirmation, single-instance Explorer routing, and explicit action before imported code/HTML execution/preview.
+
+### Desktop release acceptance
+
+Every production desktop release must verify, at minimum:
+
+1. production Angular assets build successfully for the Electron target;
+2. framework-critical and capability-specific release gates pass;
+3. Electron main/preload/backend code compiles/packages without violating renderer/native dependency boundaries;
+4. Windows installation artifacts are produced for the intended package path(s);
+5. **cold launch** succeeds from a clean process state;
+6. **warm launch / restore** succeeds for supported tray/session/relaunch flows without corrupting persisted layout/state;
+7. preload/IPC initialization succeeds and the renderer never requires direct Node integration;
+8. declared native capabilities are available and fail with an explanatory capability state when unavailable;
+9. single-instance routing works for normal second-launch behavior and Explorer/Open-With handoff;
+10. registered `dude://` deep-link routing works where configured;
+11. file-open/folder-open routing works where configured and does not execute imported code/HTML merely by opening it;
+12. local backend/proxy startup, loopback binding, and shutdown/restart behavior work for capabilities included in the release;
+13. update behavior matches the package type — NSIS uses the explicit Restart & Install flow, while MSIX/Store/App Installer follows its Windows-managed path;
+14. installer/update flows preserve the user's supported saved setup choices and do not introduce unexpected privileged/destructive actions;
+15. package-specific signing/identity requirements are validated when a signed or Microsoft Store build is being produced.
+
+These checks are release invariants, not merely historical Phase 8 implementation notes. Higher-risk later capabilities may add stricter gates under Phases 22–23 and §31.
+
+## 33.3 Web companion production build
+
+A documented build must create production-ready static assets for GitHub Pages/PWA delivery.
+
+CI should:
 
 1. install dependencies;
 2. run framework-critical tests;
-3. build production app;
-4. prepare GitHub Pages SPA fallback;
+3. build the production web app;
+4. prepare the GitHub Pages SPA fallback;
 5. publish static output.
 
-## GitHub Pages acceptance
+### Web companion / GitHub Pages acceptance
 
 Verify:
 
@@ -2213,43 +4007,69 @@ Verify:
 - static assets load under repo path;
 - service worker registers;
 - installed PWA launches;
-- local-only tools work offline after caching.
+- local-only/shared-core tools work offline after required caching;
+- browser-safe pipelines/workspaces continue to work as Phase 26 evolves;
+- desktop-only features are clearly badged rather than failing mysteriously.
+
+## 33.4 Shared-core web/desktop parity — permanent build invariant
+
+Whenever the same capability is declared available on both DUDE Desktop and DUDE Web, automated parity coverage should verify that the shared transformation/domain semantics remain equivalent. Platform adapters, file pickers, storage backends, native bridges, and shell presentation may legitimately differ; the deterministic operation must not silently fork into two incompatible implementations.
+
+Phase 26 establishes the dedicated web/desktop parity-testing work, but once that infrastructure exists the rule is permanent: **shared capabilities must continue to use the same core implementation and parity contract in subsequent releases.** A platform-specific implementation is acceptable only where the platform genuinely requires different behavior, and that difference must be explicit in capability metadata/tests rather than accidental drift.
+
+## 33.5 Future distribution
+
+Phase 39 adds macOS/Linux packaging and signed non-Store distribution. Later CLI/extensions/SDKs get their own release channels without duplicating core logic.
 
 ---
 
 # 34. Documentation Deliverables
 
-Both deliverables below exist in the repository today (`README.md`, `ADDING_A_TOOL.md`). Repository documentation includes:
+`README.md` and `ADDING_A_TOOL.md` exist today, but Phase 22 turns documentation into a partially generated contract rather than a manually drifting inventory.
 
 ## README
 
-- project purpose;
+Must cover:
+
+- product purpose and desktop-first positioning;
+- Windows download/install/update path;
+- web companion / GitHub Pages URL and PWA behavior;
 - local development;
-- production build;
-- GitHub Pages deployment;
+- production builds for both surfaces;
 - architecture summary;
-- list of tools.
+- security/privacy model;
+- tool catalog and capability/platform matrix;
+- self-hosted/BYO infrastructure where relevant.
+
+Tool lists, tool counts, category indexes, supported-platform tables, network/privacy disclosures, confidence status, and similar mechanical facts should be generated from canonical registry/manifest metadata once Phase 22 lands.
 
 ## `ADDING_A_TOOL.md`
 
-This is a critical deliverable.
+This remains a critical deliverable and should explain the post-Phase-22 architecture:
 
-It should explain:
-
-1. create tool folder;
-2. define metadata;
-3. create component;
-4. choose persistence policy;
-5. choose worker policy;
-6. choose network policy;
-7. expose lazy route/component;
-8. add tests where appropriate;
-9. verify search/sidebar/command palette discovery;
-10. verify direct URL.
+1. create the tool folder;
+2. define/own the local manifest metadata;
+3. create component/UI;
+4. keep transformation logic framework-neutral where practical;
+5. declare I/O contract;
+6. choose persistence policy;
+7. choose worker policy;
+8. choose network policy;
+9. declare platform/native capabilities;
+10. add pipeline/workspace adapter only when meaningful;
+11. add tests appropriate to consequence level;
+12. verify generated registry/search/sidebar/command-palette discovery;
+13. verify desktop/web availability behavior;
+14. verify direct web URL and desktop handoff/deep-link behavior where applicable;
+15. satisfy conformance/registry validation.
 
 Goal:
 
-A simple new tool should be addable without studying the full shell implementation.
+A simple new tool should still be addable without studying the full shell implementation, and adding tool #500 should not be structurally more dangerous than adding tool #50.
+
+## Additional living documentation
+
+Phase 22 explicitly refreshes `AGENTS.md`, security documentation, platform documentation, cache/bundle strategy, and architecture notes so they describe the actual post-Phase-21/post-desktop system rather than accumulating contradictory amendments.
 
 ---
 
@@ -2351,14 +4171,14 @@ This appendix captures the requirements interview that determined the original w
 | Q8 | Persistence | Per-tool choice, with selective persistence as the default (safe preferences persist, sensitive payloads don't). |
 | Q9 | Mandatory edge cases | Failure isolation, offline behavior, and GitHub Pages routing/deployment reliability are mandatory; large and sensitive inputs must be allowed, not rejected by policy. |
 | Q10 | Initial tool-set strategy | A framework-showcase set exercising different patterns, with the broader set organized into a roadmap. |
-| Q11 | Navigation | Hybrid — deck + sidebar + global search/command palette + dedicated routes, no IDE-style persistent tabs. **Amended 2026-09-21**: narrowed, not reversed — multi-tool tabs and resizable workbench panels are now a roadmap item (§21 Phase 21); the boundary becomes "a multi-tool workbench, not a source-code IDE." A Monaco-style full IDE remains explicitly out of scope (§5.2). |
-| Q12 | Visual style | Minimal developer console, dark-only, super dense. **Amended 2026-09-18**: dark-only stays fixed, but the theme became explicitly bright and colorful rather than muted/monochrome — bold, saturated accent colors used functionally (categories, status, active state) against a dark base. "Minimal ornamentation" applies to shapes/effects, not color intensity. See §8 for the current, authoritative visual spec. |
+| Q11 | Navigation | Hybrid — deck + sidebar + global search/command palette + dedicated routes, no IDE-style persistent tabs. **Amended 2026-09-21:** narrowed, not reversed — multi-tool tabs and resizable workbench panels shipped in Phase 21; the boundary is "a multi-tool workbench, not a source-code IDE." A Monaco-style full IDE remains explicitly out of scope (§5.2). **Current standing boundary:** later editor/LSP/terminal surfaces may exist (Phases 77–80), but DUDE must not become a conventional VS Code clone or editor-first IDE (§5.2). |
+| Q12 | Visual style | Minimal developer console, dark-only, super dense. **Amended 2026-09-18:** dark-only stays fixed, but the theme became explicitly bright and colorful rather than muted/monochrome — bold, saturated accent colors used functionally (categories, status, active state) against a dark base. "Minimal ornamentation" applies to shapes/effects, not color intensity. See §8 for the current, authoritative visual spec. **Current status:** the shipped design is still dark-only and authoritative, but Phase 36 may add light/custom themes, density/font preferences, reduced motion, and high-contrast support. |
 | Q13 | Dependency strategy | Library-forward — prefer mature libraries where they accelerate reliable delivery. |
 | Q14 | Offline/PWA depth | Installable PWA with offline shell and local tools; network-dependent tools explicitly expose connectivity requirements. |
 | Q15 | Testing/accessibility quality bar | Ship first — test architecture-critical pieces and obvious regressions, not exhaustive coverage. |
 | Q16 | API-backed tool credential policy | User-supplied API keys only; never bundle private keys; session-only by default with explicit opt-in persistence. |
 | Q17 | GitHub Pages routing | Clean bookmarkable routes with a `404.html` SPA fallback, not hash routing. |
-| Q18 | Browser/device target | Desktop-first, Chromium-only. |
+| Q18 | Browser/device target | Original V1 target: desktop Chromium web/PWA. **Current product hierarchy:** Windows desktop Electron is canonical; desktop Chromium/GitHub Pages is the secondary zero-install companion; cross-platform desktop and broader web parity are future roadmap work. |
 | Q19 | Computational isolation | A shared worker execution layer tools can opt into, with cancellation/termination support. |
 | Q20 | Executable tools | Deferred for the weekend; sandboxing allowed later. (Later shipped — see §21 Phase 6.) |
 | Q21 | Measurable framework success criteria | Extension speed and deployment reliability as hard pass/fail; performance/isolation and architecture clarity as strong targets. |
@@ -2369,4 +4189,121 @@ This appendix captures the requirements interview that determined the original w
 
 > Ship a dark-only but highly colorful, dense, desktop-Chromium Angular PWA on GitHub Pages with a reusable tool registry, clean routes, command/search navigation, per-tool persistence, worker-based failure isolation, offline support, documentation, and exactly enough varied utilities to prove the framework—then stop.
 
-This was the goal for V1 specifically, not a permanent stopping point — the "then stop" reflected the original weekend scope gate. With V1 delivered, work continues per the §21 roadmap (see §1.1).
+This was the goal for V1 specifically, not a permanent stopping point — the “then stop” reflected the original weekend scope gate. It also preserves the historical fact that V1 was defined around the Chromium/GitHub Pages PWA before the desktop track existed. With V1 and Phases 1–21 delivered, the current product hierarchy is desktop-canonical/web-companion and work continues per the §21 roadmap (see §1.1).
+
+---
+
+# Appendix C — Scope Evolution Record
+
+This appendix records how the original weekend-era exclusions evolved into the durable boundaries in §5.2–§5.3. It is historical context only; all phase references below use the **current roadmap numbering** so the appendix cannot conflict with the authoritative roadmap.
+
+## C.1 Weekend-era exclusions
+
+The original scope intentionally excluded:
+
+- user accounts;
+- cloud synchronization;
+- a DUDE-operated cloud backend;
+- a DUDE-operated always-on product database;
+- telemetry/analytics platforms;
+- collaborative editing;
+- a DUDE-operated hosted snippet service;
+- extension marketplaces and remotely installed plugins;
+- third-party authentication;
+- multi-device preferences;
+- mobile-first layout;
+- Firefox/Safari-specific optimization;
+- a Monaco-style full IDE workspace;
+- cloud-hosted API proxies;
+- cloud-hosted secret storage;
+- elaborate onboarding/tutorial tours;
+- social sharing;
+- SEO-heavy content pages;
+- a public API documentation portal;
+- design-system extraction/component package publishing;
+- broad accessibility certification;
+- exhaustive cross-browser/E2E/unit-test coverage;
+- a dedicated bundle-size optimization project;
+- localization/i18n.
+
+Those exclusions were useful for protecting the weekend MVP, but many were later reclassified as shipped capabilities, distant roadmap items, or conditional concepts rather than permanent prohibitions.
+
+## C.2 Desktop and native-capability decision — 2026-09-20
+
+Native desktop packaging was opened because useful capabilities such as raw networking, arbitrary/background filesystem access, processes, OS integration, local servers, secure OS-backed credentials, and live database/container access cannot be reproduced faithfully by a browser tab.
+
+The decision allowed:
+
+- the shipped Electron application in Phase 8;
+- a local bundled backend where a native capability genuinely requires one;
+- OS-backed `secure-local` storage;
+- native filesystem/process/network/OS integration;
+- LAN services and user-operated/self-hosted infrastructure.
+
+The current boundary is stricter and clearer than the early carve-out language: **DUDE Desktop is canonical; DUDE Web is the browser-safe companion; no DUDE-operated hosted cloud is authorized while §5.2 stands.**
+
+## C.3 Collaboration decision — 2026-09-20
+
+Phase 8 Stages 6–7 shipped real-time Markdown collaboration through:
+
+- a same-machine/LAN collaboration server; and
+- a user-operated BYO relay for cross-network sessions.
+
+The relay is not a DUDE-operated service. Broader accountless collaboration is tracked in Phase 53. A DUDE-hosted collaboration service remains blocked by §5.2 unless the product owner explicitly changes that boundary.
+
+## C.4 Broader scope reopening — 2026-09-21 onward
+
+The following capabilities moved from blanket exclusion into explicit shipped/current roadmap scope:
+
+- **multi-tool tabs, panels, Saved Sessions, scripted workflow steps, and local history** — shipped in Phase 21;
+- **multi-window OS workflows** — Phase 34;
+- **self-hosted/BYO snippet sharing** — Phase 31;
+- **local secrets vault** — Phase 34, with deeper secrets work in Phase 51;
+- **VS Code integration** — Phase 37;
+- **browser extension** — Phase 38;
+- **light mode/theme customization/accessibility appearance controls** — Phase 36;
+- **macOS/Linux desktop support** — Phase 39;
+- **mobile companion** — Phase 91;
+- **Firefox/Safari parity and broader web compatibility** — Phase 92;
+- **local plugin SDK / signed extension ecosystem** — Phases 56–57;
+- **public SDK/documentation/component surfaces** — Phases 97–98;
+- **localization/i18n and accessibility maturity** — Phase 94.
+
+These roadmap entries do not erase the standing boundaries in §5.2. In particular, editor/LSP/terminal/project work remains subordinate to the developer-workbench identity, and hosted-account/cloud concepts in the distant horizon remain conditional while the no-DUDE-hosted-cloud boundary stands.
+
+## C.5 Testing, accessibility, and performance evolution
+
+The original MVP deliberately rejected exhaustive coverage targets. The modern PRD keeps that pragmatic stance while replacing blanket exclusions with risk-based quality requirements:
+
+- Phase 22 introduces registry/dependency/chunk/cache structural controls;
+- Phase 23 introduces vectors, independent cross-checks, property tests, fuzzing, golden corpora, destructive-action tests, sandbox regressions, performance fixtures, and capability-specific release gates;
+- Phase 26 establishes web/desktop parity infrastructure;
+- §33 makes shared-core parity and desktop release verification standing build invariants;
+- Phase 36 expands appearance/accessibility controls;
+- Phase 92 introduces deliberate cross-browser CI at the universal-web horizon;
+- Phase 94 introduces mature i18n/accessibility auditing.
+
+The goal is stronger confidence where risk justifies it, not coverage percentages for their own sake.
+
+---
+
+# Appendix D — Commercialization Context
+
+## D.1 Non-authoritative monetization sketch
+
+A free/pro/team-style structure remains only a possible business-model sketch, not a committed roadmap requirement.
+
+A compatible model could keep:
+
+- **free/local:** every ordinary local-first utility and the useful local desktop core, including basic native conveniences such as drag-and-drop, Open With, context-menu actions, and deterministic transformations;
+- **advanced individual:** optional advanced workflow/automation, packaging/support, or other value that does not remove formerly-local capabilities;
+- **organization/self-hosted:** on-premises management, policy, support, deployment, enterprise integration, self-hosted collaboration/sync/runners, and similar organization-controlled capabilities.
+
+Under the current §5.2 boundary, a DUDE-operated hosted account/sync/collaboration/compute service is **not authorized**. The distant hosted-service ideas retained in Phases 81–95 are conditional alternatives that would require a separate explicit product decision before implementation.
+
+Two constraints are non-negotiable while the current PRD stands:
+
+1. basic developer utilities must never be paywalled merely to force adoption of a paid tier; and
+2. no formerly-local capability may be intentionally removed or crippled to manufacture subscription value.
+
+---

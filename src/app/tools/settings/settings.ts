@@ -25,7 +25,8 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
  * UI behind `PlatformService.isDesktop()` — the registry stays platform-agnostic; individual tools
  * decide what to show. The "General" section (Milestone 294) is the one exception: it must render
  * on the web build too, since the Workspace's "reopen tabs on restart" preference and "clear all
- * local data" apply equally there — DUDE_PRD.md §4.9's permanent zero-install default.
+ * local data" apply equally there — DUDE_PRD.md §4.9's web companion remains a first-class,
+ * zero-install surface even though desktop is now the canonical product.
  *
  * The LLM fields go through `SecureLocalService`, not `PersistenceService`
  * — even though base URL/model aren't secret, keeping everything in the
